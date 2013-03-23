@@ -9,5 +9,4 @@ public class Shlomo {
 
     private int counter;
     private String name;
-    private String photo;
 }
