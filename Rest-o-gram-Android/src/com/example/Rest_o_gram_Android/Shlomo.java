@@ -6,4 +6,6 @@ package com.example.Rest_o_gram_Android;
  * Date: 23/03/13
  */
 public class Shlomo {
+
+    private int counter;
 }
