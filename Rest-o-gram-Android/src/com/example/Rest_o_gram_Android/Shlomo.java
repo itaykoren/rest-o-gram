@@ -8,5 +8,4 @@ package com.example.Rest_o_gram_Android;
 public class Shlomo {
 
     private int counter;
-    private String name;
 }
