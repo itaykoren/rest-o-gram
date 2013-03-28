@@ -47,6 +47,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
           <artifactId>google-api-client-googleapis-json</artifactId>
           <version>1.2.3-alpha</version>
       </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.nesscomputing.instagram</groupId>-->
+            <!--<artifactId>jInstagram</artifactId>-->
+            <!--<version>1.3.3</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>fi.foyt</groupId>
             <artifactId>foursquare-api</artifactId>
