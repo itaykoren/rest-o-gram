@@ -43,6 +43,8 @@
     <orderEntry type="library" name="Maven: com.google.guava:guava:r09" level="project" />
     <orderEntry type="library" name="Maven: com.google.api.client:google-api-client-googleapis-json:1.2.3-alpha" level="project" />
     <orderEntry type="library" name="Maven: fi.foyt:foursquare-api:1.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20090211" level="project" />
+    <orderEntry type="library" name="Maven: com.google.appengine:appengine-api-1.0-sdk:1.6.5" level="project" />
   </component>
 </module>
 
