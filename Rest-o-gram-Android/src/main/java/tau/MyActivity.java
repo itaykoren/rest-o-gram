@@ -1,7 +1,8 @@
-package com.example.Rest_o_gram_Android;
+package tau;
 
 import android.app.Activity;
 import android.os.Bundle;
+import com.example.Rest_o_gram_Android.R;
 
 public class MyActivity extends Activity {
     /**

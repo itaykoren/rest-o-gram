@@ -1,4 +1,4 @@
-package com.example.Rest_o_gram_Android;
+package tau;
 
 /**
  * Created with IntelliJ IDEA.
