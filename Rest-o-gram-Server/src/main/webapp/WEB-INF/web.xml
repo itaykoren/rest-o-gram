@@ -5,4 +5,15 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
            version="2.5">
 
+    <servlet>
+        <description>hello</description>
+        <display-name>Rest-o-Gram</display-name>
+        <servlet-name>MainServlet</servlet-name>
+        <servlet-class>tau.MainServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MainServlet</servlet-name>
+        <url-pattern>/main</url-pattern>
+    </servlet-mapping>
+
 </web-app>
