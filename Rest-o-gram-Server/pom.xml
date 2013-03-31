@@ -67,5 +67,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>2.4.0</version>
+        </dependency>
   </dependencies>
 </project>

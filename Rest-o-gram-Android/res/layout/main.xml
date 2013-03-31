@@ -6,8 +6,22 @@
         >
     <TextView
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="82dp"
             android:text="Hello World, MyActivity"
             />
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="32.112"
+            android:id="@+id/editTextLat" android:layout_gravity="left|center_vertical"/>
+    <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="34.839"
+              android:id="@+id/editTextLon"/>
+    <Button
+            android:layout_width="262dp"
+            android:layout_height="wrap_content"
+            android:text="GO!"
+            android:id="@+id/button" android:clickable="true"
+            android:layout_marginLeft="31dp" android:layout_gravity="left|center_vertical"
+			android:onClick="onGoClicked"/>
 </LinearLayout>
 
