@@ -1,4 +1,4 @@
-package tau;
+package com.tau;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;

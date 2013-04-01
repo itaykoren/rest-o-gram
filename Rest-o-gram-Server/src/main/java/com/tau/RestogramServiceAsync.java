@@ -1,4 +1,4 @@
-package tau;
+package com.tau;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import fi.foyt.foursquare.api.entities.CompactVenue;

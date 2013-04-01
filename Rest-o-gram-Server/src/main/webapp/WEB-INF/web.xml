@@ -9,7 +9,7 @@
         <description>Rest-o-Gram</description>
         <display-name>Rest-o-Gram</display-name>
         <servlet-name>RestogramServiceImpl</servlet-name>
-        <servlet-class>tau.RestogramServiceImpl</servlet-class>
+        <servlet-class>com.tau.RestogramServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>RestogramServiceImpl</servlet-name>
