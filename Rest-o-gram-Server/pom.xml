@@ -7,13 +7,18 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>rest-o-gram-server</name>
-  <url>http://maven.apache.org</url>
+  <!--<url>http://maven.apache.org</url>-->
+    <parent>
+        <groupId>tau</groupId>
+        <artifactId>rest-o-gram</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
     <repositories>
-    <repository>
-        <id>foursquareapijava</id>
-        <name>Foursquare V2 API for Java Repository</name>
-        <url>http://foursquare-api-java.googlecode.com/svn/repository</url>
-    </repository>
+    <!--<repository>-->
+        <!--<id>foursquareapijava</id>-->
+        <!--<name>Foursquare V2 API for Java Repository</name>-->
+        <!--<url>http://foursquare-api-java.googlecode.com/svn/repository</url>-->
+    <!--</repository>-->
     </repositories>
     <dependencies>
     <dependency>
@@ -22,31 +27,32 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>com.google.http-client</groupId>
-          <artifactId>google-http-client</artifactId>
-          <version>1.14.1-beta</version>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.httpcomponents</groupId>
-          <artifactId>httpclient</artifactId>
-          <version>4.0.1</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.api.client</groupId>
-        <artifactId>google-api-client-json</artifactId>
-        <version>1.1.1-alpha</version>
-    </dependency>
-      <dependency>
-          <groupId>com.google.api.client</groupId>
-          <artifactId>google-api-client-googleapis</artifactId>
-          <version>1.4.1-beta</version>
-      </dependency>
-      <dependency>
-          <groupId>com.google.api.client</groupId>
-          <artifactId>google-api-client-googleapis-json</artifactId>
-          <version>1.2.3-alpha</version>
-      </dependency>
+      <!--<dependency>-->
+          <!--<groupId>com.google.http-client</groupId>-->
+          <!--<artifactId>google-http-client</artifactId>-->
+          <!--<version>1.14.1-beta</version>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+          <!--<groupId>org.apache.httpcomponents</groupId>-->
+          <!--<artifactId>httpclient</artifactId>-->
+          <!--<version>4.0.1</version>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>com.google.api.client</groupId>-->
+        <!--<artifactId>google-api-client-json</artifactId>-->
+        <!--<version>1.1.1-alpha</version>-->
+    <!--</dependency>-->
+      <!--<dependency>-->
+          <!--<groupId>com.google.api.client</groupId>-->
+          <!--<artifactId>google-api-client-googleapis</artifactId>-->
+          <!--<version>1.4.1-beta</version>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+          <!--<groupId>com.google.api.client</groupId>-->
+          <!--<artifactId>google-api-client-googleapis-json</artifactId>-->
+          <!--<version>1.2.3-alpha</version>-->
+          <!--<exclusions></exclusions>-->
+      <!--</dependency>-->
         <dependency>
             <groupId>com.nesscomputing.instagram</groupId>
             <artifactId>jInstagram</artifactId>
