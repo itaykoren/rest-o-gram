@@ -9,8 +9,11 @@
   <!--<url>http://maven.apache.org</url>-->
   
   <modules>
-	<module>rest-o-gram-server</module>
-	<module>rest-o-gram-android</module>
+      <module>rest-o-gram-Server</module>
+    <!--<module>rest-o-gram-Server-core</module>-->
+	<!--<module>rest-o-gram-Server-webapp</module>-->
+      <module>rest-o-gram-android</module>
+
   </modules>
   
   <developers>

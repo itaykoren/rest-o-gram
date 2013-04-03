@@ -7,8 +7,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import fi.foyt.foursquare.api.entities.CompactVenue;
 import org.jinstagram.entity.users.feed.MediaFeedData;
-//import com.tau.RestogramService;
-//import com.tau.RestogramServiceAsync;
 
 
 public class MyActivity extends Activity {
@@ -19,7 +17,6 @@ public class MyActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
 
 
         init();
