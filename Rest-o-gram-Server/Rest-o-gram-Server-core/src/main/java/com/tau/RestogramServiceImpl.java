@@ -1,6 +1,5 @@
 package com.tau;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import fi.foyt.foursquare.api.FoursquareApi;
 import fi.foyt.foursquare.api.FoursquareApiException;
 import fi.foyt.foursquare.api.Result;
@@ -19,7 +18,7 @@ import java.util.List;
  * User: Roi
  * Date: 31/03/13
  */
-public class RestogramServiceImpl extends RemoteServiceServlet implements RestogramService {
+public class RestogramServiceImpl implements RestogramService {
 
     public RestogramServiceImpl()
     {

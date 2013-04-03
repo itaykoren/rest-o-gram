@@ -1,7 +1,5 @@
 package com.tau;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import fi.foyt.foursquare.api.entities.CompactVenue;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 
@@ -10,8 +8,7 @@ import org.jinstagram.entity.users.feed.MediaFeedData;
  * User: Roi
  * Date: 31/03/13
  */
-@RemoteServiceRelativePath("restogram")
-public interface RestogramService extends RemoteService {
+public interface RestogramService {
 
     /**
      * @return array of venus near given location within given radius

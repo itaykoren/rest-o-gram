@@ -3,10 +3,13 @@ package com.tau;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import fi.foyt.foursquare.api.entities.CompactVenue;
 import org.jinstagram.entity.users.feed.MediaFeedData;
+import org.json.rpc.client.HttpJsonRpcClientTransport;
+import org.json.rpc.client.JsonRpcInvoker;
+
+import java.net.URL;
 
 
 public class MyActivity extends Activity {
@@ -17,8 +20,6 @@ public class MyActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-
         init();
     }
 
@@ -28,39 +29,26 @@ public class MyActivity extends Activity {
         double longitude = 34.839; // TODO: fix
         double radius = 500; // TODO: fix
 
-        // Make the call to the service.
-        m_service.getNearby(latitude, longitude, radius, m_nearbyCallback);
+        JsonRpcInvoker invoker = new JsonRpcInvoker();
+        RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
+
+        CompactVenue[] venues = service.getNearby(latitude, longitude, radius);
+        handle(service, venues);
     }
 
     private void init()
     {
-        // Initialize the service proxy.
-        m_service = GWT.create(RestogramService.class);
-
-        // Set up the callback object.
-        m_nearbyCallback = new AsyncCallback<CompactVenue[]>() {
-            public void onFailure(Throwable caught) {
-                // TODO: Do something with errors.
-            }
-
-            public void onSuccess(CompactVenue[] result) {
-                handle(result);
-            }
-        };
-
-        // Set up the callback object.
-        m_photosCallback = new AsyncCallback<MediaFeedData[]>() {
-            public void onFailure(Throwable caught) {
-                // TODO: Do something with errors.
-            }
-
-            public void onSuccess(MediaFeedData[] result) {
-                handle(result);
-            }
-        };
+        try
+        {
+            transport = new HttpJsonRpcClientTransport(new URL(url));
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
-    private void handle(CompactVenue[] venues)
+    private void handle(RestogramService service, CompactVenue[] venues)
     {
         if(venues == null || venues.length == 0)
         {
@@ -69,10 +57,11 @@ public class MyActivity extends Activity {
         }
 
         String venueID = venues[0].getId(); // TODO: fix
-        m_service.getPhotos(venueID, m_photosCallback);
+        MediaFeedData[] photos = service.getPhotos(venueID);
+        handle(service, photos);
     }
 
-    private void handle(MediaFeedData[] photos)
+    private void handle(RestogramService service, MediaFeedData[] photos)
     {
         // TODO: implementation
 
@@ -86,7 +75,6 @@ public class MyActivity extends Activity {
             System.out.println(data);
     }
 
-    private RestogramServiceAsync m_service;
-    private AsyncCallback<CompactVenue[]> m_nearbyCallback;
-    private AsyncCallback<MediaFeedData[]> m_photosCallback;
+    private final String url = "http://rest-o-gram.appspot.com/jsonrpc";
+    private HttpJsonRpcClientTransport transport;
 }
