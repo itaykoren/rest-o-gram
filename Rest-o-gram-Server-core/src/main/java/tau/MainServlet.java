@@ -1,4 +1,4 @@
-package com.tau;
+package tau;
 
 import fi.foyt.foursquare.api.FoursquareApi;
 import fi.foyt.foursquare.api.FoursquareApiException;

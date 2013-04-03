@@ -1,4 +1,4 @@
-package com.tau;
+package tau;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import fi.foyt.foursquare.api.FoursquareApi;
