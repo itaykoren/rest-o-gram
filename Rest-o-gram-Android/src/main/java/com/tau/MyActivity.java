@@ -29,11 +29,18 @@ public class MyActivity extends Activity {
         double longitude = 34.839; // TODO: fix
         double radius = 500; // TODO: fix
 
-        JsonRpcInvoker invoker = new JsonRpcInvoker();
-        RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
+        try
+        {
+            JsonRpcInvoker invoker = new JsonRpcInvoker();
+            RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
 
-        CompactVenue[] venues = service.getNearby(latitude, longitude, radius);
-        handle(service, venues);
+            CompactVenue[] venues = service.getNearby(latitude, longitude, radius);
+            handle(service, venues);
+        }
+        catch(Exception e)
+        {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
     private void init()
@@ -75,6 +82,7 @@ public class MyActivity extends Activity {
             System.out.println(data);
     }
 
-    private final String url = "http://rest-o-gram.appspot.com/jsonrpc";
+    //private final String url = "http://rest-o-gram.appspot.com/jsonrpc";
+    private final String url = "http://localhost:8080/jsonrpc";
     private HttpJsonRpcClientTransport transport;
 }

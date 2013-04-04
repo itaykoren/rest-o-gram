@@ -5,16 +5,16 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
            version="2.5">
 
-    <servlet>
-        <description>Rest-o-Gram</description>
-        <display-name>Rest-o-Gram</display-name>
-        <servlet-name>RestogramServiceImpl</servlet-name>
-        <servlet-class>com.tau.RestogramServiceImpl</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>RestogramServiceImpl</servlet-name>
-        <url-pattern>/main</url-pattern>
-    </servlet-mapping>
+    <!--<servlet>-->
+        <!--<description>Rest-o-Gram</description>-->
+        <!--<display-name>Rest-o-Gram</display-name>-->
+        <!--<servlet-name>RestogramServiceImpl</servlet-name>-->
+        <!--<servlet-class>com.tau.RestogramServiceImpl</servlet-class>-->
+    <!--</servlet>-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>RestogramServiceImpl</servlet-name>-->
+        <!--<url-pattern>/main</url-pattern>-->
+    <!--</servlet-mapping>-->
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
