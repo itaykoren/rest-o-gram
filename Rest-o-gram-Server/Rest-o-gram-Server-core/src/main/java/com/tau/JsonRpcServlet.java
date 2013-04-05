@@ -24,6 +24,10 @@ public class JsonRpcServlet extends HttpServlet {
         executor.execute(new JsonRpcServletTransport(req, resp));
     }
 
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().println("JsonRpcServlet:doGet");
+    }
+
     private JsonRpcExecutor bind() {
         JsonRpcExecutor executor = new JsonRpcExecutor();
 

@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
-import fi.foyt.foursquare.api.entities.CompactVenue;
-import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
 
@@ -34,7 +32,7 @@ public class MyActivity extends Activity {
             JsonRpcInvoker invoker = new JsonRpcInvoker();
             RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
 
-            CompactVenue[] venues = service.getNearby(latitude, longitude, radius);
+            RestogramVenue[] venues = service.getNearby(latitude, longitude, radius);
             handle(service, venues);
         }
         catch(Exception e)
@@ -55,7 +53,7 @@ public class MyActivity extends Activity {
         }
     }
 
-    private void handle(RestogramService service, CompactVenue[] venues)
+    private void handle(RestogramService service, RestogramVenue[] venues)
     {
         if(venues == null || venues.length == 0)
         {
@@ -64,11 +62,11 @@ public class MyActivity extends Activity {
         }
 
         String venueID = venues[0].getId(); // TODO: fix
-        MediaFeedData[] photos = service.getPhotos(venueID);
+        RestogramPhoto[] photos = service.getPhotos(venueID);
         handle(service, photos);
     }
 
-    private void handle(RestogramService service, MediaFeedData[] photos)
+    private void handle(RestogramService service, RestogramPhoto[] photos)
     {
         // TODO: implementation
 
@@ -78,7 +76,7 @@ public class MyActivity extends Activity {
             return;
         }
 
-        for(MediaFeedData data : photos)
+        for(RestogramPhoto data : photos)
             System.out.println(data);
     }
 

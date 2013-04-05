@@ -11,6 +11,7 @@ import org.jinstagram.entity.locations.LocationSearchFeed;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -36,7 +37,7 @@ public class RestogramServiceImpl implements RestogramService {
     /**
      * @return array of venus near given location within given radius
      */
-    public CompactVenue[] getNearby(double latitude, double longitude, double radius)
+    public RestogramVenue[] getNearby(double latitude, double longitude, double radius)
     {
         String location = latitude + "," + longitude;
 
@@ -58,13 +59,27 @@ public class RestogramServiceImpl implements RestogramService {
             return null;
         }
 
-        return result.getResult().getVenues();
+        CompactVenue[] arr = result.getResult().getVenues();
+        if(arr.length == 0)
+            return null;
+
+        RestogramVenue[] venues = new RestogramVenue[arr.length];
+        for(int i = 0; i < arr.length; i++) {
+            CompactVenue curr = arr[i];
+            venues[i] = new RestogramVenue(curr.getId(),
+                                           curr.getName(),
+                                           curr.getLocation().getLat(),
+                                           curr.getLocation().getLng(),
+                                           curr.getUrl());
+        }
+
+        return venues;
     }
 
     /**
      * @return array of media related to venue given its ID
      */
-    public MediaFeedData[] getPhotos(String venueID)
+    public RestogramPhoto[] getPhotos(String venueID)
     {
         MediaFeed recentMediaByLocation;
         try
@@ -93,8 +108,12 @@ public class RestogramServiceImpl implements RestogramService {
             return null;
         }
 
-        MediaFeedData[] photos = new MediaFeedData[data.size()];
-        photos = data.toArray(photos);
+        RestogramPhoto[] photos = new RestogramPhoto[data.size()];
+
+        int i = 0;
+        for (MediaFeedData media : data)
+            photos[i++] = new RestogramPhoto(media);
+
         return photos;
     }
 

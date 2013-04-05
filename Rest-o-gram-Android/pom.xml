@@ -7,11 +7,11 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>apk</packaging>
     <name>rest-o-gram-android</name>
-    <!--<parent>-->
-        <!--<groupId>tau</groupId>-->
-        <!--<artifactId>rest-o-gram</artifactId>-->
-        <!--<version>1.0-SNAPSHOT</version>-->
-    <!--</parent>-->
+    <parent>
+        <groupId>tau</groupId>
+        <artifactId>rest-o-gram</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
     <!--<repositories>-->
         <!--<repository>-->
             <!--<id>my-internal-site</id>-->
@@ -25,11 +25,12 @@
     </properties>
 	
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>tau</groupId>-->
-            <!--<artifactId>rest-o-gram-Server-core</artifactId>-->
-            <!--<version>1.0-SNAPSHOT</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>tau</groupId>
+            <artifactId>rest-o-gram-server-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
@@ -43,11 +44,11 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.2</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>slf4j-log4j12</artifactId>-->
+            <!--<version>1.5.2</version>-->
+        <!--</dependency>-->
   </dependencies>
   
   <build>
