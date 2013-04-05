@@ -3,8 +3,10 @@
           package="com.tau"
           android:versionCode="1"
           android:versionName="1.0">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-sdk android:minSdkVersion="16"/>
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
+
         <activity android:name="MyActivity"
                   android:label="@string/app_name">
             <intent-filter>

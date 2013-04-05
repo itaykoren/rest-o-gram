@@ -1,12 +1,22 @@
 package com.tau;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
 
+import android.widget.EditText;
+import android.widget.Gallery;
+import android.widget.ImageView;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
 
+import java.io.InputStream;
 import java.net.URL;
 
 
@@ -23,8 +33,11 @@ public class MyActivity extends Activity {
 
     public void onGoClicked(View view)
     {
-        double latitude = 32.112; // TODO: fix
-        double longitude = 34.839; // TODO: fix
+        EditText et1 = (EditText)findViewById(R.id.editTextLat);
+        EditText et2 = (EditText)findViewById(R.id.editTextLon);
+
+        double latitude = Double.parseDouble(et1.getText().toString());
+        double longitude = Double.parseDouble(et2.getText().toString());
         double radius = 500; // TODO: fix
 
         try
@@ -46,6 +59,9 @@ public class MyActivity extends Activity {
         try
         {
             transport = new HttpJsonRpcClientTransport(new URL(url));
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+            StrictMode.setThreadPolicy(policy);
         }
         catch (Exception e)
         {
@@ -76,11 +92,22 @@ public class MyActivity extends Activity {
             return;
         }
 
-        for(RestogramPhoto data : photos)
-            System.out.println(data);
+        updatePhotos(photos);
     }
 
-    //private final String url = "http://rest-o-gram.appspot.com/jsonrpc";
-    private final String url = "http://localhost:8080/jsonrpc";
+    private void updatePhotos(RestogramPhoto[] photos)
+    {
+        ImageView image1 = (ImageView)findViewById(R.id.imageView1);
+        String imageUrl = photos[0].getStandardResolution().getImageUrl();
+        DownloadImageTask task = new DownloadImageTask(image1);
+        task.execute(imageUrl);
+
+        ImageView image2 = (ImageView)findViewById(R.id.imageView2);
+        imageUrl = photos[1].getStandardResolution().getImageUrl();
+        task = new DownloadImageTask(image2);
+        task.execute(imageUrl);
+    }
+
+    private final String url = "http://rest-o-gram.appspot.com/jsonrpc";
     private HttpJsonRpcClientTransport transport;
 }

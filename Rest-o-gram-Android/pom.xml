@@ -18,6 +18,13 @@
             <!--<url>file:///${env.USERPROFILE}/.m2/repository</url>-->
         <!--</repository>-->
     <!--</repositories>-->
+
+    <repositories>
+        <repository>
+            <id>json-rpc</id>
+            <url>http://json-rpc.googlecode.com/svn/mavenrepo</url>
+        </repository>
+    </repositories>
 	
 	<properties>
         <platform.version> 4.1.1.4
@@ -25,12 +32,12 @@
     </properties>
 	
     <dependencies>
-        <dependency>
-            <groupId>tau</groupId>
-            <artifactId>rest-o-gram-server-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>tau</groupId>-->
+            <!--<artifactId>rest-o-gram-server-core</artifactId>-->
+            <!--<version>1.0-SNAPSHOT</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
@@ -44,6 +51,21 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+        <dependency>
+            <groupId>org.json.rpc</groupId>
+            <artifactId>jsonrpc</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.5.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.nesscomputing.instagram</groupId>
+            <artifactId>jInstagram</artifactId>
+            <version>1.3.3</version>
+        </dependency>
         <!--<dependency>-->
             <!--<groupId>org.slf4j</groupId>-->
             <!--<artifactId>slf4j-log4j12</artifactId>-->
