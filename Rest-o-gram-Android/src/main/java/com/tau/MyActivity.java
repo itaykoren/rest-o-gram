@@ -13,11 +13,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.TextView;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Random;
 
 
 public class MyActivity extends Activity {
@@ -71,14 +73,20 @@ public class MyActivity extends Activity {
 
     private void handle(RestogramService service, RestogramVenue[] venues)
     {
+        TextView text = (TextView)findViewById(R.id.textView);
+
         if(venues == null || venues.length == 0)
         {
             // TODO: report error
+            text.setText("No Restaurant Found");
+            ImageView image = (ImageView)findViewById(R.id.imageView1);
+            image.setImageResource(android.R.color.transparent);
             return;
         }
 
         String venueID = venues[0].getId(); // TODO: fix
         RestogramPhoto[] photos = service.getPhotos(venueID);
+        text.setText(venues[0].getName());
         handle(service, photos);
     }
 
@@ -97,14 +105,10 @@ public class MyActivity extends Activity {
 
     private void updatePhotos(RestogramPhoto[] photos)
     {
-        ImageView image1 = (ImageView)findViewById(R.id.imageView1);
-        String imageUrl = photos[0].getStandardResolution().getImageUrl();
-        DownloadImageTask task = new DownloadImageTask(image1);
-        task.execute(imageUrl);
-
-        ImageView image2 = (ImageView)findViewById(R.id.imageView2);
-        imageUrl = photos[1].getStandardResolution().getImageUrl();
-        task = new DownloadImageTask(image2);
+        ImageView image = (ImageView)findViewById(R.id.imageView1);
+        int rand = new Random().nextInt(photos.length - 1);
+        String imageUrl = photos[rand].getStandardResolution().getImageUrl();
+        DownloadImageTask task = new DownloadImageTask(image);
         task.execute(imageUrl);
     }
 
