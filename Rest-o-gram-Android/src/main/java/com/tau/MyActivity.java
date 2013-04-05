@@ -1,28 +1,20 @@
 package com.tau;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
-
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
 
-import java.io.InputStream;
 import java.net.URL;
-import java.util.Random;
 
 
-public class MyActivity extends Activity {
+public class MyActivity extends Activity implements ITaskObserver {
     /**
      * Called when the activity is first created.
      */
@@ -30,6 +22,8 @@ public class MyActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        clear();
         init();
     }
 
@@ -42,18 +36,58 @@ public class MyActivity extends Activity {
         double longitude = Double.parseDouble(et2.getText().toString());
         double radius = 500; // TODO: fix
 
-        try
-        {
-            JsonRpcInvoker invoker = new JsonRpcInvoker();
-            RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
+        clear();
 
-            RestogramVenue[] venues = service.getNearby(latitude, longitude, radius);
-            handle(service, venues);
-        }
-        catch(Exception e)
+        GetNearbyTask task = new GetNearbyTask(transport, this);
+        task.execute(latitude, longitude, radius);
+    }
+
+    public void onNextClicked(View view)
+    {
+        if(currPhotos == null)
+            return;
+
+        currPhotoIndex = (currPhotoIndex + 1) % currPhotos.length;
+
+        ImageView image = (ImageView)findViewById(R.id.imageView1);
+        String imageUrl = currPhotos[currPhotoIndex].getStandardResolution().getImageUrl();
+        DownloadImageTask task = new DownloadImageTask(image);
+        task.execute(imageUrl);
+    }
+
+    public void onFinished(RestogramVenue[] venues)
+    {
+        TextView text = (TextView)findViewById(R.id.textView);
+
+        if(venues == null || venues.length == 0)
         {
-            System.out.println("Error: " + e.getMessage());
+            // TODO: report error
+            text.setText("No Restaurant Found");
+            return;
         }
+
+        RestogramVenue venue = venues[0]; // TODO: fix
+        String venueID = venue.getId();
+
+        text.setText(venue.getName());
+
+        GetPhotosTask task = new GetPhotosTask(transport, this);
+        task.execute(venueID);
+    }
+
+    public void onFinished(RestogramPhoto[] photos)
+    {
+        // TODO: implementation
+        if(photos == null)
+        {
+            // TODO: report error
+            return;
+        }
+
+        Button button = (Button)findViewById(R.id.buttonNext);
+        button.setClickable(true);
+
+        updatePhotos(photos);
     }
 
     private void init()
@@ -71,47 +105,36 @@ public class MyActivity extends Activity {
         }
     }
 
-    private void handle(RestogramService service, RestogramVenue[] venues)
-    {
-        TextView text = (TextView)findViewById(R.id.textView);
-
-        if(venues == null || venues.length == 0)
-        {
-            // TODO: report error
-            text.setText("No Restaurant Found");
-            ImageView image = (ImageView)findViewById(R.id.imageView1);
-            image.setImageResource(android.R.color.transparent);
-            return;
-        }
-
-        String venueID = venues[0].getId(); // TODO: fix
-        RestogramPhoto[] photos = service.getPhotos(venueID);
-        text.setText(venues[0].getName());
-        handle(service, photos);
-    }
-
-    private void handle(RestogramService service, RestogramPhoto[] photos)
-    {
-        // TODO: implementation
-
-        if(photos == null)
-        {
-            // TODO: report error
-            return;
-        }
-
-        updatePhotos(photos);
-    }
-
     private void updatePhotos(RestogramPhoto[] photos)
     {
+        currPhotos = photos;
+        currPhotoIndex = 0;
+
         ImageView image = (ImageView)findViewById(R.id.imageView1);
-        int rand = new Random().nextInt(photos.length - 1);
-        String imageUrl = photos[rand].getStandardResolution().getImageUrl();
+        String imageUrl = photos[currPhotoIndex].getStandardResolution().getImageUrl();
         DownloadImageTask task = new DownloadImageTask(image);
         task.execute(imageUrl);
     }
 
+    private void clear()
+    {
+        currPhotos = null;
+        currPhotoIndex = -1;
+
+        TextView text = (TextView)findViewById(R.id.textView);
+        text.setText("");
+        text.invalidate();
+
+        ImageView image = (ImageView)findViewById(R.id.imageView1);
+        image.setImageResource(android.R.color.transparent);
+
+        Button button = (Button)findViewById(R.id.buttonNext);
+        button.setClickable(false);
+    }
+
     private final String url = "http://rest-o-gram.appspot.com/jsonrpc";
     private HttpJsonRpcClientTransport transport;
+
+    private RestogramPhoto[] currPhotos;
+    private int currPhotoIndex;
 }
