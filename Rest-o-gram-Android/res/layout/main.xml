@@ -7,9 +7,11 @@
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="32.112"
+            android:text="32.073"
             android:id="@+id/editTextLat" android:layout_gravity="left|center_vertical"/>
-    <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="34.839"
+    <EditText android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="34.7957"
               android:id="@+id/editTextLon"/>
     <GridLayout android:layout_width="fill_parent"
                 android:layout_height="wrap_content" android:layout_gravity="center" android:rowCount="1"

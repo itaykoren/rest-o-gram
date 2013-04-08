@@ -11,8 +11,9 @@ import org.jinstagram.entity.locations.LocationSearchFeed;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -46,7 +47,13 @@ public class RestogramServiceImpl implements RestogramService {
 
         Result<VenuesSearchResult> result;
         try {
-            result = m_foursquare.venuesSearch(location, null, null, null, null, null, null, categories, null, null, null);
+            //result = m_foursquare.venuesSearch(location, null, null, null, null, null, null, categories, null, null, null);
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("ll", location);
+            params.put("radius", Double.toString(radius));
+            params.put("categoryId", categories);
+
+            result = m_foursquare.venuesSearch(params);
         } catch (FoursquareApiException e) {
             e.printStackTrace();
             // TODO: report error
