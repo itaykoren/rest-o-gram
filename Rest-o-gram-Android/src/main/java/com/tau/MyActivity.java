@@ -4,12 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
-import org.json.rpc.client.JsonRpcInvoker;
 
 import java.net.URL;
 
@@ -29,14 +25,27 @@ public class MyActivity extends Activity implements ITaskObserver {
 
     public void onGoClicked(View view)
     {
+        clear();
+
         EditText et1 = (EditText)findViewById(R.id.editTextLat);
         EditText et2 = (EditText)findViewById(R.id.editTextLon);
+        SeekBar sb1 = (SeekBar) findViewById(R.id.seekBarRadius);
 
-        double latitude = Double.parseDouble(et1.getText().toString());
-        double longitude = Double.parseDouble(et2.getText().toString());
-        double radius = 500; // TODO: fix
+        double latitude, longitude, radius;
 
-        clear();
+        try
+        {
+            latitude = Double.parseDouble(et1.getText().toString());
+            longitude = Double.parseDouble(et2.getText().toString());
+            radius = sb1.getProgress();
+        }
+        catch(NumberFormatException e)
+        {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+
+        updateText("Searching...");
 
         GetNearbyTask task = new GetNearbyTask(transport, this);
         task.execute(latitude, longitude, radius);
@@ -57,19 +66,17 @@ public class MyActivity extends Activity implements ITaskObserver {
 
     public void onFinished(RestogramVenue[] venues)
     {
-        TextView text = (TextView)findViewById(R.id.textView);
-
         if(venues == null || venues.length == 0)
         {
             // TODO: report error
-            text.setText("No Restaurant Found");
+            updateText("No Restaurant Found");
             return;
         }
 
         RestogramVenue venue = venues[0]; // TODO: fix
         String venueID = venue.getId();
 
-        text.setText(venue.getName());
+        updateText(venue.getName());
 
         GetPhotosTask task = new GetPhotosTask(transport, this);
         task.execute(venueID);
@@ -98,6 +105,35 @@ public class MyActivity extends Activity implements ITaskObserver {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
             StrictMode.setThreadPolicy(policy);
+
+            final TextView tvRadius = (TextView)findViewById(R.id.textViewRadius);
+            SeekBar sbRadius = (SeekBar)findViewById(R.id.seekBarRadius);
+            final int stepSize = 10;
+
+            sbRadius.setOnSeekBarChangeListener( new SeekBar.OnSeekBarChangeListener()
+            {
+                public void onProgressChanged(SeekBar seekBar, int progress,
+                                              boolean fromUser)
+                {
+                    // TODO Auto-generated method stub
+
+                    progress = ((int)Math.round(progress/stepSize))*stepSize;
+                    seekBar.setProgress(progress);
+
+                    tvRadius.setText("Radius: " + progress);
+                }
+
+                public void onStartTrackingTouch(SeekBar seekBar)
+                {
+                    // TODO Auto-generated method stub
+                }
+
+                public void onStopTrackingTouch(SeekBar seekBar)
+                {
+                    // TODO Auto-generated method stub
+                }
+            });
+
         }
         catch (Exception e)
         {
@@ -121,9 +157,7 @@ public class MyActivity extends Activity implements ITaskObserver {
         currPhotos = null;
         currPhotoIndex = -1;
 
-        TextView text = (TextView)findViewById(R.id.textView);
-        text.setText("");
-        text.invalidate();
+        updateText("");
 
         ImageView image = (ImageView)findViewById(R.id.imageView1);
         image.setImageResource(android.R.color.transparent);
@@ -132,7 +166,15 @@ public class MyActivity extends Activity implements ITaskObserver {
         button.setClickable(false);
     }
 
-    private final String url = "http://rest-o-gram.appspot.com/jsonrpc";
+    private void updateText(String text)
+    {
+        TextView tv = (TextView)findViewById(R.id.textView);
+        tv.setText(text);
+        tv.invalidate();
+    }
+
+    //private final String url = "http://rest-o-gram.appspot.com/jsonrpc";
+    private final String url = "http://localhost:8080/jsonrpc";
     private HttpJsonRpcClientTransport transport;
 
     private RestogramPhoto[] currPhotos;
