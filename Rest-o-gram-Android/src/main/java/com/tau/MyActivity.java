@@ -173,8 +173,8 @@ public class MyActivity extends Activity implements ITaskObserver {
         tv.invalidate();
     }
 
-    //private final String url = "http://rest-o-gram.appspot.com/jsonrpc";
-    private final String url = "http://localhost:8080/jsonrpc";
+    private final String url = "http://rest-o-gram.appspot.com/jsonrpc";
+    //private final String url = "http://localhost:8080/jsonrpc";
     private HttpJsonRpcClientTransport transport;
 
     private RestogramPhoto[] currPhotos;
