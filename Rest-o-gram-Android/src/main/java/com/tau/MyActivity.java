@@ -1,8 +1,13 @@
 package com.tau;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
@@ -11,43 +16,111 @@ import java.net.URL;
 
 
 public class MyActivity extends Activity implements ITaskObserver {
+
+    private LocationTracker locationTracker;
+
     /**
      * Called when the activity is first created.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+       locationTracker = new LocationTracker(this);
+
+        watchLocation();
+
         setContentView(R.layout.main);
 
         clear();
         init();
     }
 
+    private void watchLocation() {
+        if (locationTracker.canGetLocation())
+            Log.d("Your Location", "latitude:" + locationTracker.getLatitude() + ", longitude: " + locationTracker.getLongitude());
+        else
+            showSettingsAlert();
+    }
+
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1650)
+        {
+            locationTracker.getLocation();
+            if (locationTracker.canGetLocation())
+                Log.d("Your Location", "latitude:" + locationTracker.getLatitude() + ", longitude: " + locationTracker.getLongitude());
+        }
+    }
+
+    public void showSettingsAlert() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        // Setting Dialog Title
+        alertDialog.setTitle("Location Services Settings");
+
+        // Setting Dialog Message
+        alertDialog
+                .setMessage("Location services are not enabled. Would you like to enable these services?");
+
+        final MyActivity main = this;
+
+        // On pressing Settings button
+        alertDialog.setPositiveButton("Settings",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(
+                                Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        main.startActivityForResult(intent, 1650);
+                    }
+                });
+
+        // on pressing cancel button
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
     public void onGoClicked(View view)
     {
         clear();
 
-        EditText et1 = (EditText)findViewById(R.id.editTextLat);
-        EditText et2 = (EditText)findViewById(R.id.editTextLon);
-        SeekBar sb1 = (SeekBar) findViewById(R.id.seekBarRadius);
-
         double latitude, longitude, radius;
 
-        try
+        if (locationTracker.isLocationValid())
         {
-            latitude = Double.parseDouble(et1.getText().toString());
-            longitude = Double.parseDouble(et2.getText().toString());
-            radius = sb1.getProgress();
+            latitude = locationTracker.getLatitude();
+            longitude = locationTracker.getLongitude();
         }
-        catch(NumberFormatException e)
+        else // uses custom location...
         {
-            System.out.println("Error: " + e.getMessage());
-            return;
+            EditText et1 = (EditText)findViewById(R.id.editTextLat);
+            EditText et2 = (EditText)findViewById(R.id.editTextLon);
+            try
+            {
+                latitude = Double.parseDouble(et1.getText().toString());
+                longitude = Double.parseDouble(et2.getText().toString());
+            }
+            catch(NumberFormatException e)
+            {
+                System.out.println("Error: " + e.getMessage());
+                return;
+            }
         }
+
+        SeekBar sb1 = (SeekBar) findViewById(R.id.seekBarRadius);
+        radius = sb1.getProgress();
 
         updateText("Searching...");
 
         GetNearbyTask task = new GetNearbyTask(transport, this);
+        Log.d("Get Nearby Task", "lat: " + latitude + ", long: " + longitude + ", radius: " + radius);
         task.execute(latitude, longitude, radius);
     }
 
