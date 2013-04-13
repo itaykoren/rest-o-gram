@@ -12,11 +12,19 @@ public class RestogramVenue implements Serializable {
     public RestogramVenue() {
     }
 
-    public RestogramVenue(String id, String name, double latitude, double longitude, String url) {
+    public RestogramVenue(String id, String name, String address, String city,
+            String state, String postalCode, String country,
+            double latitude, double longitude, double distance, String url) {
         this.id = id;
         this.name = name;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.postalCode = postalCode;
+        this.country = country;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.distance = distance;
         this.url = url;
     }
 
@@ -39,6 +47,51 @@ public class RestogramVenue implements Serializable {
     }
 
     /**
+     * Returns address
+     *
+     * @return address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * Returns city
+     *
+     * @return city
+     */
+    public String getCity() {
+        return city;
+    }
+
+    /**
+     * Returns state
+     *
+     * @return state
+     */
+    public String getState() {
+        return state;
+    }
+
+    /**
+     * Returns postal Code
+     *
+     * @return postal Code
+     */
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    /**
+     * Returns country
+     *
+     * @return country
+     */
+    public String getCountry() {
+        return country;
+    }
+
+    /**
      * Returns venue's latitude
      *
      * @return venue's latitude
@@ -57,6 +110,15 @@ public class RestogramVenue implements Serializable {
     }
 
     /**
+     * Returns distance
+     *
+     * @return distance
+     */
+    public double getDistance() {
+        return distance;
+    }
+
+    /**
      * Returns url for this venue
      *
      * @return url for this venue
@@ -67,8 +129,14 @@ public class RestogramVenue implements Serializable {
 
     private String id;
     private String name;
+    private String address;
+    private String city;
+    private String state;
+    private String postalCode;
+    private String country;
     private double latitude;
     private double longitude;
+    private double distance;
     private String url;
 }
 

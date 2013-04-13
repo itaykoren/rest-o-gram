@@ -135,12 +135,17 @@ public class RestogramServiceImpl implements RestogramService {
 
         RestogramVenue[] venues = new RestogramVenue[arr.length];
         for(int i = 0; i < arr.length; i++) {
-            CompactVenue curr = arr[i];
-            venues[i] = new RestogramVenue(curr.getId(),
-                    curr.getName(),
-                    curr.getLocation().getLat(),
-                    curr.getLocation().getLng(),
-                    curr.getUrl());
+            CompactVenue v = arr[i];
+            venues[i] = new RestogramVenue(v.getId(), v.getName(),
+                                            v.getLocation().getAddress(),
+                                            v.getLocation().getCity(),
+                                            v.getLocation().getState(),
+                                            v.getLocation().getPostalCode(),
+                                            v.getLocation().getCountry(),
+                                            v.getLocation().getLat(),
+                                            v.getLocation().getLng(),
+                                            v.getLocation().getDistance(),
+                                            v.getUrl());
         }
 
         return venues;
