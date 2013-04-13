@@ -26,19 +26,20 @@ public class MyActivity extends Activity implements ITaskObserver {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       locationTracker = new LocationTracker(this);
-
-        watchLocation();
+        locationTracker = new LocationTracker(this);
 
         setContentView(R.layout.main);
 
         clear();
         init();
+
+        watchLocation();
     }
 
     private void watchLocation() {
-        if (locationTracker.canGetLocation())
+        if (locationTracker.canGetLocation()) {
             Log.d("Your Location", "latitude:" + locationTracker.getLatitude() + ", longitude: " + locationTracker.getLongitude());
+        }
         else
             showSettingsAlert();
     }
@@ -48,8 +49,9 @@ public class MyActivity extends Activity implements ITaskObserver {
         if (requestCode == 1650)
         {
             locationTracker.getLocation();
-            if (locationTracker.canGetLocation())
+            if (locationTracker.canGetLocation()) {
                 Log.d("Your Location", "latitude:" + locationTracker.getLatitude() + ", longitude: " + locationTracker.getLongitude());
+            }
         }
     }
 
@@ -97,6 +99,7 @@ public class MyActivity extends Activity implements ITaskObserver {
         {
             latitude = locationTracker.getLatitude();
             longitude = locationTracker.getLongitude();
+            updateLoction(latitude, longitude);
         }
         else // uses custom location...
         {
@@ -132,7 +135,7 @@ public class MyActivity extends Activity implements ITaskObserver {
         currPhotoIndex = (currPhotoIndex + 1) % currPhotos.length;
 
         ImageView image = (ImageView)findViewById(R.id.imageView1);
-        String imageUrl = currPhotos[currPhotoIndex].getStandardResolution().getImageUrl();
+        String imageUrl = currPhotos[currPhotoIndex].getStandardResolution();
         DownloadImageTask task = new DownloadImageTask(image);
         task.execute(imageUrl);
     }
@@ -220,7 +223,7 @@ public class MyActivity extends Activity implements ITaskObserver {
         currPhotoIndex = 0;
 
         ImageView image = (ImageView)findViewById(R.id.imageView1);
-        String imageUrl = photos[currPhotoIndex].getStandardResolution().getImageUrl();
+        String imageUrl = photos[currPhotoIndex].getStandardResolution();
         DownloadImageTask task = new DownloadImageTask(image);
         task.execute(imageUrl);
     }
@@ -244,6 +247,15 @@ public class MyActivity extends Activity implements ITaskObserver {
         TextView tv = (TextView)findViewById(R.id.textView);
         tv.setText(text);
         tv.invalidate();
+    }
+
+    private void updateLoction(double lat, double lon)
+    {
+        EditText et1 = (EditText)findViewById(R.id.editTextLat);
+        EditText et2 = (EditText)findViewById(R.id.editTextLon);
+
+        et1.setText(Double.toString(lat));
+        et2.setText(Double.toString(lon));
     }
 
     private final String url = "http://rest-o-gram.appspot.com/service";

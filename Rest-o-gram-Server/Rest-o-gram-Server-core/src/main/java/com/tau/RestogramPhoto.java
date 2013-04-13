@@ -1,10 +1,7 @@
 package com.tau;
 
 import com.google.gson.annotations.SerializedName;
-import org.jinstagram.entity.common.Caption;
-import org.jinstagram.entity.common.ImageData;
-import org.jinstagram.entity.common.Images;
-import org.jinstagram.entity.common.Location;
+import org.jinstagram.entity.common.*;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 
 /**
@@ -17,19 +14,76 @@ public class RestogramPhoto {
     public RestogramPhoto() {
     }
 
-    public RestogramPhoto(Caption caption, String createdTime, String id, String imageFilter, ImageData standardResolution, String link, Location location, String type) {
+    public RestogramPhoto(Caption caption, String createdTime, String id, String imageFilter,
+                          String thumbnail, String standardResolution, int likes, String link,
+                          Location location, String type, User user) {
         this.caption = caption;
         this.createdTime = createdTime;
         this.id = id;
         this.imageFilter = imageFilter;
+        this.thumbnail = thumbnail;
         this.standardResolution = standardResolution;
+        this.likes = likes;
         this.link = link;
         this.location = location;
         this.type = type;
+        this.user = user;
     }
 
     public RestogramPhoto(MediaFeedData other) {
-        this(other.getCaption(), other.getCreatedTime(), other.getId(), other.getImageFilter(), other.getImages().getStandardResolution(), other.getLink(), other.getLocation(), other.getType());
+        this(other.getCaption(), other.getCreatedTime(), other.getId(), other.getImageFilter(),
+                other.getImages().getThumbnail().getImageUrl(), other.getImages().getStandardResolution().getImageUrl(),
+                other.getLikes().getCount(), other.getLink(), other.getLocation(), other.getType(), other.getUser());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("RestogramPhoto [caption=%s, createdTime=%s, id=%s, imageFilter=%s, thumbnail=%s, standardResolution=%s, likes=%s, link=%s, location=%s, type=%s, user=%s]",
+                caption, createdTime, id, imageFilter, thumbnail, standardResolution, likes, link, location, type, user);
+    }
+
+    public Caption getCaption() {
+        return caption;
+    }
+
+    public String getCreatedTime() {
+        return createdTime;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getImageFilter() {
+        return imageFilter;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public String getStandardResolution() {
+        return standardResolution;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     @SerializedName("caption")
@@ -44,11 +98,14 @@ public class RestogramPhoto {
     @SerializedName("filter")
     private String imageFilter;
 
-    //@SerializedName("images")
-    //private Images images;
+    @SerializedName("thumbnail")
+    private String thumbnail;
 
     @SerializedName("standard_resolution")
-    private ImageData standardResolution;
+    private String standardResolution;
+
+    @SerializedName("likes")
+    private int likes;
 
     @SerializedName("link")
     private String link;
@@ -59,123 +116,6 @@ public class RestogramPhoto {
     @SerializedName("type")
     private String type;
 
-    public ImageData getStandardResolution() {
-        return standardResolution;
-    }
-
-    public void setStandardResolution(ImageData standardResolution) {
-        this.standardResolution = standardResolution;
-    }
-
-    /**
-     * @return the location
-     */
-    public Location getLocation() {
-        return location;
-    }
-
-    /**
-     * @param location the location to set
-     */
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    /**
-     * @return the caption
-     */
-    public Caption getCaption() {
-        return caption;
-    }
-
-    /**
-     * @param caption the caption to set
-     */
-    public void setCaption(Caption caption) {
-        this.caption = caption;
-    }
-
-    /**
-     * @return the link
-     */
-    public String getLink() {
-        return link;
-    }
-
-    /**
-     * @param link the link to set
-     */
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    /**
-     * @return the createdTime
-     */
-    public String getCreatedTime() {
-        return createdTime;
-    }
-
-    /**
-     * @param createdTime the createdTime to set
-     */
-    public void setCreatedTime(String createdTime) {
-        this.createdTime = createdTime;
-    }
-
-//    /**
-//     * @return the images
-//     */
-//    public Images getImages() {
-//        return images;
-//    }
-
-//    /**
-//     * @param images the images to set
-//     */
-//    public void setImages(Images images) {
-//        this.images = images;
-//    }
-
-    /**
-     * @return the imageFilter
-     */
-    public String getImageFilter() {
-        return imageFilter;
-    }
-
-    /**
-     * @param imageFilter the imageFilter to set
-     */
-    public void setImageFilter(String imageFilter) {
-        this.imageFilter = imageFilter;
-    }
-
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("MediaFeedData [caption=%s, createdTime=%s, id=%s, imageFilter=%s, standardResolution=%s, link=%s, location=%s, type=%s]",
-                caption, createdTime, id, imageFilter, standardResolution, link, location, type);
-    }
+    @SerializedName("user")
+    private User user;
 }
