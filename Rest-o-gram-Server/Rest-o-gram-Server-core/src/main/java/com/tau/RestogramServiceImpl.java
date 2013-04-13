@@ -52,6 +52,7 @@ public class RestogramServiceImpl implements RestogramService {
             params.put("ll", location);
             params.put("radius", Double.toString(radius));
             params.put("categoryId", categories);
+            params.put("intent", "match");
 
             result = m_foursquare.venuesSearch(params);
         } catch (FoursquareApiException e) {
