@@ -89,32 +89,32 @@ public class MyActivity extends Activity implements ITaskObserver {
         alertDialog.show();
     }
 
+    public void onGetLocationClicked(View view)
+    {
+        if (locationTracker.isLocationValid())
+        {
+            updateLocation(locationTracker.getLatitude(), locationTracker.getLongitude());
+        }
+    }
+
     public void onGoClicked(View view)
     {
         clear();
 
         double latitude, longitude, radius;
 
-        if (locationTracker.isLocationValid())
+        EditText et1 = (EditText)findViewById(R.id.editTextLat);
+        EditText et2 = (EditText)findViewById(R.id.editTextLon);
+
+        try
         {
-            latitude = locationTracker.getLatitude();
-            longitude = locationTracker.getLongitude();
-            updateLoction(latitude, longitude);
+            latitude = Double.parseDouble(et1.getText().toString());
+            longitude = Double.parseDouble(et2.getText().toString());
         }
-        else // uses custom location...
+        catch(NumberFormatException e)
         {
-            EditText et1 = (EditText)findViewById(R.id.editTextLat);
-            EditText et2 = (EditText)findViewById(R.id.editTextLon);
-            try
-            {
-                latitude = Double.parseDouble(et1.getText().toString());
-                longitude = Double.parseDouble(et2.getText().toString());
-            }
-            catch(NumberFormatException e)
-            {
-                System.out.println("Error: " + e.getMessage());
-                return;
-            }
+            System.out.println("Error: " + e.getMessage());
+            return;
         }
 
         SeekBar sb1 = (SeekBar) findViewById(R.id.seekBarRadius);
@@ -249,7 +249,7 @@ public class MyActivity extends Activity implements ITaskObserver {
         tv.invalidate();
     }
 
-    private void updateLoction(double lat, double lon)
+    private void updateLocation(double lat, double lon)
     {
         EditText et1 = (EditText)findViewById(R.id.editTextLat);
         EditText et2 = (EditText)findViewById(R.id.editTextLon);

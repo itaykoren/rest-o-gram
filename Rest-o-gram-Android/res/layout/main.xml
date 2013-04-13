@@ -4,15 +4,33 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
         >
+    <RelativeLayout android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" android:layout_gravity="center" android:rowCount="1"
+                    android:columnCount="2">
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="32.073"
+            android:layout_row="0" android:layout_column="0"
             android:id="@+id/editTextLat" android:layout_gravity="left|center_vertical"/>
     <EditText android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:text="34.7957"
-              android:id="@+id/editTextLon"/>
+              android:layout_row="0" android:layout_column="1"
+              android:id="@+id/editTextLon" android:layout_gravity="right|center_vertical"
+              android:layout_toRightOf="@+id/editTextLat"
+              android:layout_alignTop="@+id/editTextLat"/>
+
+        <Button android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Get Location"
+                  android:id="@+id/buttonGL" android:clickable="true"
+                  android:layout_gravity="center|center_vertical"
+                  android:onClick="onGetLocationClicked"
+                  android:layout_alignParentRight="true"
+                  android:layout_alignTop="@+id/editTextLat"/>
+    </RelativeLayout>
+
     <RelativeLayout android:layout_width="fill_parent"
                 android:layout_height="wrap_content" android:layout_gravity="center" android:rowCount="1"
                 android:columnCount="2">
