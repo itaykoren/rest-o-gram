@@ -8,6 +8,11 @@ package com.tau;
 public interface RestogramService {
 
     /**
+     * @return array of venus near given location
+     */
+    RestogramVenue[] getNearby(double latitude, double longitude);
+
+    /**
      * @return array of venus near given location within given radius
      */
     RestogramVenue[] getNearby(double latitude, double longitude, double radius);

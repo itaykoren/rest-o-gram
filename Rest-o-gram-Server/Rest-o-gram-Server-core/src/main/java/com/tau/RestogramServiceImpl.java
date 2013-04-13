@@ -36,6 +36,24 @@ public class RestogramServiceImpl implements RestogramService {
     }
 
     /**
+     * @return array of venus near given location
+     */
+    public RestogramVenue[] getNearby(double latitude, double longitude)
+    {
+        String location = latitude + "," + longitude;
+
+        // TODO: manage foursquare categories...
+        String categories = "4d4b7105d754a06374d81259";
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("ll", location);
+        params.put("categoryId", categories);
+        params.put("intent", "match");
+
+        return doGetNearby(params);
+    }
+
+    /**
      * @return array of venus near given location within given radius
      */
     public RestogramVenue[] getNearby(double latitude, double longitude, double radius)
@@ -45,43 +63,12 @@ public class RestogramServiceImpl implements RestogramService {
         // TODO: manage foursquare categories...
         String categories = "4d4b7105d754a06374d81259";
 
-        Result<VenuesSearchResult> result;
-        try {
-            //result = m_foursquare.venuesSearch(location, null, null, null, null, null, null, categories, null, null, null);
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("ll", location);
-            params.put("radius", Double.toString(radius));
-            params.put("categoryId", categories);
-            params.put("intent", "match");
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("ll", location);
+        params.put("radius", Double.toString(radius));
+        params.put("categoryId", categories);
 
-            result = m_foursquare.venuesSearch(params);
-        } catch (FoursquareApiException e) {
-            e.printStackTrace();
-            // TODO: report error
-            return null;
-        }
-
-        if (result.getMeta().getCode() != 200)
-        {
-            // TODO: report error
-            return null;
-        }
-
-        CompactVenue[] arr = result.getResult().getVenues();
-        if(arr.length == 0)
-            return null;
-
-        RestogramVenue[] venues = new RestogramVenue[arr.length];
-        for(int i = 0; i < arr.length; i++) {
-            CompactVenue curr = arr[i];
-            venues[i] = new RestogramVenue(curr.getId(),
-                                           curr.getName(),
-                                           curr.getLocation().getLat(),
-                                           curr.getLocation().getLng(),
-                                           curr.getUrl());
-        }
-
-        return venues;
+        return doGetNearby(params);
     }
 
     /**
@@ -123,6 +110,40 @@ public class RestogramServiceImpl implements RestogramService {
             photos[i++] = new RestogramPhoto(media);
 
         return photos;
+    }
+
+    private RestogramVenue[] doGetNearby(Map<String, String> params)
+    {
+        Result<VenuesSearchResult> result;
+        try {
+            result = m_foursquare.venuesSearch(params);
+        } catch (FoursquareApiException e) {
+            e.printStackTrace();
+            // TODO: report error
+            return null;
+        }
+
+        if (result.getMeta().getCode() != 200)
+        {
+            // TODO: report error
+            return null;
+        }
+
+        CompactVenue[] arr = result.getResult().getVenues();
+        if(arr.length == 0)
+            return null;
+
+        RestogramVenue[] venues = new RestogramVenue[arr.length];
+        for(int i = 0; i < arr.length; i++) {
+            CompactVenue curr = arr[i];
+            venues[i] = new RestogramVenue(curr.getId(),
+                    curr.getName(),
+                    curr.getLocation().getLat(),
+                    curr.getLocation().getLng(),
+                    curr.getUrl());
+        }
+
+        return venues;
     }
 
     private FoursquareApi m_foursquare;
