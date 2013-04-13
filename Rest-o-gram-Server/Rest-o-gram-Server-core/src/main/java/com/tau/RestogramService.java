@@ -21,4 +21,9 @@ public interface RestogramService {
      * @return array of media related to venue given its ID
      */
     RestogramPhoto[] getPhotos(String venueID);
+
+    /**
+     * @return array of media related to venue given its ID, after applying given filter
+     */
+    RestogramPhoto[] getPhotos(String venueID, RestogramPhotoFilter filter);
 }

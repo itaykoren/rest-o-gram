@@ -76,28 +76,29 @@ public class RestogramServiceImpl implements RestogramService {
      */
     public RestogramPhoto[] getPhotos(String venueID)
     {
-        MediaFeed recentMediaByLocation;
-        try
-        {
-            LocationSearchFeed locationSearchFeed = m_instagram.searchFoursquareVenue(venueID);
-            List<Location> locationList = locationSearchFeed.getLocationList();
-            long locationId = locationList.get(0).getId(); // TODO: fix
-            recentMediaByLocation = m_instagram.getRecentMediaByLocation(locationId);
-        }
-        catch(Exception e)
+        List<MediaFeedData> data = doGetPhotos(venueID, RestogramPhotoFilter.None);
+        if(data == null)
         {
             // TODO: report error
             return null;
         }
 
-        if(recentMediaByLocation == null)
-        {
-            // TODO: report error
-            return null;
-        }
+        RestogramPhoto[] photos = new RestogramPhoto[data.size()];
 
-        List<MediaFeedData> data = recentMediaByLocation.getData();
-        if(data == null || data.size() == 0)
+        int i = 0;
+        for (MediaFeedData media : data)
+            photos[i++] = new RestogramPhoto(media);
+
+        return photos;
+    }
+
+    /**
+     * @return array of media related to venue given its ID, after applying given filter
+     */
+    public RestogramPhoto[] getPhotos(String venueID, RestogramPhotoFilter filter)
+    {
+        List<MediaFeedData> data = doGetPhotos(venueID, filter);
+        if(data == null)
         {
             // TODO: report error
             return null;
@@ -149,6 +150,40 @@ public class RestogramServiceImpl implements RestogramService {
         }
 
         return venues;
+    }
+
+    private List<MediaFeedData> doGetPhotos(String venueID, RestogramPhotoFilter filter)
+    {
+        MediaFeed recentMediaByLocation;
+        try
+        {
+            LocationSearchFeed locationSearchFeed = m_instagram.searchFoursquareVenue(venueID);
+            List<Location> locationList = locationSearchFeed.getLocationList();
+            long locationId = locationList.get(0).getId(); // TODO: fix
+            recentMediaByLocation = m_instagram.getRecentMediaByLocation(locationId);
+        }
+        catch(Exception e)
+        {
+            // TODO: report error
+            return null;
+        }
+
+        if(recentMediaByLocation == null)
+        {
+            // TODO: report error
+            return null;
+        }
+
+        List<MediaFeedData> data = recentMediaByLocation.getData();
+        if(data == null || data.size() == 0)
+        {
+            // TODO: report error
+            return null;
+        }
+
+        // TODO: apply filter
+
+        return data;
     }
 
     private FoursquareApi m_foursquare;
