@@ -23,7 +23,7 @@ public class MyActivity extends Activity implements ITaskObserver {
      * Called when the activity is first created.
      */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         locationTracker = new LocationTracker(this);
@@ -34,6 +34,12 @@ public class MyActivity extends Activity implements ITaskObserver {
         init();
 
         watchLocation();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        locationTracker.stopTracking();
     }
 
     private void watchLocation() {
@@ -48,7 +54,6 @@ public class MyActivity extends Activity implements ITaskObserver {
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
         if (requestCode == 1650)
         {
-            locationTracker.getLocation();
             if (locationTracker.canGetLocation()) {
                 Log.d("Your Location", "latitude:" + locationTracker.getLatitude() + ", longitude: " + locationTracker.getLongitude());
             }
