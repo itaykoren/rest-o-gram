@@ -28,6 +28,13 @@ public class RestogramVenue implements Serializable {
         this.url = url;
     }
 
+    public RestogramVenue(String id, String name, String description, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.imageUrl = imageUrl;
+    }
+
     /**
      * Returns id of the venue
      *
@@ -127,6 +134,24 @@ public class RestogramVenue implements Serializable {
         return url;
     }
 
+    /**
+     * Returns description of this venue
+     *
+     * @return description of this venue
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Returns image url for this venue
+     *
+     * @return image url for this venue
+     */
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
     private String id;
     private String name;
     private String address;
@@ -138,5 +163,8 @@ public class RestogramVenue implements Serializable {
     private double longitude;
     private double distance;
     private String url;
+
+    private String description;
+    private String imageUrl;
 }
 

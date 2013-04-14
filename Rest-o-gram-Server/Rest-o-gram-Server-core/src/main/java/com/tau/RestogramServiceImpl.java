@@ -3,8 +3,7 @@ package com.tau;
 import fi.foyt.foursquare.api.FoursquareApi;
 import fi.foyt.foursquare.api.FoursquareApiException;
 import fi.foyt.foursquare.api.Result;
-import fi.foyt.foursquare.api.entities.CompactVenue;
-import fi.foyt.foursquare.api.entities.VenuesSearchResult;
+import fi.foyt.foursquare.api.entities.*;
 import org.jinstagram.Instagram;
 import org.jinstagram.entity.common.Location;
 import org.jinstagram.entity.locations.LocationSearchFeed;
@@ -72,6 +71,33 @@ public class RestogramServiceImpl implements RestogramService {
     }
 
     /**
+     * @return venue information according to its ID
+     */
+    public RestogramVenue getInfo(String venueID) {
+        Result<CompleteVenue> result;
+        try {
+            result = m_foursquare.venue(venueID);
+        } catch (FoursquareApiException e) {
+            e.printStackTrace();
+            // TODO: report error
+            return null;
+        }
+
+        if (result.getMeta().getCode() != 200) {
+            // TODO: report error
+            return null;
+        }
+
+        CompleteVenue v = result.getResult();
+        if(v == null) {
+            // TODO: report error
+            return null;
+        }
+
+        return convert(v);
+    }
+
+    /**
      * @return array of media related to venue given its ID
      */
     public RestogramPhoto[] getPhotos(String venueID)
@@ -136,17 +162,7 @@ public class RestogramServiceImpl implements RestogramService {
 
         RestogramVenue[] venues = new RestogramVenue[arr.length];
         for(int i = 0; i < arr.length; i++) {
-            CompactVenue v = arr[i];
-            venues[i] = new RestogramVenue(v.getId(), v.getName(),
-                                            v.getLocation().getAddress(),
-                                            v.getLocation().getCity(),
-                                            v.getLocation().getState(),
-                                            v.getLocation().getPostalCode(),
-                                            v.getLocation().getCountry(),
-                                            v.getLocation().getLat(),
-                                            v.getLocation().getLng(),
-                                            v.getLocation().getDistance(),
-                                            v.getUrl());
+            venues[i] = convert(arr[i]);
         }
 
         return venues;
@@ -184,6 +200,50 @@ public class RestogramServiceImpl implements RestogramService {
         // TODO: apply filter
 
         return data;
+    }
+
+    private RestogramVenue convert(CompactVenue venue) {
+        fi.foyt.foursquare.api.entities.Location location = venue.getLocation();
+        return new RestogramVenue(venue.getId(),
+                                venue.getName(),
+                                location.getAddress(),
+                                location.getCity(),
+                                location.getState(),
+                                location.getPostalCode(),
+                                location.getCountry(),
+                                location.getLat(),
+                                location.getLng(),
+                                location.getDistance(),
+                                venue.getUrl());
+    }
+
+    private RestogramVenue convert(CompleteVenue venue) {
+        RestogramVenue result;
+        String photoUrl;
+
+        try {
+            Photos photos = venue.getPhotos();
+            if(photos == null)
+                return null;
+
+            PhotoGroup[] groups = photos.getGroups();
+            if(groups == null || groups.length < 2)
+                return null;
+
+            PhotoGroup group = groups[1];
+            Photo[] items = group.getItems();
+            if(items == null || items.length == 0)
+                return null;
+
+            photoUrl = items[0].getUrl();
+            result = new RestogramVenue(venue.getId(), venue.getName(), venue.getDescription(), photoUrl);
+        }
+        catch(Exception e) {
+            // TODO: report error
+            return null;
+        }
+
+        return result;
     }
 
     private FoursquareApi m_foursquare;

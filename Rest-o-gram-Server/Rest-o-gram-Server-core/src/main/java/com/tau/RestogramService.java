@@ -18,6 +18,11 @@ public interface RestogramService {
     RestogramVenue[] getNearby(double latitude, double longitude, double radius);
 
     /**
+     * @return venue information according to its ID
+     */
+    RestogramVenue getInfo(String venueID);
+
+    /**
      * @return array of media related to venue given its ID
      */
     RestogramPhoto[] getPhotos(String venueID);

@@ -9,5 +9,7 @@ public interface ITaskObserver {
 
     void onFinished(RestogramVenue[] venues);
 
+    void onFinished(RestogramVenue venue);
+
     void onFinished(RestogramPhoto[] photos);
 }

@@ -154,8 +154,28 @@ public class MyActivity extends Activity implements ITaskObserver {
 
         updateText(venue.getName());
 
-        GetPhotosTask task = new GetPhotosTask(transport, this);
-        task.execute(venueID);
+        // Get info
+        GetInfoTask getInfoTask = new GetInfoTask(transport, this);
+        getInfoTask.execute(venueID);
+
+        // Get photos
+        GetPhotosTask getPhotosTask = new GetPhotosTask(transport, this);
+        getPhotosTask.execute(venueID);
+    }
+
+    public void onFinished(RestogramVenue venue)
+    {
+        if(venue == null)
+        {
+            // TODO: report error
+            return;
+        }
+
+        String imageUrl = venue.getImageUrl();
+
+        ImageView venueImage = (ImageView)findViewById(R.id.imageViewVenue);
+        DownloadImageTask task = new DownloadImageTask(venueImage);
+        task.execute(imageUrl);
     }
 
     public void onFinished(RestogramPhoto[] photos)
@@ -234,6 +254,9 @@ public class MyActivity extends Activity implements ITaskObserver {
         currPhotoIndex = -1;
 
         updateText("");
+
+        ImageView venueImage = (ImageView)findViewById(R.id.imageViewVenue);
+        venueImage.setImageResource(android.R.color.transparent);
 
         ImageView image = (ImageView)findViewById(R.id.imageView1);
         image.setImageResource(android.R.color.transparent);
