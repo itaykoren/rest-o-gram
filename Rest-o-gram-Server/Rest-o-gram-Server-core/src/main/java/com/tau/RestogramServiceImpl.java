@@ -9,6 +9,9 @@ import org.jinstagram.entity.common.Location;
 import org.jinstagram.entity.locations.LocationSearchFeed;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
+import org.jinstagram.exceptions.InstagramException;
+
+import java.util.logging.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,8 @@ import java.util.HashMap;
  */
 public class RestogramServiceImpl implements RestogramService {
 
+    private static final Logger log = Logger.getLogger(RestogramServiceImpl.class.getName());
+
     public RestogramServiceImpl()
     {
         try
@@ -30,6 +35,7 @@ public class RestogramServiceImpl implements RestogramService {
         }
         catch(Exception e)
         {
+            log.severe("an error occurred while initializing the service");
             e.printStackTrace();
         }
     }
@@ -78,18 +84,30 @@ public class RestogramServiceImpl implements RestogramService {
         try {
             result = m_foursquare.venue(venueID);
         } catch (FoursquareApiException e) {
+            log.warning("first venue  " + venueID + " retrieval has failed, retry");
             e.printStackTrace();
-            // TODO: report error
-            return null;
+            try {
+                result = m_foursquare.venue(venueID);
+            }
+            catch (FoursquareApiException e2)
+            {
+                log.severe("second venue " + venueID + " retrieval has failed");
+                e2.printStackTrace();
+                return null;
+                // TODO: report error
+            }
         }
 
         if (result.getMeta().getCode() != 200) {
+            log.severe("venue " + venueID + "retrieval returned an error code: " + result.getMeta().getCode());
             // TODO: report error
             return null;
         }
 
         CompleteVenue v = result.getResult();
-        if(v == null) {
+        if(v == null)
+        {
+            log.severe("extracting info from venue has failed");
             // TODO: report error
             return null;
         }
@@ -142,23 +160,36 @@ public class RestogramServiceImpl implements RestogramService {
     private RestogramVenue[] doGetNearby(Map<String, String> params)
     {
         Result<VenuesSearchResult> result;
-        try {
+        try
+        {
             result = m_foursquare.venuesSearch(params);
-        } catch (FoursquareApiException e) {
-            e.printStackTrace();
-            // TODO: report error
-            return null;
+        }
+        catch (FoursquareApiException e)
+        {
+            // TODO: test the "second-chance" policy
+            try
+            {
+                log.warning("first venue search has failed, retry");
+                e.printStackTrace();
+                result = m_foursquare.venuesSearch(params);
+            }
+            catch (FoursquareApiException e2)
+            {
+                log.severe("second venue search has failed");
+                e2.printStackTrace();
+                // TODO: report error
+                return null;
+            }
         }
 
         if (result.getMeta().getCode() != 200)
         {
             // TODO: report error
+            log.severe("venue search returned an error code: " + result.getMeta().getCode());
             return null;
         }
 
         CompactVenue[] arr = result.getResult().getVenues();
-        if(arr.length == 0)
-            return null;
 
         RestogramVenue[] venues = new RestogramVenue[arr.length];
         for(int i = 0; i < arr.length; i++) {
@@ -170,18 +201,55 @@ public class RestogramServiceImpl implements RestogramService {
 
     private List<MediaFeedData> doGetPhotos(String venueID, RestogramPhotoFilter filter)
     {
-        MediaFeed recentMediaByLocation;
+        LocationSearchFeed locationSearchFeed = null;
+
         try
         {
-            LocationSearchFeed locationSearchFeed = m_instagram.searchFoursquareVenue(venueID);
-            List<Location> locationList = locationSearchFeed.getLocationList();
-            long locationId = locationList.get(0).getId(); // TODO: fix
+            locationSearchFeed = m_instagram.searchFoursquareVenue(venueID);
+        }
+        catch (InstagramException e)
+        {
+            log.warning("first search for venue: " + venueID + " has failed, retry");
+            e.printStackTrace();;
+            try
+            {
+                locationSearchFeed = m_instagram.searchFoursquareVenue(venueID);
+            }
+            catch (InstagramException e2)
+            {
+                log.severe("second search for venue: " + venueID + "has failed");
+                e.printStackTrace();;
+            }
+        }
+
+        List<Location> locationList = locationSearchFeed.getLocationList();
+        if (locationList.isEmpty()) // TODO: handle in a different way?
+        {
+            log.severe("venue:  " + venueID + " not found");
+            return null;
+        }
+        long locationId = locationList.get(0).getId(); // TODO: what if we get multiple locations?
+
+        MediaFeed recentMediaByLocation = null;
+        try
+        {
             recentMediaByLocation = m_instagram.getRecentMediaByLocation(locationId);
         }
-        catch(Exception e)
+        catch(InstagramException e)
         {
-            // TODO: report error
-            return null;
+            log.warning("first recent media search for venue: " + venueID + "has failed, retry");
+            e.printStackTrace();
+
+            try
+            {
+                recentMediaByLocation = m_instagram.getRecentMediaByLocation(locationId);
+            }
+            catch (InstagramException e2)
+            {
+                log.severe("second search for recent media for venue: " + venueID + "has failed");
+                e2.printStackTrace();
+                return null;
+            }
         }
 
         if(recentMediaByLocation == null)
@@ -191,7 +259,7 @@ public class RestogramServiceImpl implements RestogramService {
         }
 
         List<MediaFeedData> data = recentMediaByLocation.getData();
-        if(data == null || data.size() == 0)
+        if(data == null)
         {
             // TODO: report error
             return null;
