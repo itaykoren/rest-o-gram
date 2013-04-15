@@ -10,9 +10,9 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
-import org.json.rpc.client.HttpJsonRpcClientTransport;
-
-import java.net.URL;
+import com.tau.client.RestogramClient;
+import com.tau.location.LocationTracker;
+import com.tau.tasks.*;
 
 
 public class MyActivity extends Activity implements ITaskObserver {
@@ -127,9 +127,8 @@ public class MyActivity extends Activity implements ITaskObserver {
 
         updateText("Searching...");
 
-        GetNearbyTask task = new GetNearbyTask(transport, this);
+        RestogramClient.getInstance().getNearby(latitude, longitude, radius, this);
         Log.d("Get Nearby Task", "lat: " + latitude + ", long: " + longitude + ", radius: " + radius);
-        task.execute(latitude, longitude, radius);
     }
 
     public void onNextClicked(View view)
@@ -160,12 +159,10 @@ public class MyActivity extends Activity implements ITaskObserver {
         updateText(venue.getName());
 
         // Get info
-        GetInfoTask getInfoTask = new GetInfoTask(transport, this);
-        getInfoTask.execute(venueID);
+        RestogramClient.getInstance().getInfo(venueID, this);
 
         // Get photos
-        GetPhotosTask getPhotosTask = new GetPhotosTask(transport, this);
-        getPhotosTask.execute(venueID);
+        RestogramClient.getInstance().getPhotos(venueID, this);
     }
 
     public void onFinished(RestogramVenue venue)
@@ -202,7 +199,6 @@ public class MyActivity extends Activity implements ITaskObserver {
     {
         try
         {
-            transport = new HttpJsonRpcClientTransport(new URL(url));
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
             StrictMode.setThreadPolicy(policy);
@@ -285,10 +281,6 @@ public class MyActivity extends Activity implements ITaskObserver {
         et1.setText(Double.toString(lat));
         et2.setText(Double.toString(lon));
     }
-
-    private final String url = "http://rest-o-gram.appspot.com/service";
-    //private final String url = "http://localhost:8080/service";
-    private HttpJsonRpcClientTransport transport;
 
     private RestogramPhoto[] currPhotos;
     private int currPhotoIndex;

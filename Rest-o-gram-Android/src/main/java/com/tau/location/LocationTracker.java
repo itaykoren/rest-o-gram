@@ -1,4 +1,4 @@
-package com.tau;
+package com.tau.location;
 
 import android.app.Service;
 import android.content.Context;

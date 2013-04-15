@@ -1,4 +1,7 @@
-package com.tau;
+package com.tau.tasks;
+
+import com.tau.RestogramPhoto;
+import com.tau.RestogramVenue;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,4 +1,4 @@
-package com.tau;
+package com.tau.tasks;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

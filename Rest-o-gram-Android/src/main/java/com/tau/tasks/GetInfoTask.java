@@ -1,6 +1,8 @@
-package com.tau;
+package com.tau.tasks;
 
 import android.os.AsyncTask;
+import com.tau.RestogramService;
+import com.tau.RestogramVenue;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
 
