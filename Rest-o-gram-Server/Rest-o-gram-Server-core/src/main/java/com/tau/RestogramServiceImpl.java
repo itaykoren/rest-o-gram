@@ -94,13 +94,11 @@ public class RestogramServiceImpl implements RestogramService {
                 log.severe("second venue " + venueID + " retrieval has failed");
                 e2.printStackTrace();
                 return null;
-                // TODO: report error
             }
         }
 
         if (result.getMeta().getCode() != 200) {
             log.severe("venue " + venueID + "retrieval returned an error code: " + result.getMeta().getCode());
-            // TODO: report error
             return null;
         }
 
@@ -108,7 +106,6 @@ public class RestogramServiceImpl implements RestogramService {
         if(v == null)
         {
             log.severe("extracting info from venue has failed");
-            // TODO: report error
             return null;
         }
 
@@ -120,20 +117,7 @@ public class RestogramServiceImpl implements RestogramService {
      */
     public RestogramPhoto[] getPhotos(String venueID)
     {
-        List<MediaFeedData> data = doGetPhotos(venueID, RestogramPhotoFilter.None);
-        if(data == null)
-        {
-            // TODO: report error
-            return null;
-        }
-
-        RestogramPhoto[] photos = new RestogramPhoto[data.size()];
-
-        int i = 0;
-        for (MediaFeedData media : data)
-            photos[i++] = new RestogramPhoto(media);
-
-        return photos;
+        return doGetPhotos(venueID, RestogramPhotoFilter.None);
     }
 
     /**
@@ -141,22 +125,12 @@ public class RestogramServiceImpl implements RestogramService {
      */
     public RestogramPhoto[] getPhotos(String venueID, RestogramPhotoFilter filter)
     {
-        List<MediaFeedData> data = doGetPhotos(venueID, filter);
-        if(data == null)
-        {
-            // TODO: report error
-            return null;
-        }
-
-        RestogramPhoto[] photos = new RestogramPhoto[data.size()];
-
-        int i = 0;
-        for (MediaFeedData media : data)
-            photos[i++] = new RestogramPhoto(media);
-
-        return photos;
+        return doGetPhotos(venueID, filter);
     }
 
+    /**
+     * Executes get nearby request
+     */
     private RestogramVenue[] doGetNearby(Map<String, String> params)
     {
         Result<VenuesSearchResult> result;
@@ -177,19 +151,23 @@ public class RestogramServiceImpl implements RestogramService {
             {
                 log.severe("second venue search has failed");
                 e2.printStackTrace();
-                // TODO: report error
                 return null;
             }
         }
 
         if (result.getMeta().getCode() != 200)
         {
-            // TODO: report error
             log.severe("venue search returned an error code: " + result.getMeta().getCode());
             return null;
         }
 
         CompactVenue[] arr = result.getResult().getVenues();
+
+        if(arr == null || arr.length == 0)
+        {
+            log.severe("venue search returned no venues");
+            return null;
+        }
 
         RestogramVenue[] venues = new RestogramVenue[arr.length];
         for(int i = 0; i < arr.length; i++) {
@@ -199,7 +177,10 @@ public class RestogramServiceImpl implements RestogramService {
         return venues;
     }
 
-    private List<MediaFeedData> doGetPhotos(String venueID, RestogramPhotoFilter filter)
+    /**
+     * Executes get photos request
+     */
+    private RestogramPhoto[] doGetPhotos(String venueID, RestogramPhotoFilter filter)
     {
         LocationSearchFeed locationSearchFeed = null;
 
@@ -230,7 +211,7 @@ public class RestogramServiceImpl implements RestogramService {
         }
         long locationId = locationList.get(0).getId(); // TODO: what if we get multiple locations?
 
-        MediaFeed recentMediaByLocation = null;
+        MediaFeed recentMediaByLocation;
         try
         {
             recentMediaByLocation = m_instagram.getRecentMediaByLocation(locationId);
@@ -254,22 +235,31 @@ public class RestogramServiceImpl implements RestogramService {
 
         if(recentMediaByLocation == null)
         {
-            // TODO: report error
+            log.severe("media search returned no media");
             return null;
         }
 
         List<MediaFeedData> data = recentMediaByLocation.getData();
         if(data == null)
         {
-            // TODO: report error
+            log.severe("media search returned no media");
             return null;
         }
 
         // TODO: apply filter
 
-        return data;
+        RestogramPhoto[] photos = new RestogramPhoto[data.size()];
+
+        int i = 0;
+        for (MediaFeedData media : data)
+            photos[i++] = new RestogramPhoto(media);
+
+        return photos;
     }
 
+    /**
+     * Converts compact venue foursquare object to restogram venue
+     */
     private RestogramVenue convert(CompactVenue venue) {
         fi.foyt.foursquare.api.entities.Location location = venue.getLocation();
         return new RestogramVenue(venue.getId(),
@@ -285,6 +275,9 @@ public class RestogramServiceImpl implements RestogramService {
                                 venue.getUrl());
     }
 
+    /**
+     * Converts complete venue foursquare object to restogram venue
+     */
     private RestogramVenue convert(CompleteVenue venue) {
         RestogramVenue result;
         String photoUrl;
@@ -307,7 +300,7 @@ public class RestogramServiceImpl implements RestogramService {
             result = new RestogramVenue(venue.getId(), venue.getName(), venue.getDescription(), photoUrl);
         }
         catch(Exception e) {
-            // TODO: report error
+            log.severe("venue object conversion failed");
             return null;
         }
 
