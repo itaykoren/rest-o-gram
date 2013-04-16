@@ -4,6 +4,7 @@ import com.tau.commands.GetInfoCommand;
 import com.tau.commands.GetNearbyCommand;
 import com.tau.commands.GetPhotosCommand;
 import com.tau.commands.IRestogramCommand;
+import com.tau.location.ILocationTracker;
 import com.tau.tasks.ITaskObserver;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 
@@ -26,28 +27,27 @@ public class RestogramClient implements IRestogramClient {
         return instance;
     }
 
-    /**
-     * Executes get nearby request
-     */
+    @Override
     public void getNearby(double latitude, double longitude, double radius, ITaskObserver observer) {
         IRestogramCommand command = new GetNearbyCommand(latitude, longitude, radius);
         command.execute(transport, observer);
     }
 
-    /**
-     * Executes get info request
-     */
+    @Override
     public void getInfo(String venueID, ITaskObserver observer) {
         IRestogramCommand command = new GetInfoCommand(venueID);
         command.execute(transport, observer);
     }
 
-    /**
-     * Executes get photos request
-     */
+    @Override
     public void getPhotos(String venueID, ITaskObserver observer) {
         IRestogramCommand command = new GetPhotosCommand(venueID);
         command.execute(transport, observer);
+    }
+
+    @Override
+    public ILocationTracker getLocationTracker() {
+        return null; // TODO: implementation
     }
 
     /**

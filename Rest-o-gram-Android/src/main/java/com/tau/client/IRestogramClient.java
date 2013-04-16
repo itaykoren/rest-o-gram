@@ -1,5 +1,6 @@
 package com.tau.client;
 
+import com.tau.location.ILocationTracker;
 import com.tau.tasks.ITaskObserver;
 
 /**
@@ -22,4 +23,9 @@ public interface IRestogramClient {
      * Executes get photos request
      */
     void getPhotos(String venueID, ITaskObserver observer);
+
+    /**
+     * Returns location tracker
+     */
+    ILocationTracker getLocationTracker();
 }
