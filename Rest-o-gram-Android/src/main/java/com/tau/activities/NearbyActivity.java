@@ -23,13 +23,11 @@ public class NearbyActivity extends Activity implements ITaskObserver {
 
         setContentView(R.layout.nearby);
 
-        Intent intent = getIntent();
-
+        // Get location parameters
         double latitude;
         double longitude;
-
-        // Get location parameters
         try {
+            Intent intent = getIntent();
             latitude = intent.getDoubleExtra("latitude", 0.0);
             longitude = intent.getDoubleExtra("longitude", 0.0);
         }

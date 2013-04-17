@@ -24,11 +24,10 @@ public class FindMeActivity extends Activity implements ITaskObserver {
 
         setContentView(R.layout.findme);
 
-        Intent intent = getIntent();
-        RestogramVenue venue;
-
         // Get venue parameter
+        RestogramVenue venue;
         try {
+            Intent intent = getIntent();
             venue = (RestogramVenue)intent.getSerializableExtra("venue");
         }
         catch(Exception e) {

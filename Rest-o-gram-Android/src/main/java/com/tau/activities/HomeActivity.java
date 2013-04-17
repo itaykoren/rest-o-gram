@@ -78,7 +78,8 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
         RestogramVenue venue = venues[0]; // TODO: fix
 
         // Switch to "FindMeActivity" with parameter "venue"
-        Intent intent = new Intent(this, FindMeActivity.class);
+        //Intent intent = new Intent(this, FindMeActivity.class);
+        Intent intent = new Intent(this, VenueActivity.class); // TODO: temp
         intent.putExtra("venue", venue);
         startActivityForResult(intent, Defs.RequestCodes.RC_FINDME);
     }
