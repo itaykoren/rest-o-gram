@@ -3,6 +3,10 @@ package com.tau.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.ProgressBar;
+import com.tau.R;
 import com.tau.RestogramPhoto;
 import com.tau.RestogramVenue;
 import com.tau.client.RestogramClient;
@@ -22,8 +26,9 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // setContentView(R.layout.home);
+        setContentView(R.layout.home);
 
+        // Get location tracker
         tracker = RestogramClient.getInstance().getLocationTracker();
         if(tracker != null) {
             tracker.setObserver(this);
@@ -31,7 +36,16 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
         }
         else {
             // TODO: implementation
+            return;
         }
+
+        initProgress("");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        cancelProgress();
     }
 
     @Override
@@ -49,6 +63,8 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
 
     @Override
     public void onFinished(RestogramVenue[] venues) {
+        updateProgress = false;
+
         if(venues == null || venues.length == 0)
         {
             // Switch to "NearbyActivity" with parameters: "latitude", "longitude"
@@ -77,7 +93,52 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
         // Empty
     }
 
+    private void initProgress(String message) {
+        ProgressBar pb = (ProgressBar)findViewById(R.id.pbLoading);
+        pb.setProgress(0);
+
+        updateProgress = true;
+
+        // Start update progress operation in a background thread
+        new Thread(new Runnable() {
+            public void run() {
+                while (updateProgress) {
+                    // Update the progress bar
+                    handler.post(new Runnable() {
+                        public void run() {
+                            incrementProgress("");
+                        }
+                    });
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        // Empty
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private void incrementProgress(String message) {
+        ProgressBar pb = (ProgressBar)findViewById(R.id.pbLoading);
+
+        int newProgress = pb.getProgress() + 1;
+        if(newProgress == pb.getMax())
+            newProgress = 0;
+
+        pb.setProgress(newProgress);
+    }
+
+    private void cancelProgress() {
+        ProgressBar pb = (ProgressBar)findViewById(R.id.pbLoading);
+        pb.setVisibility(View.GONE);
+    }
+
     private ILocationTracker tracker; // Location tracker
     private double latitude;
     private double longitude;
+
+    private Handler handler = new Handler();
+    private boolean updateProgress = false;
 }

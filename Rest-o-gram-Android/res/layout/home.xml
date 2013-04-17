@@ -12,6 +12,12 @@
                android:layout_height="350dp"/>
 
 
+    <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:max="20"
+            android:id="@+id/pbLoading" android:layout_gravity="center"/>
+
     <ImageView android:layout_width="wrap_content"
                android:layout_height="35dp" android:src="@drawable/tagline"
                android:layout_marginTop="30dp" android:layout_gravity="center"/>

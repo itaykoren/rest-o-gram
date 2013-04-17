@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import com.tau.R;
 import com.tau.RestogramPhoto;
 import com.tau.RestogramVenue;
 import com.tau.client.RestogramClient;
@@ -20,7 +21,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // setContentView(R.layout.venue);
+        setContentView(R.layout.venue);
 
         Intent intent = getIntent();
 
