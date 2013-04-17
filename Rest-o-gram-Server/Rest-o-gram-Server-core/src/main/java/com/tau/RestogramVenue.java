@@ -14,7 +14,7 @@ public class RestogramVenue implements Serializable {
 
     public RestogramVenue(String id, String name, String address, String city,
             String state, String postalCode, String country,
-            double latitude, double longitude, double distance, String url) {
+            double latitude, double longitude, double distance, String url, String phone) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -26,6 +26,7 @@ public class RestogramVenue implements Serializable {
         this.longitude = longitude;
         this.distance = distance;
         this.url = url;
+        this.phone = phone;
     }
 
     public RestogramVenue(String id, String name, String description, String imageUrl) {
@@ -35,121 +36,116 @@ public class RestogramVenue implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    /**
-     * Returns id of the venue
-     *
-     * @return id of the venue
-     */
     public String getId() {
         return id;
     }
 
-    /**
-     * Returns name of the venue
-     *
-     * @return name of the venue
-     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
 
-    /**
-     * Returns address
-     *
-     * @return address
-     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getAddress() {
         return address;
     }
 
-    /**
-     * Returns city
-     *
-     * @return city
-     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String getCity() {
         return city;
     }
 
-    /**
-     * Returns state
-     *
-     * @return state
-     */
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public String getState() {
         return state;
     }
 
-    /**
-     * Returns postal Code
-     *
-     * @return postal Code
-     */
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public String getPostalCode() {
         return postalCode;
     }
 
-    /**
-     * Returns country
-     *
-     * @return country
-     */
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
     public String getCountry() {
         return country;
     }
 
-    /**
-     * Returns venue's latitude
-     *
-     * @return venue's latitude
-     */
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     public double getLatitude() {
         return latitude;
     }
 
-    /**
-     * Returns venue's longitude
-     *
-     * @return venue's longitude
-     */
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
     public double getLongitude() {
         return longitude;
     }
 
-    /**
-     * Returns distance
-     *
-     * @return distance
-     */
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
     public double getDistance() {
         return distance;
     }
 
-    /**
-     * Returns url for this venue
-     *
-     * @return url for this venue
-     */
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
     public String getUrl() {
         return url;
     }
 
-    /**
-     * Returns description of this venue
-     *
-     * @return description of this venue
-     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getDescription() {
         return description;
     }
 
-    /**
-     * Returns image url for this venue
-     *
-     * @return image url for this venue
-     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     private String id;
@@ -163,6 +159,7 @@ public class RestogramVenue implements Serializable {
     private double longitude;
     private double distance;
     private String url;
+    private String phone;
 
     private String description;
     private String imageUrl;

@@ -13,8 +13,14 @@ import com.tau.R;
 import com.tau.RestogramPhoto;
 import com.tau.RestogramVenue;
 import com.tau.client.RestogramClient;
+import com.tau.common.Defs;
 import com.tau.tasks.DownloadImageTask;
 import com.tau.tasks.ITaskObserver;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -62,52 +68,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
     @Override
     public void onFinished(RestogramPhoto[] photos) {
-        final int count = photos.length;
-        final ImageView[] images = new ImageView[count];
-
-        for(int i = 0; i < count; i++) {
-            images[i] = new ImageView(this);
-            images[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onPhotoClicked(view);
-                }
-            });
-
-            DownloadImageTask task = new DownloadImageTask(images[i]);
-            task.execute(photos[i].getThumbnail());
-        }
-
-        // Init photo grid view
-        GridView gv = (GridView)findViewById(R.id.gvPhotos);
-        gv.setAdapter(new BaseAdapter() {
-            @Override
-            public int getCount() {
-                return count;
-            }
-
-            @Override
-            public Object getItem(int i) {
-                return null;
-            }
-
-            @Override
-            public long getItemId(int i) {
-                return 0;
-            }
-
-            @Override
-            public View getView(int i, View view, ViewGroup viewGroup) {
-                return images[i];
-            }
-        });
-    }
-
-    public void onPhotoClicked(View view) {
-        // Switch to "PhotoActivity" with parameter "photo"
-        // Intent intent = new Intent(this, PhotoActivity.class);
-        // intent.putExtra("photo", photo);
-        // startActivityForResult(intent, Defs.RequestCodes.RC_PHOTO);
+        addPhotos(photos);
     }
 
     /**
@@ -116,10 +77,14 @@ public class VenueActivity extends Activity implements ITaskObserver {
     private void initialize(RestogramVenue venue) {
         this.venue = venue;
 
+        // Create view list
+        //photosMap = new HashMap<View, RestogramPhoto>();
+        viewList = new LinkedList<View>();
+
         // Set UI with venue information
         updateTextView((TextView)findViewById(R.id.tvVenueName), venue.getName());
         updateTextView((TextView)findViewById(R.id.tvVenueAddress), venue.getAddress());
-        updateTextView((TextView)findViewById(R.id.tvVenuePhone), venue.getCountry()); // TODO: phone
+        updateTextView((TextView)findViewById(R.id.tvVenuePhone), venue.getPhone());
 
         // Send get info request if needed
         if(venue.getImageUrl() == null)
@@ -138,5 +103,74 @@ public class VenueActivity extends Activity implements ITaskObserver {
         tv.setText(text);
     }
 
+    private void addPhotos(RestogramPhoto[] photos) {
+        // Traverse given photos
+        for(final RestogramPhoto photo : photos) {
+            // Create new image view
+            ImageView iv = new ImageView(this);
+            iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onPhotoClicked(photo);
+                }
+            });
+
+            // Add to list
+            //photosMap.put(iv, photo);
+            viewList.add(iv);
+
+            // Download image
+            DownloadImageTask task = new DownloadImageTask(iv);
+            task.execute(photo.getThumbnail());
+        }
+
+        // Init photo grid view
+        GridView gv = (GridView)findViewById(R.id.gvPhotos);
+        gv.setAdapter(new PhotosAdapter());
+    }
+
+    private void onPhotoClicked(RestogramPhoto photo) {
+//        // Get photo using photos map
+//        RestogramPhoto photo = photosMap.get(view);
+//        if(photo == null) {
+//            // TODO: report error
+//            return;
+//        }
+
+        // Switch to "PhotoActivity" with parameter "photo"
+        Intent intent = new Intent(this, PhotoActivity.class);
+        intent.putExtra("photo", photo);
+        startActivityForResult(intent, Defs.RequestCodes.RC_PHOTO);
+    }
+
+    /**
+     * Created with IntelliJ IDEA.
+     * User: Roi
+     * Date: 17/04/13
+     */
+    private class PhotosAdapter extends BaseAdapter {
+        @Override
+        public int getCount() {
+            return viewList.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            return viewList.get(i);
+        }
+    }
+
     private RestogramVenue venue; // Venue object
+    //private Map<View, RestogramPhoto> photosMap; // Photos map
+    private List<View> viewList; // View list
 }

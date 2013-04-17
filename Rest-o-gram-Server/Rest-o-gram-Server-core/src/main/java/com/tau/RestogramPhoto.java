@@ -4,12 +4,14 @@ import com.google.gson.annotations.SerializedName;
 import org.jinstagram.entity.common.*;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 
+import java.io.Serializable;
+
 /**
 * Created with IntelliJ IDEA.
 * User: Roi
 * Date: 4/5/13
 */
-public class RestogramPhoto {
+public class RestogramPhoto implements Serializable {
 
     public RestogramPhoto() {
     }

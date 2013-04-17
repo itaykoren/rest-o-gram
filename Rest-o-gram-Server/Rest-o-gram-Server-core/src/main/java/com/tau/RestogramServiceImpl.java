@@ -262,17 +262,24 @@ public class RestogramServiceImpl implements RestogramService {
      */
     private RestogramVenue convert(CompactVenue venue) {
         fi.foyt.foursquare.api.entities.Location location = venue.getLocation();
+
+        Contact contact = venue.getContact();
+        String phone = "";
+        if(contact != null)
+            phone = contact.getPhone();
+
         return new RestogramVenue(venue.getId(),
-                                venue.getName(),
-                                location.getAddress(),
-                                location.getCity(),
-                                location.getState(),
-                                location.getPostalCode(),
-                                location.getCountry(),
-                                location.getLat(),
-                                location.getLng(),
-                                location.getDistance(),
-                                venue.getUrl());
+                                    venue.getName(),
+                                    location.getAddress(),
+                                    location.getCity(),
+                                    location.getState(),
+                                    location.getPostalCode(),
+                                    location.getCountry(),
+                                    location.getLat(),
+                                    location.getLng(),
+                                    location.getDistance(),
+                                    venue.getUrl(),
+                                    phone);
     }
 
     /**

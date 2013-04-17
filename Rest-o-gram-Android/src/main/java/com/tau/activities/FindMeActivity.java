@@ -46,7 +46,9 @@ public class FindMeActivity extends Activity implements ITaskObserver {
 
     @Override
     public void onFinished(RestogramVenue venue) {
-        // TODO: set image url to current venue member object
+        // Set image url to current venue member object
+        this.venue.setImageUrl(venue.getImageUrl());
+
         // TODO: set ui (venue image)
     }
 
