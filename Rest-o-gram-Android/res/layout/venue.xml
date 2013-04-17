@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:background="@drawable/background">
+
+
+
+
+    <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#FFFFFF" android:layout_marginLeft="50dp"
+            android:scaleType= "center" android:layout_marginRight="50dp">
+
+
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" android:layout_gravity="center_horizontal|top">
+            <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
+                    android:layout_alignParentLeft="true" android:layout_alignParentTop="true"
+                    android:layout_marginTop="20dp" android:id="@+id/frameLayout">
+                <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:id="@+id/ivVenue"
+                        android:layout_alignParentLeft="true" android:layout_marginLeft="10dp"
+                        android:layout_alignParentTop="true" android:layout_marginTop="10dp"
+                        android:layout_gravity="left|top"/>
+                <FrameLayout
+                        android:layout_width="120dp"
+                        android:layout_height="80dp"
+                        android:id="@+id/venueInfo"
+                        android:layout_alignParentLeft="true" android:layout_marginLeft="100dp"
+                        android:layout_alignParentTop="true" android:layout_marginTop="0dp"
+                        android:layout_gravity="right|center_vertical">
+
+                    <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="20dp"
+                            android:id="@+id/tvVenueName"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_gravity="right|top"/>
+                    <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="20dp"
+                            android:id="@+id/tvVenueAddress"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginTop="30dp"
+                            android:layout_gravity="right|top"/>
+                    <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="20dp"
+                            android:id="@+id/tvVenuePhone"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginTop="50dp"
+                            android:layout_gravity="right|top"/>
+
+                </FrameLayout>
+
+            </FrameLayout>
+            <GridView
+                    android:id="@+id/gridview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="500dp"
+                    android:columnWidth="90dp"
+                    android:numColumns="auto_fit"
+                    android:verticalSpacing="10dp"
+                    android:horizontalSpacing="10dp"
+                    android:stretchMode="columnWidth"
+                    android:gravity="center"
+                    android:layout_alignParentTop="true" android:layout_marginTop="130dp"/>
+
+        </RelativeLayout>
+
+
+    </FrameLayout>
+</LinearLayout>
