@@ -11,6 +11,12 @@ import org.json.rpc.client.HttpJsonRpcClientTransport;
  */
 public class GetNearbyCommand implements IRestogramCommand {
 
+    public GetNearbyCommand(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.radius = null;
+    }
+
     public GetNearbyCommand(double latitude, double longitude, double radius) {
         this.latitude = latitude;
         this.longitude = longitude;
@@ -20,10 +26,13 @@ public class GetNearbyCommand implements IRestogramCommand {
     @Override
     public void execute(HttpJsonRpcClientTransport transport, ITaskObserver observer) {
         GetNearbyTask task = new GetNearbyTask(transport, observer);
-        task.execute(latitude, longitude, radius);
+        if(radius != null)
+            task.execute(latitude, longitude, radius);
+        else
+            task.execute(latitude, longitude);
     }
 
-    private double latitude;
-    private double longitude;
-    private double radius;
+    private Double latitude;
+    private Double longitude;
+    private Double radius;
 }

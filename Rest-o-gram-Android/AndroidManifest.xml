@@ -15,5 +15,22 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity android:name=".activities.FindMeActivity"
+                  android:label="Find Me">
+        </activity>
+
+        <activity android:name=".activities.NearbyActivity"
+                  android:label="Nearby">
+        </activity>
+
+        <activity android:name=".activities.VenueActivity"
+                  android:label="Venue">
+        </activity>
+
+        <activity android:name=".activities.PhotoActivity"
+                  android:label="Photo">
+        </activity>
+
     </application>
 </manifest>

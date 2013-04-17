@@ -5,6 +5,7 @@ import com.tau.commands.GetNearbyCommand;
 import com.tau.commands.GetPhotosCommand;
 import com.tau.commands.IRestogramCommand;
 import com.tau.location.ILocationTracker;
+import com.tau.location.LocationTrackerDummy;
 import com.tau.tasks.ITaskObserver;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 
@@ -28,6 +29,12 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
+    public void getNearby(double latitude, double longitude, ITaskObserver observer) {
+        IRestogramCommand command = new GetNearbyCommand(latitude, longitude);
+        command.execute(transport, observer);
+    }
+
+    @Override
     public void getNearby(double latitude, double longitude, double radius, ITaskObserver observer) {
         IRestogramCommand command = new GetNearbyCommand(latitude, longitude, radius);
         command.execute(transport, observer);
@@ -47,7 +54,7 @@ public class RestogramClient implements IRestogramClient {
 
     @Override
     public ILocationTracker getLocationTracker() {
-        return null; // TODO: implementation
+        return tracker;
     }
 
     /**
@@ -56,6 +63,7 @@ public class RestogramClient implements IRestogramClient {
     private RestogramClient() {
         try {
             transport = new HttpJsonRpcClientTransport(new URL(url));
+            tracker = new LocationTrackerDummy(); // TODO: create location tracker
         }
         catch(Exception e) {
             System.out.println("Error in RestogramClient: " + e.getMessage());
@@ -65,4 +73,5 @@ public class RestogramClient implements IRestogramClient {
     private static IRestogramClient instance; // Singleton instance
     private final String url = "http://rest-o-gram.appspot.com/service"; // Server URL
     private HttpJsonRpcClientTransport transport; // Transport object
+    private ILocationTracker tracker; // Location tracker
 }

@@ -9,6 +9,12 @@ import com.tau.tasks.ITaskObserver;
  * Date: 15/04/13
  */
 public interface IRestogramClient {
+
+    /**
+     * Executes get nearby request
+     */
+    void getNearby(double latitude, double longitude, ITaskObserver observer);
+
     /**
      * Executes get nearby request
      */

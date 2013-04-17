@@ -19,14 +19,13 @@ public class GetNearbyTask extends AsyncTask<Double, Void, RestogramVenue[]> {
     }
 
     protected RestogramVenue[] doInBackground(Double... params) {
-        double latitude = params[0];
-        double longitude = params[1];
-        double radius = params[2];
-
         JsonRpcInvoker invoker = new JsonRpcInvoker();
         RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
 
-        return service.getNearby(latitude, longitude, radius);
+        if(params.length == 3)
+            return service.getNearby(params[0], params[1], params[2]);
+        else
+            return service.getNearby(params[0], params[1]);
     }
 
     protected void onPostExecute(RestogramVenue[] result) {

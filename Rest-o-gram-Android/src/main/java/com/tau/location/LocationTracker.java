@@ -14,76 +14,9 @@ import java.util.Calendar;
 
 public class LocationTracker extends Service implements LocationListener {
 
-    private final Context mContext;
-
-    // flag for GPS status
-    boolean isGPSEnabled = false;
-
-    // flag for network status
-    boolean isNetworkEnabled = false;
-
-    // flag for GPS status
-    boolean canGetLocation = false;
-
-    Location location = null; // location
-    double latitude  = Double.NaN; // latitude
-    double longitude = Double.NaN ; // longitude
-
-    // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 20 meters
-
-    // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 10 * 1; // 1 minute
-
-    // Declaring a Location Manager
-    protected LocationManager locationManager;
-
     public LocationTracker(Context context) {
         this.mContext = context;
         init();
-    }
-
-    protected void init() {
-        try
-        {
-            locationManager = (LocationManager) mContext
-                    .getSystemService(LOCATION_SERVICE);
-
-            // getting GPS status
-            isGPSEnabled = locationManager
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-            // getting network status
-            isNetworkEnabled = locationManager
-                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-            this.canGetLocation = true;
-            if (isNetworkEnabled)
-            {
-                locationManager.requestLocationUpdates(
-                        LocationManager.NETWORK_PROVIDER,
-                        MIN_TIME_BW_UPDATES,
-                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                Log.d("Network", "Network Enabled");
-                if (locationManager != null)
-                    onLocationChanged(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
-            }
-
-            // if GPS Enabled get lat/long using GPS Services
-            if (isGPSEnabled)
-            {
-                    locationManager.requestLocationUpdates(
-                            LocationManager.GPS_PROVIDER,
-                            MIN_TIME_BW_UPDATES,
-                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                    Log.d("GPS", "GPS Enabled");
-                    if (locationManager != null)
-                        onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void stopTracking() {
@@ -129,10 +62,6 @@ public class LocationTracker extends Service implements LocationListener {
         return !Double.isNaN(latitude) && !Double.isNaN(longitude);
     }
 
-    private long minTime = Calendar.getInstance().getTimeInMillis() - 30*MIN_TIME_BW_UPDATES;
-    private float bestAccuracy = Float.MAX_VALUE;
-    private long bestTime = minTime;
-
     @Override
     public void onLocationChanged(Location location) {
         if (location != null)
@@ -169,4 +98,75 @@ public class LocationTracker extends Service implements LocationListener {
     public IBinder onBind(Intent arg0) {
         return null;
     }
+
+    protected void init() {
+        try
+        {
+            locationManager = (LocationManager) mContext
+                    .getSystemService(LOCATION_SERVICE);
+
+            // getting GPS status
+            isGPSEnabled = locationManager
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            // getting network status
+            isNetworkEnabled = locationManager
+                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            this.canGetLocation = true;
+            if (isNetworkEnabled)
+            {
+                locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                Log.d("Network", "Network Enabled");
+                if (locationManager != null)
+                    onLocationChanged(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
+            }
+
+            // if GPS Enabled get lat/long using GPS Services
+            if (isGPSEnabled)
+            {
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                Log.d("GPS", "GPS Enabled");
+                if (locationManager != null)
+                    onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private final Context mContext;
+
+    // flag for GPS status
+    private boolean isGPSEnabled = false;
+
+    // flag for network status
+    private boolean isNetworkEnabled = false;
+
+    // flag for GPS status
+    private boolean canGetLocation = false;
+
+    private Location location = null; // location
+    private double latitude  = Double.NaN; // latitude
+    private double longitude = Double.NaN ; // longitude
+
+    // The minimum distance to change Updates in meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 20 meters
+
+    // The minimum time between updates in milliseconds
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 10 * 1; // 1 minute
+
+    // Declaring a Location Manager
+    protected LocationManager locationManager;
+
+    private long minTime = Calendar.getInstance().getTimeInMillis() - 30*MIN_TIME_BW_UPDATES;
+    private float bestAccuracy = Float.MAX_VALUE;
+    private long bestTime = minTime;
 }
