@@ -23,7 +23,7 @@ public class LocationTrackerDummy implements ILocationTracker {
         TimerTask task = new TimerTask(){
             @Override
             public void run() {
-                observer.onLocationUpdated(32.072718,34.781934);
+                observer.onLocationUpdated(32.078145,34.781449); // Vitrina
                 stop();
             }
         };
