@@ -9,7 +9,7 @@
         <description>Rest-o-Gram</description>
         <display-name>Rest-o-Gram</display-name>
         <servlet-name>JsonRpcServlet</servlet-name>
-        <servlet-class>com.tau.JsonRpcServlet</servlet-class>
+        <servlet-class>rest.o.gram.JsonRpcServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>JsonRpcServlet</servlet-name>
