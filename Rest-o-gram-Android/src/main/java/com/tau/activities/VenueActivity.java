@@ -17,10 +17,8 @@ import com.tau.common.Defs;
 import com.tau.tasks.DownloadImageTask;
 import com.tau.tasks.ITaskObserver;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -78,7 +76,6 @@ public class VenueActivity extends Activity implements ITaskObserver {
         this.venue = venue;
 
         // Create view list
-        //photosMap = new HashMap<View, RestogramPhoto>();
         viewList = new LinkedList<View>();
 
         // Set UI with venue information
@@ -116,7 +113,6 @@ public class VenueActivity extends Activity implements ITaskObserver {
             });
 
             // Add to list
-            //photosMap.put(iv, photo);
             viewList.add(iv);
 
             // Download image
@@ -130,13 +126,6 @@ public class VenueActivity extends Activity implements ITaskObserver {
     }
 
     private void onPhotoClicked(RestogramPhoto photo) {
-//        // Get photo using photos map
-//        RestogramPhoto photo = photosMap.get(view);
-//        if(photo == null) {
-//            // TODO: report error
-//            return;
-//        }
-
         // Switch to "PhotoActivity" with parameter "photo"
         Intent intent = new Intent(this, PhotoActivity.class);
         intent.putExtra("photo", photo);
@@ -171,6 +160,5 @@ public class VenueActivity extends Activity implements ITaskObserver {
     }
 
     private RestogramVenue venue; // Venue object
-    //private Map<View, RestogramPhoto> photosMap; // Photos map
     private List<View> viewList; // View list
 }

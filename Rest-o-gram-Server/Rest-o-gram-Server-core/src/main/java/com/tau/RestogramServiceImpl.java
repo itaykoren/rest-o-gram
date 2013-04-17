@@ -5,6 +5,7 @@ import fi.foyt.foursquare.api.FoursquareApiException;
 import fi.foyt.foursquare.api.Result;
 import fi.foyt.foursquare.api.entities.*;
 import org.jinstagram.Instagram;
+import org.jinstagram.entity.common.Images;
 import org.jinstagram.entity.common.Location;
 import org.jinstagram.entity.locations.LocationSearchFeed;
 import org.jinstagram.entity.users.feed.MediaFeed;
@@ -251,8 +252,25 @@ public class RestogramServiceImpl implements RestogramService {
         RestogramPhoto[] photos = new RestogramPhoto[data.size()];
 
         int i = 0;
-        for (MediaFeedData media : data)
-            photos[i++] = new RestogramPhoto(media);
+        for (MediaFeedData media : data) {
+
+            String caption = "";
+            if(media.getCaption() != null)
+                caption = media.getCaption().getText();
+
+            String user = "";
+            if(media.getUser() != null)
+                user = media.getUser().getUserName();
+
+            Images images = media.getImages();
+            String thumbnail = images.getThumbnail().getImageUrl();
+            String standardResolution = images.getStandardResolution().getImageUrl();
+
+            photos[i++] = new RestogramPhoto(caption, media.getCreatedTime(), media.getId(),
+                                            media.getImageFilter(), thumbnail, standardResolution,
+                                            media.getLikes().getCount(), media.getLink(),
+                                            media.getType(), user);
+        }
 
         return photos;
     }

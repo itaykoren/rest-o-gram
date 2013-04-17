@@ -1,8 +1,6 @@
 package com.tau;
 
 import com.google.gson.annotations.SerializedName;
-import org.jinstagram.entity.common.*;
-import org.jinstagram.entity.users.feed.MediaFeedData;
 
 import java.io.Serializable;
 
@@ -16,9 +14,9 @@ public class RestogramPhoto implements Serializable {
     public RestogramPhoto() {
     }
 
-    public RestogramPhoto(Caption caption, String createdTime, String id, String imageFilter,
+    public RestogramPhoto(String caption, String createdTime, String id, String imageFilter,
                           String thumbnail, String standardResolution, int likes, String link,
-                          Location location, String type, User user) {
+                          String type, String user) {
         this.caption = caption;
         this.createdTime = createdTime;
         this.id = id;
@@ -27,24 +25,11 @@ public class RestogramPhoto implements Serializable {
         this.standardResolution = standardResolution;
         this.likes = likes;
         this.link = link;
-        this.location = location;
         this.type = type;
         this.user = user;
     }
 
-    public RestogramPhoto(MediaFeedData other) {
-        this(other.getCaption(), other.getCreatedTime(), other.getId(), other.getImageFilter(),
-                other.getImages().getThumbnail().getImageUrl(), other.getImages().getStandardResolution().getImageUrl(),
-                other.getLikes().getCount(), other.getLink(), other.getLocation(), other.getType(), other.getUser());
-    }
-
-    @Override
-    public String toString() {
-        return String.format("RestogramPhoto [caption=%s, createdTime=%s, id=%s, imageFilter=%s, thumbnail=%s, standardResolution=%s, likes=%s, link=%s, location=%s, type=%s, user=%s]",
-                caption, createdTime, id, imageFilter, thumbnail, standardResolution, likes, link, location, type, user);
-    }
-
-    public Caption getCaption() {
+    public String getCaption() {
         return caption;
     }
 
@@ -76,20 +61,16 @@ public class RestogramPhoto implements Serializable {
         return link;
     }
 
-    public Location getLocation() {
-        return location;
-    }
-
     public String getType() {
         return type;
     }
 
-    public User getUser() {
+    public String getUser() {
         return user;
     }
 
     @SerializedName("caption")
-    private Caption caption;
+    private String caption;
 
     @SerializedName("created_time")
     private String createdTime;
@@ -112,12 +93,9 @@ public class RestogramPhoto implements Serializable {
     @SerializedName("link")
     private String link;
 
-    @SerializedName("location")
-    private Location location;
-
     @SerializedName("type")
     private String type;
 
     @SerializedName("user")
-    private User user;
+    private String user;
 }
