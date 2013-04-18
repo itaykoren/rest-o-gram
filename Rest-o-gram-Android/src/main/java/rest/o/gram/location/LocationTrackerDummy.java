@@ -2,6 +2,8 @@ package rest.o.gram.location;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import android.os.Looper;
+import android.os.Handler;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,20 +15,13 @@ public class LocationTrackerDummy implements ILocationTracker {
     public LocationTrackerDummy() {
         isTracking = false;
         timer = new Timer();
+        task = new GetLocationTimerTask();
     }
 
     @Override
     public void start() {
         if(isTracking)
             stop();
-
-        TimerTask task = new TimerTask(){
-            @Override
-            public void run() {
-                observer.onLocationUpdated(32.078145,34.781449); // Vitrina
-                stop();
-            }
-        };
 
         timer.schedule(task, 2000);
     }
@@ -45,7 +40,23 @@ public class LocationTrackerDummy implements ILocationTracker {
         this.observer = observer;
     }
 
+    class GetLocationTimerTask extends TimerTask {
+        private Handler mHandler = new Handler(Looper.getMainLooper());
+
+        @Override
+        public void run() {
+            // ...
+            mHandler.post(new Runnable() {
+                public void run() {
+                    observer.onLocationUpdated(32.078145,34.781449); // Vitrina
+                    stop();
+                }
+            });
+        }
+    }
+
     private ILocationObserver observer;
     private Timer timer;
+    private GetLocationTimerTask task;
     private boolean isTracking;
 }
