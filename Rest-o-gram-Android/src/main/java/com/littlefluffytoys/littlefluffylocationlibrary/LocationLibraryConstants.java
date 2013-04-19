@@ -1,13 +1,8 @@
-package rest.o.gram.location;
+package com.littlefluffytoys.littlefluffylocationlibrary;
 
 import android.app.AlarmManager;
 import android.os.Build;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Itay
- * Date: 19/04/13
- */
 public class LocationLibraryConstants {
 
     protected static final String TAG = "LittleFluffyLocationLibrary";
@@ -38,6 +33,7 @@ public class LocationLibraryConstants {
     protected static final String SP_KEY_LAST_LOCATION_UPDATE_LNG = "LFT_SP_KEY_LAST_LOCATION_UPDATE_LNG";
     protected static final String SP_KEY_LAST_LOCATION_UPDATE_ACCURACY = "LFT_SP_KEY_LAST_LOCATION_UPDATE_ACCURACY";
     protected static final String SP_KEY_LAST_LOCATION_BROADCAST_TIME = "LFT_SP_KEY_LAST_LOCATION_SUBMIT_TIME";
+    protected static final String SP_KEY_LAST_LOCATION_UPDATE_ORIGIN_PROVIDER = "LFT_SP_KEY_LAST_LOCATION_UPDATE_ORIGIN_PROVIDER";
     protected static final String SP_KEY_RUN_ONCE = "LFT_SP_KEY_RUN_ONCE";
 
     protected static boolean SUPPORTS_FROYO = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO;

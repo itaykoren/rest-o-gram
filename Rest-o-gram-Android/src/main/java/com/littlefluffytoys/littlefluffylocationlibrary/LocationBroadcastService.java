@@ -1,4 +1,4 @@
-package rest.o.gram.location;
+package com.littlefluffytoys.littlefluffylocationlibrary;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
@@ -20,11 +20,6 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Itay
- * Date: 19/04/13
- */
 public class LocationBroadcastService extends Service {
 
     private static final String TAG = "LocationBroadcastService";

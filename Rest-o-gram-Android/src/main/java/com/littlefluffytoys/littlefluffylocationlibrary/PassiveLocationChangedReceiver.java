@@ -1,4 +1,4 @@
-package rest.o.gram.location;
+package com.littlefluffytoys.littlefluffylocationlibrary;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,11 +11,6 @@ import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.util.Log;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Itay
- * Date: 19/04/13
- */
 public class PassiveLocationChangedReceiver extends BroadcastReceiver {
 
     protected static String TAG = "PassiveLocationChangedReceiver";
@@ -72,6 +67,7 @@ public class PassiveLocationChangedReceiver extends BroadcastReceiver {
         final float thisLong = ((int) (location.getLongitude() * 1000000)) / 1000000f;
         final int thisAccuracy = (int) location.getAccuracy();
         final long thisTime = location.getTime();
+        final String thisOriginProvider = location.getProvider();
 
         if (lastLat != Long.MIN_VALUE) {
             // The tricky maths bit to calculate the distance between two points:
@@ -98,6 +94,7 @@ public class PassiveLocationChangedReceiver extends BroadcastReceiver {
             prefsEditor.putFloat(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_LAT, thisLat);
             prefsEditor.putFloat(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_LNG, thisLong);
             prefsEditor.putInt(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_ACCURACY, thisAccuracy);
+            prefsEditor.putString(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_ORIGIN_PROVIDER, thisOriginProvider);
             if (LocationLibrary.showDebugOutput)
                 Log.d(LocationLibraryConstants.TAG, TAG + ": Storing location update, lat=" + thisLat + " long=" + thisLong + " accuracy=" + thisAccuracy + " time=" + thisTime + "(" + DateFormat.format("kk:mm.ss, E", thisTime) + ")");
         } else {

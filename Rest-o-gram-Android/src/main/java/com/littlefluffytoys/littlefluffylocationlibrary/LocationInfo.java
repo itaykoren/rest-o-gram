@@ -1,4 +1,4 @@
-package rest.o.gram.location;
+package com.littlefluffytoys.littlefluffylocationlibrary;
 
 import java.io.Serializable;
 
@@ -7,11 +7,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Itay
- * Date: 19/04/13
- */
 public class LocationInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -21,6 +16,7 @@ public class LocationInfo implements Serializable {
     public float lastLat;
     public float lastLong;
     public int lastAccuracy;
+    public String originProvider;
 
     /**
      * The constructor populates the public fields with the latest location info.
@@ -39,6 +35,7 @@ public class LocationInfo implements Serializable {
         lastLat = ((int) (prefs.getFloat(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_LAT, Integer.MIN_VALUE) * 1000000f)) / 1000000f;
         lastLong = ((int) (prefs.getFloat(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_LNG, Integer.MIN_VALUE) * 1000000f)) / 1000000f;
         lastAccuracy = prefs.getInt(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_ACCURACY, Integer.MAX_VALUE);
+        originProvider = prefs.getString(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_ORIGIN_PROVIDER, null);
     }
 
     /**

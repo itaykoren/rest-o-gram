@@ -11,18 +11,22 @@ public class Defs {
      * Request codes enumeration
      */
     public static class RequestCodes {
-        public static int RC_HOME = 100;
-        public static int RC_FINDME = 101;
-        public static int RC_NEARBY = 102;
-        public static int RC_VENUE = 103;
-        public static int RC_PHOTO = 104;
+        public static final int RC_HOME = 100;
+        public static final int RC_FINDME = 101;
+        public static final int RC_NEARBY = 102;
+        public static final int RC_VENUE = 103;
+        public static final int RC_PHOTO = 104;
     }
 
     /**
      * Location constants
      */
     public static class Location {
-        public static double DEFAULT_FINDME_RADIUS = 30;
-        public static double DEFAULT_NEARBY_RADIUS = 500;
+        public static final double DEFAULT_FINDME_RADIUS = 30;
+        public static final double DEFAULT_NEARBY_RADIUS = 500;
+
+        public static final boolean INTENSE_LOCATION_UPDATES = false;
+        public static final int MAX_LOCATION_AGE = 20 * 60 * 1000; // 20 minutes
+        public static final long LOCATION_UPDATE_INTERVAL = 5 * 60 * 1000; // 5 minutes
     }
 }

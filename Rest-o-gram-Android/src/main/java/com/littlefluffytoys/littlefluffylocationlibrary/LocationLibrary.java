@@ -1,4 +1,4 @@
-package rest.o.gram.location;
+package com.littlefluffytoys.littlefluffylocationlibrary;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -11,11 +11,6 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Itay
- * Date: 19/04/13
- */
 public class LocationLibrary {
 
     protected static boolean showDebugOutput = false;

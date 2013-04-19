@@ -1,18 +1,25 @@
 package rest.o.gram.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import com.littlefluffytoys.littlefluffylocationlibrary.LocationInfo;
+import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
+import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibraryConstants;
+import rest.o.gram.BuildConfig;
 import rest.o.gram.R;
 import rest.o.gram.RestogramPhoto;
 import rest.o.gram.RestogramVenue;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
-import rest.o.gram.location.ILocationObserver;
-import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.tasks.ITaskObserver;
 
 /**
@@ -20,45 +27,35 @@ import rest.o.gram.tasks.ITaskObserver;
  * User: Roi
  * Date: 16/04/13
  */
-public class HomeActivity extends Activity implements ILocationObserver, ITaskObserver {
+public class HomeActivity extends Activity implements ITaskObserver {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.home);
-
-        // Get location tracker
-        tracker = RestogramClient.getInstance().getLocationTracker();
-        if(tracker != null) {
-            tracker.setObserver(this);
-            tracker.start();
-        }
-        else {
-            // TODO: implementation
-            return;
-        }
-
         initProgress("");
+        isInit =  true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        final IntentFilter lftIntentFilter =
+                new IntentFilter(LocationLibraryConstants.getLocationChangedPeriodicBroadcastAction());
+        registerReceiver(locationBroadcastReceiver, lftIntentFilter);
+        if (isInit)
+        {
+            LocationLibrary.forceLocationUpdate(this);
+            isInit = false;
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         cancelProgress();
-    }
-
-    @Override
-    public void onLocationUpdated(double latitude, double longitude) {
-        if(tracker != null) {
-            tracker.stop();
-        }
-
-        this.latitude = latitude;
-        this.longitude = longitude;
-
-        // Send get nearby request
-        RestogramClient.getInstance().getNearby(latitude, longitude, Defs.Location.DEFAULT_FINDME_RADIUS, this);
     }
 
     @Override
@@ -69,8 +66,8 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
         {
             // Switch to "NearbyActivity" with parameters: "latitude", "longitude"
             Intent intent = new Intent(this, NearbyActivity.class);
-            intent.putExtra("latitude", latitude);
-            intent.putExtra("longitude", longitude);
+            intent.putExtra("latitude", (double)location.lastLat);
+            intent.putExtra("longitude", (double)location.lastLong);
             startActivityForResult(intent, Defs.RequestCodes.RC_NEARBY);
             return;
         }
@@ -139,12 +136,31 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
         pb.setVisibility(View.GONE);
     }
 
-    private ILocationTracker tracker; // Location tracker
-    private double latitude;
-    private double longitude;
+    private double getSearchRadius(LocationInfo location) {
+        if (location.originProvider == null ||
+            location.originProvider  == LocationManager.NETWORK_PROVIDER)
+            return Defs.Location.DEFAULT_NEARBY_RADIUS;
+        else // if location.originProvider  == LocationManager.GPS_PROVIDER
+            return Defs.Location.DEFAULT_FINDME_RADIUS;
+    }
 
+    private final BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // extract the location info in the broadcast
+            location =
+                    (LocationInfo) intent.getSerializableExtra(
+                            LocationLibraryConstants.LOCATION_BROADCAST_EXTRA_LOCATIONINFO);
+            if (BuildConfig.DEBUG)
+                Log.d("REST-O-GRAM", "GOT LOCATION!!! LAT:" + location.lastLat + " LONG:" + location.lastLong);
+            RestogramClient.getInstance().getNearby((double)location.lastLat, (double)location.lastLong,
+                                                    getSearchRadius(location), HomeActivity.this);
+        }
+    };
+
+    private LocationInfo location;
     private Handler handler = new Handler();
     private boolean updateProgress = false;
-
+    private boolean isInit = false;
     private RestogramVenue venue;
 }

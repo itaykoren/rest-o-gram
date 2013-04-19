@@ -1,15 +1,10 @@
-package rest.o.gram.location;
+package com.littlefluffytoys.littlefluffylocationlibrary;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Itay
- * Date: 19/04/13
- */
 public class StartupBroadcastReceiver extends BroadcastReceiver {
     static final String TAG = "StartupBroadcastReceiver";
 
