@@ -16,13 +16,17 @@ public class LocationLibraryConstants {
     public static final int DEFAULT_MAXIMUM_LOCATION_AGE = (int) AlarmManager.INTERVAL_HOUR;
 
     protected static final String LOCATION_CHANGED_PERIODIC_BROADCAST_ACTION = ".littlefluffylocationlibrary.LOCATION_CHANGED";
+
     public static String getLocationChangedPeriodicBroadcastAction() {
         return LocationLibrary.broadcastPrefix + LOCATION_CHANGED_PERIODIC_BROADCAST_ACTION;
     }
+
     protected static final String LOCATION_CHANGED_TICKER_BROADCAST_ACTION = ".littlefluffylocationlibrary.LOCATION_CHANGED_TICK";
+
     public static String getLocationChangedTickerBroadcastAction() {
         return LocationLibrary.broadcastPrefix + LOCATION_CHANGED_TICKER_BROADCAST_ACTION;
     }
+
     public static final String LOCATION_BROADCAST_EXTRA_LOCATIONINFO = "com.littlefluffytoys.littlefluffylocationlibrary.LocationInfo";
 
     protected static final int LOCATION_BROADCAST_REQUEST_CODE_SINGLE_SHOT = 1;

@@ -23,7 +23,7 @@ public class PassiveLocationChangedReceiver extends BroadcastReceiver {
     /**
      * When a new location is received, extract it from the Intent and use
      * it to start the Service used to update the list of nearby places.
-     *
+     * <p/>
      * This is the Passive receiver, used to receive Location updates from
      * third party apps when the Activity is not visible.
      */
@@ -33,29 +33,30 @@ public class PassiveLocationChangedReceiver extends BroadcastReceiver {
 
         if (intent.hasCategory(LocationLibraryConstants.INTENT_CATEGORY_ONE_SHOT_UPDATE)) {
             // it's a one-shot update from Gingerbread and higher
-            if (LocationLibrary.showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ":onReceive: on-demand location update received");
+            if (LocationLibrary.showDebugOutput)
+                Log.d(LocationLibraryConstants.TAG, TAG + ":onReceive: on-demand location update received");
 
             if (LocationLibraryConstants.SUPPORTS_JELLYBEAN && intent.hasExtra(key)) {
                 // Location behaviour changed in Android 4.2 - the one-shot location gets sent as an extra in the original intent (as it probably should have done all along...)
                 // Therefore, process this single one-shot location update.
-                if (LocationLibrary.showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ":onReceive: SUPPORTS_JELLYBEAN and contains location key => processing");
+                if (LocationLibrary.showDebugOutput)
+                    Log.d(LocationLibraryConstants.TAG, TAG + ":onReceive: SUPPORTS_JELLYBEAN and contains location key => processing");
 
-                processLocation(context, (Location)intent.getExtras().get(key));
-            }
-            else {
+                processLocation(context, (Location) intent.getExtras().get(key));
+            } else {
                 // Before Android 4.2, this update is followed by one or more updates from the passive location provider over a few seconds.
                 // So, let this onReceive execute, and update itself. And then force a service call in 30 seconds. Simples!
-                if (LocationLibrary.showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ":onReceive: pre-JELLYBEAN_4_2 => wait for update(s) from passive location provider");
+                if (LocationLibrary.showDebugOutput)
+                    Log.d(LocationLibraryConstants.TAG, TAG + ":onReceive: pre-JELLYBEAN_4_2 => wait for update(s) from passive location provider");
 
                 LocationBroadcastService.forceDelayedServiceCall(context, 30);
             }
-        }
-        else if (intent.hasExtra(key)) {
+        } else if (intent.hasExtra(key)) {
             // This update came from Passive provider, so we can extract the location directly.
-            processLocation(context, (Location)intent.getExtras().get(key));
-        }
-        else {
-            if (LocationLibrary.showDebugOutput) Log.w(LocationLibraryConstants.TAG, TAG + ":onReceive: Unknown update received");
+            processLocation(context, (Location) intent.getExtras().get(key));
+        } else {
+            if (LocationLibrary.showDebugOutput)
+                Log.w(LocationLibraryConstants.TAG, TAG + ":onReceive: Unknown update received");
         }
     }
 
@@ -68,7 +69,7 @@ public class PassiveLocationChangedReceiver extends BroadcastReceiver {
         boolean usePreviousReading = false;
 
         final float thisLat = ((int) (location.getLatitude() * 1000000)) / 1000000f;
-        final float thisLong =  ((int) (location.getLongitude() * 1000000)) / 1000000f;
+        final float thisLong = ((int) (location.getLongitude() * 1000000)) / 1000000f;
         final int thisAccuracy = (int) location.getAccuracy();
         final long thisTime = location.getTime();
 
@@ -76,13 +77,13 @@ public class PassiveLocationChangedReceiver extends BroadcastReceiver {
             // The tricky maths bit to calculate the distance between two points:
             // dist = arccos(sin(lat1) · sin(lat2) + cos(lat1) · cos(lat2) · cos(lon1 - lon2)) · R
             int distanceBetweenInMetres = (int) (Math.acos(Math.sin(Math.toRadians(thisLat)) * Math.sin(Math.toRadians(lastLat)) + Math.cos(Math.toRadians(thisLat)) * Math.cos(Math.toRadians(lastLat)) * Math.cos(Math.toRadians(thisLong) - Math.toRadians(lastLong))) * 6371 * 1000);
-            if (LocationLibrary.showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": Distance from last reading: " + distanceBetweenInMetres + "m");
+            if (LocationLibrary.showDebugOutput)
+                Log.d(LocationLibraryConstants.TAG, TAG + ": Distance from last reading: " + distanceBetweenInMetres + "m");
 
             if (location.hasAccuracy() && (thisAccuracy > lastAccuracy)) {
                 // this reading is less accurate than the previous one -
                 // see if it's covering the same spot where we were before
-                if (distanceBetweenInMetres < thisAccuracy)
-                {
+                if (distanceBetweenInMetres < thisAccuracy) {
                     usePreviousReading = true;
                 }
             }
@@ -97,10 +98,11 @@ public class PassiveLocationChangedReceiver extends BroadcastReceiver {
             prefsEditor.putFloat(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_LAT, thisLat);
             prefsEditor.putFloat(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_LNG, thisLong);
             prefsEditor.putInt(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_ACCURACY, thisAccuracy);
-            if (LocationLibrary.showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": Storing location update, lat=" + thisLat + " long=" + thisLong + " accuracy=" + thisAccuracy + " time=" + thisTime + "(" + DateFormat.format("kk:mm.ss, E", thisTime) + ")");
-        }
-        else {
-            if (LocationLibrary.showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": Storing location update, less accurate so reusing prior location - time=" + thisTime);
+            if (LocationLibrary.showDebugOutput)
+                Log.d(LocationLibraryConstants.TAG, TAG + ": Storing location update, lat=" + thisLat + " long=" + thisLong + " accuracy=" + thisAccuracy + " time=" + thisTime + "(" + DateFormat.format("kk:mm.ss, E", thisTime) + ")");
+        } else {
+            if (LocationLibrary.showDebugOutput)
+                Log.d(LocationLibraryConstants.TAG, TAG + ": Storing location update, less accurate so reusing prior location - time=" + thisTime);
         }
         prefsEditor.commit();
 
@@ -116,7 +118,8 @@ public class PassiveLocationChangedReceiver extends BroadcastReceiver {
             // So, instead of sending this immediately, force the send in 10 seconds.
             // If another location update comes in in the meantime, it will overwrite this one.
             // Location update will finally be sent 10 seconds after the last in this updates flurry was received.
-            if (LocationLibrary.showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ":processLocation: treating this update as a periodic update");
+            if (LocationLibrary.showDebugOutput)
+                Log.d(LocationLibraryConstants.TAG, TAG + ":processLocation: treating this update as a periodic update");
             LocationBroadcastService.forceDelayedServiceCall(context, 10);
         }
     }

@@ -39,7 +39,8 @@ public class LocationLibrary {
     }
 
     public static void startAlarmAndListener(final Context context) {
-        if (showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": startAlarmAndListener: alarmFrequency=" + (alarmFrequency == LocationLibraryConstants.DEFAULT_ALARM_FREQUENCY ? "default:" : "") + alarmFrequency/1000 + " secs, locationMaximumAge=" + (locationMaximumAge == LocationLibraryConstants.DEFAULT_MAXIMUM_LOCATION_AGE ? "default:" : "") + locationMaximumAge/1000 + " secs");
+        if (showDebugOutput)
+            Log.d(LocationLibraryConstants.TAG, TAG + ": startAlarmAndListener: alarmFrequency=" + (alarmFrequency == LocationLibraryConstants.DEFAULT_ALARM_FREQUENCY ? "default:" : "") + alarmFrequency / 1000 + " secs, locationMaximumAge=" + (locationMaximumAge == LocationLibraryConstants.DEFAULT_MAXIMUM_LOCATION_AGE ? "default:" : "") + locationMaximumAge / 1000 + " secs");
 
         final PendingIntent alarmIntent = PendingIntent.getService(context, LocationLibraryConstants.LOCATION_BROADCAST_REQUEST_CODE_REPEATING_ALARM, new Intent(context, LocationBroadcastService.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -83,7 +84,7 @@ public class LocationLibrary {
     /**
      * To use this library, call initialiseLibrary from your Application's onCreate method,
      * having set up your manifest as detailed in the project documentation.
-     *
+     * <p/>
      * This constructor uses defaults specified in LocationLibraryConstants for alarmFrequency ({@link android.app.AlarmManager#INTERVAL_FIFTEEN_MINUTES AlarmManager.INTERVAL_FIFTEEN_MINUTES})
      * and locationMaximumAge ({@link android.app.AlarmManager#INTERVAL_HOUR AlarmManager.INTERVAL_HOUR}), and broadcastEveryLocationUpdate by default is false.
      *
@@ -95,7 +96,8 @@ public class LocationLibrary {
             LocationLibrary.broadcastPrefix = broadcastPrefix;
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             if (!prefs.getBoolean(LocationLibraryConstants.SP_KEY_RUN_ONCE, Boolean.FALSE)) {
-                if (showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": initialiseLibrary: first time ever run -> start alarm and listener");
+                if (showDebugOutput)
+                    Log.d(LocationLibraryConstants.TAG, TAG + ": initialiseLibrary: first time ever run -> start alarm and listener");
                 startAlarmAndListener(context);
                 prefs.edit().putBoolean(LocationLibraryConstants.SP_KEY_RUN_ONCE, Boolean.TRUE).commit();
             }
@@ -107,16 +109,14 @@ public class LocationLibrary {
      * To use this library, call initialiseLibrary from your Application's onCreate method,
      * having set up your manifest as detailed in the project documentation.
      *
-     * @param alarmFrequency How often to broadcast a location update in milliseconds, if one was received.
-     *
-     * For battery efficiency, this should be one of the available inexact recurrence intervals
-     * recognised by {@link android.app.AlarmManager#setInexactRepeating(int, long, long , PendingIntent) AlarmManager.setInexactRepeating}.
-     * You are not prevented from using any other value, but in that case Android's alarm manager uses setRepeating instead of setInexactRepeating,
-     * and this results in poorer battery life. The default is {@link android.app.AlarmManager#INTERVAL_FIFTEEN_MINUTES AlarmManager.INTERVAL_FIFTEEN_MINUTES}.
-     *
+     * @param alarmFrequency     How often to broadcast a location update in milliseconds, if one was received.
+     *                           <p/>
+     *                           For battery efficiency, this should be one of the available inexact recurrence intervals
+     *                           recognised by {@link android.app.AlarmManager#setInexactRepeating(int, long, long, PendingIntent) AlarmManager.setInexactRepeating}.
+     *                           You are not prevented from using any other value, but in that case Android's alarm manager uses setRepeating instead of setInexactRepeating,
+     *                           and this results in poorer battery life. The default is {@link android.app.AlarmManager#INTERVAL_FIFTEEN_MINUTES AlarmManager.INTERVAL_FIFTEEN_MINUTES}.
      * @param locationMaximumAge The maximum age of a location update. If when the alarm fires the location is
-     * older than this, a location update will be requested. The default is {@link android.app.AlarmManager#INTERVAL_HOUR AlarmManager.INTERVAL_HOUR}
-     *
+     *                           older than this, a location update will be requested. The default is {@link android.app.AlarmManager#INTERVAL_HOUR AlarmManager.INTERVAL_HOUR}
      * @see #initialiseLibrary(Context, String)
      */
     public static void initialiseLibrary(final Context context, final long alarmFrequency, final int locationMaximumAge, final String broadcastPrefix) {
@@ -130,13 +130,12 @@ public class LocationLibrary {
     /**
      * To use this library, call initialiseLibrary from your Application's onCreate method,
      * having set up your manifest as detailed in the project documentation.
-     *
+     * <p/>
      * This constructor uses defaults specified in LocationLibraryConstants for alarmFrequency ({@link android.app.AlarmManager#INTERVAL_FIFTEEN_MINUTES AlarmManager.INTERVAL_FIFTEEN_MINUTES})
      * and locationMaximumAge ({@link android.app.AlarmManager#INTERVAL_HOUR AlarmManager.INTERVAL_HOUR}).
      *
      * @param broadcastEveryLocationUpdate If true, broadcasts every location update using intent action
-     * LocationLibraryConstants.LOCATION_CHANGED_TICKER_BROADCAST_ACTION
-     *
+     *                                     LocationLibraryConstants.LOCATION_CHANGED_TICKER_BROADCAST_ACTION
      * @see #initialiseLibrary(Context, String)
      */
     public static void initialiseLibrary(final Context context, final boolean broadcastEveryLocationUpdate, final String broadcastPrefix) {
@@ -150,19 +149,16 @@ public class LocationLibrary {
      * To use this library, call initialiseLibrary from your Application's onCreate method,
      * having set up your manifest as detailed in the project documentation.
      *
-     * @param alarmFrequency How often to broadcast a location update in milliseconds, if one was received.
-     *
-     * For battery efficiency, this should be one of the available inexact recurrence intervals
-     * recognised by {@link android.app.AlarmManager#setInexactRepeating(int, long, long , PendingIntent) AlarmManager.setInexactRepeating}.
-     * You are not prevented from using any other value, but in that case Android's alarm manager uses setRepeating instead of setInexactRepeating,
-     * and this results in poorer battery life. The default is {@link android.app.AlarmManager#INTERVAL_FIFTEEN_MINUTES AlarmManager.INTERVAL_FIFTEEN_MINUTES}.
-     *
-     * @param locationMaximumAge The maximum age of a location update. If when the alarm fires the location is
-     * older than this, a location update will be requested. The default is {@link android.app.AlarmManager#INTERVAL_HOUR AlarmManager.INTERVAL_HOUR}
-     *
+     * @param alarmFrequency               How often to broadcast a location update in milliseconds, if one was received.
+     *                                     <p/>
+     *                                     For battery efficiency, this should be one of the available inexact recurrence intervals
+     *                                     recognised by {@link android.app.AlarmManager#setInexactRepeating(int, long, long, PendingIntent) AlarmManager.setInexactRepeating}.
+     *                                     You are not prevented from using any other value, but in that case Android's alarm manager uses setRepeating instead of setInexactRepeating,
+     *                                     and this results in poorer battery life. The default is {@link android.app.AlarmManager#INTERVAL_FIFTEEN_MINUTES AlarmManager.INTERVAL_FIFTEEN_MINUTES}.
+     * @param locationMaximumAge           The maximum age of a location update. If when the alarm fires the location is
+     *                                     older than this, a location update will be requested. The default is {@link android.app.AlarmManager#INTERVAL_HOUR AlarmManager.INTERVAL_HOUR}
      * @param broadcastEveryLocationUpdate If true, broadcasts every location update using intent action
-     * LocationLibraryConstants.LOCATION_CHANGED_TICKER_BROADCAST_ACTION
-     *
+     *                                     LocationLibraryConstants.LOCATION_CHANGED_TICKER_BROADCAST_ACTION
      * @see #initialiseLibrary(Context, long, int, String)
      * @see #initialiseLibrary(Context, boolean, String)
      * @see #initialiseLibrary(Context, String)

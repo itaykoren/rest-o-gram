@@ -60,7 +60,8 @@ public class LocationBroadcastService extends Service {
 
             if (lastLocationBroadcastTimestamp == lastLocationUpdateTimestamp) {
                 // no new location found
-                if (LocationLibrary.showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": No new location update found");
+                if (LocationLibrary.showDebugOutput)
+                    Log.d(LocationLibraryConstants.TAG, TAG + ": No new location update found");
 
                 if (System.currentTimeMillis() - lastLocationUpdateTimestamp > LocationLibrary.getLocationMaximumAge()) {
                     // Current location is out of date. Force an update, and stop service if required.
@@ -84,7 +85,8 @@ public class LocationBroadcastService extends Service {
         final Intent locationIntent = new Intent(LocationLibrary.broadcastPrefix + (isPeriodicBroadcast ? LocationLibraryConstants.LOCATION_CHANGED_PERIODIC_BROADCAST_ACTION : LocationLibraryConstants.LOCATION_CHANGED_TICKER_BROADCAST_ACTION));
         final LocationInfo locationInfo = new LocationInfo(context);
         locationIntent.putExtra(LocationLibraryConstants.LOCATION_BROADCAST_EXTRA_LOCATIONINFO, locationInfo);
-        if (LocationLibrary.showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": Broadcasting " + (isPeriodicBroadcast ? "periodic" : "latest") + " location update timed at " + LocationInfo.formatTimeAndDay(prefs.getLong(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_TIME, System.currentTimeMillis()), true));
+        if (LocationLibrary.showDebugOutput)
+            Log.d(LocationLibraryConstants.TAG, TAG + ": Broadcasting " + (isPeriodicBroadcast ? "periodic" : "latest") + " location update timed at " + LocationInfo.formatTimeAndDay(prefs.getLong(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_TIME, System.currentTimeMillis()), true));
         context.sendBroadcast(locationIntent, "android.permission.ACCESS_FINE_LOCATION");
     }
 
@@ -94,7 +96,6 @@ public class LocationBroadcastService extends Service {
     }
 
     /**
-     *
      * @return true if the service should stay awake, false if not
      */
     @TargetApi(9)
@@ -104,20 +105,21 @@ public class LocationBroadcastService extends Service {
         criteria.setAccuracy(Criteria.ACCURACY_COARSE);
 
         if (LocationLibraryConstants.SUPPORTS_GINGERBREAD) {
-            if (LocationLibrary.showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": Force a single location update, as current location is beyond the oldest location permitted");
+            if (LocationLibrary.showDebugOutput)
+                Log.d(LocationLibraryConstants.TAG, TAG + ": Force a single location update, as current location is beyond the oldest location permitted");
             // just request a single update. The passive provider will pick it up.
             final Intent receiver = new Intent(getApplicationContext(), PassiveLocationChangedReceiver.class).addCategory(LocationLibraryConstants.INTENT_CATEGORY_ONE_SHOT_UPDATE);
             final PendingIntent oneshotReceiver = PendingIntent.getBroadcast(getApplicationContext(), 0, receiver, PendingIntent.FLAG_UPDATE_CURRENT);
             try {
                 locationManager.requestSingleUpdate(criteria, oneshotReceiver);
-            }
-            catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException ex) {
                 // thrown if there are no providers, e.g. GPS is off
-                if (LocationLibrary.showDebugOutput) Log.w(LocationLibraryConstants.TAG, TAG + ": IllegalArgumentException during call to locationManager.requestSingleUpdate - probable cause is that all location providers are off. Details: " + ex.getMessage());
+                if (LocationLibrary.showDebugOutput)
+                    Log.w(LocationLibraryConstants.TAG, TAG + ": IllegalArgumentException during call to locationManager.requestSingleUpdate - probable cause is that all location providers are off. Details: " + ex.getMessage());
             }
-        }
-        else { // pre-Gingerbread
-            if (LocationLibrary.showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": Force location updates (pre-Gingerbread), as current location is beyond the oldest location permitted");
+        } else { // pre-Gingerbread
+            if (LocationLibrary.showDebugOutput)
+                Log.d(LocationLibraryConstants.TAG, TAG + ": Force location updates (pre-Gingerbread), as current location is beyond the oldest location permitted");
             // one-shot not available pre-Gingerbread, so start updates, and when one is received, stop updates.
             final String provider = locationManager.getBestProvider(criteria, true);
             if (provider != null) {
@@ -142,7 +144,8 @@ public class LocationBroadcastService extends Service {
 
     final LocationListener preGingerbreadUpdatesListener = new LocationListener() {
         public void onLocationChanged(Location location) {
-            if (LocationLibrary.showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": Single Location Update Received: " + location.getLatitude() + "," + location.getLongitude());
+            if (LocationLibrary.showDebugOutput)
+                Log.d(LocationLibraryConstants.TAG, TAG + ": Single Location Update Received: " + location.getLatitude() + "," + location.getLongitude());
             ((LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE)).removeUpdates(preGingerbreadUpdatesListener);
 
             if (!LocationLibraryConstants.SUPPORTS_FROYO) {
@@ -156,9 +159,14 @@ public class LocationBroadcastService extends Service {
             LocationBroadcastService.this.stopSelf();
         }
 
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
-        public void onProviderEnabled(String provider) {}
-        public void onProviderDisabled(String provider) {}
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onProviderDisabled(String provider) {
+        }
     };
 
     /**
