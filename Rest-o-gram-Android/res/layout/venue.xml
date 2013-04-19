@@ -22,19 +22,19 @@
                 android:layout_height="fill_parent" android:layout_gravity="center_horizontal|top">
             <FrameLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="150dp"
                     android:layout_alignParentLeft="true" android:layout_alignParentTop="true"
                     android:layout_marginTop="20dp" android:id="@+id/frameLayout">
                 <ImageView
                         android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_height="130dp"
                         android:id="@+id/ivVenue"
                         android:layout_alignParentLeft="true" android:layout_marginLeft="10dp"
                         android:layout_alignParentTop="true" android:layout_marginTop="10dp"
                         android:layout_gravity="left|top"/>
                 <FrameLayout
                         android:layout_width="120dp"
-                        android:layout_height="80dp"
+                        android:layout_height="140dp"
                         android:id="@+id/venueInfo"
                         android:layout_alignParentLeft="true" android:layout_marginLeft="100dp"
                         android:layout_alignParentTop="true" android:layout_marginTop="0dp"
@@ -42,24 +42,24 @@
 
                     <TextView
                             android:layout_width="100dp"
-                            android:layout_height="20dp"
+                            android:layout_height="40dp"
                             android:id="@+id/tvVenueName"
                             android:layout_marginRight="10dp"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="20dp"
                             android:layout_gravity="right|top"/>
                     <TextView
                             android:layout_width="100dp"
                             android:layout_height="20dp"
                             android:id="@+id/tvVenueAddress"
                             android:layout_marginRight="10dp"
-                            android:layout_marginTop="30dp"
+                            android:layout_marginTop="80dp"
                             android:layout_gravity="right|top"/>
                     <TextView
                             android:layout_width="100dp"
                             android:layout_height="20dp"
                             android:id="@+id/tvVenuePhone"
                             android:layout_marginRight="10dp"
-                            android:layout_marginTop="50dp"
+                            android:layout_marginTop="110dp"
                             android:layout_gravity="right|top"/>
 
                 </FrameLayout>
@@ -75,7 +75,7 @@
                     android:horizontalSpacing="10dp"
                     android:stretchMode="columnWidth"
                     android:gravity="center"
-                    android:layout_alignParentTop="true" android:layout_marginTop="130dp"/>
+                    android:layout_below="@+id/frameLayout"/>
 
         </RelativeLayout>
 
