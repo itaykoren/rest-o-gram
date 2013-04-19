@@ -75,18 +75,21 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
             return;
         }
 
-        RestogramVenue venue = venues[0]; // TODO: fix
+        venue = venues[0]; // TODO: fix
 
-        // Switch to "FindMeActivity" with parameter "venue"
-        //Intent intent = new Intent(this, FindMeActivity.class);
-        Intent intent = new Intent(this, VenueActivity.class); // TODO: temp
-        intent.putExtra("venue", venue);
-        startActivityForResult(intent, Defs.RequestCodes.RC_FINDME);
+        // Send get info request
+        RestogramClient.getInstance().getInfo(venue.getId(), this);
     }
 
     @Override
     public void onFinished(RestogramVenue venue) {
-        // Empty
+        // Set image url to current venue member object
+        this.venue.setImageUrl(venue.getImageUrl());
+
+        // Switch to "VenueActivity" with parameter "venue"
+        Intent intent = new Intent(this, VenueActivity.class);
+        intent.putExtra("venue", this.venue);
+        startActivityForResult(intent, Defs.RequestCodes.RC_VENUE);
     }
 
     @Override
@@ -142,4 +145,6 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
 
     private Handler handler = new Handler();
     private boolean updateProgress = false;
+
+    private RestogramVenue venue;
 }

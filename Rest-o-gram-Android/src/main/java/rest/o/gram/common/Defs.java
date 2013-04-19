@@ -22,7 +22,7 @@ public class Defs {
      * Location constants
      */
     public static class Location {
-        public static double DEFAULT_FINDME_RADIUS = 20;
-        public static double DEFAULT_NEARBY_RADIUS = 100;
+        public static double DEFAULT_FINDME_RADIUS = 30;
+        public static double DEFAULT_NEARBY_RADIUS = 500;
     }
 }

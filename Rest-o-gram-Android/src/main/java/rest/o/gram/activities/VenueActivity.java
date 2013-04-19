@@ -55,13 +55,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
     @Override
     public void onFinished(RestogramVenue venue) {
-        if(venue.getImageUrl().isEmpty())
-            return;
-
-        // Set UI with venue image
-        ImageView iv = (ImageView)findViewById(R.id.ivVenue);
-        DownloadImageTask task = new DownloadImageTask(iv);
-        task.execute(venue.getImageUrl());
+        // Empty
     }
 
     @Override
@@ -75,19 +69,22 @@ public class VenueActivity extends Activity implements ITaskObserver {
     private void initialize(RestogramVenue venue) {
         this.venue = venue;
 
-        // Create view list
-        viewList = new LinkedList<View>();
+        // Init photo grid view
+        GridView gv = (GridView)findViewById(R.id.gvPhotos);
+        photosAdapter = new PhotosAdapter();
+        gv.setAdapter(photosAdapter);
 
         // Set UI with venue information
         updateTextView((TextView)findViewById(R.id.tvVenueName), venue.getName());
         updateTextView((TextView)findViewById(R.id.tvVenueAddress), venue.getAddress());
         updateTextView((TextView)findViewById(R.id.tvVenuePhone), venue.getPhone());
 
-        // Send get info request if needed
-        if(venue.getImageUrl() == null)
-            RestogramClient.getInstance().getInfo(venue.getId(), this);
-        else
-            onFinished(venue);
+        // Set UI with venue image
+        if(!venue.getImageUrl().isEmpty()) {
+            ImageView iv = (ImageView)findViewById(R.id.ivVenue);
+            DownloadImageTask task = new DownloadImageTask(iv);
+            task.execute(venue.getImageUrl());
+        }
 
         // Send get photos request
         RestogramClient.getInstance().getPhotos(venue.getId(), this);
@@ -112,17 +109,15 @@ public class VenueActivity extends Activity implements ITaskObserver {
                 }
             });
 
-            // Add to list
-            viewList.add(iv);
+            // Add view
+            photosAdapter.addView(iv);
 
             // Download image
             DownloadImageTask task = new DownloadImageTask(iv);
             task.execute(photo.getThumbnail());
         }
 
-        // Init photo grid view
-        GridView gv = (GridView)findViewById(R.id.gvPhotos);
-        gv.setAdapter(new PhotosAdapter());
+        photosAdapter.refresh();
     }
 
     private void onPhotoClicked(RestogramPhoto photo) {
@@ -138,6 +133,14 @@ public class VenueActivity extends Activity implements ITaskObserver {
      * Date: 17/04/13
      */
     private class PhotosAdapter extends BaseAdapter {
+        /**
+         * Ctor
+         * */
+        public PhotosAdapter() {
+            // Create view list
+            viewList = new LinkedList<View>();
+        }
+
         @Override
         public int getCount() {
             return viewList.size();
@@ -145,20 +148,42 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
         @Override
         public Object getItem(int i) {
-            return null;
+            if(i < 0 || i >= viewList.size())
+                return null;
+
+            return viewList.get(i);
         }
 
         @Override
         public long getItemId(int i) {
-            return 0;
+            return i;
         }
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
+            if(i < 0 || i >= viewList.size())
+                return null;
+
             return viewList.get(i);
         }
+
+        /**
+         * Adds view
+         * */
+        public void addView(View view) {
+            viewList.add(view);
+        }
+
+        /**
+         * Refreshes this adapter
+         */
+        public void refresh() {
+            notifyDataSetChanged();
+        }
+
+        private List<View> viewList; // View list
     }
 
     private RestogramVenue venue; // Venue object
-    private List<View> viewList; // View list
+    private PhotosAdapter photosAdapter; // Photos adapter
 }
