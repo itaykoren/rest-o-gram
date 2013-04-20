@@ -22,10 +22,10 @@ public class Defs {
      * Location constants
      */
     public static class Location {
-        public static final double DEFAULT_FINDME_RADIUS = 30;
+        public static final double DEFAULT_FINDME_RADIUS = 200;
         public static final double DEFAULT_NEARBY_RADIUS = 500;
 
-        public static final boolean INTENSE_LOCATION_UPDATES = false;
+        public static final boolean INTENSE_LOCATION_UPDATES = true;
         public static final int MAX_LOCATION_AGE = 20 * 60 * 1000; // 20 minutes
         public static final long LOCATION_UPDATE_INTERVAL = 5 * 60 * 1000; // 5 minutes
     }
