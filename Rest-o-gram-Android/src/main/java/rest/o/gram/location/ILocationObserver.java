@@ -9,5 +9,5 @@ public interface ILocationObserver {
     /**
      * Called after location was discovered
      */
-    void onLocationUpdated(double latitude, double longitude);
+    void onLocationUpdated(double latitude, double longitude, String provider);
 }

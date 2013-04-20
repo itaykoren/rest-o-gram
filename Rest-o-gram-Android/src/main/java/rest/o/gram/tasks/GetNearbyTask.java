@@ -8,8 +8,6 @@ import rest.o.gram.RestogramVenue;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
 
-import java.net.SocketException;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Roi

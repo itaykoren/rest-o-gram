@@ -1,172 +1,81 @@
 package rest.o.gram.location;
 
-import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.os.IBinder;
+import android.content.IntentFilter;
 import android.util.Log;
+import com.littlefluffytoys.littlefluffylocationlibrary.LocationInfo;
+import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
+import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibraryConstants;
+import rest.o.gram.BuildConfig;
+import rest.o.gram.common.Defs;
 
-import java.util.Calendar;
+/**
+ * Created with IntelliJ IDEA.
+ * User: Or
+ * Date: 19/04/13
+ */
+public class LocationTracker implements ILocationTracker {
 
-public class LocationTracker extends Service implements LocationListener {
-
+    /**
+     * Ctor
+     */
     public LocationTracker(Context context) {
-        this.mContext = context;
-        init();
-    }
+        this.context = context;
 
-    public void stopTracking() {
-        if (locationManager != null) {
-            locationManager.removeUpdates(LocationTracker.this);
-        }
-    }
-
-    /**
-     * Function to get latitude
-     * */
-    public double getLatitude() {
-        if (location != null) {
-            latitude = location.getLatitude();
-        }
-
-        // return latitude
-        return latitude;
-    }
-
-    /**
-     * Function to get longitude
-     * */
-    public double getLongitude() {
-        if (location != null) {
-            longitude = location.getLongitude();
-        }
-
-        // return longitude
-        return longitude;
-    }
-
-    /**
-     * Function to check GPS/wifi enabled
-     *
-     * @return boolean
-     * */
-    public boolean canGetLocation() {
-        return this.canGetLocation;
-    }
-
-    public boolean isLocationValid() {
-        return !Double.isNaN(latitude) && !Double.isNaN(longitude);
+        LocationLibrary.showDebugOutput(BuildConfig.DEBUG);
+        if (Defs.Location.INTENSE_LOCATION_UPDATES)
+            LocationLibrary.initialiseLibrary(context, true, "rest.o.gram");
+        else // uses defined intervals
+            LocationLibrary.initialiseLibrary(context, Defs.Location.LOCATION_UPDATE_INTERVAL,
+                    Defs.Location.MAX_LOCATION_AGE, "rest.o.gram");
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-        if (location != null)
-        {
-            float accuracy = location.getAccuracy();
-            long time = location.getTime();
+    public void start() {
+        if(isTracking)
+            return;
 
-            if ((time > minTime && accuracy < bestAccuracy)) {
-                this.location = location;
-                bestAccuracy = accuracy;
-                bestTime = time;
-            }
-            else if (time < minTime &&
-                    bestAccuracy == Float.MAX_VALUE && time > bestTime){
-                this.location = location;
-                bestTime = time;
-            }
+        final IntentFilter lftIntentFilter =
+                new IntentFilter(LocationLibraryConstants.getLocationChangedPeriodicBroadcastAction());
+        context.registerReceiver(locationBroadcastReceiver, lftIntentFilter);
+        LocationLibrary.forceLocationUpdate(context);
+
+        isTracking = true;
+    }
+
+    @Override
+    public void stop() {
+        if(!isTracking)
+            return;
+
+        isTracking = false;
+        context.unregisterReceiver(locationBroadcastReceiver);
+    }
+
+    @Override
+    public void setObserver(ILocationObserver observer) {
+        this.observer = observer;
+    }
+
+    private final BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // extract the location info in the broadcast
+            location =
+                    (LocationInfo) intent.getSerializableExtra(
+                            LocationLibraryConstants.LOCATION_BROADCAST_EXTRA_LOCATIONINFO);
+            if(BuildConfig.DEBUG)
+                Log.d("REST-O-GRAM", "GOT LOCATION!!! LAT:" + location.lastLat + " LONG:" + location.lastLong);
+
+            if(observer != null)
+                observer.onLocationUpdated((double)location.lastLat, (double)location.lastLong, location.originProvider);
         }
-    }
+    };
 
-    @Override
-    public void onProviderDisabled(String provider) {
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-    }
-
-    @Override
-    public IBinder onBind(Intent arg0) {
-        return null;
-    }
-
-    protected void init() {
-        try
-        {
-            locationManager = (LocationManager) mContext
-                    .getSystemService(LOCATION_SERVICE);
-
-            // getting GPS status
-            isGPSEnabled = locationManager
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-            // getting network status
-            isNetworkEnabled = locationManager
-                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-            this.canGetLocation = true;
-            if (isNetworkEnabled)
-            {
-                locationManager.requestLocationUpdates(
-                        LocationManager.NETWORK_PROVIDER,
-                        MIN_TIME_BW_UPDATES,
-                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                Log.d("Network", "Network Enabled");
-                if (locationManager != null)
-                    onLocationChanged(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
-            }
-
-            // if GPS Enabled get lat/long using GPS Services
-            if (isGPSEnabled)
-            {
-                locationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER,
-                        MIN_TIME_BW_UPDATES,
-                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                Log.d("GPS", "GPS Enabled");
-                if (locationManager != null)
-                    onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private final Context mContext;
-
-    // flag for GPS status
-    private boolean isGPSEnabled = false;
-
-    // flag for network status
-    private boolean isNetworkEnabled = false;
-
-    // flag for GPS status
-    private boolean canGetLocation = false;
-
-    private Location location = null; // location
-    private double latitude  = Double.NaN; // latitude
-    private double longitude = Double.NaN ; // longitude
-
-    // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 20 meters
-
-    // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 10 * 1; // 1 minute
-
-    // Declaring a Location Manager
-    protected LocationManager locationManager;
-
-    private long minTime = Calendar.getInstance().getTimeInMillis() - 30*MIN_TIME_BW_UPDATES;
-    private float bestAccuracy = Float.MAX_VALUE;
-    private long bestTime = minTime;
+    private boolean isTracking = false;
+    private Context context;
+    private LocationInfo location;
+    private ILocationObserver observer;
 }

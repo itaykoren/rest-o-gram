@@ -2,8 +2,8 @@ package rest.o.gram.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.ProgressBar;
 import rest.o.gram.R;
@@ -47,7 +47,7 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     }
 
     @Override
-    public void onLocationUpdated(double latitude, double longitude) {
+    public void onLocationUpdated(double latitude, double longitude, String provider) {
         if(tracker != null) {
             tracker.stop();
         }
@@ -55,8 +55,14 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
         this.latitude = latitude;
         this.longitude = longitude;
 
+        double radius;
+        if (provider == null || provider  == LocationManager.NETWORK_PROVIDER)
+            radius = Defs.Location.DEFAULT_NEARBY_RADIUS;
+        else // if (provider  == LocationManager.GPS_PROVIDER)
+            radius = Defs.Location.DEFAULT_FINDME_RADIUS;
+
         // Send get nearby request
-        RestogramClient.getInstance().getNearby(latitude, longitude, Defs.Location.DEFAULT_FINDME_RADIUS, this);
+        RestogramClient.getInstance().getNearby(latitude, longitude, radius, this);
     }
 
     @Override

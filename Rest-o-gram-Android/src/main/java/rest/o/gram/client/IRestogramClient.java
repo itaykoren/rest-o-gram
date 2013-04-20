@@ -1,5 +1,6 @@
 package rest.o.gram.client;
 
+import android.content.Context;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.tasks.ITaskObserver;
 
@@ -9,6 +10,11 @@ import rest.o.gram.tasks.ITaskObserver;
  * Date: 15/04/13
  */
 public interface IRestogramClient {
+
+    /**
+     * Initializes this client
+     */
+    void initialize(Context context);
 
     /**
      * Executes get nearby request

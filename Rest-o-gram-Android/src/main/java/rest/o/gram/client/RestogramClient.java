@@ -1,11 +1,12 @@
 package rest.o.gram.client;
 
+import android.content.Context;
 import rest.o.gram.commands.GetInfoCommand;
 import rest.o.gram.commands.GetNearbyCommand;
 import rest.o.gram.commands.GetPhotosCommand;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.location.ILocationTracker;
-import rest.o.gram.location.LocationTrackerDummy;
+import rest.o.gram.location.LocationTracker;
 import rest.o.gram.tasks.ITaskObserver;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 
@@ -26,6 +27,17 @@ public class RestogramClient implements IRestogramClient {
             instance = new RestogramClient();
 
         return instance;
+    }
+
+    @Override
+    public void initialize(Context context) {
+        try {
+            transport = new HttpJsonRpcClientTransport(new URL(url));
+            tracker = new LocationTracker(context);
+        }
+        catch(Exception e) {
+            System.out.println("Error in RestogramClient: " + e.getMessage());
+        }
     }
 
     @Override
@@ -61,13 +73,6 @@ public class RestogramClient implements IRestogramClient {
      * Ctor
      */
     private RestogramClient() {
-        try {
-            transport = new HttpJsonRpcClientTransport(new URL(url));
-            tracker = new LocationTrackerDummy(); // TODO: create location tracker
-        }
-        catch(Exception e) {
-            System.out.println("Error in RestogramClient: " + e.getMessage());
-        }
     }
 
     private static IRestogramClient instance; // Singleton instance
