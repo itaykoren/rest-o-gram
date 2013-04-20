@@ -23,7 +23,7 @@
         <ListView
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:id="@+id/lvVenue"
+                android:id="@+id/lvVenues"
                 android:layout_marginTop="40dp">
         </ListView>
 

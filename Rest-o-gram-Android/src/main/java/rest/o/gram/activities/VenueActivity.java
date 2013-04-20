@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,11 +12,10 @@ import rest.o.gram.RestogramPhoto;
 import rest.o.gram.RestogramVenue;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
+import rest.o.gram.common.Utils;
+import rest.o.gram.common.ViewAdapter;
 import rest.o.gram.tasks.DownloadImageTask;
 import rest.o.gram.tasks.ITaskObserver;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -71,13 +68,13 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
         // Init photo grid view
         GridView gv = (GridView)findViewById(R.id.gvPhotos);
-        photosAdapter = new PhotosAdapter();
-        gv.setAdapter(photosAdapter);
+        viewAdapter = new ViewAdapter();
+        gv.setAdapter(viewAdapter);
 
         // Set UI with venue information
-        updateTextView((TextView)findViewById(R.id.tvVenueName), venue.getName());
-        updateTextView((TextView)findViewById(R.id.tvVenueAddress), venue.getAddress());
-        updateTextView((TextView)findViewById(R.id.tvVenuePhone), venue.getPhone());
+        Utils.updateTextView((TextView)findViewById(R.id.tvVenueName), venue.getName());
+        Utils.updateTextView((TextView)findViewById(R.id.tvVenueAddress), venue.getAddress());
+        Utils.updateTextView((TextView)findViewById(R.id.tvVenuePhone), venue.getPhone());
 
         // Set UI with venue image
         if(!venue.getImageUrl().isEmpty()) {
@@ -88,13 +85,6 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
         // Send get photos request
         RestogramClient.getInstance().getPhotos(venue.getId(), this);
-    }
-
-    private void updateTextView(TextView tv, String text) {
-        if(tv == null)
-            return;
-
-        tv.setText(text);
     }
 
     private void addPhotos(RestogramPhoto[] photos) {
@@ -110,14 +100,14 @@ public class VenueActivity extends Activity implements ITaskObserver {
             });
 
             // Add view
-            photosAdapter.addView(iv);
+            viewAdapter.addView(iv);
 
             // Download image
             DownloadImageTask task = new DownloadImageTask(iv);
             task.execute(photo.getThumbnail());
         }
 
-        photosAdapter.refresh();
+        viewAdapter.refresh();
     }
 
     private void onPhotoClicked(RestogramPhoto photo) {
@@ -127,63 +117,6 @@ public class VenueActivity extends Activity implements ITaskObserver {
         startActivityForResult(intent, Defs.RequestCodes.RC_PHOTO);
     }
 
-    /**
-     * Created with IntelliJ IDEA.
-     * User: Roi
-     * Date: 17/04/13
-     */
-    private class PhotosAdapter extends BaseAdapter {
-        /**
-         * Ctor
-         * */
-        public PhotosAdapter() {
-            // Create view list
-            viewList = new LinkedList<View>();
-        }
-
-        @Override
-        public int getCount() {
-            return viewList.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            if(i < 0 || i >= viewList.size())
-                return null;
-
-            return viewList.get(i);
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            if(i < 0 || i >= viewList.size())
-                return null;
-
-            return viewList.get(i);
-        }
-
-        /**
-         * Adds view
-         * */
-        public void addView(View view) {
-            viewList.add(view);
-        }
-
-        /**
-         * Refreshes this adapter
-         */
-        public void refresh() {
-            notifyDataSetChanged();
-        }
-
-        private List<View> viewList; // View list
-    }
-
     private RestogramVenue venue; // Venue object
-    private PhotosAdapter photosAdapter; // Photos adapter
+    private ViewAdapter viewAdapter; // View adapter
 }
