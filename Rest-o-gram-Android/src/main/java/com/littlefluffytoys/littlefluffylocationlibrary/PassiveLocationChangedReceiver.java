@@ -31,11 +31,11 @@ public class PassiveLocationChangedReceiver extends BroadcastReceiver {
             if (LocationLibrary.showDebugOutput)
                 Log.d(LocationLibraryConstants.TAG, TAG + ":onReceive: on-demand location update received");
 
-            if (LocationLibraryConstants.SUPPORTS_JELLYBEAN && intent.hasExtra(key)) {
+            if (LocationLibraryConstants.SUPPORTS_JELLYBEAN_4_2 && intent.hasExtra(key)) {
                 // Location behaviour changed in Android 4.2 - the one-shot location gets sent as an extra in the original intent (as it probably should have done all along...)
                 // Therefore, process this single one-shot location update.
                 if (LocationLibrary.showDebugOutput)
-                    Log.d(LocationLibraryConstants.TAG, TAG + ":onReceive: SUPPORTS_JELLYBEAN and contains location key => processing");
+                    Log.d(LocationLibraryConstants.TAG, TAG + ":onReceive: SUPPORTS_JELLYBEAN_4_2 and contains location key => processing");
 
                 processLocation(context, (Location) intent.getExtras().get(key));
             } else {

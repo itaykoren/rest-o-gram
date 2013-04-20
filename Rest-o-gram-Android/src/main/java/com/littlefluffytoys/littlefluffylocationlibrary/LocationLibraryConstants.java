@@ -38,7 +38,9 @@ public class LocationLibraryConstants {
 
     protected static boolean SUPPORTS_FROYO = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO;
     protected static boolean SUPPORTS_GINGERBREAD = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD;
-    protected static boolean SUPPORTS_JELLYBEAN = android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+// next line is commented out because we don't have API 17 and therefore compilation failure will occur.
+//    protected static boolean SUPPORTS_JELLYBEAN_4_2 = android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
+    protected static boolean SUPPORTS_JELLYBEAN_4_2 = android.os.Build.VERSION.SDK_INT >= 17;
 }
 
 
