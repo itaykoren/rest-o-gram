@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import rest.o.gram.R;
-import rest.o.gram.RestogramPhoto;
+import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.tasks.DownloadImageTask;
 
 /**

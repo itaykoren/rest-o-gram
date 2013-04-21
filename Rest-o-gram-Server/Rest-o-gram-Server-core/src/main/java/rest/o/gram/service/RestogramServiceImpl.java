@@ -1,4 +1,4 @@
-package rest.o.gram;
+package rest.o.gram.service;
 
 import fi.foyt.foursquare.api.FoursquareApi;
 import fi.foyt.foursquare.api.FoursquareApiException;
@@ -11,6 +11,9 @@ import org.jinstagram.entity.locations.LocationSearchFeed;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.exceptions.InstagramException;
+import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.filters.RestogramFilterType;
 
 import java.util.logging.Logger;
 
@@ -118,15 +121,15 @@ public class RestogramServiceImpl implements RestogramService {
      */
     public RestogramPhoto[] getPhotos(String venueID)
     {
-        return doGetPhotos(venueID, RestogramPhotoFilter.None);
+        return doGetPhotos(venueID, RestogramFilterType.None);
     }
 
     /**
      * @return array of media related to venue given its ID, after applying given filter
      */
-    public RestogramPhoto[] getPhotos(String venueID, RestogramPhotoFilter filter)
+    public RestogramPhoto[] getPhotos(String venueID, RestogramFilterType filterType)
     {
-        return doGetPhotos(venueID, filter);
+        return doGetPhotos(venueID, filterType);
     }
 
     /**
@@ -181,7 +184,7 @@ public class RestogramServiceImpl implements RestogramService {
     /**
      * Executes get photos request
      */
-    private RestogramPhoto[] doGetPhotos(String venueID, RestogramPhotoFilter filter)
+    private RestogramPhoto[] doGetPhotos(String venueID, RestogramFilterType filterType)
     {
         LocationSearchFeed locationSearchFeed = null;
 

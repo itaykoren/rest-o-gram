@@ -1,4 +1,4 @@
-package rest.o.gram;
+package rest.o.gram.entities;
 
 import java.io.Serializable;
 

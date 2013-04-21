@@ -2,6 +2,8 @@ package rest.o.gram;
 
 import org.json.rpc.server.JsonRpcExecutor;
 import org.json.rpc.server.JsonRpcServletTransport;
+import rest.o.gram.service.RestogramService;
+import rest.o.gram.service.RestogramServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

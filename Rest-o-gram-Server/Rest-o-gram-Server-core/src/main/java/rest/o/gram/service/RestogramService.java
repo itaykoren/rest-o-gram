@@ -1,4 +1,8 @@
-package rest.o.gram;
+package rest.o.gram.service;
+
+import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.filters.RestogramFilterType;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,5 +34,5 @@ public interface RestogramService {
     /**
      * @return array of media related to venue given its ID, after applying given filter
      */
-    RestogramPhoto[] getPhotos(String venueID, RestogramPhotoFilter filter);
+    RestogramPhoto[] getPhotos(String venueID, RestogramFilterType filterType);
 }

@@ -1,7 +1,7 @@
 package rest.o.gram.tasks;
 
-import rest.o.gram.RestogramPhoto;
-import rest.o.gram.RestogramVenue;
+import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.entities.RestogramVenue;
 
 /**
  * Created with IntelliJ IDEA.

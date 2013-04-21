@@ -1,8 +1,8 @@
 package rest.o.gram.tasks;
 
 import android.os.AsyncTask;
-import rest.o.gram.RestogramPhoto;
-import rest.o.gram.RestogramService;
+import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.service.RestogramService;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
 
