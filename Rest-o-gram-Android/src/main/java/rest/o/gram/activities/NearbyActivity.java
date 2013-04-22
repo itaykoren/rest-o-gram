@@ -1,19 +1,15 @@
 package rest.o.gram.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 import rest.o.gram.R;
-import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
-import rest.o.gram.common.Utils;
-import rest.o.gram.common.ViewAdapter;
+import rest.o.gram.common.VenueViewAdapter;
+import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.tasks.ITaskObserver;
 
 /**
@@ -31,7 +27,7 @@ public class NearbyActivity extends Activity implements ITaskObserver {
 
         // Init venue list view
         ListView lv = (ListView)findViewById(R.id.lvVenues);
-        viewAdapter = new ViewAdapter();
+        viewAdapter = new VenueViewAdapter(this);
         lv.setAdapter(viewAdapter);
 
         // Get location parameters
@@ -53,6 +49,9 @@ public class NearbyActivity extends Activity implements ITaskObserver {
 
     @Override
     public void onFinished(RestogramVenue[] venues) {
+        if(venues == null)
+            return;
+
         addVenues(venues);
     }
 
@@ -69,19 +68,13 @@ public class NearbyActivity extends Activity implements ITaskObserver {
     private void addVenues(RestogramVenue[] venues) {
         // Traverse given venues
         for(final RestogramVenue venue : venues) {
-            // Create new image view
-            VenueView vv = new VenueView(this, venue);
-            vv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onVenueClicked(venue);
-                }
-            });
 
-            // Add view
-            viewAdapter.addView(vv);
+            // TODO: get photo
+            // Send get info request
+            //RestogramClient.getInstance().getInfo(venue.getId(), this);
 
-            // TODO: get venue photo...
+            // Add venue
+            viewAdapter.addVenue(venue);
         }
 
         viewAdapter.refresh();
@@ -94,23 +87,5 @@ public class NearbyActivity extends Activity implements ITaskObserver {
         startActivityForResult(intent, Defs.RequestCodes.RC_VENUE);
     }
 
-    /**
-     * Created with IntelliJ IDEA.
-     * User: Roi
-     * Date: 20/04/13
-     */
-    private class VenueView extends View {
-        private VenueView(Context context, RestogramVenue venue) {
-            super(context);
-
-            setContentView(R.layout.nearby_list_item);
-
-            // Set UI with venue information
-            Utils.updateTextView((TextView)findViewById(R.id.tvName), venue.getName());
-            Utils.updateTextView((TextView)findViewById(R.id.tvAddress), venue.getAddress());
-            Utils.updateTextView((TextView)findViewById(R.id.tvPhone), venue.getPhone());
-        }
-    }
-
-    private ViewAdapter viewAdapter; // View adapter
+    private VenueViewAdapter viewAdapter; // View adapter
 }

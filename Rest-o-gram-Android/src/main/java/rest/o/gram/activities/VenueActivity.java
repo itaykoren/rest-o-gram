@@ -57,6 +57,9 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
     @Override
     public void onFinished(RestogramPhoto[] photos) {
+        if(photos == null)
+            return;
+
         addPhotos(photos);
     }
 
@@ -73,11 +76,13 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
         // Set UI with venue information
         Utils.updateTextView((TextView)findViewById(R.id.tvVenueName), venue.getName());
-        Utils.updateTextView((TextView)findViewById(R.id.tvVenueAddress), venue.getAddress());
-        Utils.updateTextView((TextView)findViewById(R.id.tvVenuePhone), venue.getPhone());
+        if(venue.getAddress() != null)
+            Utils.updateTextView((TextView)findViewById(R.id.tvVenueAddress), venue.getAddress());
+        if(venue.getPhone() != null)
+            Utils.updateTextView((TextView)findViewById(R.id.tvVenuePhone), venue.getPhone());
 
         // Set UI with venue image
-        if(!venue.getImageUrl().isEmpty()) {
+        if(venue.getImageUrl() != null && !venue.getImageUrl().isEmpty()) {
             ImageView iv = (ImageView)findViewById(R.id.ivVenue);
             DownloadImageTask task = new DownloadImageTask(iv);
             task.execute(venue.getImageUrl());

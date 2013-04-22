@@ -69,13 +69,13 @@
             </FrameLayout>
             <GridView
                     android:id="@+id/gvPhotos"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="500dp"
                     android:columnWidth="50dp"
                     android:numColumns="3"
                     android:verticalSpacing="10dp"
                     android:horizontalSpacing="10dp"
-                    android:stretchMode="none"
+                    android:stretchMode="columnWidth"
                     android:gravity="center"
                     android:layout_below="@+id/frameLayout"/>
 
