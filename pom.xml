@@ -6,14 +6,10 @@
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>rest-o-gram</name>
-  <!--<url>http://maven.apache.org</url>-->
-  
+
   <modules>
       <module>rest-o-gram-Server</module>
-    <!--<module>rest-o-gram-Server-core</module>-->
-	<!--<module>rest-o-gram-Server-webapp</module>-->
       <module>rest-o-gram-android</module>
-
   </modules>
   
   <developers>

@@ -7,17 +7,12 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>apk</packaging>
     <name>rest-o-gram-android</name>
+
     <parent>
         <groupId>tau</groupId>
         <artifactId>rest-o-gram</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <!--<repositories>-->
-        <!--<repository>-->
-            <!--<id>my-internal-site</id>-->
-            <!--<url>file:///${env.USERPROFILE}/.m2/repository</url>-->
-        <!--</repository>-->
-    <!--</repositories>-->
 
     <repositories>
         <repository>
@@ -32,12 +27,12 @@
     </properties>
 	
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>tau</groupId>-->
-            <!--<artifactId>rest-o-gram-server-core</artifactId>-->
-            <!--<version>1.0-SNAPSHOT</version>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>tau</groupId>
+            <artifactId>rest-o-gram-server-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
@@ -61,16 +56,6 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.5.8</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.nesscomputing.instagram</groupId>-->
-            <!--<artifactId>jInstagram</artifactId>-->
-            <!--<version>1.3.3</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.slf4j</groupId>-->
-            <!--<artifactId>slf4j-log4j12</artifactId>-->
-            <!--<version>1.5.2</version>-->
-        <!--</dependency>-->
   </dependencies>
   
   <build>
