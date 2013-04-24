@@ -85,6 +85,9 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
 
     @Override
     public void onFinished(RestogramVenue venue) {
+        if(venue == null)
+            return;
+
         // Set image url to current venue member object
         this.venue.setImageUrl(venue.getImageUrl());
 

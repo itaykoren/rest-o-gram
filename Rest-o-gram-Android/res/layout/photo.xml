@@ -11,35 +11,54 @@
                   android:background="@drawable/background">
 
         <TextView
-                android:layout_width="200dp"
-                android:layout_height="40dp"
-                android:id="@+id/tvUsername"
-                android:editable="false"
-                android:layout_gravity="center|right"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="10dp"/>
-
-        <TextView
                 android:layout_width="80dp"
                 android:layout_height="40dp"
                 android:id="@+id/tvLikes"
                 android:editable="false"
                 android:layout_gravity="center|left"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="3dp"/>
 
-        <ImageView
-                android:layout_width="40dp"
+        <TextView
+                android:layout_width="170dp"
                 android:layout_height="40dp"
-                android:id="@+id/ivLike"
-                android:src="@drawable/ic_likes"
+                android:id="@+id/tvCreationTime"
+                android:editable="false"
                 android:layout_gravity="center|right"
-                android:layout_marginTop="1dp"
-                android:layout_marginLeft="-5dp"/>
+                android:layout_marginTop="9dp"
+                android:layout_marginRight="-3dp"
+                android:layout_marginLeft="70dp"/>
+
     </LinearLayout>
 
     <ImageView
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="400dp"
             android:id="@+id/ivPhoto"/>
+
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="70dp"
+                  android:background="@drawable/background">
+
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="15dp"
+                android:id="@+id/tvUsername"
+                android:editable="false"
+                android:layout_gravity="center|center"
+                android:layout_marginTop="3dp"
+                android:layout_marginLeft="3dp"/>
+
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="35dp"
+                android:id="@+id/tvTitle"
+                android:editable="false"
+                android:layout_gravity="center|center"
+                android:layout_marginTop="2dp"/>
+
+
+    </LinearLayout>
 
 </LinearLayout>
