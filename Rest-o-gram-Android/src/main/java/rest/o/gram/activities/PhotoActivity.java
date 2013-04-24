@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.TextView;
 import rest.o.gram.R;
+import rest.o.gram.common.Utils;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.tasks.DownloadImageTask;
 
@@ -42,7 +44,9 @@ public class PhotoActivity extends Activity {
     private void initialize(RestogramPhoto photo) {
         this.photo = photo;
 
-        // TODO: Update UI
+        // Update UI
+        Utils.updateTextView((TextView)findViewById(R.id.tvUsername), photo.getUser());
+        Utils.updateTextView((TextView)findViewById(R.id.tvLikes), String.valueOf(photo.getLikes())+" likes");
 
         // Set UI with standard resolution image
         ImageView iv = (ImageView)findViewById(R.id.ivPhoto);
