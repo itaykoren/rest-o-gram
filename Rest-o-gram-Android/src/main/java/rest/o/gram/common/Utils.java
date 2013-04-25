@@ -34,7 +34,7 @@ public class Utils {
         try {
             long seconds = Long.decode(timestamp);
             Date d = new Date(seconds * 1000);
-            date = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss").format(d);
+            date = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(d);
         }
         catch(Exception e) {
             return date;
