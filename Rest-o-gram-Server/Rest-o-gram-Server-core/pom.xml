@@ -38,6 +38,11 @@
             <artifactId>foursquare-api</artifactId>
             <version>1.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-1.0-sdk</artifactId>
+            <version>1.7.6</version>
+        </dependency>
         <!--<dependency>-->
         <!--<groupId>fi.foyt</groupId>-->
         <!--<artifactId>foursquare-api-gae</artifactId>-->
@@ -54,9 +59,19 @@
             <version>1.0</version>
         </dependency>
         <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.5.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20090211</version>
         </dependency>
     </dependencies>
 
