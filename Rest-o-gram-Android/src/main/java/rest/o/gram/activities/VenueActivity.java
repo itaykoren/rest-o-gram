@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -64,14 +65,17 @@ public class VenueActivity extends Activity implements ITaskObserver {
         if(result == null)
             return;
 
-        if (RestogramClient.getInstance().isDebuggable())
+        if(RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "Adding " + result.getPhotos().length + " photos");
 
+        // Add new photos
         addPhotos(result.getPhotos());
 
-        // if session is not yet over - asks for next photos
-        if (result.getToken() != null)
-            RestogramClient.getInstance().getNextPhotos(result.getToken(), this);
+        // Update last token
+        lastToken = result.getToken();
+
+        // Update request pending flag
+        isRequestPending = false;
     }
 
     /**
@@ -85,8 +89,28 @@ public class VenueActivity extends Activity implements ITaskObserver {
         viewAdapter = new ViewAdapter();
         gv.setAdapter(viewAdapter);
 
+        // Set scroll listener
+        gv.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // Empty
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                if(totalItemCount == 0)
+                    return;
+
+                // Check whether the last view is visible
+                if(++firstVisibleItem + visibleItemCount > totalItemCount) {
+                    onScrollBottom();
+                }
+            }
+        });
+
         // Set UI with venue information
-        Utils.updateTextView((TextView) findViewById(R.id.tvVenueName), venue.getName());
+        Utils.updateTextView((TextView)findViewById(R.id.tvVenueName), venue.getName());
         if(venue.getAddress() != null)
             Utils.updateTextView((TextView)findViewById(R.id.tvVenueAddress), venue.getAddress());
         if(venue.getPhone() != null)
@@ -95,7 +119,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
         // Set UI with venue image
         if(venue.getImageUrl() != null && !venue.getImageUrl().isEmpty()) {
             ImageView iv = (ImageView)findViewById(R.id.ivVenue);
-            DownloadImageTask task = new DownloadImageTask(iv);
+            DownloadImageTask task = new DownloadImageTask(iv, 100, 100);
             task.execute(venue.getImageUrl());
         }
 
@@ -119,7 +143,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
             viewAdapter.addView(iv);
 
             // Download image
-            DownloadImageTask task = new DownloadImageTask(iv);
+            DownloadImageTask task = new DownloadImageTask(iv, 50, 50);
             task.execute(photo.getThumbnail());
         }
 
@@ -133,6 +157,22 @@ public class VenueActivity extends Activity implements ITaskObserver {
         startActivityForResult(intent, Defs.RequestCodes.RC_PHOTO);
     }
 
+    private void onScrollBottom() {
+        if(isRequestPending)
+            return;
+
+        // if session is not yet over - request next photos
+        if (lastToken != null) {
+            if(RestogramClient.getInstance().isDebuggable())
+                Log.d("REST-O-GRAM", "Requesting more photos");
+
+            RestogramClient.getInstance().getNextPhotos(lastToken, this);
+            isRequestPending = true;
+        }
+    }
+
     private RestogramVenue venue; // Venue object
     private ViewAdapter viewAdapter; // View adapter
+    private String lastToken = null; // Last token
+    private boolean isRequestPending = false; // Request pending flag
 }
