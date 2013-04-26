@@ -1,8 +1,9 @@
 package rest.o.gram.service;
 
-import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
+import rest.o.gram.results.PhotosResult;
+import rest.o.gram.results.VenueResult;
+import rest.o.gram.results.VenuesResult;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,25 +15,38 @@ public interface RestogramService {
     /**
      * @return array of venus near given location
      */
-    RestogramVenue[] getNearby(double latitude, double longitude);
+    VenuesResult getNearby(double latitude, double longitude);
 
     /**
      * @return array of venus near given location within given radius
      */
-    RestogramVenue[] getNearby(double latitude, double longitude, double radius);
+    VenuesResult getNearby(double latitude, double longitude, double radius);
 
     /**
      * @return venue information according to its ID
      */
-    RestogramVenue getInfo(String venueID);
+    VenueResult getInfo(String venueID);
 
     /**
      * @return array of media related to venue given its ID
      */
-    RestogramPhoto[] getPhotos(String venueID);
+    PhotosResult getPhotos(String venueID);
 
     /**
      * @return array of media related to venue given its ID, after applying given filter
      */
-    RestogramPhoto[] getPhotos(String venueID, RestogramFilterType filterType);
+    PhotosResult getPhotos(String venueID, RestogramFilterType filterType);
+
+    /**
+     * @param token identifying previous session for getting next photos
+     * @return array of media related to venue given its ID
+     */
+    PhotosResult getNextPhotos(String token);
+
+    /**
+     *
+     * @param token identifying previous session for getting next photos
+     * @return array of media related to venue given its ID, after applying given filter
+     */
+    PhotosResult getNextPhotos(String token, RestogramFilterType filterType);
 }

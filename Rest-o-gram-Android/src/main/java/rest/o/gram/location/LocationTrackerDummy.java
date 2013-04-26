@@ -14,17 +14,15 @@ import android.os.Handler;
  */
 public class LocationTrackerDummy implements ILocationTracker {
 
-    public LocationTrackerDummy() {
-        isTracking = false;
-        timer = new Timer();
-        task = new GetLocationTimerTask();
-    }
-
     @Override
     public void start() {
         if(isTracking)
             stop();
 
+        timer = new Timer();
+        task = new GetLocationTimerTask();
+
+        isTracking = true;
         timer.schedule(task, 2000);
     }
 
@@ -50,8 +48,8 @@ public class LocationTrackerDummy implements ILocationTracker {
             // ...
             mHandler.post(new Runnable() {
                 public void run() {
-                    //observer.onLocationUpdated(32.078145,34.781449, LocationManager.GPS_PROVIDER); // Vitrina
-                    observer.onLocationUpdated(32.095,34.782468, LocationManager.GPS_PROVIDER); // Near my house
+                    observer.onLocationUpdated(32.078145,34.781449, LocationManager.GPS_PROVIDER); // Vitrina
+                    //observer.onLocationUpdated(32.095,34.782468, LocationManager.GPS_PROVIDER); // Near my house
                     stop();
                 }
             });
@@ -61,5 +59,5 @@ public class LocationTrackerDummy implements ILocationTracker {
     private ILocationObserver observer;
     private Timer timer;
     private GetLocationTimerTask task;
-    private boolean isTracking;
+    private boolean isTracking = false;
 }

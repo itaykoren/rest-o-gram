@@ -8,7 +8,7 @@ import android.util.Log;
 import com.littlefluffytoys.littlefluffylocationlibrary.LocationInfo;
 import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
 import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibraryConstants;
-import rest.o.gram.BuildConfig;
+import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 
 /**
@@ -24,7 +24,7 @@ public class LocationTracker implements ILocationTracker {
     public LocationTracker(Context context) {
         this.context = context;
 
-        LocationLibrary.showDebugOutput(BuildConfig.DEBUG);
+        LocationLibrary.showDebugOutput(RestogramClient.getInstance().isDebuggable());
         if (Defs.Location.INTENSE_LOCATION_UPDATES)
             LocationLibrary.initialiseLibrary(context, true, "rest.o.gram");
         else // uses defined intervals
@@ -66,7 +66,7 @@ public class LocationTracker implements ILocationTracker {
             location =
                     (LocationInfo) intent.getSerializableExtra(
                             LocationLibraryConstants.LOCATION_BROADCAST_EXTRA_LOCATIONINFO);
-            if(BuildConfig.DEBUG)
+            if (RestogramClient.getInstance().isDebuggable())
                 Log.d("REST-O-GRAM", "GOT LOCATION!!! LAT:" + location.lastLat + " LONG:" + location.lastLong);
 
             if(observer != null)

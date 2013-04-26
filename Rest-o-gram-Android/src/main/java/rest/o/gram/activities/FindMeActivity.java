@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import rest.o.gram.R;
-import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.common.Defs;
+import rest.o.gram.tasks.results.GetInfoResult;
+import rest.o.gram.tasks.results.GetNearbyResult;
+import rest.o.gram.tasks.results.GetPhotosResult;
 import rest.o.gram.tasks.ITaskObserver;
 
 /**
@@ -39,17 +41,17 @@ public class FindMeActivity extends Activity implements ITaskObserver {
     }
 
     @Override
-    public void onFinished(RestogramVenue[] venues) {
+    public void onFinished(GetNearbyResult result) {
         // Empty
     }
 
     @Override
-    public void onFinished(RestogramVenue venue) {
+    public void onFinished(GetInfoResult venue) {
         // Empty
     }
 
     @Override
-    public void onFinished(RestogramPhoto[] photos) {
+    public void onFinished(GetPhotosResult result) {
         // Empty
     }
 

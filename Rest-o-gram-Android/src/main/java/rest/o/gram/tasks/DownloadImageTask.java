@@ -27,8 +27,20 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
             InputStream in = new java.net.URL(urldisplay).openStream();
             mIcon11 = BitmapFactory.decodeStream(in);
         } catch (Exception e) {
-            Log.e("Error", e.getMessage());
+            Log.e("REST-O-GRAM", "DOWNLOAD IMAGE -  FIRST ATTEMPT FAILED");
+            Log.e("REST-O-GRAM", "image  url: " + urldisplay);
             e.printStackTrace();
+            try
+            {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            }
+            catch (Exception e2)
+            {
+                Log.e("REST-O-GRAM", "DOWNLOAD IMAGE -  SECOND ATTEMPT FAILED");
+                Log.e("REST-O-GRAM", "image  url: " + urldisplay);
+                e2.printStackTrace();
+            }
         }
         return mIcon11;
     }

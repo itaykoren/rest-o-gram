@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import rest.o.gram.R;
@@ -13,6 +14,9 @@ import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.location.ILocationObserver;
 import rest.o.gram.location.ILocationTracker;
+import rest.o.gram.tasks.results.GetInfoResult;
+import rest.o.gram.tasks.results.GetNearbyResult;
+import rest.o.gram.tasks.results.GetPhotosResult;
 import rest.o.gram.tasks.ITaskObserver;
 
 /**
@@ -47,10 +51,16 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     }
 
     @Override
-    public void onLocationUpdated(double latitude, double longitude, String provider) {
-        if(tracker != null) {
+    protected  void onDestroy() {
+        super.onDestroy();
+        if(tracker != null)
             tracker.stop();
-        }
+    }
+
+    @Override
+    public void onLocationUpdated(double latitude, double longitude, String provider) {
+        if(tracker != null)
+            tracker.stop();
 
         this.latitude = latitude;
         this.longitude = longitude;
@@ -66,9 +76,17 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     }
 
     @Override
-    public void onFinished(RestogramVenue[] venues) {
+    public void onFinished(GetNearbyResult result) {
+        final RestogramVenue[] venues = result.getVenues();
         if(venues == null || venues.length == 0)
         {
+            if (RestogramClient.getInstance().isDebuggable())
+            {
+                if (venues == null)
+                    Log.d("REST-O-GRAM", "an error occured while searching for venues");
+                else
+                    Log.d("REST-O-GRAM", "no venues found");
+            }
             // Switch to "NearbyActivity" with parameters: "latitude", "longitude"
             Intent intent = new Intent(this, NearbyActivity.class);
             intent.putExtra("latitude", latitude);
@@ -84,7 +102,8 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     }
 
     @Override
-    public void onFinished(RestogramVenue venue) {
+    public void onFinished(GetInfoResult result) {
+        final RestogramVenue venue = result.getVenue();
         if(venue == null)
             return;
 
@@ -98,7 +117,7 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     }
 
     @Override
-    public void onFinished(RestogramPhoto[] photos) {
+    public void onFinished(GetPhotosResult result) {
         // Empty
     }
 

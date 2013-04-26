@@ -37,7 +37,17 @@ public interface IRestogramClient {
     void getPhotos(String venueID, ITaskObserver observer);
 
     /**
+     * Executes get next photos request
+     */
+    void getNextPhotos(String token, ITaskObserver observer);
+
+    /**
      * Returns location tracker
      */
     ILocationTracker getLocationTracker();
+
+    /**
+     * @return is the application in debug mode?
+     */
+    boolean isDebuggable();
 }

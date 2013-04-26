@@ -1,12 +1,16 @@
 package rest.o.gram.service;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import fi.foyt.foursquare.api.FoursquareApi;
 import fi.foyt.foursquare.api.FoursquareApiException;
 import fi.foyt.foursquare.api.Result;
 import fi.foyt.foursquare.api.entities.*;
+import org.apache.commons.lang3.StringUtils;
 import org.jinstagram.Instagram;
 import org.jinstagram.entity.common.Images;
 import org.jinstagram.entity.common.Location;
+import org.jinstagram.entity.common.Pagination;
 import org.jinstagram.entity.locations.LocationSearchFeed;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
@@ -14,6 +18,7 @@ import org.jinstagram.exceptions.InstagramException;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
+import rest.o.gram.results.*;
 
 import java.util.logging.Logger;
 
@@ -47,7 +52,8 @@ public class RestogramServiceImpl implements RestogramService {
     /**
      * @return array of venus near given location
      */
-    public RestogramVenue[] getNearby(double latitude, double longitude)
+    @Override
+    public VenuesResult getNearby(double latitude, double longitude)
     {
         String location = latitude + "," + longitude;
 
@@ -65,7 +71,8 @@ public class RestogramServiceImpl implements RestogramService {
     /**
      * @return array of venus near given location within given radius
      */
-    public RestogramVenue[] getNearby(double latitude, double longitude, double radius)
+    @Override
+    public VenuesResult getNearby(double latitude, double longitude, double radius)
     {
         String location = latitude + "," + longitude;
 
@@ -83,7 +90,8 @@ public class RestogramServiceImpl implements RestogramService {
     /**
      * @return venue information according to its ID
      */
-    public RestogramVenue getInfo(String venueID) {
+    @Override
+    public VenueResult getInfo(String venueID) {
         Result<CompleteVenue> result;
         try {
             result = m_foursquare.venue(venueID);
@@ -113,13 +121,14 @@ public class RestogramServiceImpl implements RestogramService {
             return null;
         }
 
-        return convert(v);
+        return new VenueResult(convert(v));
     }
 
     /**
      * @return array of media related to venue given its ID
      */
-    public RestogramPhoto[] getPhotos(String venueID)
+    @Override
+    public PhotosResult getPhotos(String venueID)
     {
         return doGetPhotos(venueID, RestogramFilterType.None);
     }
@@ -127,15 +136,39 @@ public class RestogramServiceImpl implements RestogramService {
     /**
      * @return array of media related to venue given its ID, after applying given filter
      */
-    public RestogramPhoto[] getPhotos(String venueID, RestogramFilterType filterType)
+    @Override
+    public PhotosResult getPhotos(String venueID, RestogramFilterType filterType)
     {
         return doGetPhotos(venueID, filterType);
     }
 
     /**
+     * @param token identifying previous session for getting next photos
+     * @return array of media related to venue given its ID
+     */
+    @Override
+    public PhotosResult getNextPhotos(String token) {
+        Pagination pag =
+                new Gson().fromJson(token, Pagination.class);
+        return doGetPhotos(pag, RestogramFilterType.None);
+    }
+
+    /**
+     *
+     * @param token identifying previous session for getting next photos
+     * @return array of media related to venue given its ID, after applying given filter
+     */
+    @Override
+    public PhotosResult getNextPhotos(String token, RestogramFilterType filterType) {
+
+        Pagination pag = new Gson().fromJson(token, Pagination.class);
+        return doGetPhotos(pag, filterType);
+    }
+
+    /**
      * Executes get nearby request
      */
-    private RestogramVenue[] doGetNearby(Map<String, String> params)
+    private VenuesResult doGetNearby(Map<String, String> params)
     {
         Result<VenuesSearchResult> result;
         try
@@ -178,13 +211,15 @@ public class RestogramServiceImpl implements RestogramService {
             venues[i] = convert(arr[i]);
         }
 
-        return venues;
+        log.info("found " + venues.length + " venues!");
+
+        return new VenuesResult(venues);
     }
 
     /**
      * Executes get photos request
      */
-    private RestogramPhoto[] doGetPhotos(String venueID, RestogramFilterType filterType)
+    private PhotosResult doGetPhotos(String venueID, RestogramFilterType filterType)
     {
         LocationSearchFeed locationSearchFeed = null;
 
@@ -195,7 +230,7 @@ public class RestogramServiceImpl implements RestogramService {
         catch (InstagramException e)
         {
             log.warning("first search for venue: " + venueID + " has failed, retry");
-            e.printStackTrace();;
+            e.printStackTrace();
             try
             {
                 locationSearchFeed = m_instagram.searchFoursquareVenue(venueID);
@@ -203,7 +238,7 @@ public class RestogramServiceImpl implements RestogramService {
             catch (InstagramException e2)
             {
                 log.severe("second search for venue: " + venueID + "has failed");
-                e.printStackTrace();;
+                e.printStackTrace();
             }
         }
 
@@ -237,16 +272,50 @@ public class RestogramServiceImpl implements RestogramService {
             }
         }
 
+        return createPhotosResult(recentMediaByLocation, filterType);
+    }
+
+    /**
+     * Executes get photos request
+     */
+    private PhotosResult doGetPhotos(Pagination pagination, RestogramFilterType filterType)
+    {
+        MediaFeed recentMediaByLocation;
+        try
+        {
+            recentMediaByLocation = m_instagram.getRecentMediaNextPage(pagination);
+        }
+        catch(InstagramException e)
+        {
+            log.warning("first next media search has failed, retry");
+            e.printStackTrace();
+
+            try
+            {
+                recentMediaByLocation = m_instagram.getRecentMediaNextPage(pagination);
+            }
+            catch (InstagramException e2)
+            {
+                log.severe("second next for recent media has failed");
+                e2.printStackTrace();
+                return null;
+            }
+        }
+
+        return createPhotosResult(recentMediaByLocation, filterType);
+    }
+
+    private PhotosResult createPhotosResult(MediaFeed recentMediaByLocation, RestogramFilterType filterType) {
         if(recentMediaByLocation == null)
         {
-            log.severe("media search returned no media");
+            log.severe("next media search returned no media");
             return null;
         }
 
         List<MediaFeedData> data = recentMediaByLocation.getData();
         if(data == null)
         {
-            log.severe("media search returned no media");
+            log.severe("next media search returned no media");
             return null;
         }
 
@@ -270,12 +339,17 @@ public class RestogramServiceImpl implements RestogramService {
             String standardResolution = images.getStandardResolution().getImageUrl();
 
             photos[i++] = new RestogramPhoto(caption, media.getCreatedTime(), media.getId(),
-                                            media.getImageFilter(), thumbnail, standardResolution,
-                                            media.getLikes().getCount(), media.getLink(),
-                                            media.getType(), user);
+                    media.getImageFilter(), thumbnail, standardResolution,
+                    media.getLikes().getCount(), media.getLink(),
+                    media.getType(), user);
         }
 
-        return photos;
+        log.info("GOT " + photos.length + " PHOTOS");
+        final Pagination pagination = recentMediaByLocation.getPagination();
+        log.info("HAS MORE? " + (StringUtils.isNotBlank(pagination.getNextUrl()) ? "YES!" : "NO!"));
+        final String token = (StringUtils.isNotBlank(pagination.getNextUrl()) ?
+                                new Gson().toJson(pagination) : null)  ;
+        return new PhotosResult(photos, token);
     }
 
     /**

@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
+import rest.o.gram.client.RestogramClient;
 
 import java.util.Calendar;
 import java.util.Timer;
@@ -50,7 +51,8 @@ public class LocationTrackerSimple extends Service implements ILocationTracker, 
                         LocationManager.GPS_PROVIDER,
                         MIN_TIME_BW_UPDATES,
                         MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                Log.d("GPS", "GPS Enabled");
+                if (RestogramClient.getInstance().isDebuggable())
+                    Log.d("GPS", "GPS Enabled");
             }
 
             if(locationManager
@@ -60,7 +62,8 @@ public class LocationTrackerSimple extends Service implements ILocationTracker, 
                         LocationManager.NETWORK_PROVIDER,
                         MIN_TIME_BW_UPDATES,
                         MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                Log.d("Network", "Network Enabled");
+                if (RestogramClient.getInstance().isDebuggable())
+                    Log.d("Network", "Network Enabled");
             }
 
             // Start get location timer task

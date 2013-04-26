@@ -1,7 +1,8 @@
 package rest.o.gram.tasks;
 
-import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.tasks.results.GetInfoResult;
+import rest.o.gram.tasks.results.GetNearbyResult;
+import rest.o.gram.tasks.results.GetPhotosResult;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,9 +11,9 @@ import rest.o.gram.entities.RestogramVenue;
  */
 public interface ITaskObserver {
 
-    void onFinished(RestogramVenue[] venues);
+    void onFinished(GetNearbyResult venues);
 
-    void onFinished(RestogramVenue venue);
+    void onFinished(GetInfoResult venue);
 
-    void onFinished(RestogramPhoto[] photos);
+    void onFinished(GetPhotosResult result);
 }

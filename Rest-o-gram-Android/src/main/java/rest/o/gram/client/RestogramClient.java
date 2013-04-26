@@ -1,12 +1,12 @@
 package rest.o.gram.client;
 
 import android.content.Context;
-import rest.o.gram.commands.GetInfoCommand;
-import rest.o.gram.commands.GetNearbyCommand;
-import rest.o.gram.commands.GetPhotosCommand;
-import rest.o.gram.commands.IRestogramCommand;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import rest.o.gram.commands.*;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.location.LocationTracker;
+import rest.o.gram.location.LocationTrackerDummy;
 import rest.o.gram.tasks.ITaskObserver;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 
@@ -34,9 +34,21 @@ public class RestogramClient implements IRestogramClient {
         try {
             transport = new HttpJsonRpcClientTransport(new URL(url));
             tracker = new LocationTracker(context);
+            //tracker = new LocationTrackerDummy();
         }
         catch(Exception e) {
             System.out.println("Error in RestogramClient: " + e.getMessage());
+        }
+
+        PackageManager pm = context.getPackageManager();
+        try
+        {
+            ApplicationInfo appinfo = pm.getApplicationInfo(context.getPackageName(), 0);
+            debuggable = (0 != (appinfo.flags &= ApplicationInfo.FLAG_DEBUGGABLE));
+        }
+        catch(PackageManager.NameNotFoundException e)
+        {
+        /*debuggable variable will remain false*/
         }
     }
 
@@ -65,8 +77,19 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
+    public void getNextPhotos(String token, ITaskObserver observer) {
+        IRestogramCommand command = new GetNextPhotosCommand(token);
+        command.execute(transport, observer);
+    }
+
+    @Override
     public ILocationTracker getLocationTracker() {
         return tracker;
+    }
+
+    @Override
+    public boolean isDebuggable() {
+        return debuggable;
     }
 
     /**
@@ -79,4 +102,5 @@ public class RestogramClient implements IRestogramClient {
     private final String url = "http://rest-o-gram.appspot.com/service"; // Server URL
     private HttpJsonRpcClientTransport transport; // Transport object
     private ILocationTracker tracker; // Location tracker
+    private boolean debuggable = false;
 }

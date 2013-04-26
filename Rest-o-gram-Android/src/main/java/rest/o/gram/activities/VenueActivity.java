@@ -3,6 +3,7 @@ package rest.o.gram.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -15,6 +16,9 @@ import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
 import rest.o.gram.common.ViewAdapter;
 import rest.o.gram.tasks.DownloadImageTask;
+import rest.o.gram.tasks.results.GetInfoResult;
+import rest.o.gram.tasks.results.GetNearbyResult;
+import rest.o.gram.tasks.results.GetPhotosResult;
 import rest.o.gram.tasks.ITaskObserver;
 
 /**
@@ -46,21 +50,28 @@ public class VenueActivity extends Activity implements ITaskObserver {
     }
 
     @Override
-    public void onFinished(RestogramVenue[] venues) {
+    public void onFinished(GetNearbyResult result) {
         // Empty
     }
 
     @Override
-    public void onFinished(RestogramVenue venue) {
+    public void onFinished(GetInfoResult result) {
         // Empty
     }
 
     @Override
-    public void onFinished(RestogramPhoto[] photos) {
-        if(photos == null)
+    public void onFinished(GetPhotosResult result) {
+        if(result == null)
             return;
 
-        addPhotos(photos);
+        if (RestogramClient.getInstance().isDebuggable())
+            Log.d("REST-O-GRAM", "Adding " + result.getPhotos().length + " photos");
+
+        addPhotos(result.getPhotos());
+
+        // if session is not yet over - asks for next photos
+        if (result.getToken() != null)
+            RestogramClient.getInstance().getNextPhotos(result.getToken(), this);
     }
 
     /**
@@ -75,7 +86,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
         gv.setAdapter(viewAdapter);
 
         // Set UI with venue information
-        Utils.updateTextView((TextView)findViewById(R.id.tvVenueName), venue.getName());
+        Utils.updateTextView((TextView) findViewById(R.id.tvVenueName), venue.getName());
         if(venue.getAddress() != null)
             Utils.updateTextView((TextView)findViewById(R.id.tvVenueAddress), venue.getAddress());
         if(venue.getPhone() != null)

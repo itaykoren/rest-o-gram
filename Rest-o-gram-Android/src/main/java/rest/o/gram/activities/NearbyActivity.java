@@ -8,8 +8,10 @@ import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.VenueViewAdapter;
-import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.tasks.results.GetInfoResult;
+import rest.o.gram.tasks.results.GetNearbyResult;
+import rest.o.gram.tasks.results.GetPhotosResult;
 import rest.o.gram.tasks.ITaskObserver;
 
 /**
@@ -48,20 +50,20 @@ public class NearbyActivity extends Activity implements ITaskObserver {
     }
 
     @Override
-    public void onFinished(RestogramVenue[] venues) {
-        if(venues == null)
+    public void onFinished(GetNearbyResult result) {
+        if(result.getVenues() == null)
             return;
 
-        addVenues(venues);
+        addVenues(result.getVenues());
     }
 
     @Override
-    public void onFinished(RestogramVenue venue) {
+    public void onFinished(GetInfoResult result) {
         // TODO: implementation
     }
 
     @Override
-    public void onFinished(RestogramPhoto[] photos) {
+    public void onFinished(GetPhotosResult result) {
         // TODO: implementation
     }
 
