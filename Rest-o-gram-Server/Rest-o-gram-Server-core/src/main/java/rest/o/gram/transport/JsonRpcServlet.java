@@ -1,4 +1,4 @@
-package rest.o.gram;
+package rest.o.gram.transport;
 
 import org.json.rpc.server.JsonRpcExecutor;
 import org.json.rpc.server.JsonRpcServletTransport;
