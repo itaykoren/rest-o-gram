@@ -1,6 +1,7 @@
 package rest.o.gram.client;
 
 import android.content.Context;
+import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.tasks.ITaskObserver;
 
@@ -37,9 +38,19 @@ public interface IRestogramClient {
     void getPhotos(String venueID, ITaskObserver observer);
 
     /**
+     * Executes get photos request with a filter
+     */
+    void getPhotos(String venueID, RestogramFilterType filterType, ITaskObserver observer);
+
+    /**
      * Executes get next photos request
      */
     void getNextPhotos(String token, ITaskObserver observer);
+
+    /**
+     * Executes get next photos request with filter
+     */
+    void getNextPhotos(String token, RestogramFilterType filterType, ITaskObserver observer);
 
     /**
      * Returns location tracker

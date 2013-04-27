@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.results.PhotosResult;
 import rest.o.gram.service.RestogramService;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
@@ -24,6 +25,8 @@ public class GetPhotosTask extends AsyncTask<String, Void, GetPhotosResult> {
 
     protected GetPhotosResult doInBackground(String... params) {
         String venueID = params[0];
+        RestogramFilterType filterType = RestogramFilterType.valueOf(params[1]);
+
 
         JsonRpcInvoker invoker = new JsonRpcInvoker();
         RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
@@ -31,10 +34,23 @@ public class GetPhotosTask extends AsyncTask<String, Void, GetPhotosResult> {
         if (RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "Getting photos");
 
-        PhotosResult result = service.getPhotos(venueID);
+        PhotosResult result = safeGetPhotos(service, venueID, filterType);
         if (result == null)
             return null;
         return (new GetPhotosResultImpl(result.getPhotos(), result.getToken()));
+    }
+
+    private PhotosResult safeGetPhotos(RestogramService service, String venueID, RestogramFilterType filterType) {
+        try
+        {
+            return service.getPhotos(venueID, filterType);
+        }
+        catch (Exception e)
+        {
+            Log.e("REST-O-GRAM", "GET PHOTOS - FIRST ATTEMPT FAILED");
+            e.printStackTrace();
+            return service.getPhotos(venueID, filterType);
+        }
     }
 
     protected void onPostExecute(GetPhotosResult result) {

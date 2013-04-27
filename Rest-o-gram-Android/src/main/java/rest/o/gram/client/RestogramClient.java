@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import rest.o.gram.commands.*;
+import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.location.LocationTracker;
 import rest.o.gram.location.LocationTrackerDummy;
@@ -77,8 +78,20 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
+    public void getPhotos(String venueID, RestogramFilterType filterType, ITaskObserver observer) {
+        IRestogramCommand command = new GetPhotosCommand(venueID, filterType);
+        command.execute(transport, observer);
+    }
+
+    @Override
     public void getNextPhotos(String token, ITaskObserver observer) {
         IRestogramCommand command = new GetNextPhotosCommand(token);
+        command.execute(transport, observer);
+    }
+
+    @Override
+    public void getNextPhotos(String token, RestogramFilterType filterType, ITaskObserver observer) {
+        IRestogramCommand command = new GetNextPhotosCommand(token, filterType);
         command.execute(transport, observer);
     }
 
@@ -99,7 +112,7 @@ public class RestogramClient implements IRestogramClient {
     }
 
     private static IRestogramClient instance; // Singleton instance
-    private final String url = "http://rest-o-gram.appspot.com/service"; // Server URL
+    private final String url = "http://rest-o-debug.appspot.com/service"; // Server URL
     private HttpJsonRpcClientTransport transport; // Transport object
     private ILocationTracker tracker; // Location tracker
     private boolean debuggable = false;

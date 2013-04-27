@@ -4,6 +4,7 @@ import android.util.Log;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
 import rest.o.gram.client.RestogramClient;
+import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.results.PhotosResult;
 import rest.o.gram.service.RestogramService;
 import rest.o.gram.tasks.results.GetPhotosResult;
@@ -22,6 +23,7 @@ public class GetNextPhotosTask extends GetPhotosTask {
     @Override
     protected GetPhotosResult doInBackground(String... params) {
         String token =  params[0];
+        RestogramFilterType filterType = RestogramFilterType.valueOf(params[1]);
 
         JsonRpcInvoker invoker = new JsonRpcInvoker();
         RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
@@ -29,10 +31,23 @@ public class GetNextPhotosTask extends GetPhotosTask {
         if (RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "Getting some more photos");
 
-        PhotosResult result = service.getNextPhotos(token);
+        PhotosResult result = safeGetNextPhotos(service, token, filterType);
         if (result == null)
             return null;
         return (new GetPhotosResultImpl(result.getPhotos(), result.getToken()));
+    }
+
+    private PhotosResult safeGetNextPhotos(RestogramService service, String token, RestogramFilterType filterType) {
+        try
+        {
+            return service.getNextPhotos(token, filterType);
+        }
+        catch (Exception e)
+        {
+            Log.e("REST-O-GRAM", "GET NEXT PHOTOS - FIRST ATTEMPT FAILED");
+            e.printStackTrace();
+            return service.getNextPhotos(token, filterType);
+        }
     }
 
     @Override

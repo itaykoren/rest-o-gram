@@ -30,6 +30,10 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     protected Bitmap doInBackground(String... urls) {
         String url = urls[0];
         Bitmap bitmap = null;
+        return safeDownloadBitmap(url, bitmap);
+    }
+
+    private Bitmap safeDownloadBitmap(String url, Bitmap bitmap) {
         try {
             bitmap = downloadBitmap(url);
         }
