@@ -112,7 +112,7 @@ public class RestogramClient implements IRestogramClient {
     }
 
     private static IRestogramClient instance; // Singleton instance
-    private final String url = "http://rest-o-debug.appspot.com/service"; // Server URL
+    private final String url = "http://rest-o-gram.appspot.com/service"; // Server URL
     private HttpJsonRpcClientTransport transport; // Transport object
     private ILocationTracker tracker; // Location tracker
     private boolean debuggable = false;
