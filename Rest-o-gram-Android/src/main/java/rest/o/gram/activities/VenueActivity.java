@@ -51,6 +51,14 @@ public class VenueActivity extends Activity implements ITaskObserver {
     }
 
     @Override
+    protected  void onDestroy() {
+        super.onDestroy();
+
+        if (viewAdapter != null)
+            viewAdapter.clear();
+    }
+
+    @Override
     public void onFinished(GetNearbyResult result) {
         // Empty
     }

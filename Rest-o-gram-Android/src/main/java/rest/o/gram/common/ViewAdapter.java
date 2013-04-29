@@ -61,5 +61,12 @@ public class ViewAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    /**
+     * Clears all views
+     */
+    public void clear() {
+        viewList.clear();
+    }
+
     private List<View> viewList; // View list
 }
