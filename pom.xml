@@ -9,7 +9,7 @@
 
   <modules>
       <module>rest-o-gram-common</module>
-      <module>rest-o-gram-Server</module>
+      <module>rest-o-gram-server</module>
       <module>rest-o-gram-android</module>
   </modules>
   
