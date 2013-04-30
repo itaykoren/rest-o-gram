@@ -1,7 +1,6 @@
 package rest.o.gram.service;
 
 import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
 import fi.foyt.foursquare.api.FoursquareApi;
 import fi.foyt.foursquare.api.FoursquareApiException;
 import fi.foyt.foursquare.api.Result;
@@ -18,6 +17,7 @@ import org.jinstagram.exceptions.InstagramException;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
+import rest.o.gram.iservice.RestogramService;
 import rest.o.gram.results.*;
 
 import java.util.logging.Logger;

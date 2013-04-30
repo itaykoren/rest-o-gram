@@ -3,11 +3,11 @@ package rest.o.gram.tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 import rest.o.gram.client.RestogramClient;
+import rest.o.gram.iservice.RestogramService;
 import rest.o.gram.results.VenuesResult;
 import rest.o.gram.entities.RestogramVenue;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
-import rest.o.gram.service.RestogramService;
 import rest.o.gram.tasks.results.GetNearbyResult;
 
 /**

@@ -1,4 +1,4 @@
-package rest.o.gram.service;
+package rest.o.gram.iservice;
 
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.results.PhotosResult;

@@ -6,7 +6,7 @@ import rest.o.gram.client.RestogramClient;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.results.PhotosResult;
-import rest.o.gram.service.RestogramService;
+import rest.o.gram.iservice.RestogramService;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
 import rest.o.gram.tasks.results.GetPhotosResult;

@@ -8,7 +8,7 @@
   <name>rest-o-gram-server</name>
 
   <modules>
-      <module>rest-o-gram-Server-core</module>
+      <module>rest-o-gram-server-core</module>
       <module>rest-o-gram-server-webapp</module>
   </modules>
   

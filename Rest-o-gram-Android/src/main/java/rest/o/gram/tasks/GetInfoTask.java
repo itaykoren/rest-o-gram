@@ -2,7 +2,7 @@ package rest.o.gram.tasks;
 
 import android.os.AsyncTask;
 import rest.o.gram.entities.RestogramVenue;
-import rest.o.gram.service.RestogramService;
+import rest.o.gram.iservice.RestogramService;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
 import rest.o.gram.tasks.results.GetInfoResult;
