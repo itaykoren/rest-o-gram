@@ -1,16 +1,39 @@
 package rest.o.gram.commands;
 
-import rest.o.gram.tasks.ITaskObserver;
-import org.json.rpc.client.HttpJsonRpcClientTransport;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Roi
  * Date: 15/04/13
  */
 public interface IRestogramCommand {
+
+    /**
+     * Command state enumeration
+     */
+    public enum State {
+        CS_Pending,
+        CS_Executing,
+        CS_Finished,
+        CS_Failed
+    }
+
     /**
      * Executes command
      */
-    void execute(HttpJsonRpcClientTransport transport, ITaskObserver observer);
+    void execute();
+
+    /**
+     * Adds command observer
+     */
+    void addObserver(IRestogramCommandObserver observer);
+
+    /**
+     * Removes command observer
+     */
+    void removeObserver(IRestogramCommandObserver observer);
+
+    /**
+     * Returns command state
+     */
+    State state();
 }

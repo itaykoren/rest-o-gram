@@ -29,4 +29,11 @@ public class Defs {
         public static final int MAX_LOCATION_AGE = 20 * 60 * 1000; // 20 minutes
         public static final long LOCATION_UPDATE_INTERVAL = 5 * 60 * 1000; // 5 minutes
     }
+
+    /**
+     * Commands constants
+     */
+    public static class Commands {
+        public static final int MAX_EXECUTING_COMMANDS = 3;
+    }
 }

@@ -2,10 +2,10 @@ package rest.o.gram.tasks;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
+import rest.o.gram.commands.DownloadImageCommand;
 
 import java.io.InputStream;
 
@@ -15,6 +15,7 @@ import java.io.InputStream;
  * Date: 4/5/13
  */
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+
     public DownloadImageTask(ImageView imageView) {
         this.imageView = imageView;
         this.width = -1;
@@ -25,6 +26,10 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         this.imageView = imageView;
         this.width = Math.max(width, 1);
         this.height = Math.max(height, 1);
+    }
+
+    public void setContext(DownloadImageCommand context) {
+        this.context = context;
     }
 
     protected Bitmap doInBackground(String... urls) {
@@ -48,12 +53,18 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
                 Log.e("REST-O-GRAM", "DOWNLOAD IMAGE - SECOND ATTEMPT FAILED");
                 Log.e("REST-O-GRAM", "image url: " + url);
                 e2.printStackTrace();
+
+                if(context != null)
+                    context.taskError();
             }
         }
         return bitmap;
     }
 
     protected void onPostExecute(Bitmap result) {
+        if(context != null)
+            context.taskFinished();
+
         imageView.setImageBitmap(result);
     }
 
@@ -104,6 +115,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     }
 
     private ImageView imageView; // Target image view
+    private DownloadImageCommand context; // Command context
     private int width; // Target image width
     private int height; // Target image height
 }

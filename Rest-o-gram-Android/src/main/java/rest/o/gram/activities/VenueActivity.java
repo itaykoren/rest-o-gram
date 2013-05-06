@@ -10,17 +10,16 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import rest.o.gram.R;
-import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
 import rest.o.gram.common.ViewAdapter;
-import rest.o.gram.tasks.DownloadImageTask;
+import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.GetInfoResult;
 import rest.o.gram.tasks.results.GetNearbyResult;
 import rest.o.gram.tasks.results.GetPhotosResult;
-import rest.o.gram.tasks.ITaskObserver;
 
 /**
  * Created with IntelliJ IDEA.
@@ -127,8 +126,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
         // Set UI with venue image
         if(venue.getImageUrl() != null && !venue.getImageUrl().isEmpty()) {
             ImageView iv = (ImageView)findViewById(R.id.ivVenue);
-            DownloadImageTask task = new DownloadImageTask(iv, 100, 100);
-            task.execute(venue.getImageUrl());
+            RestogramClient.getInstance().downloadImage(venue.getImageUrl(), iv, 80, 80, true);
         }
 
         // Send get photos request
@@ -151,8 +149,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
             viewAdapter.addView(iv);
 
             // Download image
-            DownloadImageTask task = new DownloadImageTask(iv, 50, 50);
-            task.execute(photo.getThumbnail());
+            RestogramClient.getInstance().downloadImage(photo.getThumbnail(), iv, 40, 40, false);
         }
 
         viewAdapter.refresh();

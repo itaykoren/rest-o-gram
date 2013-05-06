@@ -5,14 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-import org.apache.http.impl.cookie.DateUtils;
 import rest.o.gram.R;
+import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Utils;
 import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.tasks.DownloadImageTask;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -56,8 +52,7 @@ public class PhotoActivity extends Activity {
 
         // Set UI with standard resolution image
         ImageView iv = (ImageView)findViewById(R.id.ivPhoto);
-        DownloadImageTask task = new DownloadImageTask(iv);
-        task.execute(photo.getStandardResolution());
+        RestogramClient.getInstance().downloadImage(photo.getStandardResolution(), iv, 200, 200, true);
     }
 
     private RestogramPhoto photo; // Photo object

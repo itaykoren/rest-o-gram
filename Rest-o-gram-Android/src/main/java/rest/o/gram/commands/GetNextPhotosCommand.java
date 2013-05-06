@@ -10,18 +10,21 @@ import rest.o.gram.tasks.ITaskObserver;
  * User: Or
  * Date: 4/22/13
  */
-public class GetNextPhotosCommand implements IRestogramCommand {
-    public GetNextPhotosCommand(String token) {
+public class GetNextPhotosCommand extends AbstractRestogramCommand {
+    public GetNextPhotosCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer,
+                                String token) {
+        super(transport, observer);
         this.token = token;
     }
 
-    public GetNextPhotosCommand(String token, RestogramFilterType filterType) {
-        this.token = token;
+    public GetNextPhotosCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer,
+                                String token, RestogramFilterType filterType) {
+        this(transport, observer, token);
         this.filterType = filterType;
     }
 
     @Override
-    public void execute(HttpJsonRpcClientTransport transport, ITaskObserver observer) {
+    public void execute() {
         GetNextPhotosTask task = new GetNextPhotosTask(transport, observer);
         task.execute(token, filterType.toString());
     }

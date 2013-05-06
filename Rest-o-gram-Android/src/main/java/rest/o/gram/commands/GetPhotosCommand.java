@@ -10,19 +10,22 @@ import org.json.rpc.client.HttpJsonRpcClientTransport;
  * User: Roi
  * Date: 15/04/13
  */
-public class GetPhotosCommand implements IRestogramCommand {
+public class GetPhotosCommand extends AbstractRestogramCommand {
 
-    public GetPhotosCommand(String venueID) {
+    public GetPhotosCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer,
+                            String venueID) {
+        super(transport, observer);
         this.venueID = venueID;
     }
 
-    public GetPhotosCommand(String venueID, RestogramFilterType filterType) {
-        this.venueID = venueID;
+    public GetPhotosCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer,
+                            String venueID, RestogramFilterType filterType) {
+        this(transport, observer, venueID);
         this.filterType =  filterType;
     }
 
     @Override
-    public void execute(HttpJsonRpcClientTransport transport, ITaskObserver observer) {
+    public void execute() {
         GetPhotosTask task = new GetPhotosTask(transport, observer);
         task.execute(venueID, filterType.toString());
     }

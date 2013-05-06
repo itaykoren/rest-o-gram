@@ -9,14 +9,16 @@ import org.json.rpc.client.HttpJsonRpcClientTransport;
  * User: Roi
  * Date: 15/04/13
  */
-public class GetInfoCommand implements IRestogramCommand {
+public class GetInfoCommand extends AbstractRestogramCommand {
 
-    public GetInfoCommand(String venueID) {
+    public GetInfoCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer,
+                          String venueID) {
+        super(transport, observer);
         this.venueID = venueID;
     }
 
     @Override
-    public void execute(HttpJsonRpcClientTransport transport, ITaskObserver observer) {
+    public void execute() {
         GetInfoTask task = new GetInfoTask(transport, observer);
         task.execute(venueID);
     }
