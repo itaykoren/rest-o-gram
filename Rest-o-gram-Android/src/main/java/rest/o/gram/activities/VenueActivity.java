@@ -16,6 +16,7 @@ import rest.o.gram.common.Utils;
 import rest.o.gram.common.ViewAdapter;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.GetInfoResult;
 import rest.o.gram.tasks.results.GetNearbyResult;
@@ -130,7 +131,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
         }
 
         // Send get photos request
-        RestogramClient.getInstance().getPhotos(venue.getId(), this);
+        RestogramClient.getInstance().getPhotos(venue.getId(), RestogramFilterType.Simple, this);
     }
 
     private void addPhotos(RestogramPhoto[] photos) {
