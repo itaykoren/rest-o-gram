@@ -16,6 +16,8 @@ import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.exceptions.InstagramException;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.filters.RestogramFilter;
+import rest.o.gram.filters.RestogramFilterFactory;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.iservice.RestogramService;
 import rest.o.gram.results.*;
@@ -319,7 +321,13 @@ public class RestogramServiceImpl implements RestogramService {
             return null;
         }
 
-        // TODO: apply filter
+        log.info("fetched " + data.size() + " photos");
+        // TODO: apply simple/complex filter
+        if (filterType != RestogramFilterType.None)
+        {
+            RestogramFilter restogramFilter = RestogramFilterFactory.createFilter(filterType);
+            data = restogramFilter.doFilter(data);
+        }
 
         RestogramPhoto[] photos = new RestogramPhoto[data.size()];
 
