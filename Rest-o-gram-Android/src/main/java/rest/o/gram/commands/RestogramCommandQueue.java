@@ -47,14 +47,12 @@ public class RestogramCommandQueue implements IRestogramCommandQueue, IRestogram
 
     @Override
     public void onFinished(IRestogramCommand command) {
-        command.removeObserver(this);
         executing.remove(command);
         update();
     }
 
     @Override
     public void onError(IRestogramCommand command) {
-        command.removeObserver(this);
         executing.remove(command);
         update();
     }
