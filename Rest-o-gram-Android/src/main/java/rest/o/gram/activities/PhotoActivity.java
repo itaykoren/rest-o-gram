@@ -24,12 +24,12 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
 
     @Override
     public void onFinished(IRestogramCommand command) {
-        //cancelProgress();
+        cancelProgress();
     }
 
     @Override
     public void onError(IRestogramCommand command) {
-        //cancelProgress();
+        cancelProgress();
     }
 
     @Override
@@ -78,10 +78,10 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
         RestogramClient.getInstance().downloadImage(photo.getStandardResolution(), iv, 200, 200, true, this);
     }
 
-//    private void cancelProgress() {
-//        ProgressBar pb = (ProgressBar)findViewById(R.id.pbImageLoading);
-//        pb.setVisibility(View.GONE);
-//    }
+    private void cancelProgress() {
+        ProgressBar pb = (ProgressBar)findViewById(R.id.pbImageLoading);
+        pb.setVisibility(View.GONE);
+    }
 
     private RestogramPhoto photo; // Photo object
 }

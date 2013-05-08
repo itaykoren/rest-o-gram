@@ -46,11 +46,28 @@
     <LinearLayout android:orientation="vertical"
                   android:layout_width="fill_parent"
                   android:layout_height="fill_parent">
-        <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginTop="-20dp"
-                android:id="@+id/ivPhoto"/>
+
+        <RelativeLayout
+                android:id="@+id/relative_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-20dp">
+
+            <ImageView
+                    android:id="@+id/ivPhoto"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:adjustViewBounds="true"/>
+
+            <ProgressBar
+                    android:id="@+id/pbImageLoading"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="visible"/>
+
+        </RelativeLayout>
 
         <TextView
                 android:layout_width="fill_parent"
