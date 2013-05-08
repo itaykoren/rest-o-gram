@@ -2,6 +2,8 @@ package rest.o.gram.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -127,7 +129,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
         // Set UI with venue image
         if(venue.getImageUrl() != null && !venue.getImageUrl().isEmpty()) {
             ImageView iv = (ImageView)findViewById(R.id.ivVenue);
-            RestogramClient.getInstance().downloadImage(venue.getImageUrl(), iv, 80, 80, true);
+            RestogramClient.getInstance().downloadImage(venue.getImageUrl(), iv, 80, 80, true, null);
         }
 
         // Send get photos request
@@ -138,11 +140,11 @@ public class VenueActivity extends Activity implements ITaskObserver {
         // Traverse given photos
         for(final RestogramPhoto photo : photos) {
             // Create new image view
-            ImageView iv = new ImageView(this);
+            final ImageView iv = new ImageView(this);
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onPhotoClicked(photo);
+                    onPhotoClicked(iv, photo);
                 }
             });
 
@@ -150,16 +152,25 @@ public class VenueActivity extends Activity implements ITaskObserver {
             viewAdapter.addView(iv);
 
             // Download image
-            RestogramClient.getInstance().downloadImage(photo.getThumbnail(), iv, 40, 40, false);
+            RestogramClient.getInstance().downloadImage(photo.getThumbnail(), iv, 40, 40, false, null);
         }
 
         viewAdapter.refresh();
     }
 
-    private void onPhotoClicked(RestogramPhoto photo) {
-        // Switch to "PhotoActivity" with parameter "photo"
+    private void onPhotoClicked(ImageView imageView, RestogramPhoto photo) {
+        // Switch to "PhotoActivity" with parameters "photo" & "thumbnail_bitmap" (if possible)
         Intent intent = new Intent(this, PhotoActivity.class);
         intent.putExtra("photo", photo);
+
+        try {
+            Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+            intent.putExtra("thumbnail_bitmap", bitmap);
+        }
+        catch(Exception e) {
+            // Empty
+        }
+
         startActivityForResult(intent, Defs.RequestCodes.RC_PHOTO);
     }
 
@@ -169,11 +180,11 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
         // if session is not yet over - request next photos
         if (lastToken != null) {
+            isRequestPending = true;
             if(RestogramClient.getInstance().isDebuggable())
                 Log.d("REST-O-GRAM", "Requesting more photos");
 
             RestogramClient.getInstance().getNextPhotos(lastToken, this);
-            isRequestPending = true;
         }
     }
 

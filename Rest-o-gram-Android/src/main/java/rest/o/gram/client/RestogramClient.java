@@ -99,8 +99,13 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public void downloadImage(String url, ImageView imageView, boolean force) {
+    public void downloadImage(String url, ImageView imageView,
+                              boolean force, IRestogramCommandObserver observer) {
         IRestogramCommand command = new DownloadImageCommand(url, imageView);
+
+        if(observer != null)
+            command.addObserver(observer);
+
         if(force)
             commandQueue.pushForce(command);
         else
@@ -108,8 +113,13 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public void downloadImage(String url, ImageView imageView, int width, int height, boolean force) {
+    public void downloadImage(String url, ImageView imageView, int width, int height,
+                              boolean force, IRestogramCommandObserver observer) {
         IRestogramCommand command = new DownloadImageCommand(url, imageView, width, height);
+
+        if(observer != null)
+            command.addObserver(observer);
+
         if(force)
             commandQueue.pushForce(command);
         else

@@ -2,6 +2,7 @@ package rest.o.gram.client;
 
 import android.content.Context;
 import android.widget.ImageView;
+import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.tasks.ITaskObserver;
@@ -56,12 +57,12 @@ public interface IRestogramClient {
     /**
      * Executes download image request
      */
-    void downloadImage(String url, ImageView imageView, boolean force);
+    void downloadImage(String url, ImageView imageView, boolean force, IRestogramCommandObserver observer);
 
     /**
      * Executes download image request
      */
-    void downloadImage(String url, ImageView imageView, int width, int height, boolean force);
+    void downloadImage(String url, ImageView imageView, int width, int height, boolean force, IRestogramCommandObserver observer);
 
     /**
      * Returns location tracker
