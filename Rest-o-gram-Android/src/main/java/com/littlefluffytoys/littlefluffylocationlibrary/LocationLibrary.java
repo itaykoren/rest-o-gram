@@ -1,20 +1,43 @@
+/*
+ * Copyright 2012 Little Fluffy Toys Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.littlefluffytoys.littlefluffylocationlibrary;
+
+import java.util.List;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+/**
+ * A simple-to-use library that broadcasts location updates to your app without killing your battery.
+ *
+ */
 public class LocationLibrary {
 
     protected static boolean showDebugOutput = false;
     protected static boolean broadcastEveryLocationUpdate = false;
+    protected static int stableLocationTimeoutInSeconds = 5; // how many seconds to wait during a flurry of location updates, until it can be assumed no more updates are forthcoming
 
     private static final String TAG = "LocationLibrary";
 
@@ -34,8 +57,7 @@ public class LocationLibrary {
     }
 
     public static void startAlarmAndListener(final Context context) {
-        if (showDebugOutput)
-            Log.d(LocationLibraryConstants.TAG, TAG + ": startAlarmAndListener: alarmFrequency=" + (alarmFrequency == LocationLibraryConstants.DEFAULT_ALARM_FREQUENCY ? "default:" : "") + alarmFrequency / 1000 + " secs, locationMaximumAge=" + (locationMaximumAge == LocationLibraryConstants.DEFAULT_MAXIMUM_LOCATION_AGE ? "default:" : "") + locationMaximumAge / 1000 + " secs");
+        if (showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": startAlarmAndListener: alarmFrequency=" + (alarmFrequency == LocationLibraryConstants.DEFAULT_ALARM_FREQUENCY ? "default:" : "") + alarmFrequency/1000 + " secs, locationMaximumAge=" + (locationMaximumAge == LocationLibraryConstants.DEFAULT_MAXIMUM_LOCATION_AGE ? "default:" : "") + locationMaximumAge/1000 + " secs");
 
         final PendingIntent alarmIntent = PendingIntent.getService(context, LocationLibraryConstants.LOCATION_BROADCAST_REQUEST_CODE_REPEATING_ALARM, new Intent(context, LocationBroadcastService.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -79,22 +101,49 @@ public class LocationLibrary {
     /**
      * To use this library, call initialiseLibrary from your Application's onCreate method,
      * having set up your manifest as detailed in the project documentation.
-     * <p/>
+     *
      * This constructor uses defaults specified in LocationLibraryConstants for alarmFrequency ({@link android.app.AlarmManager#INTERVAL_FIFTEEN_MINUTES AlarmManager.INTERVAL_FIFTEEN_MINUTES})
      * and locationMaximumAge ({@link android.app.AlarmManager#INTERVAL_HOUR AlarmManager.INTERVAL_HOUR}), and broadcastEveryLocationUpdate by default is false.
      *
      * @param broadcastPrefix The prefix to the broadcast intent string that tells the client app the location has changed.
+     *
+     * @throws UnsupportedOperationException if the location service doesn't exist, or if the device has no location providers
      */
-    public static void initialiseLibrary(final Context context, final String broadcastPrefix) {
+    public static void initialiseLibrary(final Context context, final String broadcastPrefix) throws UnsupportedOperationException {
         if (!initialised) {
             if (showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": initialiseLibrary");
             LocationLibrary.broadcastPrefix = broadcastPrefix;
-            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
             if (!prefs.getBoolean(LocationLibraryConstants.SP_KEY_RUN_ONCE, Boolean.FALSE)) {
-                if (showDebugOutput)
-                    Log.d(LocationLibraryConstants.TAG, TAG + ": initialiseLibrary: first time ever run -> start alarm and listener");
+                if (showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": initialiseLibrary: first time ever run -> start alarm and listener");
                 startAlarmAndListener(context);
                 prefs.edit().putBoolean(LocationLibraryConstants.SP_KEY_RUN_ONCE, Boolean.TRUE).commit();
+                // see if we know where we are already
+                final LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+                if (lm != null) {
+                    final List<String> providers = lm.getAllProviders();
+                    if (providers.size() > 0) {
+                        Location bestLocation = null;
+                        for (String provider: lm.getAllProviders()) {
+                            final Location lastLocation = lm.getLastKnownLocation(provider);
+                            if (lastLocation != null) {
+                                if (bestLocation == null || !bestLocation.hasAccuracy() || (lastLocation.hasAccuracy() && lastLocation.getAccuracy() < bestLocation.getAccuracy())) {
+                                    bestLocation = lastLocation;
+                                }
+                            }
+                        }
+                        if (bestLocation != null) {
+                            if (showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": initialiseLibrary: remembering best location " + bestLocation.getLatitude() + "," + bestLocation.getLongitude());
+                            PassiveLocationChangedReceiver.processLocation(context, bestLocation, false, false);
+                        }
+                    }
+                    else {
+                        throw new UnsupportedOperationException("No location providers found on this device");
+                    }
+                }
+                else {
+                    throw new UnsupportedOperationException("Location service not found on this device");
+                }
             }
             initialised = true;
         }
@@ -104,17 +153,19 @@ public class LocationLibrary {
      * To use this library, call initialiseLibrary from your Application's onCreate method,
      * having set up your manifest as detailed in the project documentation.
      *
-     * @param alarmFrequency     How often to broadcast a location update in milliseconds, if one was received.
-     *                           <p/>
-     *                           For battery efficiency, this should be one of the available inexact recurrence intervals
-     *                           recognised by {@link android.app.AlarmManager#setInexactRepeating(int, long, long, PendingIntent) AlarmManager.setInexactRepeating}.
-     *                           You are not prevented from using any other value, but in that case Android's alarm manager uses setRepeating instead of setInexactRepeating,
-     *                           and this results in poorer battery life. The default is {@link android.app.AlarmManager#INTERVAL_FIFTEEN_MINUTES AlarmManager.INTERVAL_FIFTEEN_MINUTES}.
+     * @param alarmFrequency How often to broadcast a location update in milliseconds, if one was received.
+     *
+     * For battery efficiency, this should be one of the available inexact recurrence intervals
+     * recognised by {@link android.app.AlarmManager#setInexactRepeating(int, long, long , PendingIntent) AlarmManager.setInexactRepeating}.
+     * You are not prevented from using any other value, but in that case Android's alarm manager uses setRepeating instead of setInexactRepeating,
+     * and this results in poorer battery life. The default is {@link android.app.AlarmManager#INTERVAL_FIFTEEN_MINUTES AlarmManager.INTERVAL_FIFTEEN_MINUTES}.
+     *
      * @param locationMaximumAge The maximum age of a location update. If when the alarm fires the location is
-     *                           older than this, a location update will be requested. The default is {@link android.app.AlarmManager#INTERVAL_HOUR AlarmManager.INTERVAL_HOUR}
+     * older than this, a location update will be requested. The default is {@link android.app.AlarmManager#INTERVAL_HOUR AlarmManager.INTERVAL_HOUR}
+     *
      * @see #initialiseLibrary(Context, String)
      */
-    public static void initialiseLibrary(final Context context, final long alarmFrequency, final int locationMaximumAge, final String broadcastPrefix) {
+    public static void initialiseLibrary(final Context context, final long alarmFrequency, final int locationMaximumAge, final String broadcastPrefix) throws UnsupportedOperationException {
         if (!initialised) {
             LocationLibrary.alarmFrequency = alarmFrequency;
             LocationLibrary.locationMaximumAge = locationMaximumAge;
@@ -125,15 +176,16 @@ public class LocationLibrary {
     /**
      * To use this library, call initialiseLibrary from your Application's onCreate method,
      * having set up your manifest as detailed in the project documentation.
-     * <p/>
+     *
      * This constructor uses defaults specified in LocationLibraryConstants for alarmFrequency ({@link android.app.AlarmManager#INTERVAL_FIFTEEN_MINUTES AlarmManager.INTERVAL_FIFTEEN_MINUTES})
      * and locationMaximumAge ({@link android.app.AlarmManager#INTERVAL_HOUR AlarmManager.INTERVAL_HOUR}).
      *
-     * @param broadcastEveryLocationUpdate If true, broadcasts every location update using intent action
-     *                                     LocationLibraryConstants.LOCATION_CHANGED_TICKER_BROADCAST_ACTION
+     * @param broadcastEveryLocationUpdate If true, broadcasts every location update using intent action 
+     * LocationLibraryConstants.LOCATION_CHANGED_TICKER_BROADCAST_ACTION
+     *
      * @see #initialiseLibrary(Context, String)
      */
-    public static void initialiseLibrary(final Context context, final boolean broadcastEveryLocationUpdate, final String broadcastPrefix) {
+    public static void initialiseLibrary(final Context context, final boolean broadcastEveryLocationUpdate, final String broadcastPrefix) throws UnsupportedOperationException {
         if (!initialised) {
             LocationLibrary.broadcastEveryLocationUpdate = broadcastEveryLocationUpdate;
             initialiseLibrary(context, broadcastPrefix);
@@ -144,21 +196,24 @@ public class LocationLibrary {
      * To use this library, call initialiseLibrary from your Application's onCreate method,
      * having set up your manifest as detailed in the project documentation.
      *
-     * @param alarmFrequency               How often to broadcast a location update in milliseconds, if one was received.
-     *                                     <p/>
-     *                                     For battery efficiency, this should be one of the available inexact recurrence intervals
-     *                                     recognised by {@link android.app.AlarmManager#setInexactRepeating(int, long, long, PendingIntent) AlarmManager.setInexactRepeating}.
-     *                                     You are not prevented from using any other value, but in that case Android's alarm manager uses setRepeating instead of setInexactRepeating,
-     *                                     and this results in poorer battery life. The default is {@link android.app.AlarmManager#INTERVAL_FIFTEEN_MINUTES AlarmManager.INTERVAL_FIFTEEN_MINUTES}.
-     * @param locationMaximumAge           The maximum age of a location update. If when the alarm fires the location is
-     *                                     older than this, a location update will be requested. The default is {@link android.app.AlarmManager#INTERVAL_HOUR AlarmManager.INTERVAL_HOUR}
-     * @param broadcastEveryLocationUpdate If true, broadcasts every location update using intent action
-     *                                     LocationLibraryConstants.LOCATION_CHANGED_TICKER_BROADCAST_ACTION
+     * @param alarmFrequency How often to broadcast a location update in milliseconds, if one was received.
+     *
+     * For battery efficiency, this should be one of the available inexact recurrence intervals
+     * recognised by {@link android.app.AlarmManager#setInexactRepeating(int, long, long , PendingIntent) AlarmManager.setInexactRepeating}.
+     * You are not prevented from using any other value, but in that case Android's alarm manager uses setRepeating instead of setInexactRepeating,
+     * and this results in poorer battery life. The default is {@link android.app.AlarmManager#INTERVAL_FIFTEEN_MINUTES AlarmManager.INTERVAL_FIFTEEN_MINUTES}.
+     *
+     * @param locationMaximumAge The maximum age of a location update. If when the alarm fires the location is
+     * older than this, a location update will be requested. The default is {@link android.app.AlarmManager#INTERVAL_HOUR AlarmManager.INTERVAL_HOUR}
+     *
+     * @param broadcastEveryLocationUpdate If true, broadcasts every location update using intent action 
+     * LocationLibraryConstants.LOCATION_CHANGED_TICKER_BROADCAST_ACTION
+     *
      * @see #initialiseLibrary(Context, long, int, String)
      * @see #initialiseLibrary(Context, boolean, String)
      * @see #initialiseLibrary(Context, String)
      */
-    public static void initialiseLibrary(final Context context, final long alarmFrequency, final int locationMaximumAge, final boolean broadcastEveryLocationUpdate, final String broadcastPrefix) {
+    public static void initialiseLibrary(final Context context, final long alarmFrequency, final int locationMaximumAge, final boolean broadcastEveryLocationUpdate, final String broadcastPrefix) throws UnsupportedOperationException {
         if (!initialised) {
             LocationLibrary.broadcastEveryLocationUpdate = broadcastEveryLocationUpdate;
             initialiseLibrary(context, alarmFrequency, locationMaximumAge, broadcastPrefix);
@@ -169,10 +224,8 @@ public class LocationLibrary {
      * To force an on-demand location update, call this method.
      */
     public static void forceLocationUpdate(final Context context) {
-        final Editor prefsEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        prefsEditor.putLong(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_TIME, 0);
-        prefsEditor.putLong(LocationLibraryConstants.SP_KEY_LAST_LOCATION_BROADCAST_TIME, 0);
-        prefsEditor.commit();
+        if (LocationLibrary.showDebugOutput) Log.d(LocationLibraryConstants.TAG, TAG + ": forceLocationUpdate called to force a location update");
+        PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext()).edit().putBoolean(LocationLibraryConstants.SP_KEY_FORCE_LOCATION_UPDATE, true).commit();
         context.startService(new Intent(context, LocationBroadcastService.class));
     }
 
@@ -184,5 +237,3 @@ public class LocationLibrary {
         LocationLibrary.showDebugOutput = showDebugOutput;
     }
 }
-
-

@@ -15,6 +15,6 @@ public class RestogramApplication extends Application {
         super.onCreate();
 
         // Initialize client
-        RestogramClient.getInstance().initialize(getBaseContext());
+        RestogramClient.getInstance().initialize(getApplicationContext());
     }
 }

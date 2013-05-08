@@ -3,6 +3,7 @@ package rest.o.gram.client;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.util.Log;
 import android.widget.ImageView;
 import rest.o.gram.commands.*;
 import rest.o.gram.filters.RestogramFilterType;
@@ -33,7 +34,23 @@ public class RestogramClient implements IRestogramClient {
 
     @Override
     public void initialize(Context context) {
-        try {
+        try
+        {
+            // sets debuggable flag
+            PackageManager pm = context.getPackageManager();
+            try
+            {
+                ApplicationInfo appinfo = pm.getApplicationInfo(context.getPackageName(), 0);
+                debuggable = (0 != (appinfo.flags &= ApplicationInfo.FLAG_DEBUGGABLE));
+            }
+            catch(PackageManager.NameNotFoundException e)
+            {
+                // debuggable variable will remain false
+            }
+
+            if (RestogramClient.getInstance().isDebuggable())
+                Log.d("REST-O-GRAM", "CLIENT UP");
+
             transport = new HttpJsonRpcClientTransport(new URL(url));
             tracker = new LocationTracker(context);
             //tracker = new LocationTrackerDummy();
@@ -42,17 +59,6 @@ public class RestogramClient implements IRestogramClient {
         }
         catch(Exception e) {
             System.out.println("Error in RestogramClient: " + e.getMessage());
-        }
-
-        PackageManager pm = context.getPackageManager();
-        try
-        {
-            ApplicationInfo appinfo = pm.getApplicationInfo(context.getPackageName(), 0);
-            debuggable = (0 != (appinfo.flags &= ApplicationInfo.FLAG_DEBUGGABLE));
-        }
-        catch(PackageManager.NameNotFoundException e)
-        {
-        /*debuggable variable will remain false*/
         }
     }
 
@@ -147,5 +153,5 @@ public class RestogramClient implements IRestogramClient {
     private HttpJsonRpcClientTransport transport; // Transport object
     private ILocationTracker tracker; // Location tracker
     private IRestogramCommandQueue commandQueue; // Command queue
-    private boolean debuggable = false; // Debuggable flag
+    private boolean debuggable = false; // debuggable flag
 }

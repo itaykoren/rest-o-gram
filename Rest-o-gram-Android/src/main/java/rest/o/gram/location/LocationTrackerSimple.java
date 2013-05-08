@@ -35,6 +35,12 @@ public class LocationTrackerSimple extends Service implements ILocationTracker, 
     }
 
     @Override
+    public void force() {
+        if (lastLocation != null)
+            observer.onLocationUpdated(lastLocation.getLatitude(), lastLocation.getLongitude(), lastLocation.getProvider());
+    }
+
+    @Override
     public void start() {
         if(isTracking)
             return;

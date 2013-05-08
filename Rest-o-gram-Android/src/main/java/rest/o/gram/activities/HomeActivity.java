@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import rest.o.gram.R;
-import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
@@ -59,6 +58,10 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
 
     @Override
     public void onLocationUpdated(double latitude, double longitude, String provider) {
+        if (gotLocation)
+            return;
+        gotLocation = true;
+
         if(tracker != null)
             tracker.stop();
 
@@ -129,6 +132,6 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     private ILocationTracker tracker; // Location tracker
     private double latitude;
     private double longitude;
-
+    private boolean gotLocation;
     private RestogramVenue venue;
 }

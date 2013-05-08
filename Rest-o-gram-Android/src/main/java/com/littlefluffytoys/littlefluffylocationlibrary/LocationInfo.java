@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Little Fluffy Toys Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.littlefluffytoys.littlefluffylocationlibrary;
 
 import java.io.Serializable;
@@ -7,6 +23,10 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 
+/**
+ * An object containing a snapshot of the best we currently know about location.
+ *
+ */
 public class LocationInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -19,17 +39,18 @@ public class LocationInfo implements Serializable {
     public String originProvider;
 
     /**
-     * The constructor populates the public fields with the latest location info.
+     * The constructor populates the public fields with the latest location info. 
      */
     public LocationInfo(final Context context) {
         refresh(context);
     }
 
     /**
-     * Call this method to retrieve the latest location info.
+     * Call this method to retrieve the latest location info. 
+     * @throws UnsupportedOperationException if location service unavailable, or no location providers are found on the device
      */
     public void refresh(final Context context) {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         lastLocationUpdateTimestamp = prefs.getLong(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_TIME, 0);
         lastLocationBroadcastTimestamp = prefs.getLong(LocationLibraryConstants.SP_KEY_LAST_LOCATION_BROADCAST_TIME, 0);
         lastLat = ((int) (prefs.getFloat(LocationLibraryConstants.SP_KEY_LAST_LOCATION_UPDATE_LAT, Integer.MIN_VALUE) * 1000000f)) / 1000000f;
@@ -68,10 +89,14 @@ public class LocationInfo implements Serializable {
     }
 
     /**
-     * @return time and day as "hh:mm, ddd" or "hh:mm:ss, ddd"
+     * @return time and day as "hh:mm, ddd" or "hh:mm:ss, ddd" 
      */
     public static String formatTimeAndDay(final long timestamp, final boolean includeSeconds) {
         return (DateFormat.format("kk:mm" + (includeSeconds ? ".ss" : "") + ", E", timestamp).toString());
+    }
+
+    protected static String formatTimestampForDebug(final long timestamp) {
+        return timestamp + " (" + (timestamp > 0 ? formatTimeAndDay(timestamp, true) : "the dawn of time") + ")";
     }
 
     @Override
@@ -82,4 +107,3 @@ public class LocationInfo implements Serializable {
                 lastLat, lastLong, lastAccuracy));
     }
 }
-

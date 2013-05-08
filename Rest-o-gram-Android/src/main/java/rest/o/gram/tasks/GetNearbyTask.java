@@ -45,7 +45,7 @@ public class GetNearbyTask extends AsyncTask<Double, Void, GetNearbyResult> {
             else
                 result = service.getNearby(params[0], params[1]);
 
-            if  (RestogramClient.getInstance().isDebuggable())
+            if  (RestogramClient.getInstance().isDebuggable() && result != null)
                 Log.d("REST-O-GRAM", "got " +
                         (result.getResult() == null ? 0 : result.getResult().length) + "venues");
 

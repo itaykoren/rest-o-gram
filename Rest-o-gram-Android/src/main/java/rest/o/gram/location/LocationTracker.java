@@ -33,16 +33,26 @@ public class LocationTracker implements ILocationTracker {
     }
 
     @Override
+    public void force() {
+        LocationLibrary.forceLocationUpdate(context);
+    }
+
+    @Override
     public void start() {
         if(isTracking)
             return;
 
-        final IntentFilter lftIntentFilter =
-                new IntentFilter(LocationLibraryConstants.getLocationChangedPeriodicBroadcastAction());
-        context.registerReceiver(locationBroadcastReceiver, lftIntentFilter);
-        LocationLibrary.forceLocationUpdate(context);
+        register(LocationLibraryConstants.getLocationChangedPeriodicBroadcastAction());
+        register(LocationLibraryConstants.getLocationChangedTickerBroadcastAction());
+        force(); // forces an initial update
 
         isTracking = true;
+    }
+
+    private void register(final String action) {
+        final IntentFilter lflPeriodicIntentFilter =
+                new IntentFilter(action);
+        context.registerReceiver(locationBroadcastReceiver, lflPeriodicIntentFilter);
     }
 
     @Override
@@ -59,6 +69,10 @@ public class LocationTracker implements ILocationTracker {
         this.observer = observer;
     }
 
+    private void informObserver() {
+        observer.onLocationUpdated((double)location.lastLat, (double)location.lastLong, location.originProvider);
+    }
+
     private final BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -70,7 +84,7 @@ public class LocationTracker implements ILocationTracker {
                 Log.d("REST-O-GRAM", "GOT LOCATION!!! LAT:" + location.lastLat + " LONG:" + location.lastLong);
 
             if(observer != null)
-                observer.onLocationUpdated((double)location.lastLat, (double)location.lastLong, location.originProvider);
+                LocationTracker.this.informObserver();
         }
     };
 

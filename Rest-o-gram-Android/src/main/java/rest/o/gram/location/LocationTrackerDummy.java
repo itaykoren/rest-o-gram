@@ -15,6 +15,10 @@ import android.os.Handler;
 public class LocationTrackerDummy implements ILocationTracker {
 
     @Override
+    public void force() {
+    }
+
+    @Override
     public void start() {
         if(isTracking)
             stop();
