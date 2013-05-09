@@ -44,6 +44,11 @@ public class LocationTrackerDummy implements ILocationTracker {
         this.observer = observer;
     }
 
+    @Override
+    public boolean canDetectLocation() {
+        return true;
+    }
+
     class GetLocationTimerTask extends TimerTask {
         private Handler mHandler = new Handler(Looper.getMainLooper());
 

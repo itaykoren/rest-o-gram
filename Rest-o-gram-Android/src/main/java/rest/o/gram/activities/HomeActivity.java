@@ -1,9 +1,12 @@
 package rest.o.gram.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -33,9 +36,14 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
 
         // Get location tracker
         tracker = RestogramClient.getInstance().getLocationTracker();
-        if(tracker != null) {
-            tracker.setObserver(this);
-            tracker.start();
+        if (tracker != null) {
+            if (!tracker.canDetectLocation())
+                showLocationAlert();
+            else
+            {
+                tracker.setObserver(this);
+                tracker.start();
+            }
         }
         else {
             // TODO: implementation
@@ -55,6 +63,39 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
         if(tracker != null)
             tracker.stop();
     }
+
+    public void showLocationAlert() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        // Setting Dialog Title
+        alertDialog.setTitle("Rest-O-Gram error");
+
+        // Setting Dialog Message
+        alertDialog.setMessage("Could not detect your current location. Please check your location services settings and relaunch the application.");
+
+        // On pressing Settings button
+        alertDialog.setPositiveButton("Settings",
+            new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        // on pressing cancel button
+        alertDialog.setNegativeButton("Cancel",
+            new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                    finish();
+                }
+             });
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
 
     @Override
     public void onLocationUpdated(double latitude, double longitude, String provider) {
@@ -76,6 +117,13 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
 
         // Send get nearby request
         RestogramClient.getInstance().getNearby(latitude, longitude, radius, this);
+    }
+
+    @Override
+    public void onTrackingTimedOut() {
+        if(tracker != null)
+            tracker.stop();
+        showLocationAlert();
     }
 
     @Override

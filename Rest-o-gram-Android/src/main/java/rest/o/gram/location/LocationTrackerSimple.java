@@ -110,6 +110,12 @@ public class LocationTrackerSimple extends Service implements ILocationTracker, 
     }
 
     @Override
+    public boolean canDetectLocation() {
+        return (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
+    }
+
+    @Override
     public void onLocationChanged(Location location) {
         updateLocation(location);
     }

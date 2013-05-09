@@ -25,4 +25,9 @@ public interface ILocationTracker {
      * Sets location observer
      */
     void setObserver(ILocationObserver observer);
+
+    /**
+     * Can detect the current location?
+     */
+    boolean canDetectLocation();
 }

@@ -4,12 +4,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import com.littlefluffytoys.littlefluffylocationlibrary.LocationInfo;
 import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
 import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibraryConstants;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,11 +30,22 @@ public class LocationTracker implements ILocationTracker {
         this.context = context;
 
         LocationLibrary.showDebugOutput(RestogramClient.getInstance().isDebuggable());
-        if (Defs.Location.INTENSE_LOCATION_UPDATES)
-            LocationLibrary.initialiseLibrary(context, true, "rest.o.gram");
-        else // uses defined intervals
-            LocationLibrary.initialiseLibrary(context, Defs.Location.LOCATION_UPDATE_INTERVAL,
-                    Defs.Location.MAX_LOCATION_AGE, "rest.o.gram");
+
+        try
+        {
+            if (Defs.Location.INTENSE_LOCATION_UPDATES)
+                LocationLibrary.initialiseLibrary(context, true, "rest.o.gram");
+            else // uses defined intervals
+                LocationLibrary.initialiseLibrary(context, Defs.Location.LOCATION_UPDATE_INTERVAL,
+                        Defs.Location.MAX_LOCATION_AGE, "rest.o.gram");
+            canDetectLocation = true;
+        }
+        catch (UnsupportedOperationException e)
+        {
+            if (RestogramClient.getInstance().isDebuggable())
+                Log.d("REST-O-GRAM", "cannot detect the current location");
+            canDetectLocation = false;
+        }
     }
 
     @Override
@@ -41,6 +57,11 @@ public class LocationTracker implements ILocationTracker {
     public void start() {
         if(isTracking)
             return;
+
+        timer = new Timer();
+        final TimerTask task = new TrackingTimeoutTimerTask();
+        timer.schedule(task, Defs.Location.TRACKING_TIMEOUT, Defs.Location.TRACKING_TIMEOUT);
+
 
         register(LocationLibraryConstants.getLocationChangedPeriodicBroadcastAction());
         register(LocationLibraryConstants.getLocationChangedTickerBroadcastAction());
@@ -69,6 +90,11 @@ public class LocationTracker implements ILocationTracker {
         this.observer = observer;
     }
 
+    @Override
+    public boolean canDetectLocation() {
+        return canDetectLocation;
+    }
+
     private void informObserver() {
         observer.onLocationUpdated((double)location.lastLat, (double)location.lastLong, location.originProvider);
     }
@@ -76,6 +102,7 @@ public class LocationTracker implements ILocationTracker {
     private final BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            timer.cancel();
             // extract the location info in the broadcast
             location =
                     (LocationInfo) intent.getSerializableExtra(
@@ -88,8 +115,27 @@ public class LocationTracker implements ILocationTracker {
         }
     };
 
+    /**
+     * Tracking timeout timer task
+     */
+    private class TrackingTimeoutTimerTask extends TimerTask {
+        @Override
+        public void run() {
+            handler.post(new Runnable() {
+                public void run() {
+                    observer.onTrackingTimedOut();
+                    timer.cancel();
+                }
+            });
+        }
+
+        private Handler handler = new Handler(Looper.getMainLooper());
+    }
+
     private boolean isTracking = false;
     private Context context;
     private LocationInfo location;
     private ILocationObserver observer;
+    private boolean canDetectLocation;
+    private Timer timer;
 }
