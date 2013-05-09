@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
+import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.tasks.ITaskObserver;
 
 /**
@@ -68,6 +69,11 @@ public interface IRestogramClient {
      * Returns location tracker
      */
     ILocationTracker getLocationTracker();
+
+    /**
+     * Returns the network state provider
+     */
+    INetworkStateProvider getNetworkStateProvider();
 
     /**
      * @return is the application in debug mode?

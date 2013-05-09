@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Rest-o-gram</string>
+
+    <!-- error msgs -->
+    <string name="restogram_error_title">Rest-o-gram error</string>
+    <string name="cannot_track_location_err_msg">Could not detect your current location. Please review your location services settings and relaunch the application.</string>
+    <string name="no_connectivity_err_msg">Cannot connect to the internet. Please review your network services settings and relaunch the application.</string>
 </resources>

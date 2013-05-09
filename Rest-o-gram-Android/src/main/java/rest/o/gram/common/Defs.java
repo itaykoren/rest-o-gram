@@ -28,7 +28,7 @@ public class Defs {
         public static final boolean INTENSE_LOCATION_UPDATES = true;
         public static final int MAX_LOCATION_AGE = 20 * 60 * 1000; // 20 minutes
         public static final long LOCATION_UPDATE_INTERVAL = 5 * 60 * 1000; // 5 minutes
-        public static final int TRACKING_TIMEOUT = 10 * 1000; // 10 seconds
+        public static final int TRACKING_TIMEOUT = 6 * 1000; // 6 seconds
     }
 
     /**

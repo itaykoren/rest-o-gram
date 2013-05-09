@@ -10,6 +10,8 @@ import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.location.LocationTracker;
 import rest.o.gram.location.LocationTrackerDummy;
+import rest.o.gram.network.INetworkStateProvider;
+import rest.o.gram.network.NetworkStateProvider;
 import rest.o.gram.tasks.ITaskObserver;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 
@@ -54,7 +56,7 @@ public class RestogramClient implements IRestogramClient {
             transport = new HttpJsonRpcClientTransport(new URL(url));
             tracker = new LocationTracker(context);
             //tracker = new LocationTrackerDummy();
-
+            networkStateProvider = new NetworkStateProvider(context);
             commandQueue = new RestogramCommandQueue();
         }
         catch(Exception e) {
@@ -138,6 +140,11 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
+    public INetworkStateProvider getNetworkStateProvider() {
+        return networkStateProvider;
+    }
+
+    @Override
     public boolean isDebuggable() {
         return debuggable;
     }
@@ -152,6 +159,7 @@ public class RestogramClient implements IRestogramClient {
     private final String url = "http://rest-o-gram.appspot.com/service"; // Server URL
     private HttpJsonRpcClientTransport transport; // Transport object
     private ILocationTracker tracker; // Location tracker
+    private INetworkStateProvider networkStateProvider;
     private IRestogramCommandQueue commandQueue; // Command queue
     private boolean debuggable = false; // debuggable flag
 }

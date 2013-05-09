@@ -12,7 +12,7 @@ public interface ILocationObserver {
     void onLocationUpdated(double latitude, double longitude, String provider);
 
     /**
-     * Called when a locationn tracking operation has timed-out.
+     * Called when a location tracking operation has timed-out.
      */
     void onTrackingTimedOut();
 }
