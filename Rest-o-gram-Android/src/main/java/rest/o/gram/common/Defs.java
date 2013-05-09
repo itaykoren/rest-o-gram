@@ -35,6 +35,6 @@ public class Defs {
      * Commands constants
      */
     public static class Commands {
-        public static final int MAX_EXECUTING_COMMANDS = 3;
+        public static final int MAX_EXECUTING_COMMANDS = 10;
     }
 }
