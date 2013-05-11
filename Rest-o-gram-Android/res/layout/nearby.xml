@@ -24,7 +24,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="500dp"
                 android:id="@+id/lvVenues"
-                android:layout_marginTop="40dp">
+                android:layout_marginTop="40dp"
+                android:cacheColorHint="#00000000">
         </ListView>
 
 
