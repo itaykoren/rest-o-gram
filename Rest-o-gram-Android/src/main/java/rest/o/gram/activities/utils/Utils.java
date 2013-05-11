@@ -16,7 +16,6 @@ import rest.o.gram.R;
 public final class Utils {
     public static void showLocationTrackingAlert(final Activity activity) {
         final Handler h = new Handler();
-
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -27,7 +26,14 @@ public final class Utils {
     }
 
     public static void showNetworkStateAlert(final Activity activity) {
-        showErrorAlert(activity, R.string.no_connectivity_err_msg, Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showErrorAlert(activity, R.string.no_connectivity_err_msg,
+                        Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
+            }
+        }, 500);
     }
 
     private static void showErrorAlert(final Activity activity, final int message, final String action) {
