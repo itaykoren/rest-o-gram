@@ -1,4 +1,4 @@
-package rest.o.gram.activities.utils;
+package rest.o.gram.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;

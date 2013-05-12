@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import rest.o.gram.R;
-import rest.o.gram.activities.utils.Utils;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
@@ -64,7 +63,7 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     }
 
     @Override
-    public void onLocationUpdated(double latitude, double longitude, String provider) {
+    public void onLocationUpdated(double latitude, double longitude, int accuracy, String provider) {
         if (gotLocation)
             return;
         gotLocation = true;
@@ -91,10 +90,10 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
         this.longitude = longitude;
 
         double radius;
-        if (provider == null || provider  == LocationManager.NETWORK_PROVIDER)
-            radius = Defs.Location.DEFAULT_NEARBY_RADIUS;
-        else // if (provider  == LocationManager.GPS_PROVIDER)
+        if (rest.o.gram.location.Utils.isAccurate(accuracy, provider))
             radius = Defs.Location.DEFAULT_FINDME_RADIUS;
+        else
+            radius = Defs.Location.DEFAULT_NEARBY_RADIUS;
 
         // Send get nearby request
         RestogramClient.getInstance().getNearby(latitude, longitude, radius, this);
@@ -110,7 +109,7 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     @Override
     public void onFinished(GetNearbyResult result) {
         final RestogramVenue[] venues = result.getVenues();
-        if(venues == null || venues.length == 0)
+        if(venues == null || venues.length == 0 || venues.length >= 2)
         {
             if (RestogramClient.getInstance().isDebuggable())
             {
@@ -127,7 +126,7 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
             return;
         }
 
-        venue = venues[0]; // TODO: fix
+        venue = venues[0];
 
         // Send get info request
         RestogramClient.getInstance().getInfo(venue.getId(), this);

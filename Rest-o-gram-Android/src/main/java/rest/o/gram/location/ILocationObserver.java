@@ -9,7 +9,7 @@ public interface ILocationObserver {
     /**
      * Called after location was discovered
      */
-    void onLocationUpdated(double latitude, double longitude, String provider);
+    void onLocationUpdated(double latitude, double longitude, int accuracy, String provider);
 
     /**
      * Called when a location tracking operation has timed-out.

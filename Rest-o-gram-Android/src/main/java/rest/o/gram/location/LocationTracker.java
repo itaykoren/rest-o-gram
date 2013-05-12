@@ -96,7 +96,8 @@ public class LocationTracker implements ILocationTracker {
     }
 
     private void informObserver() {
-        observer.onLocationUpdated((double)location.lastLat, (double)location.lastLong, location.originProvider);
+        observer.onLocationUpdated((double)location.lastLat, (double)location.lastLong,
+                                   location.lastAccuracy, location.originProvider);
     }
 
     private final BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
@@ -108,7 +109,7 @@ public class LocationTracker implements ILocationTracker {
                     (LocationInfo) intent.getSerializableExtra(
                             LocationLibraryConstants.LOCATION_BROADCAST_EXTRA_LOCATIONINFO);
             if (RestogramClient.getInstance().isDebuggable())
-                Log.d("REST-O-GRAM", "GOT LOCATION!!! LAT:" + location.lastLat + " LONG:" + location.lastLong);
+                Log.d("REST-O-GRAM", "GOT LOCATION!!! LAT:" + location.lastLat + " LONG:" + location.lastLong + " ACCURACY: " + location.lastAccuracy);
 
             if(observer != null)
                 LocationTracker.this.informObserver();

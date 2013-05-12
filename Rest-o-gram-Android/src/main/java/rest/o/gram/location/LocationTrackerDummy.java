@@ -58,7 +58,7 @@ public class LocationTrackerDummy implements ILocationTracker {
             mHandler.post(new Runnable() {
                 public void run() {
                     //observer.onLocationUpdated(32.10732,34.834299, LocationManager.GPS_PROVIDER); // Frame
-                    observer.onLocationUpdated(32.078145,34.781449, LocationManager.GPS_PROVIDER); // Vitrina
+                    observer.onLocationUpdated(32.078145,34.781449, 0, LocationManager.GPS_PROVIDER); // Vitrina
                     //observer.onLocationUpdated(32.095,34.782468, LocationManager.GPS_PROVIDER); // Near my house
                     stop();
                 }
