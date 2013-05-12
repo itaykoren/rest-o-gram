@@ -2,7 +2,6 @@ package rest.o.gram.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -109,7 +108,7 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     @Override
     public void onFinished(GetNearbyResult result) {
         final RestogramVenue[] venues = result.getVenues();
-        if(venues == null || venues.length == 0 || venues.length >= 2)
+        if(venues == null || venues.length == 0 || venues.length >= Defs.VENUES_AMBIGOUITY_LEVEL)
         {
             if (RestogramClient.getInstance().isDebuggable())
             {

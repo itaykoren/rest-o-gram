@@ -5,7 +5,7 @@ package rest.o.gram.common;
  * User: Roi
  * Date: 17/04/13
  */
-public class Defs {
+public final class Defs {
 
     /**
      * Request codes enumeration
@@ -29,6 +29,8 @@ public class Defs {
         public static final int MAX_LOCATION_AGE = 20 * 60 * 1000; // 20 minutes
         public static final long LOCATION_UPDATE_INTERVAL = 5 * 60 * 1000; // 5 minutes
         public static final int TRACKING_TIMEOUT = 20 * 1000; // 20 seconds
+
+        public static final double FINDME_UNCERTAINTY_FACTOR = 1.5;
     }
 
     /**
@@ -37,4 +39,6 @@ public class Defs {
     public static class Commands {
         public static final int MAX_EXECUTING_COMMANDS = 10;
     }
+
+    public static final int VENUES_AMBIGOUITY_LEVEL = 2;
 }

@@ -13,7 +13,7 @@ public final class Utils {
         if (provider  == LocationManager.GPS_PROVIDER)
             return  true;
         else if (provider  == LocationManager.NETWORK_PROVIDER)
-            return accuracy <= Defs.Location.DEFAULT_FINDME_RADIUS * 1.5;
+            return accuracy <= Defs.Location.DEFAULT_FINDME_RADIUS * Defs.Location.FINDME_UNCERTAINTY_FACTOR;
 
         return false;
     }
