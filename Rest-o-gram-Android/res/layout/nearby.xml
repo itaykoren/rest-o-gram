@@ -2,30 +2,33 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
               android:background="@drawable/background">
     <FrameLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="#FFFFFF" android:layout_marginLeft="30dp"
-            android:scaleType= "center" android:layout_marginRight="30dp">
+            android:scaleType="center" android:layout_marginRight="30dp">
 
 
         <TextView
-                android:layout_width="333dp"
-                android:layout_height="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:text="Nearby Your Location:"
                 android:textColor="#000000"
-                android:textSize="14dp"
+                android:textSize="20dp"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="40dp"/>
         <ListView
-                android:layout_width="fill_parent"
-                android:layout_height="500dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/lvVenues"
                 android:layout_marginTop="40dp"
-                android:cacheColorHint="#00000000">
+                android:cacheColorHint="#00000000"
+                android:divider="#000000"
+                android:dividerHeight="1dip">
         </ListView>
 
 

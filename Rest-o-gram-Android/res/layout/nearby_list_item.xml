@@ -25,19 +25,19 @@
     <TextView
             android:id="@+id/tvName"
             android:layout_width="fill_parent"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:textColor="#040404"
             android:typeface="sans"
-            android:textSize="12dp"
+            android:textSize="15dp"
             android:textStyle="bold" android:layout_toRightOf="@+id/thumbnail"/>
 
     <!-- Venue Address -->
     <TextView
             android:id="@+id/tvAddress"
             android:layout_width="fill_parent"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:textColor="#343434"
-            android:textSize="10dip"
+            android:textSize="12dip"
             android:layout_toRightOf="@+id/thumbnail" android:layout_below="@+id/tvName"/>
 
 
@@ -45,9 +45,9 @@
     <TextView
             android:id="@+id/tvPhone"
             android:layout_width="fill_parent"
-            android:layout_height="15dp"
+            android:layout_height="wrap_content"
             android:textColor="#343434"
-            android:textSize="10dip"
+            android:textSize="12dip"
             android:layout_below="@+id/tvAddress" android:layout_toRightOf="@+id/thumbnail"/>
 
 
@@ -55,9 +55,9 @@
     <TextView
             android:id="@+id/tvDistance"
             android:layout_width="fill_parent"
-            android:layout_height="15dp"
+            android:layout_height="wrap_content"
             android:textColor="#343434"
-            android:textSize="10dip"
+            android:textSize="12dip"
             android:layout_below="@+id/tvPhone" android:layout_toRightOf="@+id/thumbnail"/>
 
 

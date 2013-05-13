@@ -45,24 +45,27 @@
 
                     <TextView
                             android:layout_width="135dp"
-                            android:layout_height="40dp"
+                            android:layout_height="wrap_content"
                             android:id="@+id/tvVenueName"
                             android:layout_marginRight="2dp"
                             android:layout_marginTop="3dp"
+                            android:textColor="#040404"
                             android:layout_gravity="right|top"/>
                     <TextView
                             android:layout_width="135dp"
-                            android:layout_height="30dp"
+                            android:layout_height="wrap_content"
                             android:id="@+id/tvVenueAddress"
                             android:layout_marginRight="2dp"
                             android:layout_marginTop="53dp"
+                            android:textColor="#040404"
                             android:layout_gravity="right|top"/>
                     <TextView
                             android:layout_width="135dp"
-                            android:layout_height="20dp"
+                            android:layout_height="wrap_content"
                             android:id="@+id/tvVenuePhone"
                             android:layout_marginRight="2dp"
                             android:layout_marginTop="93dp"
+                            android:textColor="#040404"
                             android:layout_gravity="right|top"/>
 
                 </FrameLayout>
