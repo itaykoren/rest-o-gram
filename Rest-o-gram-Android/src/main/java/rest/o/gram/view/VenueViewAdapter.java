@@ -60,6 +60,14 @@ public class VenueViewAdapter extends BaseAdapter {
         Utils.updateTextView((TextView)v.findViewById(R.id.tvAddress), venue.getAddress());
         Utils.updateTextView((TextView)v.findViewById(R.id.tvPhone), venue.getPhone());
 
+        try {
+            String distanceStr = String.format("%1$,.0f", venue.getDistance());
+            Utils.updateTextView((TextView)v.findViewById(R.id.tvDistance), distanceStr + "m away");
+        }
+        catch(Exception e) {
+            // Empty
+        }
+
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

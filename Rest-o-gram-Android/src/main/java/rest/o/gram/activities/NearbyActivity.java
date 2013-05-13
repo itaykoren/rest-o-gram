@@ -14,6 +14,8 @@ import rest.o.gram.tasks.results.GetNearbyResult;
 import rest.o.gram.tasks.results.GetPhotosResult;
 import rest.o.gram.tasks.ITaskObserver;
 
+import static rest.o.gram.location.Utils.distance;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Roi
@@ -33,8 +35,6 @@ public class NearbyActivity extends Activity implements ITaskObserver {
         lv.setAdapter(viewAdapter);
 
         // Get location parameters
-        double latitude;
-        double longitude;
         try {
             Intent intent = getIntent();
             latitude = intent.getDoubleExtra("latitude", 0.0);
@@ -75,6 +75,11 @@ public class NearbyActivity extends Activity implements ITaskObserver {
             // Send get info request
             //RestogramClient.getInstance().getInfo(venue.getId(), this);
 
+            // Calculate distance
+            double d = distance(latitude, longitude, venue.getLatitude(), venue.getLongitude());
+            if(d != 0.0)
+                venue.setDistance(d);
+
             // Add venue
             viewAdapter.addVenue(venue);
         }
@@ -89,5 +94,7 @@ public class NearbyActivity extends Activity implements ITaskObserver {
         startActivityForResult(intent, Defs.RequestCodes.RC_VENUE);
     }
 
+    private double latitude; // Latitude
+    private double longitude; // Longitude
     private VenueViewAdapter viewAdapter; // View adapter
 }
