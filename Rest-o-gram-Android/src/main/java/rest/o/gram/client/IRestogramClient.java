@@ -7,6 +7,7 @@ import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.tasks.ITaskObserver;
+import rest.o.gram.view.IViewAdapter;
 
 /**
  * Created with IntelliJ IDEA.
@@ -58,12 +59,12 @@ public interface IRestogramClient {
     /**
      * Executes download image request
      */
-    void downloadImage(String url, ImageView imageView, boolean force, IRestogramCommandObserver observer);
+    void downloadImage(String url, ImageView imageView, IViewAdapter viewAdapter, boolean force, IRestogramCommandObserver observer);
 
     /**
      * Executes download image request
      */
-    void downloadImage(String url, ImageView imageView, int width, int height, boolean force, IRestogramCommandObserver observer);
+    void downloadImage(String url, ImageView imageView, boolean force, IRestogramCommandObserver observer);
 
     /**
      * Returns location tracker

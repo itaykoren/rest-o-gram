@@ -1,4 +1,4 @@
-package rest.o.gram.common;
+package rest.o.gram.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import rest.o.gram.R;
 import rest.o.gram.activities.NearbyActivity;
+import rest.o.gram.common.Utils;
 import rest.o.gram.entities.RestogramVenue;
 
 import java.util.LinkedList;

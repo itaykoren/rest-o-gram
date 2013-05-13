@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import rest.o.gram.view.IViewAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,23 +20,21 @@ import java.net.MalformedURLException;
  */
 public class DownloadImageCommand extends AbstractRestogramCommand {
 
+    public DownloadImageCommand(String url, ImageView imageView, IViewAdapter viewAdapter) {
+        this.url = url;
+        this.imageView = imageView;
+        this.viewAdapter = viewAdapter;
+    }
+
     public DownloadImageCommand(String url, ImageView imageView) {
         this.url = url;
         this.imageView = imageView;
-        this.width = -1;
-        this.height = -1;
-    }
-
-    public DownloadImageCommand(String url, ImageView imageView, int width, int height) {
-        this(url, imageView);
-        this.width = width;
-        this.height = height;
     }
 
     @Override
     public void execute() {
         super.execute();
-        fetchDrawableOnThread(url, imageView);
+        fetchDrawableOnThread(url, imageView, viewAdapter);
     }
 
     public Drawable fetchDrawable(String urlString) {
@@ -49,12 +48,18 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         }
     }
 
-    public void fetchDrawableOnThread(final String urlString, final ImageView imageView) {
+    public void fetchDrawableOnThread(final String urlString, final ImageView imageView, final IViewAdapter viewAdapter) {
 
         final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message) {
-                imageView.setImageDrawable((Drawable) message.obj);
+                imageView.setImageDrawable((Drawable)message.obj);
+
+                if(viewAdapter != null) {
+                    viewAdapter.addView(imageView);
+                    viewAdapter.refresh();
+                }
+
                 notifyFinished();
             }
         };
@@ -70,7 +75,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         thread.start();
     }
 
-    private InputStream fetch(String urlString) throws MalformedURLException, IOException {
+    private InputStream fetch(String urlString) throws IOException {
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpGet request = new HttpGet(urlString);
         HttpResponse response = httpClient.execute(request);
@@ -78,7 +83,6 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
     }
 
     private String url;
+    private IViewAdapter viewAdapter;
     private ImageView imageView;
-    private int width;
-    private int height;
 }

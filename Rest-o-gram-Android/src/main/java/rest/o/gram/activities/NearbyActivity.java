@@ -7,7 +7,7 @@ import android.widget.ListView;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
-import rest.o.gram.common.VenueViewAdapter;
+import rest.o.gram.view.VenueViewAdapter;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.tasks.results.GetInfoResult;
 import rest.o.gram.tasks.results.GetNearbyResult;

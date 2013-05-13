@@ -15,7 +15,7 @@ import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
-import rest.o.gram.common.ViewAdapter;
+import rest.o.gram.view.ViewAdapter;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
@@ -129,7 +129,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
         // Set UI with venue image
         if(venue.getImageUrl() != null && !venue.getImageUrl().isEmpty()) {
             ImageView iv = (ImageView)findViewById(R.id.ivVenue);
-            RestogramClient.getInstance().downloadImage(venue.getImageUrl(), iv, 80, 80, true, null);
+            RestogramClient.getInstance().downloadImage(venue.getImageUrl(), iv, true, null);
         }
 
         // Send get photos request
@@ -148,14 +148,9 @@ public class VenueActivity extends Activity implements ITaskObserver {
                 }
             });
 
-            // Add view
-            viewAdapter.addView(iv);
-
             // Download image
-            RestogramClient.getInstance().downloadImage(photo.getThumbnail(), iv, 40, 40, false, null);
+            RestogramClient.getInstance().downloadImage(photo.getThumbnail(), iv, viewAdapter, false, null);
         }
-
-        viewAdapter.refresh();
     }
 
     private void onPhotoClicked(ImageView imageView, RestogramPhoto photo) {

@@ -75,7 +75,7 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
         Utils.updateTextView((TextView)findViewById(R.id.tvTitle), photo.getCaption());
 
         // Set UI with standard resolution image
-        RestogramClient.getInstance().downloadImage(photo.getStandardResolution(), iv, 200, 200, true, this);
+        RestogramClient.getInstance().downloadImage(photo.getStandardResolution(), iv, true, this);
     }
 
     private void cancelProgress() {

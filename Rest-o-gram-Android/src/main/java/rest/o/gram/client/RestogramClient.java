@@ -5,15 +5,15 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.ImageView;
+import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.commands.*;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.location.LocationTracker;
-import rest.o.gram.location.LocationTrackerDummy;
 import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.network.NetworkStateProvider;
 import rest.o.gram.tasks.ITaskObserver;
-import org.json.rpc.client.HttpJsonRpcClientTransport;
+import rest.o.gram.view.IViewAdapter;
 
 import java.net.URL;
 
@@ -107,9 +107,9 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public void downloadImage(String url, ImageView imageView,
+    public void downloadImage(String url, ImageView imageView, IViewAdapter viewAdapter,
                               boolean force, IRestogramCommandObserver observer) {
-        IRestogramCommand command = new DownloadImageCommand(url, imageView);
+        IRestogramCommand command = new DownloadImageCommand(url, imageView, viewAdapter);
 
         if(observer != null)
             command.addObserver(observer);
@@ -121,9 +121,9 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public void downloadImage(String url, ImageView imageView, int width, int height,
+    public void downloadImage(String url, ImageView imageView,
                               boolean force, IRestogramCommandObserver observer) {
-        IRestogramCommand command = new DownloadImageCommand(url, imageView, width, height);
+        IRestogramCommand command = new DownloadImageCommand(url, imageView);
 
         if(observer != null)
             command.addObserver(observer);

@@ -1,4 +1,4 @@
-package rest.o.gram.common;
+package rest.o.gram.view;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,7 @@ import java.util.List;
  * User: Roi
  * Date: 20/04/13
  */
-public class ViewAdapter extends BaseAdapter {
+public class ViewAdapter extends BaseAdapter implements IViewAdapter {
     /**
      * Ctor
      * */
@@ -47,23 +47,17 @@ public class ViewAdapter extends BaseAdapter {
         return viewList.get(i);
     }
 
-    /**
-     * Adds view
-     * */
+    @Override
     public void addView(View view) {
         viewList.add(view);
     }
 
-    /**
-     * Refreshes this adapter
-     */
+    @Override
     public void refresh() {
         notifyDataSetChanged();
     }
 
-    /**
-     * Clears all views
-     */
+    @Override
     public void clear() {
         viewList.clear();
     }
