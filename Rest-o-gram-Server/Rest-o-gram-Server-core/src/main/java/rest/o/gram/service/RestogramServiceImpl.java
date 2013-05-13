@@ -371,6 +371,8 @@ public class RestogramServiceImpl implements RestogramService {
         if(contact != null)
             phone = contact.getPhone();
 
+        // TODO: calculate distance using LocationUtils
+
         return new RestogramVenue(venue.getId(),
                                     venue.getName(),
                                     location.getAddress(),
