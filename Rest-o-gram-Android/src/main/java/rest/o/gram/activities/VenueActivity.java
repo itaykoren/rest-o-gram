@@ -96,7 +96,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
         // Init photo grid view
         GridView gv = (GridView)findViewById(R.id.gvPhotos);
-        viewAdapter = new ViewAdapter();
+        viewAdapter = new ViewAdapter(150, 150);
         gv.setAdapter(viewAdapter);
 
         // Set scroll listener

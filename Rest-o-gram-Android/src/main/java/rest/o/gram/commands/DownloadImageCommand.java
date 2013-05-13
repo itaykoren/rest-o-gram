@@ -1,5 +1,8 @@
 package rest.o.gram.commands;
 
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
@@ -53,14 +56,29 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message) {
-                imageView.setImageDrawable((Drawable)message.obj);
+                try {
+                    Drawable drawable = (Drawable)message.obj;
+                    Bitmap bitmap;
 
-                if(viewAdapter != null) {
-                    viewAdapter.addView(imageView);
-                    viewAdapter.refresh();
+                    if(viewAdapter != null) {
+                        if(viewAdapter.width() > 0 && viewAdapter.height() > 0) {
+                            bitmap = ((BitmapDrawable)drawable).getBitmap();
+                            bitmap = resizeBitmap(bitmap, viewAdapter.width(), viewAdapter.height());
+                            imageView.setImageBitmap(bitmap);
+                        }
+
+                        viewAdapter.addView(imageView);
+                        viewAdapter.refresh();
+                    }
+                    else {
+                        imageView.setImageDrawable(drawable);
+                    }
+
+                    notifyFinished();
                 }
-
-                notifyFinished();
+                catch(Exception e) {
+                    notifyError();
+                }
             }
         };
 
@@ -82,7 +100,21 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         return response.getEntity().getContent();
     }
 
+    private Bitmap resizeBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+
+        // Resize bitmap
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // Create new bitmap
+        return Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
+    }
+
     private String url;
-    private IViewAdapter viewAdapter;
     private ImageView imageView;
+    private IViewAdapter viewAdapter;
 }

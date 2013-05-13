@@ -15,10 +15,19 @@ import java.util.List;
 public class ViewAdapter extends BaseAdapter implements IViewAdapter {
     /**
      * Ctor
-     * */
+     */
     public ViewAdapter() {
         // Create view list
         viewList = new LinkedList<View>();
+    }
+
+    /**
+     * Ctor
+     */
+    public ViewAdapter(int width, int height) {
+        this();
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -62,5 +71,17 @@ public class ViewAdapter extends BaseAdapter implements IViewAdapter {
         viewList.clear();
     }
 
+    @Override
+    public int width() {
+        return width;
+    }
+
+    @Override
+    public int height() {
+        return height;
+    }
+
     private List<View> viewList; // View list
+    private int width = -1; // View width
+    private int height = -1; // View height
 }

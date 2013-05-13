@@ -22,4 +22,14 @@ public interface IViewAdapter {
      * Clears all views
      */
     void clear();
+
+    /**
+     * Returns view width
+     */
+    int width();
+
+    /**
+     * Returns view height
+     */
+    int height();
 }
