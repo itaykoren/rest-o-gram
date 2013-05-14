@@ -3,11 +3,12 @@ package rest.o.gram.client;
 import android.content.Context;
 import android.widget.ImageView;
 import rest.o.gram.commands.IRestogramCommandObserver;
+import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.tasks.ITaskObserver;
-import rest.o.gram.view.IViewAdapter;
+import rest.o.gram.view.IPhotoViewAdapter;
 
 /**
  * Created with IntelliJ IDEA.
@@ -59,7 +60,7 @@ public interface IRestogramClient {
     /**
      * Executes download image request
      */
-    void downloadImage(String url, ImageView imageView, IViewAdapter viewAdapter, boolean force, IRestogramCommandObserver observer);
+    void downloadImage(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter, boolean force, IRestogramCommandObserver observer);
 
     /**
      * Executes download image request

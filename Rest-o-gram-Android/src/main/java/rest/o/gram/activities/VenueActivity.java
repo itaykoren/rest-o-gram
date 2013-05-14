@@ -2,20 +2,15 @@ package rest.o.gram.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
-import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
-import rest.o.gram.view.ViewAdapter;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
@@ -23,6 +18,7 @@ import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.GetInfoResult;
 import rest.o.gram.tasks.results.GetNearbyResult;
 import rest.o.gram.tasks.results.GetPhotosResult;
+import rest.o.gram.view.PhotoViewAdapter;
 
 /**
  * Created with IntelliJ IDEA.
@@ -96,7 +92,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
         // Init photo grid view
         GridView gv = (GridView)findViewById(R.id.gvPhotos);
-        viewAdapter = new ViewAdapter(150, 150);
+        viewAdapter = new PhotoViewAdapter(this, 120, 120);
         gv.setAdapter(viewAdapter);
 
         // Set scroll listener
@@ -139,34 +135,9 @@ public class VenueActivity extends Activity implements ITaskObserver {
     private void addPhotos(RestogramPhoto[] photos) {
         // Traverse given photos
         for(final RestogramPhoto photo : photos) {
-            // Create new image view
-            final ImageView iv = new ImageView(this);
-            iv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onPhotoClicked(iv, photo);
-                }
-            });
-
             // Download image
-            RestogramClient.getInstance().downloadImage(photo.getThumbnail(), iv, viewAdapter, false, null);
+            RestogramClient.getInstance().downloadImage(photo.getThumbnail(), photo, viewAdapter, false, null);
         }
-    }
-
-    private void onPhotoClicked(ImageView imageView, RestogramPhoto photo) {
-        // Switch to "PhotoActivity" with parameters "photo" & "thumbnail_bitmap" (if possible)
-        Intent intent = new Intent(this, PhotoActivity.class);
-        intent.putExtra("photo", photo);
-
-        try {
-            Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
-            intent.putExtra("thumbnail_bitmap", bitmap);
-        }
-        catch(Exception e) {
-            // Empty
-        }
-
-        startActivityForResult(intent, Defs.RequestCodes.RC_PHOTO);
     }
 
     private void onScrollBottom() {
@@ -184,7 +155,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
     }
 
     private RestogramVenue venue; // Venue object
-    private ViewAdapter viewAdapter; // View adapter
+    private PhotoViewAdapter viewAdapter; // View adapter
     private String lastToken = null; // Last token
     private boolean isRequestPending = false; // Request pending flag
 }

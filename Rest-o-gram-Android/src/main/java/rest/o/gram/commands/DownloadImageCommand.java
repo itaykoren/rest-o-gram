@@ -10,7 +10,8 @@ import android.widget.ImageView;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import rest.o.gram.view.IViewAdapter;
+import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.view.IPhotoViewAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +24,9 @@ import java.net.MalformedURLException;
  */
 public class DownloadImageCommand extends AbstractRestogramCommand {
 
-    public DownloadImageCommand(String url, ImageView imageView, IViewAdapter viewAdapter) {
+    public DownloadImageCommand(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter) {
         this.url = url;
-        this.imageView = imageView;
+        this.photo = photo;
         this.viewAdapter = viewAdapter;
     }
 
@@ -37,7 +38,16 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
     @Override
     public void execute() {
         super.execute();
-        fetchDrawableOnThread(url, imageView, viewAdapter);
+
+        if(imageView != null) {
+            fetchDrawableOnThread(url, imageView);
+            return;
+        }
+
+        if(photo != null && viewAdapter != null) {
+            fetchDrawableOnThread(url, photo, viewAdapter);
+            return;
+        }
     }
 
     public Drawable fetchDrawable(String urlString) {
@@ -51,28 +61,52 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         }
     }
 
-    public void fetchDrawableOnThread(final String urlString, final ImageView imageView, final IViewAdapter viewAdapter) {
+    public void fetchDrawableOnThread(final String urlString, final ImageView imageView) {
 
         final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message) {
                 try {
                     Drawable drawable = (Drawable)message.obj;
-                    Bitmap bitmap;
+                    imageView.setImageDrawable(drawable);
 
-                    if(viewAdapter != null) {
-                        if(viewAdapter.width() > 0 && viewAdapter.height() > 0) {
-                            bitmap = ((BitmapDrawable)drawable).getBitmap();
-                            bitmap = resizeBitmap(bitmap, viewAdapter.width(), viewAdapter.height());
-                            imageView.setImageBitmap(bitmap);
-                        }
+                    notifyFinished();
+                }
+                catch(Exception e) {
+                    notifyError();
+                }
+            }
+        };
 
-                        viewAdapter.addView(imageView);
-                        viewAdapter.refresh();
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                Drawable drawable = fetchDrawable(urlString);
+                Message message = handler.obtainMessage(1, drawable);
+                handler.sendMessage(message);
+            }
+        };
+        thread.start();
+    }
+
+    public void fetchDrawableOnThread(final String urlString, final RestogramPhoto photo, final IPhotoViewAdapter viewAdapter) {
+
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                try {
+                    Drawable drawable = (Drawable)message.obj;
+
+                    if(viewAdapter.width() <= 0 && viewAdapter.height() <= 0) {
+                        notifyError();
+                        return;
                     }
-                    else {
-                        imageView.setImageDrawable(drawable);
-                    }
+
+                    Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+                    bitmap = resizeBitmap(bitmap, viewAdapter.width(), viewAdapter.height());
+
+                    viewAdapter.addPhoto(photo, bitmap);
+                    viewAdapter.refresh();
 
                     notifyFinished();
                 }
@@ -116,5 +150,6 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
 
     private String url;
     private ImageView imageView;
-    private IViewAdapter viewAdapter;
+    private RestogramPhoto photo;
+    private IPhotoViewAdapter viewAdapter;
 }

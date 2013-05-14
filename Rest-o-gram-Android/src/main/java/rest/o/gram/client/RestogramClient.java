@@ -7,13 +7,14 @@ import android.util.Log;
 import android.widget.ImageView;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.commands.*;
+import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.location.LocationTracker;
 import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.network.NetworkStateProvider;
 import rest.o.gram.tasks.ITaskObserver;
-import rest.o.gram.view.IViewAdapter;
+import rest.o.gram.view.IPhotoViewAdapter;
 
 import java.net.URL;
 
@@ -38,6 +39,12 @@ public class RestogramClient implements IRestogramClient {
     public void initialize(Context context) {
         try
         {
+            transport = new HttpJsonRpcClientTransport(new URL(url));
+            tracker = new LocationTracker(context);
+            //tracker = new LocationTrackerDummy();
+            networkStateProvider = new NetworkStateProvider(context);
+            commandQueue = new RestogramCommandQueue();
+
             // sets debuggable flag
             PackageManager pm = context.getPackageManager();
             try
@@ -52,12 +59,6 @@ public class RestogramClient implements IRestogramClient {
 
             if (RestogramClient.getInstance().isDebuggable())
                 Log.d("REST-O-GRAM", "CLIENT UP");
-
-            transport = new HttpJsonRpcClientTransport(new URL(url));
-            tracker = new LocationTracker(context);
-            //tracker = new LocationTrackerDummy();
-            networkStateProvider = new NetworkStateProvider(context);
-            commandQueue = new RestogramCommandQueue();
         }
         catch(Exception e) {
             System.out.println("Error in RestogramClient: " + e.getMessage());
@@ -107,9 +108,9 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public void downloadImage(String url, ImageView imageView, IViewAdapter viewAdapter,
+    public void downloadImage(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter,
                               boolean force, IRestogramCommandObserver observer) {
-        IRestogramCommand command = new DownloadImageCommand(url, imageView, viewAdapter);
+        IRestogramCommand command = new DownloadImageCommand(url, photo, viewAdapter);
 
         if(observer != null)
             command.addObserver(observer);

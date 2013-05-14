@@ -1,17 +1,18 @@
 package rest.o.gram.view;
 
-import android.view.View;
+import android.graphics.Bitmap;
+import rest.o.gram.entities.RestogramPhoto;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Roi
  * Date: 13/05/13
  */
-public interface IViewAdapter {
+public interface IPhotoViewAdapter {
     /**
-     * Adds view
+     * Adds photo
      * */
-    void addView(View view);
+    void addPhoto(RestogramPhoto photo, Bitmap bitmap);
 
     /**
      * Refreshes this adapter
@@ -19,17 +20,17 @@ public interface IViewAdapter {
     void refresh();
 
     /**
-     * Clears all views
+     * Clears all photos
      */
     void clear();
 
     /**
-     * Returns view width
+     * Returns photo width
      */
     int width();
 
     /**
-     * Returns view height
+     * Returns photo height
      */
     int height();
 }
