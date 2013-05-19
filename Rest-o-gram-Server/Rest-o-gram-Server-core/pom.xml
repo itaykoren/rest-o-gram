@@ -3,7 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>tau</groupId>
     <artifactId>rest-o-gram-server-core</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
@@ -25,12 +24,27 @@
             <id>json-rpc</id>
             <url>http://json-rpc.googlecode.com/svn/mavenrepo</url>
         </repository>
+        <!--<repository>-->
+            <!--<id>my-internal-site</id>-->
+            <!--<url>file:///${env.HOMEPATH}/.m2/repository</url>-->
+        <!--</repository>-->
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>tau</groupId>
             <artifactId>rest-o-gram-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.leanengine</groupId>-->
+            <!--<artifactId>server-lib</artifactId>-->
+            <!--<version>0.8</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>tau</groupId>
+            <artifactId>lean-server-lib</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -46,7 +60,7 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.7.6</version>
+            <version>${gae.version}</version>
         </dependency>
         <!--<dependency>-->
         <!--<groupId>fi.foyt</groupId>-->
