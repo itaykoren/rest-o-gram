@@ -4,17 +4,27 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
+import android.widget.Toast;
+import com.leanengine.LeanError;
+import com.leanengine.LoginDialog;
+import com.leanengine.LoginListener;
 import rest.o.gram.R;
+import rest.o.gram.client.RestogramClient;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Or
  * Date: 5/9/13
  */
-public final class Utils {
-    public static void showLocationTrackingAlert(final Activity activity) {
+public final class DialogManager {
+    public void showLocationTrackingAlert(final Activity activity) {
         final Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
@@ -25,7 +35,7 @@ public final class Utils {
         }, 500);
     }
 
-    public static void showNetworkStateAlert(final Activity activity) {
+    public void showNetworkStateAlert(final Activity activity) {
         final Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
@@ -36,7 +46,23 @@ public final class Utils {
         }, 500);
     }
 
-    private static void showErrorAlert(final Activity activity, final int message, final String action) {
+    public void showLoginDialog(final Activity activity, LoginListener loginListener) {
+        Uri loginUri = RestogramClient.getInstance().getAuthenticationProvider().getFacebookLoginUri();
+
+        final LoginDialog fbDialog =
+                new LoginDialog(activity, loginUri.toString(), loginListener);
+
+        dialogs.add(fbDialog);
+        fbDialog.show();
+    }
+
+    public void clear() {
+        for (DialogInterface diag : dialogs)
+            diag.cancel();
+        dialogs.clear();
+    }
+
+    private void showErrorAlert(final Activity activity, final int message, final String action) {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
 
         // Setting Dialog Title
@@ -59,10 +85,13 @@ public final class Utils {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
+                        dialogs.remove(dialog);
                         activity.finish();
                     }
                 });
 
-        alertDialog.show();
+        dialogs.add(alertDialog.show());
     }
+
+    private List<DialogInterface> dialogs = new ArrayList<>();
 }

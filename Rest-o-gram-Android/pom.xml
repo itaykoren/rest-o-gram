@@ -19,6 +19,10 @@
             <id>json-rpc</id>
             <url>http://json-rpc.googlecode.com/svn/mavenrepo</url>
         </repository>
+        <!--<repository>-->
+            <!--<id>my-internal-site</id>-->
+            <!--<url>file:///${env.HOMEPATH}/.m2/repository</url>-->
+        <!--</repository>-->
     </repositories>
 
     <properties>
@@ -37,6 +41,11 @@
             <version>${platform.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.leanengine</groupId>-->
+            <!--<artifactId>android-lib</artifactId>-->
+            <!--<version>0.8</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.json.rpc</groupId>
             <artifactId>jsonrpc</artifactId>

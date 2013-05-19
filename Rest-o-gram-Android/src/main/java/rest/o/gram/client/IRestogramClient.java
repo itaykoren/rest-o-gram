@@ -2,6 +2,7 @@ package rest.o.gram.client;
 
 import android.content.Context;
 import android.widget.ImageView;
+import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.RestogramFilterType;
@@ -21,6 +22,8 @@ public interface IRestogramClient {
      * Initializes this client
      */
     void initialize(Context context);
+
+    /* NON-AUTH SERVICES */
 
     /**
      * Executes get nearby request
@@ -67,6 +70,15 @@ public interface IRestogramClient {
      */
     void downloadImage(String url, ImageView imageView, boolean force, IRestogramCommandObserver observer);
 
+    /* AUTH SERVICES */
+
+    /**
+     *
+     */
+    void getRecentPhotos(ITaskObserver observer);
+
+    /* PROVIDERS */
+
     /**
      * Returns location tracker
      */
@@ -76,6 +88,11 @@ public interface IRestogramClient {
      * Returns the network state provider
      */
     INetworkStateProvider getNetworkStateProvider();
+
+    /**
+     * Returns  the authentication provider
+     */
+    IAuthenticationProvider getAuthenticationProvider();
 
     /**
      * @return is the application in debug mode?

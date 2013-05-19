@@ -83,6 +83,8 @@ public class LocationTracker implements ILocationTracker {
 
         isTracking = false;
         context.unregisterReceiver(locationBroadcastReceiver);
+        timer.cancel();
+        timer.purge();
     }
 
     @Override

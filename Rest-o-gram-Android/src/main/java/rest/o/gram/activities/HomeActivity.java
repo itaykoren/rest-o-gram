@@ -31,11 +31,13 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
 
         setContentView(R.layout.home);
 
+        diagManager = new DialogManager();
+
         // Get location tracker
         tracker = RestogramClient.getInstance().getLocationTracker();
         if (tracker != null) {
             if (!tracker.canDetectLocation())
-                Utils.showLocationTrackingAlert(this);
+                diagManager.showLocationTrackingAlert(this);
             else
             {
                 tracker.setObserver(this);
@@ -59,6 +61,7 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
         super.onDestroy();
         if(tracker != null)
             tracker.stop();
+        diagManager.clear();
     }
 
     @Override
@@ -76,7 +79,7 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
         {
             if (!netStateProvider.isOnline())
             {
-                Utils.showNetworkStateAlert(this);
+                diagManager.showNetworkStateAlert(this);
                 return;
             }
         }
@@ -102,7 +105,7 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     public void onTrackingTimedOut() {
         if(tracker != null)
             tracker.stop();
-        Utils.showLocationTrackingAlert(this);
+        diagManager.showLocationTrackingAlert(this);
     }
 
     @Override
@@ -161,4 +164,5 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     private double longitude;
     private boolean gotLocation;
     private RestogramVenue venue;
+    private DialogManager diagManager;
 }

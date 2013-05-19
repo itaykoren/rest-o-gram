@@ -5,6 +5,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.ImageView;
+import rest.o.gram.authentication.AuthenticationProvider;
+import rest.o.gram.authentication.IAuthenticationProvider;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.commands.*;
 import rest.o.gram.entities.RestogramPhoto;
@@ -39,12 +41,6 @@ public class RestogramClient implements IRestogramClient {
     public void initialize(Context context) {
         try
         {
-            transport = new HttpJsonRpcClientTransport(new URL(url));
-            tracker = new LocationTracker(context);
-            //tracker = new LocationTrackerDummy();
-            networkStateProvider = new NetworkStateProvider(context);
-            commandQueue = new RestogramCommandQueue();
-
             // sets debuggable flag
             PackageManager pm = context.getPackageManager();
             try
@@ -59,11 +55,21 @@ public class RestogramClient implements IRestogramClient {
 
             if (RestogramClient.getInstance().isDebuggable())
                 Log.d("REST-O-GRAM", "CLIENT UP");
+
+            authProvider = new AuthenticationProvider(context, baseHostname);
+            transport = new HttpJsonRpcClientTransport(new URL(jsonServiceHostName));
+            authTransport = new HttpJsonRpcClientTransport(new URL(jsonAuthServiceHostName));
+            tracker = new LocationTracker(context);
+            //tracker = new LocationTrackerDummy();
+            networkStateProvider = new NetworkStateProvider(context);
+            commandQueue = new RestogramCommandQueue();
         }
         catch(Exception e) {
             System.out.println("Error in RestogramClient: " + e.getMessage());
         }
     }
+
+    /* NON-AUTH SERVICES */
 
     @Override
     public void getNearby(double latitude, double longitude, ITaskObserver observer) {
@@ -135,6 +141,17 @@ public class RestogramClient implements IRestogramClient {
             commandQueue.pushBack(command);
     }
 
+    /* AUTH SERVICES */
+
+    @Override
+    public void getRecentPhotos(ITaskObserver observer) {
+        IRestogramCommand command = new GetRecentPhotosCommand(authTransport, observer);
+        command.execute();
+    }
+
+
+    /* PROVIDERS */
+
     @Override
     public ILocationTracker getLocationTracker() {
         return tracker;
@@ -143,6 +160,11 @@ public class RestogramClient implements IRestogramClient {
     @Override
     public INetworkStateProvider getNetworkStateProvider() {
         return networkStateProvider;
+    }
+
+    @Override
+    public IAuthenticationProvider getAuthenticationProvider() {
+        return authProvider;
     }
 
     @Override
@@ -157,8 +179,12 @@ public class RestogramClient implements IRestogramClient {
     }
 
     private static IRestogramClient instance; // Singleton instance
-    private final String url = "http://rest-o-gram.appspot.com/service"; // Server URL
+    private final String baseHostname = "http://rest-o-debug3.appspot.com"; // base Server URL
+    private final String jsonServiceHostName = baseHostname + "/service"; // json rpc non-auth URL
+    private final String jsonAuthServiceHostName = baseHostname + "/auth-service"; // json rpc non-auth URL
+    private IAuthenticationProvider authProvider;
     private HttpJsonRpcClientTransport transport; // Transport object
+    private HttpJsonRpcClientTransport authTransport; // Auth Transport object
     private ILocationTracker tracker; // Location tracker
     private INetworkStateProvider networkStateProvider;
     private IRestogramCommandQueue commandQueue; // Command queue
