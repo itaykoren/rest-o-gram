@@ -11,35 +11,35 @@ import rest.o.gram.results.VenuesResult;
  * Date: 19/05/13
  */
 public interface RestogramAuthService {
-    void addRecentPhotos(RestogramPhoto[] photos);
+    long[] addRecentPhotos(String token, RestogramPhoto[] photos);
 
-    void removeRecentPhotos(String[] ids);
+    void removeRecentPhotos(String token, String[] ids);
 
-    void clearRecentPhotos();
+    void clearRecentPhotos(String token);
 
-    PhotosResult getRecentPhotos();
+    PhotosResult getRecentPhotos(String token);
 
-    void addRecentVenues(RestogramVenue[] venues);
+    long[] addRecentVenues(String token, RestogramVenue[] venues);
 
-    void removeRecentVenues(String[] ids);
+    void removeRecentVenues(String token, String[] ids);
 
-    void clearRecentVenues();
+    void clearRecentVenues(String token);
 
-    VenuesResult getRecentVenues();
+    VenuesResult getRecentVenues(String token);
 
-    void addFavoritePhotos(RestogramPhoto[] photos);
+    long[] addFavoritePhotos(String token, RestogramPhoto[] photos);
 
-    void removeFavoritePhotos(String[] ids);
+    void removeFavoritePhotos(String token, String[] ids);
 
-    void clearFavoritePhotos();
+    void clearFavoritePhotos(String token);
 
-    PhotosResult getFavoritePhotos();
+    PhotosResult getFavoritePhotos(String token);
 
-    void addFavoriteVenues(RestogramVenue[] venues);
+    long[] addFavoriteVenues(String token, RestogramVenue[] venues);
 
-    void removeFavoriteVenues(String[] ids);
+    void removeFavoriteVenues(String token, String[] ids);
 
-    void clearFavoriteVenues();
+    void clearFavoriteVenues(String token);
 
-    VenuesResult getFavoriteVenues();
+    VenuesResult getFavoriteVenues(String token);
 }

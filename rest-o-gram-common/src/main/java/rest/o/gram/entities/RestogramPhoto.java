@@ -14,12 +14,12 @@ public class RestogramPhoto implements Serializable {
     public RestogramPhoto() {
     }
 
-    public RestogramPhoto(String caption, String createdTime, String id, String imageFilter,
+    public RestogramPhoto(String caption, String createdTime, String instagram_id, String imageFilter,
                           String thumbnail, String standardResolution, int likes, String link,
                           String type, String user) {
         this.caption = caption;
         this.createdTime = createdTime;
-        this.id = id;
+        this.instagram_id = instagram_id;
         this.imageFilter = imageFilter;
         this.thumbnail = thumbnail;
         this.standardResolution = standardResolution;
@@ -37,8 +37,8 @@ public class RestogramPhoto implements Serializable {
         return createdTime;
     }
 
-    public String getId() {
-        return id;
+    public String getInstagram_id() {
+        return instagram_id;
     }
 
     public String getImageFilter() {
@@ -69,14 +69,22 @@ public class RestogramPhoto implements Serializable {
         return user;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @SerializedName("caption")
     private String caption;
 
     @SerializedName("created_time")
     private String createdTime;
 
-    @SerializedName("id")
-    private String id;
+    @SerializedName("instagram_id")
+    private String instagram_id;
 
     @SerializedName("filter")
     private String imageFilter;
@@ -98,4 +106,7 @@ public class RestogramPhoto implements Serializable {
 
     @SerializedName("user")
     private String user;
+
+    @SerializedName("id")
+    private long id = Long.MIN_VALUE;;
 }

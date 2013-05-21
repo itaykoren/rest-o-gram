@@ -14,18 +14,20 @@ import rest.o.gram.tasks.results.GetPhotosResult;
  * Date: 5/19/13
  */
 public class GetRecentPhotosTask extends AsyncTask<Void, Void, GetPhotosResult> {
-    public GetRecentPhotosTask(HttpJsonRpcClientTransport transport, ITaskObserver observer) {
+    public GetRecentPhotosTask(HttpJsonRpcClientTransport transport, ITaskObserver observer, String authToken) {
         this.transport = transport;
-
-        transport.setHeader("lean_token", LeanEngine.getAuthToken());
+        this.authToken = authToken;
         this.observer = observer;
+
+        // doesn't seems to work on RPC calls...
+        //transport.setHeader("lean_token", authToken);
     }
 
     protected GetPhotosResult doInBackground(Void... params) {
         JsonRpcInvoker invoker = new JsonRpcInvoker();
-        RestogramAuthService service = invoker.get(transport, "restogram-auth", RestogramAuthService.class);
+        RestogramAuthService service = invoker.get(transport, "restogram", RestogramAuthService.class);
 
-       return new GetPhotosResultImpl(service.getRecentPhotos().getPhotos(), null);
+       return new GetPhotosResultImpl(service.getRecentPhotos(authToken).getPhotos(), null);
     }
 
     protected void onPostExecute(GetPhotosResult result) {
@@ -55,4 +57,5 @@ public class GetRecentPhotosTask extends AsyncTask<Void, Void, GetPhotosResult> 
 
     protected HttpJsonRpcClientTransport transport;
     protected ITaskObserver observer;
+    protected String authToken;
 }

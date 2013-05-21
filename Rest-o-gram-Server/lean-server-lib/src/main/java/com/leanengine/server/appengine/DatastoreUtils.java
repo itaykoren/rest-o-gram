@@ -98,13 +98,27 @@ public class DatastoreUtils {
         return pq.asList(FetchOptions.Builder.withDefaults());
     }
 
+//    public static void putPrivateEntity(String entityName, String id, Map<String, Object> properties) throws LeanException {
+//        if (!pattern.matcher(entityName).matches()) {
+//            throw new LeanException(LeanException.Error.IllegalEntityName);
+//        }
+//
+//        Entity entityEntity = new Entity(entityName, id);
+//        doPutPrivateEntity(entityEntity, properties);
+//    }
+
     public static long putPrivateEntity(String entityName, Map<String, Object> properties) throws LeanException {
 
         if (!pattern.matcher(entityName).matches()) {
             throw new LeanException(LeanException.Error.IllegalEntityName);
         }
 
-        Entity entityEntity = new Entity(entityName);
+         Entity entityEntity = new Entity(entityName);
+        Key result = doPutPrivateEntity(entityEntity, properties);
+        return result.getId();
+    }
+
+    private static Key doPutPrivateEntity(Entity entityEntity, Map<String, Object> properties) {
         entityEntity.setProperty("_account", AuthService.getCurrentAccount().id);
 
         if (properties != null) {
@@ -112,21 +126,20 @@ public class DatastoreUtils {
                 entityEntity.setProperty(entry.getKey(), entry.getValue());
             }
         }
-        Key result = datastore.put(entityEntity);
-        return result.getId();
+        return datastore.put(entityEntity);
     }
 
     public static QueryResult queryEntityPrivate(LeanQuery leanQuery) throws LeanException {
         LeanAccount account = findCurrentAccount();
 
         Query query = new Query(leanQuery.getKind());
-        query.addFilter("_account", Query.FilterOperator.EQUAL, account.id);
+        query.setFilter(new Query.FilterPredicate("_account", Query.FilterOperator.EQUAL, account.id));
 
         for (QueryFilter queryFilter : leanQuery.getFilters()) {
-            query.addFilter(
+            query.setFilter(new Query.FilterPredicate(
                     queryFilter.getProperty(),
                     queryFilter.getOperator().getFilterOperator(),
-                    queryFilter.getValue());
+                    queryFilter.getValue()));
         }
 
         for (QuerySort querySort : leanQuery.getSorts()) {

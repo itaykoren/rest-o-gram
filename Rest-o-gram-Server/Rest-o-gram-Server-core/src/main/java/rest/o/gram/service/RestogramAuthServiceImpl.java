@@ -1,13 +1,24 @@
 package rest.o.gram.service;
 
+import com.google.appengine.api.datastore.Entity;
+import com.leanengine.server.LeanException;
+import com.leanengine.server.appengine.DatastoreUtils;
+import com.leanengine.server.auth.AuthService;
+import com.leanengine.server.entity.LeanQuery;
+import com.leanengine.server.entity.QueryFilter;
 import fi.foyt.foursquare.api.FoursquareApi;
 import org.jinstagram.Instagram;
+import rest.o.gram.data.Kinds;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.iservice.RestogramAuthService;
 import rest.o.gram.results.PhotosResult;
 import rest.o.gram.results.VenuesResult;
 
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -17,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class RestogramAuthServiceImpl implements RestogramAuthService {
 
-    private static final Logger log = Logger.getLogger(RestogramServiceImpl.class.getName());
+    private static final Logger log = Logger.getLogger(RestogramAuthServiceImpl.class.getName());
 
     public RestogramAuthServiceImpl()
     {
@@ -25,6 +36,7 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
         {
             m_foursquare = new FoursquareApi(FOURSQUARE_CLIENT_ID, FOURSQUARE_CLIENT_SECRET, "");
             m_instagram = new Instagram(INSTAGRAM_CLIENT_ID);
+            log.info("AUTH-RPC SERVICE UP");
         }
         catch(Exception e)
         {
@@ -33,84 +45,99 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
         }
     }
 
+
+    private void handleSession(final String token, final Handler handler) {
+        AuthService.startAuthSession(token);
+        try {
+            handler.handle();
+        } catch (LeanException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        AuthService.finishAuthSession();
+    }
+
     @Override
-    public void addRecentPhotos(RestogramPhoto[] photos) {
+    public long[] addRecentPhotos(String token, RestogramPhoto[] photos) {
+        return new long[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void removeRecentPhotos(String token, String[] ids) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void removeRecentPhotos(String[] ids) {
+    public void clearRecentPhotos(String token) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void clearRecentPhotos() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public PhotosResult getRecentPhotos() {
-    return null;
-    }
-
-    @Override
-    public void addRecentVenues(RestogramVenue[] venues) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void removeRecentVenues(String[] ids) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void clearRecentVenues() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public VenuesResult getRecentVenues() {
+    public PhotosResult getRecentPhotos(String token) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void addFavoritePhotos(RestogramPhoto[] photos) {
+    public long[] addRecentVenues(String token, RestogramVenue[] venues) {
+        return new long[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void removeRecentVenues(String token, String[] ids) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void removeFavoritePhotos(String[] ids) {
+    public void clearRecentVenues(String token) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void clearFavoritePhotos() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public PhotosResult getFavoritePhotos() {
+    public VenuesResult getRecentVenues(String token) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void addFavoriteVenues(RestogramVenue[] venues) {
+    public long[] addFavoritePhotos(String token, RestogramPhoto[] photos) {
+        return new long[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void removeFavoritePhotos(String token, String[] ids) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void removeFavoriteVenues(String[] ids) {
+    public void clearFavoritePhotos(String token) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void clearFavoriteVenues() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public VenuesResult getFavoriteVenues() {
+    public PhotosResult getFavoritePhotos(String token) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public long[] addFavoriteVenues(String token, RestogramVenue[] venues) {
+        return new long[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void removeFavoriteVenues(String token, String[] ids) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void clearFavoriteVenues(String token) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public VenuesResult getFavoriteVenues(String token) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    private static abstract class Handler {
+        abstract void handle() throws LeanException;
     }
 
     private FoursquareApi m_foursquare;

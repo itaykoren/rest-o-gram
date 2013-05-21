@@ -15,7 +15,6 @@ public class AuthFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        this.excludePatterns = filterConfig.getInitParameter("excludePatterns");
         // nothing to do
     }
 
@@ -43,16 +42,15 @@ public class AuthFilter implements Filter {
                 token = (String)tok;
             else  // json rpc requests have auth_token set in header
                 token = httpServletRequest.getHeader("lean_token");
-
         }
 
-        if (token != null) {
+        if (token != null)
             AuthService.startAuthSession(token);
-        }
 
         filterChain.doFilter(servletRequest, servletResponse);
 
-        AuthService.finishAuthSession();
+        if (token != null)
+            AuthService.finishAuthSession();
     }
 
     @Override

@@ -159,7 +159,7 @@ public class NearbyActivity extends Activity implements ITaskObserver {
 
             // TODO: get photo
             // Send get info request
-            //RestogramClient.getInstance().getInfo(venue.getId(), this);
+            //RestogramClient.getInstance().getInfo(venue.getFoursquare_id(), this);
 
             // Calculate distance
             double d = distance(latitude, longitude, venue.getLatitude(), venue.getLongitude());

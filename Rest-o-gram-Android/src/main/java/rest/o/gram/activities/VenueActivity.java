@@ -129,7 +129,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
         }
 
         // Send get photos request
-        RestogramClient.getInstance().getPhotos(venue.getId(), RestogramFilterType.Simple, this);
+        RestogramClient.getInstance().getPhotos(venue.getFoursquare_id(), RestogramFilterType.Simple, this);
     }
 
     private void addPhotos(RestogramPhoto[] photos) {

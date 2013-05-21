@@ -1,5 +1,6 @@
 package rest.o.gram.commands;
 
+import com.leanengine.LeanEngine;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.tasks.GetRecentPhotosTask;
 import rest.o.gram.tasks.ITaskObserver;
@@ -16,7 +17,7 @@ public class GetRecentPhotosCommand extends AbstractRestogramCommand {
 
     @Override
     public void execute() {
-        GetRecentPhotosTask task = new GetRecentPhotosTask(transport, observer);
+        GetRecentPhotosTask task = new GetRecentPhotosTask(transport, observer, LeanEngine.getAuthToken());
         task.execute();
     }
 }

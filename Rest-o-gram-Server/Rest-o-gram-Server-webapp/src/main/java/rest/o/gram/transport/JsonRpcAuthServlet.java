@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,7 +35,7 @@ public class JsonRpcAuthServlet extends HttpServlet {
         JsonRpcExecutor executor = new JsonRpcExecutor();
 
         RestogramAuthService impl = new RestogramAuthServiceImpl();
-        executor.addHandler("restogram-auth", impl, RestogramAuthService.class);
+        executor.addHandler("restogram", impl, RestogramAuthService.class);
 
         // add more services here
 

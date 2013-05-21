@@ -131,7 +131,7 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
         venue = venues[0];
 
         // Send get info request
-        RestogramClient.getInstance().getInfo(venue.getId(), this);
+        RestogramClient.getInstance().getInfo(venue.getFoursquare_id(), this);
     }
 
     @Override

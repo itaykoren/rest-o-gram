@@ -149,19 +149,19 @@ public class DumpFilter implements Filter {
         BufferedRequestWrapper bufferedRequest = new BufferedRequestWrapper(httpRequest);
 
         if (dumpRequest) {
-//            log.info("REQUEST -> " + new String(bufferedRequest.getBuffer()));
-            System.out.println("REQUEST URL: " + httpRequest.getServletPath());
-            System.out.println("REQUEST -> " + new String(bufferedRequest.getBuffer()));
+//            log.severe("REQUEST -> " + new String(bufferedRequest.getBuffer()));
+            log.severe("REQUEST URL: " + httpRequest.getServletPath());
+            log.severe("REQUEST -> " + new String(bufferedRequest.getBuffer()));
         }
 
         if (dumpHeader) {
-//            log.info("  REQUEST HEADER:");
-            System.out.println("  REQUEST HEADER:");
+//            log.severe("  REQUEST HEADER:");
+            log.severe("  REQUEST HEADER:");
 
             Enumeration headers = httpRequest.getHeaderNames();
             while (headers.hasMoreElements()) {
                 String header = (String) headers.nextElement();
-                System.out.println(header + "=" + httpRequest.getHeader(header));
+                log.severe(header + "=" + httpRequest.getHeader(header));
             }
         }
 
@@ -185,8 +185,8 @@ public class DumpFilter implements Filter {
         byte[] bytes = pw.toByteArray();
         response.getOutputStream().write(bytes);
         if (dumpResponse) {
-//            log.info("RESPONSE -> " + new String(bytes));
-            System.out.println("RESPONSE -> " + new String(bytes));
+//            log.severe("RESPONSE -> " + new String(bytes));
+            log.severe("RESPONSE -> " + new String(bytes));
         }
     }
 

@@ -12,10 +12,10 @@ public class RestogramVenue implements Serializable {
     public RestogramVenue() {
     }
 
-    public RestogramVenue(String id, String name, String address, String city,
+    public RestogramVenue(String foursquare_id, String name, String address, String city,
             String state, String postalCode, String country,
             double latitude, double longitude, double distance, String url, String phone) {
-        this.id = id;
+        this.foursquare_id = foursquare_id;
         this.name = name;
         this.address = address;
         this.city = city;
@@ -29,19 +29,19 @@ public class RestogramVenue implements Serializable {
         this.phone = phone;
     }
 
-    public RestogramVenue(String id, String name, String description, String imageUrl) {
-        this.id = id;
+    public RestogramVenue(String foursquare_id, String name, String description, String imageUrl) {
+        this.foursquare_id = foursquare_id;
         this.name = name;
         this.description = description;
         this.imageUrl = imageUrl;
     }
 
-    public String getId() {
-        return id;
+    public String getFoursquare_id() {
+        return foursquare_id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setFoursquare_id(String foursquare_id) {
+        this.foursquare_id = foursquare_id;
     }
 
     public String getName() {
@@ -148,7 +148,15 @@ public class RestogramVenue implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    private String id;
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    private String foursquare_id;
     private String name;
     private String address;
     private String city;
@@ -163,5 +171,7 @@ public class RestogramVenue implements Serializable {
 
     private String description;
     private String imageUrl;
+    private long id = Long.MIN_VALUE;
+
 }
 
