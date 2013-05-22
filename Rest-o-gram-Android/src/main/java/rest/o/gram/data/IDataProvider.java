@@ -1,4 +1,4 @@
-package rest.o.gram.iservice;
+package rest.o.gram.data;
 
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
@@ -8,20 +8,20 @@ import rest.o.gram.results.VenuesResult;
 /**
  * Created with IntelliJ IDEA.
  * User: Or
- * Date: 19/05/13
+ * Date: 5/22/13
  */
-public interface RestogramAuthService {
-    long[] addFavoritePhotos(RestogramPhoto[] photos);
+public interface IDataProvider {
+    long[] addFavoritePhotos(RestogramPhoto... photos);
 
-    void removeFavoritePhotos(String[] ids);
+    void removeFavoritePhotos(String... ids);
 
     void clearFavoritePhotos();
 
     PhotosResult getFavoritePhotos();
 
-    long[] addFavoriteVenues(RestogramVenue[] venues);
+    long[] addFavoriteVenues(RestogramVenue... venues);
 
-    void removeFavoriteVenues(String[] ids);
+    void removeFavoriteVenues(String... ids);
 
     void clearFavoriteVenues();
 

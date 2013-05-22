@@ -7,7 +7,6 @@ import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.data.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.network.INetworkStateProvider;
@@ -100,7 +99,7 @@ public interface IRestogramClient {
     INetworkStateProvider getNetworkStateProvider();
 
     /**
-     * Returns the authentication provider
+     * Returns  the authentication provider
      */
     IAuthenticationProvider getAuthenticationProvider();
 
@@ -118,6 +117,11 @@ public interface IRestogramClient {
      * Returns the bitmap filter
      */
     IBitmapFilter getBitmapFilter();
+
+    /**
+     * Returns the dtat provider
+     */
+    IDataProvider getDataProvider();
 
     /**
      * @return is the application in debug mode?

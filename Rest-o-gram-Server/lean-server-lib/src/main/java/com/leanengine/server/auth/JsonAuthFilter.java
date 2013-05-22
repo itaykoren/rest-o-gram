@@ -7,7 +7,12 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public class AuthFilter implements Filter {
+/**
+ * Created with IntelliJ IDEA.
+ * User: Or
+ * Date: 5/21/13
+ */
+public class JsonAuthFilter implements Filter {
 
     private static final Logger log = Logger.getLogger(JsonAuthFilter.class.getName());
 
@@ -20,9 +25,6 @@ public class AuthFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 
-        // REST requests have auth_token set as parameter
-        String token = httpServletRequest.getParameter("lean_token");
-
         // check the session support
         HttpSession session = httpServletRequest.getSession();
         if (session.getId() == null) {
@@ -32,13 +34,7 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        // if we did not get token from parameters, try getting it from session
-        if (token == null) {
-            // Web requests have auth_token set in session
-            final Object tok = session.getAttribute("lean_token");
-            if (tok != null)
-                token = (String)tok;
-        }
+        String token = httpServletRequest.getHeader("lean_token");
 
         if (token != null)
             AuthService.startAuthSession(token);

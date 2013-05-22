@@ -106,49 +106,56 @@
         <url-pattern>/logout</url-pattern>
     </filter-mapping>
 
-    <!--doesn't seems to work on RPC calls...-->
-    <!--<filter-mapping>-->
-        <!--<filter-name>AuthFilter</filter-name>-->
-        <!--<url-pattern>/auth-service</url-pattern>-->
-    <!--</filter-mapping>-->
-
-    <!--SecurityFilter is optional and should be used to secure web pages if needed-->
-    <!--Do not use this for REST - it is already secured by it own internal mechanism.-->
-    <!--<filter>-->
-    <!--<filter-name>SecurityFilter</filter-name>-->
-    <!--<filter-class>com.leanengine.server.SecurityFilter</filter-class>-->
-    <!--</filter>-->
-    <!--<filter-mapping>-->
-    <!--<filter-name>SecurityFilter</filter-name>-->
-    <!--<url-pattern>/*</url-pattern>-->
-    <!--</filter-mapping>-->
-
-    <!--DumpFilter dumps request&response headers and body.-->
-    <!--Handy when troubleshooting.-->
     <filter>
-    <filter-name>DumpFilter</filter-name>
-    <filter-class>com.leanengine.server.DumpFilter</filter-class>
-    <init-param>
-    <param-name>dumpRequest</param-name>
-    <param-value>true</param-value>
-    </init-param>
-    <init-param>
-    <param-name>dumpResponse</param-name>
-    <param-value>true</param-value>
-    </init-param>
-    <init-param>
-    <param-name>dumpHeader</param-name>
-    <param-value>true</param-value>
-    </init-param>
+        <filter-name>JsonAuthFilter</filter-name>
+        <filter-class>com.leanengine.server.auth.JsonAuthFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>DumpFilter</filter-name>
+        <filter-name>JsonAuthFilter</filter-name>
         <url-pattern>/service</url-pattern>
     </filter-mapping>
     <filter-mapping>
-    <filter-name>DumpFilter</filter-name>
+        <filter-name>JsonAuthFilter</filter-name>
+        <url-pattern>/auth-service</url-pattern>
+    </filter-mapping>
+
+    <!--SecurityFilter is optional and should be used to secure web pages if needed-->
+    <!--Do not use this for REST - it is already secured by it own internal mechanism.-->
+    <filter>
+    <filter-name>SecurityFilter</filter-name>
+    <filter-class>com.leanengine.server.SecurityFilter</filter-class>
+    </filter>
+    <filter-mapping>
+    <filter-name>SecurityFilter</filter-name>
     <url-pattern>/auth-service</url-pattern>
     </filter-mapping>
+
+    <!--DumpFilter dumps request&response headers and body.-->
+    <!--Handy when troubleshooting.-->
+    <!--<filter>-->
+    <!--<filter-name>DumpFilter</filter-name>-->
+    <!--<filter-class>com.leanengine.server.DumpFilter</filter-class>-->
+    <!--<init-param>-->
+    <!--<param-name>dumpRequest</param-name>-->
+    <!--<param-value>true</param-value>-->
+    <!--</init-param>-->
+    <!--<init-param>-->
+    <!--<param-name>dumpResponse</param-name>-->
+    <!--<param-value>true</param-value>-->
+    <!--</init-param>-->
+    <!--<init-param>-->
+    <!--<param-name>dumpHeader</param-name>-->
+    <!--<param-value>true</param-value>-->
+    <!--</init-param>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+        <!--<filter-name>DumpFilter</filter-name>-->
+        <!--<url-pattern>/service</url-pattern>-->
+    <!--</filter-mapping>-->
+    <!--<filter-mapping>-->
+    <!--<filter-name>DumpFilter</filter-name>-->
+    <!--<url-pattern>/auth-service</url-pattern>-->
+    <!--</filter-mapping>-->
 
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>

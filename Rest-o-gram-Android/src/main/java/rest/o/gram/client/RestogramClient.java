@@ -65,6 +65,7 @@ public class RestogramClient implements IRestogramClient {
                 Log.d("REST-O-GRAM", "CLIENT UP");
 
             authProvider = new AuthenticationProvider(context, baseHostname);
+            dataProvider = new DataProvider();
             transport = new HttpJsonRpcClientTransport(new URL(jsonServiceHostName));
             authTransport = new HttpJsonRpcClientTransport(new URL(jsonAuthServiceHostName));
             tracker = new LocationTracker(context);
@@ -220,6 +221,11 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
+    public IDataProvider getDataProvider() {
+        return null;
+    }
+
+    @Override
     public boolean isDebuggable() {
         return debuggable;
     }
@@ -235,6 +241,7 @@ public class RestogramClient implements IRestogramClient {
     private final String jsonServiceHostName = baseHostname + "/service"; // json rpc non-auth URL
     private final String jsonAuthServiceHostName = baseHostname + "/auth-service"; // json rpc non-auth URL
     private IAuthenticationProvider authProvider;
+    private IDataProvider dataProvider;
     private HttpJsonRpcClientTransport transport; // Transport object
     private HttpJsonRpcClientTransport authTransport; // Auth Transport object
     private ILocationTracker tracker; // Location tracker
