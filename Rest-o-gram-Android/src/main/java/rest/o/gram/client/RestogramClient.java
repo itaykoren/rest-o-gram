@@ -9,10 +9,15 @@ import rest.o.gram.authentication.AuthenticationProvider;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.commands.*;
+import rest.o.gram.common.Defs;
 import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.filters.DefaultBitmapFilter;
+import rest.o.gram.filters.FaceBitmapFilter;
+import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.location.LocationTracker;
+import rest.o.gram.location.LocationTrackerDummy;
 import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.network.NetworkStateProvider;
 import rest.o.gram.tasks.ITaskObserver;
@@ -63,6 +68,11 @@ public class RestogramClient implements IRestogramClient {
             //tracker = new LocationTrackerDummy();
             networkStateProvider = new NetworkStateProvider(context);
             commandQueue = new RestogramCommandQueue();
+
+            if(Defs.Filtering.FACE_FILTERING_ENABLED)
+                bitmapFilter = new FaceBitmapFilter(Defs.Filtering.MAX_FACES_TO_DETECT);
+            else
+                bitmapFilter = new DefaultBitmapFilter();
         }
         catch(Exception e) {
             System.out.println("Error in RestogramClient: " + e.getMessage());
@@ -168,6 +178,11 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
+    public IBitmapFilter getBitmapFilter() {
+        return bitmapFilter;
+    }
+
+    @Override
     public boolean isDebuggable() {
         return debuggable;
     }
@@ -179,7 +194,7 @@ public class RestogramClient implements IRestogramClient {
     }
 
     private static IRestogramClient instance; // Singleton instance
-    private final String baseHostname = "http://rest-o-debug3.appspot.com"; // base Server URL
+    private final String baseHostname = "http://restogramapp.appspot.com"; // base Server URL
     private final String jsonServiceHostName = baseHostname + "/service"; // json rpc non-auth URL
     private final String jsonAuthServiceHostName = baseHostname + "/auth-service"; // json rpc non-auth URL
     private IAuthenticationProvider authProvider;
@@ -187,6 +202,7 @@ public class RestogramClient implements IRestogramClient {
     private HttpJsonRpcClientTransport authTransport; // Auth Transport object
     private ILocationTracker tracker; // Location tracker
     private INetworkStateProvider networkStateProvider;
+    private IBitmapFilter bitmapFilter; // Bitmap filter
     private IRestogramCommandQueue commandQueue; // Command queue
     private boolean debuggable = false; // debuggable flag
 }

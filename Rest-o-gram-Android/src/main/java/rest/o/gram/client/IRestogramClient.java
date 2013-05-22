@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.network.INetworkStateProvider;
@@ -90,9 +91,14 @@ public interface IRestogramClient {
     INetworkStateProvider getNetworkStateProvider();
 
     /**
-     * Returns  the authentication provider
+     * Returns the authentication provider
      */
     IAuthenticationProvider getAuthenticationProvider();
+
+    /**
+     * Returns the bitmap filter
+     */
+    IBitmapFilter getBitmapFilter();
 
     /**
      * @return is the application in debug mode?

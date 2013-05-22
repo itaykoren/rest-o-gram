@@ -40,5 +40,21 @@ public final class Defs {
         public static final int MAX_EXECUTING_COMMANDS = 10;
     }
 
+    /**
+     * Filtering constants
+     */
+    public static class Photos {
+        public static final int THUMBNAIL_WIDTH = 120;
+        public static final int THUMBNAIL_HEIGHT = 120;
+    }
+
+    /**
+     * Filtering constants
+     */
+    public static class Filtering {
+        public static final boolean FACE_FILTERING_ENABLED = true;
+        public static final int MAX_FACES_TO_DETECT = 5;
+    }
+
     public static final int VENUES_AMBIGOUITY_LEVEL = 2;
 }

@@ -10,7 +10,9 @@ import android.widget.ImageView;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import rest.o.gram.client.RestogramClient;
 import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.view.IPhotoViewAdapter;
 
 import java.io.IOException;
@@ -103,8 +105,17 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                     }
 
                     Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+                    final IBitmapFilter filter = RestogramClient.getInstance().getBitmapFilter();
+
+                    // Apply filter to bitmap
+                    if(!filter.accept(bitmap)) {
+                        notifyFinished();
+                        return;
+                    }
+
                     bitmap = resizeBitmap(bitmap, viewAdapter.width(), viewAdapter.height());
 
+                    // Add photo to view adapter
                     viewAdapter.addPhoto(photo, bitmap);
                     viewAdapter.refresh();
 

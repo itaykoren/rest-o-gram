@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
+import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
@@ -92,7 +93,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
         // Init photo grid view
         GridView gv = (GridView)findViewById(R.id.gvPhotos);
-        viewAdapter = new PhotoViewAdapter(this, 120, 120);
+        viewAdapter = new PhotoViewAdapter(this, Defs.Photos.THUMBNAIL_WIDTH, Defs.Photos.THUMBNAIL_HEIGHT);
         gv.setAdapter(viewAdapter);
 
         // Set scroll listener
