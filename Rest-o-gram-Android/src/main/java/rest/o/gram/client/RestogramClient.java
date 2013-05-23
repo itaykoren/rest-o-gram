@@ -10,6 +10,8 @@ import rest.o.gram.authentication.IAuthenticationProvider;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.commands.*;
 import rest.o.gram.common.Defs;
+import rest.o.gram.data.FileDataHistoryManager;
+import rest.o.gram.data.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.DefaultBitmapFilter;
 import rest.o.gram.filters.FaceBitmapFilter;
@@ -17,7 +19,6 @@ import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.location.LocationTracker;
-import rest.o.gram.location.LocationTrackerDummy;
 import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.network.NetworkStateProvider;
 import rest.o.gram.tasks.ITaskObserver;
@@ -69,6 +70,9 @@ public class RestogramClient implements IRestogramClient {
             networkStateProvider = new NetworkStateProvider(context);
             commandQueue = new RestogramCommandQueue();
 
+            if(Defs.Data.DATA_HISTORY_ENABLED)
+                dataHistoryManager = new FileDataHistoryManager(context);
+
             if(Defs.Filtering.FACE_FILTERING_ENABLED)
                 bitmapFilter = new FaceBitmapFilter(Defs.Filtering.MAX_FACES_TO_DETECT);
             else
@@ -77,6 +81,17 @@ public class RestogramClient implements IRestogramClient {
         catch(Exception e) {
             System.out.println("Error in RestogramClient: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void dispose() {
+        // Flush data
+        if(dataHistoryManager != null) {
+            dataHistoryManager.flush();
+            dataHistoryManager.clear();
+        }
+
+        // TODO: dispose
     }
 
     /* NON-AUTH SERVICES */
@@ -178,6 +193,11 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
+    public IDataHistoryManager getDataHistoryManager() {
+        return dataHistoryManager;
+    }
+
+    @Override
     public IBitmapFilter getBitmapFilter() {
         return bitmapFilter;
     }
@@ -202,6 +222,7 @@ public class RestogramClient implements IRestogramClient {
     private HttpJsonRpcClientTransport authTransport; // Auth Transport object
     private ILocationTracker tracker; // Location tracker
     private INetworkStateProvider networkStateProvider;
+    private IDataHistoryManager dataHistoryManager; // Data history manager
     private IBitmapFilter bitmapFilter; // Bitmap filter
     private IRestogramCommandQueue commandQueue; // Command queue
     private boolean debuggable = false; // debuggable flag

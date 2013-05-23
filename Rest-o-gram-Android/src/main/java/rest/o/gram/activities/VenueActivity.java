@@ -12,6 +12,7 @@ import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
+import rest.o.gram.data.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
@@ -44,6 +45,11 @@ public class VenueActivity extends Activity implements ITaskObserver {
             // TODO: implementation
             return;
         }
+
+        // Save venue if needed
+        IDataHistoryManager dataHistoryManager = RestogramClient.getInstance().getDataHistoryManager();
+        if(dataHistoryManager != null)
+            dataHistoryManager.save(venue);
 
         // Initialize using venue parameter
         initialize(venue);

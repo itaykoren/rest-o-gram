@@ -17,4 +17,12 @@ public class RestogramApplication extends Application {
         // Initialize client
         RestogramClient.getInstance().initialize(getApplicationContext());
     }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+
+        // Dispose client
+        RestogramClient.getInstance().dispose();
+    }
 }

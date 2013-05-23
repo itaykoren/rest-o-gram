@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.ImageView;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.commands.IRestogramCommandObserver;
+import rest.o.gram.data.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.filters.RestogramFilterType;
@@ -23,6 +24,11 @@ public interface IRestogramClient {
      * Initializes this client
      */
     void initialize(Context context);
+
+    /**
+     * Disposes this client
+     */
+    void dispose();
 
     /* NON-AUTH SERVICES */
 
@@ -94,6 +100,11 @@ public interface IRestogramClient {
      * Returns the authentication provider
      */
     IAuthenticationProvider getAuthenticationProvider();
+
+    /**
+     * Returns the data manager
+     */
+    IDataHistoryManager getDataHistoryManager();
 
     /**
      * Returns the bitmap filter

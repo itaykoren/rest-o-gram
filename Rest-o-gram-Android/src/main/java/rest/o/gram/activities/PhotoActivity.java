@@ -13,6 +13,7 @@ import rest.o.gram.client.RestogramClient;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.common.Utils;
+import rest.o.gram.data.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 
 /**
@@ -50,6 +51,11 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
             // TODO: implementation
             return;
         }
+
+        // Save photo if needed
+        IDataHistoryManager dataHistoryManager = RestogramClient.getInstance().getDataHistoryManager();
+        if(dataHistoryManager != null)
+            dataHistoryManager.save(photo);
 
         // Initialize using photo parameter
         initialize(photo, bitmap);

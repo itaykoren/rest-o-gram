@@ -41,7 +41,7 @@ public final class Defs {
     }
 
     /**
-     * Filtering constants
+     * Photos constants
      */
     public static class Photos {
         public static final int THUMBNAIL_WIDTH = 120;
@@ -54,6 +54,15 @@ public final class Defs {
     public static class Filtering {
         public static final boolean FACE_FILTERING_ENABLED = true;
         public static final int MAX_FACES_TO_DETECT = 5;
+    }
+
+    /**
+     * Data constants
+     */
+    public static class Data {
+        public static final boolean DATA_HISTORY_ENABLED = false;
+        public static final String DATA_VENUES_FILENAME = "venues.rog";
+        public static final String DATA_PHOTOS_FILENAME = "photos.rog";
     }
 
     public static final int VENUES_AMBIGOUITY_LEVEL = 2;
