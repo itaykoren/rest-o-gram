@@ -38,8 +38,7 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
         if (tracker != null) {
             if (!tracker.canDetectLocation())
                 diagManager.showLocationTrackingAlert(this);
-            else
-            {
+            else {
                 tracker.setObserver(this);
                 tracker.start();
             }
@@ -57,11 +56,16 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     }
 
     @Override
-    protected  void onDestroy() {
+    protected void onDestroy() { // Application exiting
         super.onDestroy();
+
         if(tracker != null)
             tracker.stop();
+
         diagManager.clear();
+
+        // Dispose client
+        RestogramClient.getInstance().dispose();
     }
 
     @Override
@@ -151,6 +155,11 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
 
     @Override
     public void onFinished(GetPhotosResult result) {
+        // Empty
+    }
+
+    @Override
+    public void onCanceled() {
         // Empty
     }
 

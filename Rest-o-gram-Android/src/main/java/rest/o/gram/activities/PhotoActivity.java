@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
+import rest.o.gram.commands.DownloadImageCommand;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.common.Utils;
@@ -24,13 +25,21 @@ import rest.o.gram.entities.RestogramPhoto;
 public class PhotoActivity extends Activity implements IRestogramCommandObserver {
 
     @Override
+    public void onCanceled(IRestogramCommand command) {
+        cancelProgress();
+        this.command = null;
+    }
+
+    @Override
     public void onFinished(IRestogramCommand command) {
         cancelProgress();
+        this.command = null;
     }
 
     @Override
     public void onError(IRestogramCommand command) {
         cancelProgress();
+        this.command = null;
     }
 
     @Override
@@ -61,6 +70,17 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
         initialize(photo, bitmap);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(command != null) {
+            command.removeObserver(this);
+            command.cancel();
+            command = null;
+        }
+    }
+
     /**
      * Initializes using given photo
      */
@@ -81,7 +101,7 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
         Utils.updateTextView((TextView)findViewById(R.id.tvTitle), photo.getCaption());
 
         // Set UI with standard resolution image
-        RestogramClient.getInstance().downloadImage(photo.getStandardResolution(), iv, true, this);
+        command = RestogramClient.getInstance().downloadImage(photo.getStandardResolution(), iv, true, this);
     }
 
     private void cancelProgress() {
@@ -90,4 +110,5 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
     }
 
     private RestogramPhoto photo; // Photo object
+    private IRestogramCommand command; // Command object
 }

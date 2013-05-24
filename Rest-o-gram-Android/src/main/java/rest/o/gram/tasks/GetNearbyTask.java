@@ -22,6 +22,7 @@ public class GetNearbyTask extends AsyncTask<Double, Void, GetNearbyResult> {
         this.observer = observer;
     }
 
+    @Override
     protected GetNearbyResult doInBackground(Double... params) {
         JsonRpcInvoker invoker = new JsonRpcInvoker();
         RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
@@ -31,8 +32,14 @@ public class GetNearbyTask extends AsyncTask<Double, Void, GetNearbyResult> {
         return safeGetNearby(service, params);
     }
 
+    @Override
     protected void onPostExecute(GetNearbyResult result) {
         observer.onFinished(result);
+    }
+
+    @Override
+    protected void onCancelled() {
+        observer.onCanceled();
     }
 
     private GetNearbyResult safeGetNearby(RestogramService service, Double ... params) {

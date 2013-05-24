@@ -8,6 +8,11 @@ package rest.o.gram.commands;
 public interface IRestogramCommandObserver {
 
     /**
+     * Called after command has been canceled
+     */
+    void onCanceled(IRestogramCommand command);
+
+    /**
      * Called after command has finished executing
      */
     void onFinished(IRestogramCommand command);

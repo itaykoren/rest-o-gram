@@ -3,6 +3,7 @@ package rest.o.gram.client;
 import android.content.Context;
 import android.widget.ImageView;
 import rest.o.gram.authentication.IAuthenticationProvider;
+import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.data.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
@@ -69,13 +70,15 @@ public interface IRestogramClient {
 
     /**
      * Executes download image request
+     * Returns command object
      */
-    void downloadImage(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter, boolean force, IRestogramCommandObserver observer);
+    IRestogramCommand downloadImage(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter, boolean force, IRestogramCommandObserver observer);
 
     /**
      * Executes download image request
+     * Returns command object
      */
-    void downloadImage(String url, ImageView imageView, boolean force, IRestogramCommandObserver observer);
+    IRestogramCommand downloadImage(String url, ImageView imageView, boolean force, IRestogramCommandObserver observer);
 
     /* AUTH SERVICES */
 

@@ -23,10 +23,10 @@ public class GetPhotosTask extends AsyncTask<String, Void, GetPhotosResult> {
         this.observer = observer;
     }
 
+    @Override
     protected GetPhotosResult doInBackground(String... params) {
         String venueID = params[0];
         RestogramFilterType filterType = RestogramFilterType.valueOf(params[1]);
-
 
         JsonRpcInvoker invoker = new JsonRpcInvoker();
         RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
@@ -53,10 +53,16 @@ public class GetPhotosTask extends AsyncTask<String, Void, GetPhotosResult> {
         }
     }
 
+    @Override
     protected void onPostExecute(GetPhotosResult result) {
         if (RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "Got photos");
         observer.onFinished(result);
+    }
+
+    @Override
+    protected void onCancelled() {
+        observer.onCanceled();
     }
 
     protected class GetPhotosResultImpl implements GetPhotosResult {

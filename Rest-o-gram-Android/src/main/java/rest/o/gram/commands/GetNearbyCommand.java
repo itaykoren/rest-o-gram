@@ -9,7 +9,7 @@ import org.json.rpc.client.HttpJsonRpcClientTransport;
  * User: Roi
  * Date: 15/04/13
  */
-public class GetNearbyCommand extends AbstractRestogramCommand {
+public class GetNearbyCommand extends AsyncTaskRestogramCommand {
 
     public GetNearbyCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer,
                             double latitude, double longitude) {
@@ -26,12 +26,19 @@ public class GetNearbyCommand extends AbstractRestogramCommand {
     }
 
     @Override
-    public void execute() {
-        GetNearbyTask task = new GetNearbyTask(transport, observer);
+    public boolean execute() {
+        if(!super.execute())
+            return false;
+
+        GetNearbyTask t = new GetNearbyTask(transport, this);
         if(radius != null)
-            task.execute(latitude, longitude, radius);
+            t.execute(latitude, longitude, radius);
         else
-            task.execute(latitude, longitude);
+            t.execute(latitude, longitude);
+
+        task = t;
+
+        return true;
     }
 
     private Double latitude;

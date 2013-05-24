@@ -85,6 +85,9 @@ public class RestogramClient implements IRestogramClient {
 
     @Override
     public void dispose() {
+        // Cancel all commands
+        commandQueue.cancelAll();
+
         // Flush data
         if(dataHistoryManager != null) {
             dataHistoryManager.flush();
@@ -99,47 +102,47 @@ public class RestogramClient implements IRestogramClient {
     @Override
     public void getNearby(double latitude, double longitude, ITaskObserver observer) {
         IRestogramCommand command = new GetNearbyCommand(transport, observer, latitude, longitude);
-        command.execute();
+        commandQueue.pushForce(command);
     }
 
     @Override
     public void getNearby(double latitude, double longitude, double radius, ITaskObserver observer) {
         IRestogramCommand command = new GetNearbyCommand(transport, observer, latitude, longitude, radius);
-        command.execute();
+        commandQueue.pushForce(command);
     }
 
     @Override
     public void getInfo(String venueID, ITaskObserver observer) {
         IRestogramCommand command = new GetInfoCommand(transport, observer, venueID);
-        command.execute();
+        commandQueue.pushForce(command);
     }
 
     @Override
     public void getPhotos(String venueID, ITaskObserver observer) {
         IRestogramCommand command = new GetPhotosCommand(transport, observer, venueID);
-        command.execute();
+        commandQueue.pushForce(command);
     }
 
     @Override
     public void getPhotos(String venueID, RestogramFilterType filterType, ITaskObserver observer) {
         IRestogramCommand command = new GetPhotosCommand(transport, observer, venueID, filterType);
-        command.execute();
+        commandQueue.pushForce(command);
     }
 
     @Override
     public void getNextPhotos(String token, ITaskObserver observer) {
         IRestogramCommand command = new GetNextPhotosCommand(transport, observer, token);
-        command.execute();
+        commandQueue.pushForce(command);
     }
 
     @Override
     public void getNextPhotos(String token, RestogramFilterType filterType, ITaskObserver observer) {
         IRestogramCommand command = new GetNextPhotosCommand(transport, observer, token, filterType);
-        command.execute();
+        commandQueue.pushForce(command);
     }
 
     @Override
-    public void downloadImage(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter,
+    public IRestogramCommand downloadImage(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter,
                               boolean force, IRestogramCommandObserver observer) {
         IRestogramCommand command = new DownloadImageCommand(url, photo, viewAdapter);
 
@@ -150,10 +153,12 @@ public class RestogramClient implements IRestogramClient {
             commandQueue.pushForce(command);
         else
             commandQueue.pushBack(command);
+
+        return command;
     }
 
     @Override
-    public void downloadImage(String url, ImageView imageView,
+    public IRestogramCommand downloadImage(String url, ImageView imageView,
                               boolean force, IRestogramCommandObserver observer) {
         IRestogramCommand command = new DownloadImageCommand(url, imageView);
 
@@ -164,6 +169,8 @@ public class RestogramClient implements IRestogramClient {
             commandQueue.pushForce(command);
         else
             commandQueue.pushBack(command);
+
+        return command;
     }
 
     /* AUTH SERVICES */
@@ -171,7 +178,7 @@ public class RestogramClient implements IRestogramClient {
     @Override
     public void getRecentPhotos(ITaskObserver observer) {
         IRestogramCommand command = new GetRecentPhotosCommand(authTransport, observer);
-        command.execute();
+        commandQueue.pushForce(command);
     }
 
 

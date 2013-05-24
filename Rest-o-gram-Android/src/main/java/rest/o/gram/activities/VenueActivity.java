@@ -56,7 +56,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
     }
 
     @Override
-    protected  void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
 
         if (viewAdapter != null)
@@ -89,6 +89,11 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
         // Update request pending flag
         isRequestPending = false;
+    }
+
+    @Override
+    public void onCanceled() {
+        // Empty
     }
 
     /**

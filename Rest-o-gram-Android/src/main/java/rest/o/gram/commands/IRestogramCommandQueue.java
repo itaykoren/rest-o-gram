@@ -21,4 +21,9 @@ public interface IRestogramCommandQueue {
      * Command will be executed immediately if possible
      */
     boolean pushForce(IRestogramCommand command);
+
+    /**
+     * Cancels all commands in this queue
+     */
+    void cancelAll();
 }

@@ -25,8 +25,22 @@ public abstract class AbstractRestogramCommand implements IRestogramCommand {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
+        if(state != State.CS_Pending)
+            return false;
+
         state = State.CS_Executing;
+        return true;
+    }
+
+    @Override
+    public boolean cancel() {
+        if(state != State.CS_Executing ||
+           state != State.CS_Pending)
+            return false;
+
+        state = State.CS_Canceling;
+        return true;
     }
 
     @Override
@@ -42,6 +56,15 @@ public abstract class AbstractRestogramCommand implements IRestogramCommand {
     @Override
     public State state() {
         return state;
+    }
+
+    /**
+     * Notifies observers on canceled event
+     */
+    protected void notifyCanceled() {
+        state = State.CS_Canceled;
+        for(IRestogramCommandObserver o : observers)
+            o.onCanceled(this);
     }
 
     /**

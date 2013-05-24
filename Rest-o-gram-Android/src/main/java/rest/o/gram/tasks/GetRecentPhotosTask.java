@@ -23,6 +23,7 @@ public class GetRecentPhotosTask extends AsyncTask<Void, Void, GetPhotosResult> 
         //transport.setHeader("lean_token", authToken);
     }
 
+    @Override
     protected GetPhotosResult doInBackground(Void... params) {
         JsonRpcInvoker invoker = new JsonRpcInvoker();
         RestogramAuthService service = invoker.get(transport, "restogram", RestogramAuthService.class);
@@ -30,8 +31,14 @@ public class GetRecentPhotosTask extends AsyncTask<Void, Void, GetPhotosResult> 
        return new GetPhotosResultImpl(service.getRecentPhotos(authToken).getPhotos(), null);
     }
 
+    @Override
     protected void onPostExecute(GetPhotosResult result) {
         observer.onFinished(result);
+    }
+
+    @Override
+    protected void onCancelled() {
+        observer.onCanceled();
     }
 
     protected class GetPhotosResultImpl implements GetPhotosResult {

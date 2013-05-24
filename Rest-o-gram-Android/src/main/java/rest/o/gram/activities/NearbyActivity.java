@@ -111,6 +111,14 @@ public class NearbyActivity extends Activity implements ITaskObserver {
         RestogramClient.getInstance().getNearby(latitude, longitude, Defs.Location.DEFAULT_NEARBY_RADIUS, this);
     }
 
+    @Override
+    protected void onDestroy() { // Application exiting
+        super.onDestroy();
+
+        // Dispose client
+        RestogramClient.getInstance().dispose();
+    }
+
     private void resetButtons()
     {
         final  Button fbLogin = (Button)findViewById(R.id.fbLogin);
@@ -145,12 +153,17 @@ public class NearbyActivity extends Activity implements ITaskObserver {
 
     @Override
     public void onFinished(GetInfoResult result) {
-        // TODO: implementation
+        // Empty
     }
 
     @Override
     public void onFinished(GetPhotosResult result) {
-        // TODO: implementation
+        // Empty
+    }
+
+    @Override
+    public void onCanceled() {
+        // Empty
     }
 
     private void addVenues(RestogramVenue[] venues) {

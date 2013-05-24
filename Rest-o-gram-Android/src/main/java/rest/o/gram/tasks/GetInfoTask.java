@@ -18,6 +18,7 @@ public class GetInfoTask extends AsyncTask<String, Void, GetInfoResult> {
         this.observer = observer;
     }
 
+    @Override
     protected GetInfoResult doInBackground(String... params) {
         String venueID = params[0];
 
@@ -27,8 +28,14 @@ public class GetInfoTask extends AsyncTask<String, Void, GetInfoResult> {
         return new GetInfoResultImpl(service.getInfo(venueID).getResult());
     }
 
+    @Override
     protected void onPostExecute(GetInfoResult result) {
         observer.onFinished(result);
+    }
+
+    @Override
+    protected void onCancelled() {
+        observer.onCanceled();
     }
 
     class GetInfoResultImpl implements GetInfoResult {

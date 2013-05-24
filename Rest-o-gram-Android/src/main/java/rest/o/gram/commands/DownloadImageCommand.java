@@ -38,18 +38,31 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
     }
 
     @Override
-    public void execute() {
-        super.execute();
+    public boolean execute() {
+        if(!super.execute())
+            return false;
 
         if(imageView != null) {
             fetchDrawableOnThread(url, imageView);
-            return;
+            return true;
         }
 
         if(photo != null && viewAdapter != null) {
             fetchDrawableOnThread(url, photo, viewAdapter);
-            return;
+            return true;
         }
+
+        return false;
+    }
+
+    @Override
+    public boolean cancel() {
+        if(!super.cancel())
+            return false;
+
+        // Cancel
+        isCancled = true;
+        return true;
     }
 
     public Drawable fetchDrawable(String urlString) {
@@ -69,6 +82,11 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
             @Override
             public void handleMessage(Message message) {
                 try {
+                    if(isCancled) {
+                        notifyCanceled();
+                        return;
+                    }
+
                     Drawable drawable = (Drawable)message.obj;
                     imageView.setImageDrawable(drawable);
 
@@ -97,6 +115,11 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
             @Override
             public void handleMessage(Message message) {
                 try {
+                    if(isCancled) {
+                        notifyCanceled();
+                        return;
+                    }
+
                     Drawable drawable = (Drawable)message.obj;
 
                     if(viewAdapter.width() <= 0 && viewAdapter.height() <= 0) {
@@ -163,4 +186,5 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
     private ImageView imageView;
     private RestogramPhoto photo;
     private IPhotoViewAdapter viewAdapter;
+    private boolean isCancled = false;
 }

@@ -10,7 +10,7 @@ import org.json.rpc.client.HttpJsonRpcClientTransport;
  * User: Roi
  * Date: 15/04/13
  */
-public class GetPhotosCommand extends AbstractRestogramCommand {
+public class GetPhotosCommand extends AsyncTaskRestogramCommand {
 
     public GetPhotosCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer,
                             String venueID) {
@@ -25,9 +25,14 @@ public class GetPhotosCommand extends AbstractRestogramCommand {
     }
 
     @Override
-    public void execute() {
-        GetPhotosTask task = new GetPhotosTask(transport, observer);
-        task.execute(venueID, filterType.toString());
+    public boolean execute() {
+        if(!super.execute())
+            return false;
+
+        GetPhotosTask t = new GetPhotosTask(transport, this);
+        t.execute(venueID, filterType.toString());
+        task = t;
+        return true;
     }
 
     private String venueID;

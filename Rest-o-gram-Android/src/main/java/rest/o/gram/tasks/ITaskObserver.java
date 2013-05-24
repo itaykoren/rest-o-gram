@@ -16,4 +16,6 @@ public interface ITaskObserver {
     void onFinished(GetInfoResult venue);
 
     void onFinished(GetPhotosResult result);
+
+    void onCanceled();
 }

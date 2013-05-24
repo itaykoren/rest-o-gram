@@ -56,4 +56,9 @@ public class GetNextPhotosTask extends GetPhotosTask {
             Log.d("REST-O-GRAM", "Got some more photos");
         observer.onFinished(result);
     }
+
+    @Override
+    protected void onCancelled() {
+        observer.onCanceled();
+    }
 }

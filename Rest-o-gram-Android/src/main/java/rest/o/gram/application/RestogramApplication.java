@@ -19,7 +19,7 @@ public class RestogramApplication extends Application {
     }
 
     @Override
-    public void onTerminate() {
+    public void onTerminate() { // Not guaranteed to be called
         super.onTerminate();
 
         // Dispose client

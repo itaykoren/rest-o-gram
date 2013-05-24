@@ -10,14 +10,19 @@ import rest.o.gram.tasks.ITaskObserver;
  * User: Or
  * Date: 5/19/13
  */
-public class GetRecentPhotosCommand extends AbstractRestogramCommand {
+public class GetRecentPhotosCommand extends AsyncTaskRestogramCommand {
     public GetRecentPhotosCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer) {
         super(transport, observer);
     }
 
     @Override
-    public void execute() {
-        GetRecentPhotosTask task = new GetRecentPhotosTask(transport, observer, LeanEngine.getAuthToken());
-        task.execute();
+    public boolean execute() {
+        if(!super.execute())
+            return false;
+
+        GetRecentPhotosTask t = new GetRecentPhotosTask(transport, this, LeanEngine.getAuthToken());
+        t.execute();
+        task = t;
+        return true;
     }
 }

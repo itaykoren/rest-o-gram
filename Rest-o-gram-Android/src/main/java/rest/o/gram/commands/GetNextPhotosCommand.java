@@ -10,7 +10,7 @@ import rest.o.gram.tasks.ITaskObserver;
  * User: Or
  * Date: 4/22/13
  */
-public class GetNextPhotosCommand extends AbstractRestogramCommand {
+public class GetNextPhotosCommand extends AsyncTaskRestogramCommand {
     public GetNextPhotosCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer,
                                 String token) {
         super(transport, observer);
@@ -24,9 +24,14 @@ public class GetNextPhotosCommand extends AbstractRestogramCommand {
     }
 
     @Override
-    public void execute() {
-        GetNextPhotosTask task = new GetNextPhotosTask(transport, observer);
-        task.execute(token, filterType.toString());
+    public boolean execute() {
+        if(!super.execute())
+            return false;
+
+        GetNextPhotosTask t = new GetNextPhotosTask(transport, this);
+        t.execute(token, filterType.toString());
+        task = t;
+        return true;
     }
 
     private String token;

@@ -55,6 +55,11 @@ public class FindMeActivity extends Activity implements ITaskObserver {
         // Empty
     }
 
+    @Override
+    public void onCanceled() {
+        // Empty
+    }
+
     public void onVenueClicked(View view) {
         // Switch to "VenueActivity" with parameter "venue"
         Intent intent = new Intent(this, VenueActivity.class);
