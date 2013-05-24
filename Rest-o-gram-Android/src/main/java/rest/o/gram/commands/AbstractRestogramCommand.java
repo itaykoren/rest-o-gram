@@ -35,7 +35,7 @@ public abstract class AbstractRestogramCommand implements IRestogramCommand {
 
     @Override
     public boolean cancel() {
-        if(state != State.CS_Executing ||
+        if(state != State.CS_Executing &&
            state != State.CS_Pending)
             return false;
 
