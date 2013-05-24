@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.leanengine.LeanAccount;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
+import rest.o.gram.common.LoginHelper;
 import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
@@ -48,6 +51,9 @@ public class VenueActivity extends Activity implements ITaskObserver {
         IDataHistoryManager dataHistoryManager = RestogramClient.getInstance().getDataHistoryManager();
         if(dataHistoryManager != null)
             dataHistoryManager.save(venue, Defs.Data.SortOrder.SortOrderLIFO);
+
+        // Initialize login helper
+        loginHelper = new LoginHelper(this);
 
         // Initialize using venue parameter
         initialize(venue);
@@ -91,27 +97,36 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
     @Override
     public void onFinished(CachePhotoResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // Empty
     }
 
     @Override
     public void onFinished(FetchPhotosFromCacheResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // Empty
     }
 
     @Override
     public void onFinished(CacheVenueResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // Empty
     }
 
     @Override
     public void onFinished(FetchVenuesFromCacheResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // Empty
     }
 
     @Override
     public void onCanceled() {
         // Empty
+    }
+
+    public void onFavoriteClicked(View view) {
+        if(!LeanAccount.isUserLoggedIn()) {
+            loginHelper.login();
+        }
+        else {
+            // TODO: Add\Remove favorite
+        }
     }
 
     /**
@@ -188,4 +203,5 @@ public class VenueActivity extends Activity implements ITaskObserver {
     private PhotoViewAdapter viewAdapter; // View adapter
     private String lastToken = null; // Last token
     private boolean isRequestPending = false; // Request pending flag
+    private LoginHelper loginHelper; // Login helper
 }

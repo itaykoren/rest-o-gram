@@ -1,12 +1,15 @@
 package rest.o.gram.activities;
 
-import android.content.Intent;
-import rest.o.gram.R;
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import com.leanengine.LeanAccount;
+import rest.o.gram.R;
 import rest.o.gram.common.Defs;
+import rest.o.gram.common.LoginHelper;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,6 +17,14 @@ import rest.o.gram.common.Defs;
  * Date: 24/05/13
  */
 public class RestogramActivity extends Activity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Initialize login helper
+        loginHelper = new LoginHelper(this);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -41,9 +52,12 @@ public class RestogramActivity extends Activity {
                 if(getClass() == PersonalActivity.class)
                     break;
 
-                // Switch to "PersonalActivity" with no parameters
-                Intent intent = new Intent(this, PersonalActivity.class);
-                startActivityForResult(intent, Defs.RequestCodes.RC_PERSONAL);
+                if(!LeanAccount.isUserLoggedIn()) {
+                    loginHelper.login();
+                }
+                else {
+                    loginHelper.switchToPersonalActivity();
+                }
                 break;
             }
             default:
@@ -52,4 +66,6 @@ public class RestogramActivity extends Activity {
 
         return true;
     }
+
+    LoginHelper loginHelper; // Login helper
 }

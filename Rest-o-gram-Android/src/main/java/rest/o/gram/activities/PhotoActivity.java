@@ -8,11 +8,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.leanengine.LeanAccount;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.common.Defs;
+import rest.o.gram.common.LoginHelper;
 import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
@@ -66,6 +68,8 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
         if(dataHistoryManager != null)
             dataHistoryManager.save(photo, Defs.Data.SortOrder.SortOrderLIFO);
 
+        loginHelper = new LoginHelper(this);
+
         // Initialize using photo parameter
         initialize(photo, bitmap);
     }
@@ -78,6 +82,15 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
             command.removeObserver(this);
             command.cancel();
             command = null;
+        }
+    }
+
+    public void onFavoriteClicked(View view) {
+        if(!LeanAccount.isUserLoggedIn()) {
+            loginHelper.login();
+        }
+        else {
+            // TODO: Add\Remove favorite
         }
     }
 
@@ -111,4 +124,5 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
 
     private RestogramPhoto photo; // Photo object
     private IRestogramCommand command; // Command object
+    private LoginHelper loginHelper; // Login helper
 }
