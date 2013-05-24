@@ -19,6 +19,7 @@ import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.location.LocationTracker;
+import rest.o.gram.location.LocationTrackerDummy;
 import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.network.NetworkStateProvider;
 import rest.o.gram.tasks.ITaskObserver;
@@ -68,8 +69,12 @@ public class RestogramClient implements IRestogramClient {
             setJsonEncoding(transport);
             authTransport = new HttpJsonRpcClientTransport(new URL(jsonAuthServiceHostName));
             setJsonEncoding(authTransport);
-            tracker = new LocationTracker(context);
-            //tracker = new LocationTrackerDummy();
+
+            if(Defs.Location.TRACKER_TYPE == Defs.Location.TrackerType.TrackerTypeDefault)
+                tracker = new LocationTracker(context);
+            else if(Defs.Location.TRACKER_TYPE == Defs.Location.TrackerType.TrackerTypeDummy)
+                tracker = new LocationTrackerDummy();
+
             networkStateProvider = new NetworkStateProvider(context);
             commandQueue = new RestogramCommandQueue();
 
