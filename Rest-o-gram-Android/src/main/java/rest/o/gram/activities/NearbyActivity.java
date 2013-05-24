@@ -50,7 +50,7 @@ public class NearbyActivity extends RestogramActivity implements ITaskObserver {
                 // Load venues from cache
                 IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
                 if(cache != null) {
-                    addVenues(cache.loadVenues(Defs.Data.SortOrder.SortOrderFIFO));
+                    addVenues(cache.loadVenues());
                 }
             }
             else {
@@ -87,7 +87,7 @@ public class NearbyActivity extends RestogramActivity implements ITaskObserver {
 
             // Save to cache
             for(final RestogramVenue venue : result.getVenues()) {
-                cache.save(venue);
+                cache.save(venue, Defs.Data.SortOrder.SortOrderFIFO);
             }
         }
 

@@ -13,22 +13,22 @@ public interface IDataHistoryManager {
     /**
      * Attempts to save given venue
      */
-    boolean save(RestogramVenue venue);
+    boolean save(RestogramVenue venue, Defs.Data.SortOrder order);
 
     /**
      * Attempts to save given photo
      */
-    boolean save(RestogramPhoto photo);
+    boolean save(RestogramPhoto photo, Defs.Data.SortOrder order);
 
     /**
      * Attempts to load venues
      */
-    RestogramVenue[] loadVenues(Defs.Data.SortOrder order);
+    RestogramVenue[] loadVenues();
 
     /**
      * Attempts to load photos
      */
-    RestogramPhoto[] loadPhotos(Defs.Data.SortOrder order);
+    RestogramPhoto[] loadPhotos();
 
     /**
      * Clears all data

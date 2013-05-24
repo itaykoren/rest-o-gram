@@ -1,8 +1,6 @@
 package rest.o.gram.data;
 
 import android.content.Context;
-import android.util.Pair;
-import rest.o.gram.common.Comparers;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
 import rest.o.gram.entities.RestogramPhoto;
@@ -32,8 +30,8 @@ public class FileDataHistoryManager extends DataHistoryManager {
     }
 
     @Override
-    public boolean save(RestogramVenue venue) {
-        if(!super.save(venue))
+    public boolean save(RestogramVenue venue, Defs.Data.SortOrder order) {
+        if(!super.save(venue, order))
             return false;
 
         isUpToDate = false;
@@ -41,8 +39,8 @@ public class FileDataHistoryManager extends DataHistoryManager {
     }
 
     @Override
-    public boolean save(RestogramPhoto photo) {
-        if(!super.save(photo))
+    public boolean save(RestogramPhoto photo, Defs.Data.SortOrder order) {
+        if(!super.save(photo, order))
             return false;
 
         isUpToDate = false;
@@ -82,8 +80,8 @@ public class FileDataHistoryManager extends DataHistoryManager {
     private void load() {
         // Load data from files
         try {
-            venues = (Map<String, Pair<RestogramVenue, Date>>)Utils.deserialize(new File(context.getFilesDir(), Defs.Data.DATA_VENUES_FILENAME));
-            photos = (Map<String, Pair<RestogramPhoto, Date>>)Utils.deserialize(new File(context.getFilesDir(), Defs.Data.DATA_PHOTOS_FILENAME));
+            venues = (Deque<RestogramVenue>)Utils.deserialize(new File(context.getFilesDir(), Defs.Data.DATA_VENUES_FILENAME));
+            photos = (Deque<RestogramPhoto>)Utils.deserialize(new File(context.getFilesDir(), Defs.Data.DATA_PHOTOS_FILENAME));
         }
         catch(Exception e) {
             // TODO: report error

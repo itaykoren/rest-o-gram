@@ -49,7 +49,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
         // Save venue if needed
         IDataHistoryManager dataHistoryManager = RestogramClient.getInstance().getDataHistoryManager();
         if(dataHistoryManager != null)
-            dataHistoryManager.save(venue);
+            dataHistoryManager.save(venue, Defs.Data.SortOrder.SortOrderLIFO);
 
         // Initialize using venue parameter
         initialize(venue);

@@ -10,9 +10,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
-import rest.o.gram.commands.DownloadImageCommand;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
+import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
 import rest.o.gram.data.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
@@ -64,7 +64,7 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
         // Save photo if needed
         IDataHistoryManager dataHistoryManager = RestogramClient.getInstance().getDataHistoryManager();
         if(dataHistoryManager != null)
-            dataHistoryManager.save(photo);
+            dataHistoryManager.save(photo, Defs.Data.SortOrder.SortOrderLIFO);
 
         // Initialize using photo parameter
         initialize(photo, bitmap);

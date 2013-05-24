@@ -1,7 +1,5 @@
 package rest.o.gram.data;
 
-import android.util.Pair;
-import rest.o.gram.common.Comparers;
 import rest.o.gram.common.Defs;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
@@ -19,19 +17,21 @@ public class DataHistoryManager implements IDataHistoryManager {
      */
     public DataHistoryManager() {
         // Init maps
-        venues = new HashMap<>();
-        photos = new HashMap<>();
+        venues = new ArrayDeque<>();
+        photos = new ArrayDeque<>();
     }
 
     @Override
-    public boolean save(RestogramVenue venue) {
+    public boolean save(RestogramVenue venue, Defs.Data.SortOrder order) {
         try {
-            if(venues.containsKey(venue.getFoursquare_id())) {
-                venues.remove(venue.getFoursquare_id());
+            if(venues.contains(venue)) {
+                venues.remove(venue);
             }
 
-            Date now = new Date();
-            venues.put(venue.getFoursquare_id(), new Pair<>(venue, now));
+            if(order == Defs.Data.SortOrder.SortOrderFIFO)
+                venues.addLast(venue);
+            else // if(order == Defs.Data.SortOrder.SortOrderLIFO)
+                venues.addFirst(venue);
         }
         catch(Exception e) {
             return false;
@@ -41,14 +41,16 @@ public class DataHistoryManager implements IDataHistoryManager {
     }
 
     @Override
-    public boolean save(RestogramPhoto photo) {
+    public boolean save(RestogramPhoto photo, Defs.Data.SortOrder order) {
         try {
-            if(photos.containsKey(photo.getInstagram_id())) {
-                photos.remove(photo.getInstagram_id());
+            if(photos.contains(photo)) {
+                photos.remove(photo);
             }
 
-            Date now = new Date();
-            photos.put(photo.getInstagram_id(), new Pair<>(photo, now));
+            if(order == Defs.Data.SortOrder.SortOrderFIFO)
+                photos.addLast(photo);
+            else // if(order == Defs.Data.SortOrder.SortOrderLIFO)
+                photos.addFirst(photo);
         }
         catch(Exception e) {
             return false;
@@ -58,20 +60,16 @@ public class DataHistoryManager implements IDataHistoryManager {
     }
 
     @Override
-    public RestogramVenue[] loadVenues(Defs.Data.SortOrder order) {
+    public RestogramVenue[] loadVenues() {
         RestogramVenue[] venues;
         try {
             if(this.venues.isEmpty())
                 return null;
 
-            // Create list of venues and sort it
-            List<Pair<RestogramVenue, Date>> list = new LinkedList<>(this.venues.values());
-            Collections.sort(list, new Comparers.VenueComparator(order));
-
             int i = 0;
-            venues = new RestogramVenue[list.size()];
-            for(Pair<RestogramVenue, Date> pair : list) {
-                venues[i++] = pair.first;
+            venues = new RestogramVenue[this.venues.size()];
+            for(RestogramVenue venue : this.venues) {
+                venues[i++] = venue;
             }
         }
         catch(Exception e) {
@@ -82,21 +80,16 @@ public class DataHistoryManager implements IDataHistoryManager {
     }
 
     @Override
-    public RestogramPhoto[] loadPhotos(Defs.Data.SortOrder order) {
+    public RestogramPhoto[] loadPhotos() {
         RestogramPhoto[] photos;
         try {
             if(this.photos.isEmpty())
                 return null;
 
-            // Create list of photos and sort it
-            List<Pair<RestogramPhoto, Date>> list = new LinkedList<>(this.photos.values());
-            Collections.sort(list, new Comparers.PhotoComparator(order));
-
-            photos = new RestogramPhoto[list.size()];
-
             int i = 0;
-            for(Pair<RestogramPhoto, Date> pair : list) {
-                photos[i++] = pair.first;
+            photos = new RestogramPhoto[this.photos.size()];
+            for(RestogramPhoto photo : this.photos) {
+                photos[i++] = photo;
             }
         }
         catch(Exception e) {
@@ -117,8 +110,6 @@ public class DataHistoryManager implements IDataHistoryManager {
         // Empty
     }
 
-    protected Map<String, Pair<RestogramVenue, Date>> venues; // Venues map
-    protected Map<String, Pair<RestogramPhoto, Date>> photos; // Photos map
-
-
+    protected Deque<RestogramVenue> venues; // Venues list
+    protected Deque<RestogramPhoto> photos; // Photos list
 }
