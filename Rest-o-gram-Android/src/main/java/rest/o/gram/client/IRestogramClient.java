@@ -5,7 +5,7 @@ import android.widget.ImageView;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
-import rest.o.gram.data.IDataHistoryManager;
+import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.data.IDataFavoritesManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.IBitmapFilter;

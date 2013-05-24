@@ -14,7 +14,7 @@ import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
-import rest.o.gram.data.IDataHistoryManager;
+import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 
 /**

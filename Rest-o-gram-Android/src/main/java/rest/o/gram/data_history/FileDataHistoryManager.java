@@ -1,4 +1,4 @@
-package rest.o.gram.data;
+package rest.o.gram.data_history;
 
 import android.content.Context;
 import rest.o.gram.common.Defs;

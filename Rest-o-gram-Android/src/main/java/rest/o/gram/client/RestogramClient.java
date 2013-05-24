@@ -11,6 +11,7 @@ import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.commands.*;
 import rest.o.gram.common.Defs;
 import rest.o.gram.data.*;
+import rest.o.gram.data_history.*;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.DefaultBitmapFilter;
 import rest.o.gram.filters.FaceBitmapFilter;
