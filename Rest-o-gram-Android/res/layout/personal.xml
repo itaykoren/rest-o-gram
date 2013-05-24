@@ -14,59 +14,95 @@
             android:background="#FFFFFF" android:layout_marginLeft="30dp"
             android:scaleType="center" android:layout_marginRight="30dp">
 
-
+     <!--user details: photo and user name-->
     <LinearLayout
             android:layout_width="100dp"
             android:layout_height="100dp" android:layout_gravity="center">
 
 
         <ImageView
+                android:id="@+id/ivFBPhoto"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:id="@+id/imageView" android:layout_gravity="center|top"/>
+                android:layout_gravity="center|top"/>
         <TextView
-                android:layout_width="60dp"
+                android:id="@+id/tvFBName"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:id="@+id/textView" android:layout_gravity="center" android:layout_marginTop="30dp"
+                android:layout_gravity="center" android:layout_marginTop="30dp"
                 android:textStyle="normal" android:typeface="monospace" android:textColor="#000000"
                 android:maxLines="1"/>
 
 
     </LinearLayout>
 
-
-    <TabHost
-            android:id="@+id/tabHost"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"  android:layout_gravity="center">
-        <LinearLayout
+    <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-            <TabWidget
-                    android:id="@android:id/tabs"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
-            </TabWidget>
-            <FrameLayout
-                    android:id="@android:id/tabcontent"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
-                <LinearLayout
-                        android:id="@+id/history"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
-                </LinearLayout>
-                <LinearLayout
-                        android:id="@+id/favourites"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
-                </LinearLayout>
 
-            </FrameLayout>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="History"
+                android:id="@+id/bHistory" android:layout_gravity="center"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Favorites"
+                android:id="@+id/bFavorites" android:layout_gravity="center"
+                android:layout_toRightOf="@+id/bHistory"/>
+
+    </RelativeLayout>
+
+    <ViewSwitcher
+            android:id="@+id/viewSwitcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:inAnimation="@android:anim/slide_in_left" >
+
+        <LinearLayout
+                android:id="@+id/historyView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+            <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lvHistory"
+                    android:cacheColorHint="#00000000"
+                    android:divider="#000000"
+                    android:dividerHeight="1dip"/>
+
         </LinearLayout>
-    </TabHost>
+
+
+        <LinearLayout
+                android:id="@+id/favoritesView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+            <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lvFavPhotos"
+                    android:cacheColorHint="#00000000"
+                    android:divider="#000000"
+                    android:dividerHeight="1dip"/>
+
+            <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lvFavVenues"
+                    android:cacheColorHint="#00000000"
+                    android:divider="#000000"
+                    android:dividerHeight="1dip"/>
+
+
+        </LinearLayout>
+    </ViewSwitcher>
+
+
 
 </FrameLayout>
 
