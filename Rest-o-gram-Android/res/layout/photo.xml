@@ -6,6 +6,7 @@
               android:layout_height="match_parent"
               android:background="@drawable/background">
 
+
     <LinearLayout android:orientation="horizontal"
                   android:layout_width="fill_parent"
                   android:layout_height="40dp">
@@ -53,10 +54,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-20dp">
 
+            <ImageButton
+                    android:id="@+id/bPhotoFavorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_favourite" android:layout_alignParentTop="true"
+                    android:layout_marginTop="10dp"/>
+
+
             <ImageView
                     android:id="@+id/ivPhoto"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:adjustViewBounds="true"/>
 
             <ProgressBar
@@ -69,6 +78,29 @@
 
         </RelativeLayout>
 
+
+     <!--   add to favourites-->
+      <!--  <RelativeLayout
+                android:id="@+id/relative_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-20dp">
+
+        <ImageView
+                android:id="@+id/ivPhoto"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:adjustViewBounds="true"/>
+
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/tvTitle"
+                android:text="Add to Favourites"  />
+        </RelativeLayout>
+-->
+
+
         <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -80,4 +112,6 @@
 
 
     </LinearLayout>
+
+
     </LinearLayout>
