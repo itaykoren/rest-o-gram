@@ -30,4 +30,14 @@ public interface ILocationTracker {
      * Can detect the current location?
      */
     boolean canDetectLocation();
+
+    /**
+     * Returns last known latitude
+     */
+    double getLatitude();
+
+    /**
+     * Returns last known longitude
+     */
+    double getLongitude();
 }

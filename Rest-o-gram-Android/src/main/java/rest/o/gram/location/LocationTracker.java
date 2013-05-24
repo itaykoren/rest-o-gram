@@ -98,6 +98,22 @@ public class LocationTracker implements ILocationTracker {
         return canDetectLocation;
     }
 
+    @Override
+    public double getLatitude() {
+        if(location != null)
+            return location.lastLat;
+
+        return 0.0;
+    }
+
+    @Override
+    public double getLongitude() {
+        if(location != null)
+            return location.lastLong;
+
+        return 0.0;
+    }
+
     private void informObserver() {
         observer.onLocationUpdated((double)location.lastLat, (double)location.lastLong,
                                    location.lastAccuracy, location.originProvider);

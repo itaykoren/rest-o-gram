@@ -1,5 +1,6 @@
 package rest.o.gram.data;
 
+import rest.o.gram.common.Defs;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 
@@ -22,12 +23,12 @@ public interface IDataHistoryManager {
     /**
      * Attempts to load venues
      */
-    RestogramVenue[] loadVenues();
+    RestogramVenue[] loadVenues(Defs.Data.SortOrder order);
 
     /**
      * Attempts to load photos
      */
-    RestogramPhoto[] loadPhotos();
+    RestogramPhoto[] loadPhotos(Defs.Data.SortOrder order);
 
     /**
      * Clears all data

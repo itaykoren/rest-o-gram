@@ -46,8 +46,8 @@ public class Utils {
 
     /**
      * Compares two Date objects
-     * Returns: -1 if lhs > rhs
-     *           1 if lhs < rhs
+     * Returns: -1 if lhs < rhs
+     *           1 if lhs > rhs
      *           0 otherwise
      */
     public static int compare(Date lhs, Date rhs) {
@@ -55,9 +55,9 @@ public class Utils {
             return 0;
 
         int res = lhs.compareTo(rhs);
-        if(res > 0)
+        if(res < 0)
             return -1;
-        else if(res < 0)
+        else if(res > 0)
             return 1;
         else
             return 0;

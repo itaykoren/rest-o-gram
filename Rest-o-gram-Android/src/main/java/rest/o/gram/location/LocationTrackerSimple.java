@@ -116,6 +116,22 @@ public class LocationTrackerSimple extends Service implements ILocationTracker, 
     }
 
     @Override
+    public double getLatitude() {
+        if(lastLocation != null)
+            return lastLocation.getLatitude();
+
+        return 0.0;
+    }
+
+    @Override
+    public double getLongitude() {
+        if(lastLocation != null)
+            return lastLocation.getLongitude();
+
+        return 0.0;
+    }
+
+    @Override
     public void onLocationChanged(Location location) {
         updateLocation(location);
     }

@@ -49,6 +49,16 @@ public class LocationTrackerDummy implements ILocationTracker {
         return true;
     }
 
+    @Override
+    public double getLatitude() {
+        return location[0];
+    }
+
+    @Override
+    public double getLongitude() {
+        return location[1];
+    }
+
     class GetLocationTimerTask extends TimerTask {
         private Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -57,9 +67,7 @@ public class LocationTrackerDummy implements ILocationTracker {
             // ...
             mHandler.post(new Runnable() {
                 public void run() {
-                    //observer.onLocationUpdated(32.10732,34.834299, LocationManager.GPS_PROVIDER); // Frame
-                    observer.onLocationUpdated(32.078145,34.781449, 0, LocationManager.GPS_PROVIDER); // Vitrina
-                    //observer.onLocationUpdated(32.095,34.782468, LocationManager.GPS_PROVIDER); // Near my house
+                    observer.onLocationUpdated(location[0], location[1], 0, LocationManager.GPS_PROVIDER);
                     stop();
                 }
             });
@@ -70,4 +78,7 @@ public class LocationTrackerDummy implements ILocationTracker {
     private Timer timer;
     private GetLocationTimerTask task;
     private boolean isTracking = false;
+
+    private double[] location = {32.078145, 34.781449}; // Vitrina
+    //private double[] location = {32.10732, 34.834299}; // Frame
 }

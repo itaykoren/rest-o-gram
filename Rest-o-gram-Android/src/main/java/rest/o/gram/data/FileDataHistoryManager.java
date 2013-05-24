@@ -16,21 +16,13 @@ import java.util.*;
  * User: Roi
  * Date: 5/22/13
  */
-public class FileDataHistoryManager implements IDataHistoryManager {
+public class FileDataHistoryManager extends DataHistoryManager {
 
     /**
      * Ctor
      */
     public FileDataHistoryManager(Context context) {
         this.context = context;
-
-        // Init maps
-        venues = new HashMap<>();
-        photos = new HashMap<>();
-
-        // Init comparators
-        venueComparator = new Comparers.VenueComparator();
-        photoComparator = new Comparers.PhotoComparator();
 
         // Set is up to date flag to false
         isUpToDate = false;
@@ -41,17 +33,8 @@ public class FileDataHistoryManager implements IDataHistoryManager {
 
     @Override
     public boolean save(RestogramVenue venue) {
-        try {
-            if(venues.containsKey(venue.getFoursquare_id())) {
-                venues.remove(venue.getFoursquare_id());
-            }
-
-            Date now = new Date();
-            venues.put(venue.getFoursquare_id(), new Pair<>(venue, now));
-        }
-        catch(Exception e) {
+        if(!super.save(venue))
             return false;
-        }
 
         isUpToDate = false;
         return true;
@@ -59,75 +42,16 @@ public class FileDataHistoryManager implements IDataHistoryManager {
 
     @Override
     public boolean save(RestogramPhoto photo) {
-        try {
-            if(photos.containsKey(photo.getInstagram_id())) {
-                photos.remove(photo.getInstagram_id());
-            }
-
-            Date now = new Date();
-            photos.put(photo.getInstagram_id(), new Pair<>(photo, now));
-        }
-        catch(Exception e) {
+        if(!super.save(photo))
             return false;
-        }
 
         isUpToDate = false;
         return true;
     }
 
     @Override
-    public RestogramVenue[] loadVenues() {
-        RestogramVenue[] venues;
-        try {
-            if(this.venues.isEmpty())
-                return null;
-
-            // Create list of venues and sort it
-            List<Pair<RestogramVenue, Date>> list = new LinkedList<>(this.venues.values());
-            Collections.sort(list, venueComparator);
-
-            int i = 0;
-            venues = new RestogramVenue[list.size()];
-            for(Pair<RestogramVenue, Date> pair : list) {
-                venues[i++] = pair.first;
-            }
-        }
-        catch(Exception e) {
-            return null;
-        }
-
-        return venues;
-    }
-
-    @Override
-    public RestogramPhoto[] loadPhotos() {
-        RestogramPhoto[] photos;
-        try {
-            if(this.photos.isEmpty())
-                return null;
-
-            // Create list of photos and sort it
-            List<Pair<RestogramPhoto, Date>> list = new LinkedList<>(this.photos.values());
-            Collections.sort(list, photoComparator);
-
-            photos = new RestogramPhoto[list.size()];
-
-            int i = 0;
-            for(Pair<RestogramPhoto, Date> pair : list) {
-                photos[i++] = pair.first;
-            }
-        }
-        catch(Exception e) {
-            return null;
-        }
-
-        return photos;
-    }
-
-    @Override
     public void clear() {
-        venues.clear();
-        photos.clear();
+        super.clear();
 
         isUpToDate = false;
     }
@@ -169,12 +93,5 @@ public class FileDataHistoryManager implements IDataHistoryManager {
     }
 
     private Context context; // Context
-
-    private Map<String, Pair<RestogramVenue, Date>> venues; // Venues map
-    private Map<String, Pair<RestogramPhoto, Date>> photos; // Photos map
-
-    private Comparers.VenueComparator venueComparator; // Venue comparator
-    private Comparers.PhotoComparator photoComparator; // Photo comparator
-
     private boolean isUpToDate; // Is up to date flag
 }

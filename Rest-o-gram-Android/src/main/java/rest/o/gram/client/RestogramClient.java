@@ -10,6 +10,7 @@ import rest.o.gram.authentication.IAuthenticationProvider;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.commands.*;
 import rest.o.gram.common.Defs;
+import rest.o.gram.data.DataHistoryManager;
 import rest.o.gram.data.FileDataHistoryManager;
 import rest.o.gram.data.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
@@ -19,6 +20,7 @@ import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.location.LocationTracker;
+import rest.o.gram.location.LocationTrackerDummy;
 import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.network.NetworkStateProvider;
 import rest.o.gram.tasks.ITaskObserver;
@@ -72,6 +74,9 @@ public class RestogramClient implements IRestogramClient {
 
             if(Defs.Data.DATA_HISTORY_ENABLED)
                 dataHistoryManager = new FileDataHistoryManager(context);
+
+            if(Defs.Data.CACHE_DATA_HISTORY_ENABLED)
+                cacheDataHistoryManager = new DataHistoryManager();
 
             if(Defs.Filtering.FACE_FILTERING_ENABLED)
                 bitmapFilter = new FaceBitmapFilter(Defs.Filtering.MAX_FACES_TO_DETECT);
@@ -205,6 +210,11 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
+    public IDataHistoryManager getCacheDataHistoryManager() {
+        return cacheDataHistoryManager;
+    }
+
+    @Override
     public IBitmapFilter getBitmapFilter() {
         return bitmapFilter;
     }
@@ -230,6 +240,7 @@ public class RestogramClient implements IRestogramClient {
     private ILocationTracker tracker; // Location tracker
     private INetworkStateProvider networkStateProvider;
     private IDataHistoryManager dataHistoryManager; // Data history manager
+    private IDataHistoryManager cacheDataHistoryManager; // Cache data history manager
     private IBitmapFilter bitmapFilter; // Bitmap filter
     private IRestogramCommandQueue commandQueue; // Command queue
     private boolean debuggable = false; // debuggable flag

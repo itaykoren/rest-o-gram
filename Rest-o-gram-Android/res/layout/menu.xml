@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+    <item
+            android:id="@+id/action_nearby"
+            android:icon="@drawable/ic_nearby"
+            android:title="Nearby"
+            android:showAsAction="always"/>
+    <item
+            android:id="@+id/action_personal"
+            android:icon="@drawable/ic_me"
+            android:title="Me"
+            android:showAsAction="always">
+    </item>
+
+</menu>

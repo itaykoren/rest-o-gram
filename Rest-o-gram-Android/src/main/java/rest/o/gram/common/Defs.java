@@ -16,6 +16,7 @@ public final class Defs {
         public static final int RC_NEARBY = 102;
         public static final int RC_VENUE = 103;
         public static final int RC_PHOTO = 104;
+        public static final int RC_PERSONAL = 105;
     }
 
     /**
@@ -60,9 +61,18 @@ public final class Defs {
      * Data constants
      */
     public static class Data {
+        /**
+         * Sort order enumeration
+         */
+        public enum SortOrder {
+            SortOrderFIFO,
+            SortOrderLIFO
+        }
+
         public static final boolean DATA_HISTORY_ENABLED = false;
         public static final String DATA_VENUES_FILENAME = "venues.rog";
         public static final String DATA_PHOTOS_FILENAME = "photos.rog";
+        public static final boolean CACHE_DATA_HISTORY_ENABLED = true;
     }
 
     public static final int VENUES_AMBIGOUITY_LEVEL = 2;

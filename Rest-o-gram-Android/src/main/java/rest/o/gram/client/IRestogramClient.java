@@ -110,6 +110,11 @@ public interface IRestogramClient {
     IDataHistoryManager getDataHistoryManager();
 
     /**
+     * Returns the cache data manager
+     */
+    IDataHistoryManager getCacheDataHistoryManager();
+
+    /**
      * Returns the bitmap filter
      */
     IBitmapFilter getBitmapFilter();
