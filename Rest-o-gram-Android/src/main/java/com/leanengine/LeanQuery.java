@@ -40,7 +40,7 @@ public class LeanQuery {
      * <br/><br/>
      * To get the next batch of results use {@link #fetchNextInBackground(NetworkCallback)} or {@link #fetchNext()}.
      *
-     * @param callback {@link NetworkCallback} that will be invoked when background task is done.
+     * @param callback {@link ContinuedNetworkCallback} that will be invoked when background task is done.
      */
     public void fetchInBackground(NetworkCallback<LeanEntity> callback) {
         // this is initial fetch, reset the cursor
@@ -55,7 +55,7 @@ public class LeanQuery {
      * <br/><br/>
      * Query parameters must not be changed between invocation of {@code fetch()} and  {@code fetchNext()} methods.
      *
-     * @param callback {@link NetworkCallback} that will be invoked when background task is done.
+     * @param callback {@link ContinuedNetworkCallback} that will be invoked when background task is done.
      * @throws IllegalStateException If called before {@link #fetch()} or {@link #fetchInBackground(NetworkCallback)}.
      */
     public void fetchNextInBackground(NetworkCallback<LeanEntity> callback) throws IllegalStateException {
@@ -99,7 +99,7 @@ public class LeanQuery {
         return RestService.getInstance().queryPrivate(this);
     }
 
-    String getCursor() {
+    public String getCursor() {
         return cursor;
     }
 

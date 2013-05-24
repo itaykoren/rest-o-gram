@@ -14,15 +14,15 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * Callback interface used when invoking REST service in the background thread.
- * @param <T>
+ * @param <E>
  */
-public interface NetworkCallback<T> {
+public interface NetworkCallback<E> {
 
     /**
      * REST service was successfully invoked and result is available.
      * @param result Result as returned by REST service.
      */
-    public abstract void onResult(T... result);
+    public abstract void onResult(E... result);
 
     /**
      * There was an error invoking the REST service.

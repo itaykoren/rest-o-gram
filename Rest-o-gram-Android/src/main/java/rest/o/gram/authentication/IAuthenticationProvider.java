@@ -1,6 +1,7 @@
 package rest.o.gram.authentication;
 
 import android.net.Uri;
+import com.leanengine.NetworkCallback;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,6 +12,7 @@ public interface IAuthenticationProvider {
     boolean isUserLoggedIn();
     Uri getFacebookLoginUri();
     boolean logout() throws com.leanengine.LeanException;
-    void logoutInBackground(com.leanengine.NetworkCallback<java.lang.Boolean> callback);
+    void logoutInBackground(NetworkCallback<Boolean> callback);
     com.leanengine.LeanAccount getAccountData() throws com.leanengine.LeanException;
+    String getAuthToken();
 }

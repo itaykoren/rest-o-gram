@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 @Path("/v1/script")
-@Produces("application/json")
-@Consumes("application/json")
+@Produces("application/json;charset=UTF-8")
+@Consumes("application/json;charset=UTF-8")
 public class ScriptRest {
 
     private static final Logger log = Logger.getLogger(ScriptRest.class.getName());

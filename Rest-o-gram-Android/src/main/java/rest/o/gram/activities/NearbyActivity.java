@@ -10,9 +10,7 @@ import rest.o.gram.data.IDataHistoryManager;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.tasks.ITaskObserver;
-import rest.o.gram.tasks.results.GetInfoResult;
-import rest.o.gram.tasks.results.GetNearbyResult;
-import rest.o.gram.tasks.results.GetPhotosResult;
+import rest.o.gram.tasks.results.*;
 import rest.o.gram.view.VenueViewAdapter;
 
 import static rest.o.gram.location.Utils.distance;
@@ -102,6 +100,26 @@ public class NearbyActivity extends RestogramActivity implements ITaskObserver {
     @Override
     public void onFinished(GetPhotosResult result) {
         // Empty
+    }
+
+    @Override
+    public void onFinished(CachePhotoResult result) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void onFinished(FetchPhotosFromCacheResult result) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void onFinished(CacheVenueResult result) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void onFinished(FetchVenuesFromCacheResult result) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

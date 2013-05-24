@@ -13,8 +13,8 @@ import org.codehaus.jackson.node.ObjectNode;
 import javax.ws.rs.*;
 
 @Path("/v1/query")
-@Produces("application/json")
-@Consumes("application/json")
+@Produces("application/json;charset=UTF-8")
+@Consumes("application/json;charset=UTF-8")
 public class QueryRest {
 
     @POST

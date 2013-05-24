@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Path("/v1/entity")
-@Produces("application/json")
-@Consumes("application/json")
+@Produces("application/json;charset=UTF-8")
+@Consumes("application/json;charset=UTF-8")
 public class EntityRest {
 
     private static final Logger log = Logger.getLogger(EntityRest.class.getName());
@@ -20,9 +20,7 @@ public class EntityRest {
     @GET
     @Path("/{entityName}/{entityId}")
     public JsonNode getEntity(@PathParam("entityName") String entityName, @PathParam("entityId") long entityId) throws LeanException {
-        //log.severe("getEntity - name: " + entityName + " id: " + entityId);
         Entity entity = DatastoreUtils.getPrivateEntity(entityName, entityId);
-        //log.severe("got entity - " + entity.toString());
         return JsonUtils.entityToJson(entity);
     }
 
@@ -35,14 +33,7 @@ public class EntityRest {
     @GET
     @Path("/{entityName}")
     public JsonNode getAllUserPrivateEntities(@PathParam("entityName") String kind) throws LeanException {
-        //log.severe("getEntity - name: " + kind);
         List<Entity> entities = DatastoreUtils.getPrivateEntities(kind);
-//        if (entities != null)
-//        {
-//            log.severe("got " + entities.size() + "entities ");
-//            for (Entity curr : entities)
-//                log.severe("entity: " + curr.toString());
-//        }
         return JsonUtils.entityListToJson(entities);
     }
 
@@ -59,5 +50,4 @@ public class EntityRest {
         long entityID = DatastoreUtils.putPrivateEntity(entityName, JsonUtils.entityPropertiesFromJson(entityJson));
         return "{\"id\":" + entityID + "}";
     }
-
 }

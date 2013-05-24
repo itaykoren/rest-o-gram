@@ -6,7 +6,9 @@ import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.data.IDataHistoryManager;
+import rest.o.gram.data.IDataFavoritesManager;
 import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.network.INetworkStateProvider;
@@ -79,12 +81,32 @@ public interface IRestogramClient {
      */
     IRestogramCommand downloadImage(String url, ImageView imageView, boolean force, IRestogramCommandObserver observer);
 
-    /* AUTH SERVICES */
+    /**
+     * Executes cache photo request
+     * Returns command object
+     */
+    void cachePhoto(String id, ITaskObserver observer);
 
     /**
-     *
+     * Executes fetch photos from cache request
+     * Returns command object
      */
-    void getRecentPhotos(ITaskObserver observer);
+    void fetchPhotosFromCache(ITaskObserver observer, String... ids);
+
+    /**
+     * Executes cache venue request
+     * Returns command object
+     */
+    void cacheVenue(String id, ITaskObserver observer);
+
+    /**
+     * Executes fetch venues from cache request
+     * Returns command object
+     */
+    void fetchVenuesFromCache(ITaskObserver observer, String... ids);
+
+
+    /* AUTH SERVICES */
 
     /* PROVIDERS */
 
@@ -119,9 +141,9 @@ public interface IRestogramClient {
     IBitmapFilter getBitmapFilter();
 
     /**
-     * Returns the dtat provider
+     * Returns the data favorites manager
      */
-    IDataProvider getDataProvider();
+    IDataFavoritesManager getDataFavoritesManager();
 
     /**
      * @return is the application in debug mode?

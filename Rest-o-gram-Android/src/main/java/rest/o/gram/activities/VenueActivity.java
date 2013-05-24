@@ -17,9 +17,7 @@ import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.tasks.ITaskObserver;
-import rest.o.gram.tasks.results.GetInfoResult;
-import rest.o.gram.tasks.results.GetNearbyResult;
-import rest.o.gram.tasks.results.GetPhotosResult;
+import rest.o.gram.tasks.results.*;
 import rest.o.gram.view.PhotoViewAdapter;
 
 /**
@@ -89,6 +87,26 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
         // Update request pending flag
         isRequestPending = false;
+    }
+
+    @Override
+    public void onFinished(CachePhotoResult result) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void onFinished(FetchPhotosFromCacheResult result) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void onFinished(CacheVenueResult result) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void onFinished(FetchVenuesFromCacheResult result) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

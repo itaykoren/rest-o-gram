@@ -2,10 +2,7 @@ package rest.o.gram.authentication;
 
 import android.content.Context;
 import android.net.Uri;
-import com.leanengine.LeanAccount;
-import com.leanengine.LeanEngine;
-import com.leanengine.LeanException;
-import com.leanengine.NetworkCallback;
+import com.leanengine.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,5 +37,10 @@ public class AuthenticationProvider implements IAuthenticationProvider {
     @Override
     public LeanAccount getAccountData() throws LeanException {
         return LeanAccount.getAccountData();
+    }
+
+    @Override
+    public String getAuthToken() {
+        return LeanEngine.getAuthToken();
     }
 }

@@ -15,18 +15,18 @@ public class RestogramPhoto implements Serializable {
     }
 
     public RestogramPhoto(String caption, String createdTime, String instagram_id, String imageFilter,
-                          String thumbnail, String standardResolution, int likes, String link,
+                          String thumbnail, String standardResolution, long likes, String link,
                           String type, String user) {
-        this.caption = caption;
-        this.createdTime = createdTime;
-        this.instagram_id = instagram_id;
-        this.imageFilter = imageFilter;
-        this.thumbnail = thumbnail;
-        this.standardResolution = standardResolution;
-        this.likes = likes;
-        this.link = link;
-        this.type = type;
-        this.user = user;
+        this.setCaption(caption);
+        this.setCreatedTime(createdTime);
+        this.setInstagram_id(instagram_id);
+        this.setImageFilter(imageFilter);
+        this.setThumbnail(thumbnail);
+        this.setStandardResolution(standardResolution);
+        this.setLikes(likes);
+        this.setLink(link);
+        this.setType(type);
+        this.setUser(user);
     }
 
     public String getCaption() {
@@ -53,7 +53,7 @@ public class RestogramPhoto implements Serializable {
         return standardResolution;
     }
 
-    public int getLikes() {
+    public long getLikes() {
         return likes;
     }
 
@@ -69,12 +69,62 @@ public class RestogramPhoto implements Serializable {
         return user;
     }
 
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+
+    public void setCreatedTime(String createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public void setInstagram_id(String instagram_id) {
+        this.instagram_id = instagram_id;
+    }
+
+    public void setImageFilter(String imageFilter) {
+        this.imageFilter = imageFilter;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public void setStandardResolution(String standardResolution) {
+        this.standardResolution = standardResolution;
+    }
+
+    public void setLikes(long likes) {
+        this.likes = likes;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    /** account related props **/
+
     public long getId() {
         return id;
     }
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public boolean is_favorite() {
+        return is_favorite;
+    }
+
+    public void set_favorite(boolean is_favorite) {
+        this.is_favorite = is_favorite;
     }
 
     @SerializedName("caption")
@@ -96,7 +146,7 @@ public class RestogramPhoto implements Serializable {
     private String standardResolution;
 
     @SerializedName("likes")
-    private int likes;
+    private long likes;
 
     @SerializedName("link")
     private String link;
@@ -107,6 +157,11 @@ public class RestogramPhoto implements Serializable {
     @SerializedName("user")
     private String user;
 
+    /** account related fields **/
+
     @SerializedName("id")
-    private long id = Long.MIN_VALUE;;
+    private long id = Long.MIN_VALUE;
+
+    @SerializedName("is_favorite")
+    private boolean is_favorite;
 }

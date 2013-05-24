@@ -6,9 +6,7 @@ import com.leanengine.server.auth.AuthService;
 import com.leanengine.server.auth.LeanAccount;
 import com.leanengine.server.entity.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -27,18 +25,32 @@ public class DatastoreUtils {
 
         Entity entity;
         try {
-            entity = datastore.get(KeyFactory.createKey(kind, entityId));
+            final Key accountKey = AccountUtils.getAccountKey(account.id);
+            entity = datastore.get(KeyFactory.createKey(accountKey, kind, entityId));
         } catch (EntityNotFoundException e) {
             throw new LeanException(LeanException.Error.EntityNotFound);
         }
 
-        if (account.id != (Long) entity.getProperty("_account"))
-                  throw new LeanException(LeanException.Error.NotAuthorized,
-                          " Account not authorized to access entity '" + kind + "'with ID '" + entityId + "'");
+//        if (account.id != (Long) entity.getProperty("_account"))
+//                  throw new LeanException(LeanException.Error.NotAuthorized,
+//                          " Account not authorized to access entity '" + kind + "'with ID '" + entityId + "'");
 
         return entity;
     }
 
+    public static Entity getPublicEntity(String kind, String entityName) throws LeanException {
+        if (entityName == null || kind == null) throw new LeanException(LeanException.Error.EntityNotFound,
+                " Entity 'kind' and 'name' must NOT be null.");
+
+        Entity entity;
+        try {
+            entity = datastore.get(KeyFactory.createKey(kind, entityName));
+        } catch (EntityNotFoundException e) {
+            throw new LeanException(LeanException.Error.EntityNotFound);
+        }
+
+        return entity;
+    }
 
     public static void deletePrivateEntity(String entityKind, long entityId) throws LeanException {
         LeanAccount account = findCurrentAccount();
@@ -48,14 +60,29 @@ public class DatastoreUtils {
 
         Entity entity;
         try {
-            entity = datastore.get(KeyFactory.createKey(entityKind, entityId));
+            final Key accountKey = AccountUtils.getAccountKey(account.id);
+            entity = datastore.get(KeyFactory.createKey(accountKey, entityKind, entityId));
         } catch (EntityNotFoundException e) {
             throw new LeanException(LeanException.Error.EntityNotFound);
         }
 
-        if (account.id != (Long) entity.getProperty("_account"))
-            throw new LeanException(LeanException.Error.NotAuthorized,
-                    " Account not authorized to access entity '" + entityKind + "'with ID '" + entityId + "'");
+//        if (account.id != (Long) entity.getProperty("_account"))
+//            throw new LeanException(LeanException.Error.NotAuthorized,
+//                    " Account not authorized to access entity '" + entityKind + "'with ID '" + entityId + "'");
+
+        datastore.delete(entity.getKey());
+    }
+
+    public static void deletePrivateEntity(String entityKind, String entityName) throws LeanException {
+        if (entityName == null || entityKind == null) throw new LeanException(LeanException.Error.EntityNotFound,
+                " Entity 'kind' and 'name' must NOT be null.");
+
+        Entity entity;
+        try {
+            entity = datastore.get(KeyFactory.createKey(entityKind, entityName));
+        } catch (EntityNotFoundException e) {
+            throw new LeanException(LeanException.Error.EntityNotFound);
+        }
 
         datastore.delete(entity.getKey());
     }
@@ -84,57 +111,86 @@ public class DatastoreUtils {
     public static List<Entity> getPrivateEntities(String kind) throws LeanException {
 
         if (!pattern.matcher(kind).matches()) {
-            throw new LeanException(LeanException.Error.IllegalEntityName);
+            throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
         }
 
         LeanAccount account = AuthService.getCurrentAccount();
         // this should not happen, but we check anyway
         if (account == null) throw new LeanException(LeanException.Error.NotAuthorized);
 
-        Query query = new Query(kind);
-        query.addFilter("_account", Query.FilterOperator.EQUAL, account.id);
+        final Key accountKey = getCurrentAccountKey();
+        Query query = new Query(kind, accountKey);
+        //query.setFilter(new Query.FilterPredicate("_account", Query.FilterOperator.EQUAL, account.id));
         PreparedQuery pq = datastore.prepare(query);
 
         return pq.asList(FetchOptions.Builder.withDefaults());
     }
 
-//    public static void putPrivateEntity(String entityName, String id, Map<String, Object> properties) throws LeanException {
-//        if (!pattern.matcher(entityName).matches()) {
-//            throw new LeanException(LeanException.Error.IllegalEntityName);
-//        }
-//
-//        Entity entityEntity = new Entity(entityName, id);
-//        doPutPrivateEntity(entityEntity, properties);
-//    }
+    public static Collection<Entity> getPublicEntities(String kind, String[] uniqueNames) throws LeanException {
 
-    public static long putPrivateEntity(String entityName, Map<String, Object> properties) throws LeanException {
-
-        if (!pattern.matcher(entityName).matches()) {
-            throw new LeanException(LeanException.Error.IllegalEntityName);
+        if (!pattern.matcher(kind).matches()) {
+            throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
         }
 
-         Entity entityEntity = new Entity(entityName);
-        Key result = doPutPrivateEntity(entityEntity, properties);
-        return result.getId();
+        List<Key> keys = new ArrayList<>(uniqueNames.length);
+        for (String currName : uniqueNames)
+            keys.add(KeyFactory.createKey(kind, currName));
+
+        Map<Key,Entity> result = datastore.get(keys);
+        return result.values();
     }
 
-    private static Key doPutPrivateEntity(Entity entityEntity, Map<String, Object> properties) {
-        entityEntity.setProperty("_account", AuthService.getCurrentAccount().id);
+    public static long putPrivateEntity(String kind, Map<String, Object> properties) throws LeanException {
+
+        if (!pattern.matcher(kind).matches()) {
+            throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
+        }
+
+        final Key accountKey = getCurrentAccountKey();
+        Entity entityEntity = new Entity(kind, accountKey);
+        //entityEntity.setProperty("_account", AuthService.getCurrentAccount().id);
 
         if (properties != null) {
             for (Map.Entry<String, Object> entry : properties.entrySet()) {
                 entityEntity.setProperty(entry.getKey(), entry.getValue());
             }
         }
-        return datastore.put(entityEntity);
+        Key result = datastore.put(entityEntity);
+        return result.getId();
+    }
+
+    public static void putPublicEntity(String kind, String name, Map<String, Object> properties) throws LeanException {
+
+        if (!pattern.matcher(kind).matches()) {
+            throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
+        }
+
+        Entity entityEntity = new Entity(kind, name);
+
+        if (properties != null) {
+            for (Map.Entry<String, Object> entry : properties.entrySet()) {
+                entityEntity.setProperty(entry.getKey(), entry.getValue());
+            }
+        }
+        datastore.put(entityEntity);
     }
 
     public static QueryResult queryEntityPrivate(LeanQuery leanQuery) throws LeanException {
         LeanAccount account = findCurrentAccount();
 
-        Query query = new Query(leanQuery.getKind());
-        query.setFilter(new Query.FilterPredicate("_account", Query.FilterOperator.EQUAL, account.id));
+        final Key accountKey = getCurrentAccountKey();
+        Query query = new Query(leanQuery.getKind(), accountKey);
+        //query.setFilter(new Query.FilterPredicate("_account", Query.FilterOperator.EQUAL, account.id));
 
+        return queryEntity(leanQuery, query);
+    }
+
+    public static QueryResult queryEntityPublic(LeanQuery leanQuery) throws LeanException {
+        Query query = new Query(leanQuery.getKind());
+        return queryEntity(leanQuery, query);
+    }
+
+    private static QueryResult queryEntity(LeanQuery leanQuery, Query query) throws LeanException {
         for (QueryFilter queryFilter : leanQuery.getFilters()) {
             query.setFilter(new Query.FilterPredicate(
                     queryFilter.getProperty(),
@@ -168,7 +224,7 @@ public class DatastoreUtils {
 
     public static List<String> findAllEntityKinds() throws LeanException {
 
-        Query q = new Query(Query.KIND_METADATA_KIND);
+        Query q = new Query(Entities.KIND_METADATA_KIND );
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery pq = datastore.prepare(q);
@@ -182,7 +238,9 @@ public class DatastoreUtils {
         }
 
         return result;
-
     }
 
+    private static Key getCurrentAccountKey() {
+        return AccountUtils.getAccountKey(AuthService.getCurrentAccount().id);
+    }
 }

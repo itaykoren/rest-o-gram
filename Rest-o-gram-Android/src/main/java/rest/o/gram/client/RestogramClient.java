@@ -10,9 +10,7 @@ import rest.o.gram.authentication.IAuthenticationProvider;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.commands.*;
 import rest.o.gram.common.Defs;
-import rest.o.gram.data.DataHistoryManager;
-import rest.o.gram.data.FileDataHistoryManager;
-import rest.o.gram.data.IDataHistoryManager;
+import rest.o.gram.data.*;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.DefaultBitmapFilter;
 import rest.o.gram.filters.FaceBitmapFilter;
@@ -20,7 +18,6 @@ import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.location.LocationTracker;
-import rest.o.gram.location.LocationTrackerDummy;
 import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.network.NetworkStateProvider;
 import rest.o.gram.tasks.ITaskObserver;
@@ -65,9 +62,11 @@ public class RestogramClient implements IRestogramClient {
                 Log.d("REST-O-GRAM", "CLIENT UP");
 
             authProvider = new AuthenticationProvider(context, baseHostname);
-            dataProvider = new DataProvider();
+            dataFavoritesManager = new DataFavoritesManager(this);
             transport = new HttpJsonRpcClientTransport(new URL(jsonServiceHostName));
+            setJsonEncoding(transport);
             authTransport = new HttpJsonRpcClientTransport(new URL(jsonAuthServiceHostName));
+            setJsonEncoding(authTransport);
             tracker = new LocationTracker(context);
             //tracker = new LocationTrackerDummy();
             networkStateProvider = new NetworkStateProvider(context);
@@ -107,42 +106,49 @@ public class RestogramClient implements IRestogramClient {
 
     @Override
     public void getNearby(double latitude, double longitude, ITaskObserver observer) {
+        setJsonAuthToken(transport);
         IRestogramCommand command = new GetNearbyCommand(transport, observer, latitude, longitude);
         commandQueue.pushForce(command);
     }
 
     @Override
     public void getNearby(double latitude, double longitude, double radius, ITaskObserver observer) {
+        setJsonAuthToken(transport);
         IRestogramCommand command = new GetNearbyCommand(transport, observer, latitude, longitude, radius);
         commandQueue.pushForce(command);
     }
 
     @Override
     public void getInfo(String venueID, ITaskObserver observer) {
+        setJsonAuthToken(transport);
         IRestogramCommand command = new GetInfoCommand(transport, observer, venueID);
         commandQueue.pushForce(command);
     }
 
     @Override
     public void getPhotos(String venueID, ITaskObserver observer) {
+        setJsonAuthToken(transport);
         IRestogramCommand command = new GetPhotosCommand(transport, observer, venueID);
         commandQueue.pushForce(command);
     }
 
     @Override
     public void getPhotos(String venueID, RestogramFilterType filterType, ITaskObserver observer) {
+        setJsonAuthToken(transport);
         IRestogramCommand command = new GetPhotosCommand(transport, observer, venueID, filterType);
         commandQueue.pushForce(command);
     }
 
     @Override
     public void getNextPhotos(String token, ITaskObserver observer) {
+        setJsonAuthToken(transport);
         IRestogramCommand command = new GetNextPhotosCommand(transport, observer, token);
         commandQueue.pushForce(command);
     }
 
     @Override
     public void getNextPhotos(String token, RestogramFilterType filterType, ITaskObserver observer) {
+        setJsonAuthToken(transport);
         IRestogramCommand command = new GetNextPhotosCommand(transport, observer, token, filterType);
         commandQueue.pushForce(command);
     }
@@ -179,13 +185,35 @@ public class RestogramClient implements IRestogramClient {
         return command;
     }
 
-    /* AUTH SERVICES */
-
     @Override
-    public void getRecentPhotos(ITaskObserver observer) {
-        IRestogramCommand command = new GetRecentPhotosCommand(authTransport, observer);
+    public void cachePhoto(String id, ITaskObserver observer) {
+        setJsonAuthToken(transport);
+        IRestogramCommand command = new CachePhotoCommand(transport, observer, id);
         commandQueue.pushForce(command);
     }
+
+    @Override
+    public void fetchPhotosFromCache(ITaskObserver observer, String... ids) {
+        setJsonAuthToken(transport);
+        IRestogramCommand command = new FetchPhotosFromCacheCommand(transport, observer, ids);
+        commandQueue.pushForce(command);
+    }
+
+    @Override
+    public void cacheVenue(String id, ITaskObserver observer) {
+        setJsonAuthToken(transport);
+        IRestogramCommand command = new CacheVenueCommand(transport, observer, id);
+        commandQueue.pushForce(command);
+    }
+
+    @Override
+    public void fetchVenuesFromCache(ITaskObserver observer, String... ids) {
+        setJsonAuthToken(transport);
+        IRestogramCommand command = new FetchVenuesFromCacheCommand(transport, observer, ids);
+        commandQueue.pushForce(command);
+    }
+
+    /* AUTH SERVICES */
 
 
     /* PROVIDERS */
@@ -221,13 +249,22 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public IDataProvider getDataProvider() {
-        return null;
+    public IDataFavoritesManager getDataFavoritesManager() {
+        return dataFavoritesManager;
     }
 
     @Override
     public boolean isDebuggable() {
         return debuggable;
+    }
+
+    private void setJsonEncoding(HttpJsonRpcClientTransport transport) {
+        transport.setHeader("charset", "UTF-8");
+    }
+
+    private void setJsonAuthToken(HttpJsonRpcClientTransport transport) {
+        if (authProvider.isUserLoggedIn())
+            transport.setHeader("lean_token", authProvider.getAuthToken());
     }
 
     /**
@@ -237,11 +274,11 @@ public class RestogramClient implements IRestogramClient {
     }
 
     private static IRestogramClient instance; // Singleton instance
-    private final String baseHostname = "http://restogramapp.appspot.com"; // base Server URL
+    private final String baseHostname = "http://rest-o-debug3.appspot.com"; // base Server URL
     private final String jsonServiceHostName = baseHostname + "/service"; // json rpc non-auth URL
     private final String jsonAuthServiceHostName = baseHostname + "/auth-service"; // json rpc non-auth URL
     private IAuthenticationProvider authProvider;
-    private IDataProvider dataProvider;
+    private IDataFavoritesManager dataFavoritesManager;
     private HttpJsonRpcClientTransport transport; // Transport object
     private HttpJsonRpcClientTransport authTransport; // Auth Transport object
     private ILocationTracker tracker; // Location tracker

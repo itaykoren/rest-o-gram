@@ -19,7 +19,7 @@ import java.util.Set;
  * <br/><br/>
  * Future enhancements: new properties will be Entity reference, Blob, GeoPoint, Image..
  * <br/><br/>
- * Basic usage is to create a named entity via {@link #init(String)} method and then use  {@link #save()} to store it
+ * Basic usage is to create a named entity via {@link #initPrivateEntity(String, long)} Entity(String, String)} method and then use  {@link #save()} to store it
  * to server. Other methods are {@link #get(String)}, {@link #getAll(String)} and {@link #delete()}.
  * <br/><br/>
  * All method have their asynchronous counterparts, designated by added 'InBackground' to method name, which allow
@@ -27,7 +27,8 @@ import java.util.Set;
  */
 public class LeanEntity {
     protected final String kind;
-    protected Long id;
+    protected Long id = Long.MIN_VALUE;
+    protected String uniqueName;
     protected Long accountID;
     protected Map<String, Object> properties = new HashMap<String, Object>();
 
@@ -35,10 +36,19 @@ public class LeanEntity {
         this.kind = kind;
     }
 
-    LeanEntity(String kind, long id, long accountID) {
+    LeanEntity(String kind, long id) {
         this.kind = kind;
         this.id = id;
+    }
+
+    LeanEntity(String kind, long id, long accountID) {
+        this(kind, id);
         this.accountID = accountID;
+    }
+
+    LeanEntity(String kind, String uniqueName) {
+        this.kind = kind;
+        this.uniqueName = uniqueName;
     }
 
     /**
@@ -46,11 +56,19 @@ public class LeanEntity {
      * Entities created via {@code init()} method do not have their {@code id} and {@code accountID} fields set,
      * even when they are saved to server.
      *
-     * @param kind Tke kind of the entity.
+     * @param kind The kind of the entity.
      * @return
      */
-    public static LeanEntity init(String kind) {
+//    public static LeanEntity initPublicEntity(String kind, String uniqueName) {
+//        return new LeanEntity(kind, uniqueName);
+//    }
+
+    public static LeanEntity initPrivateEntity(String kind) {
         return new LeanEntity(kind);
+    }
+
+    public static LeanEntity initPrivateEntity(String kind, long id) {
+        return new LeanEntity(kind, id);
     }
 
     /**
@@ -166,6 +184,14 @@ public class LeanEntity {
      */
     public Long getId() {
         return id;
+    }
+
+    public boolean hasId() {
+        return id != Long.MIN_VALUE;
+    }
+
+    public String getUniqueName() {
+        return uniqueName;
     }
 
     /**

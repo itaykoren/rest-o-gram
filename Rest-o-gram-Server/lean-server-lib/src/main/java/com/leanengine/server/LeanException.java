@@ -4,7 +4,7 @@ public class LeanException extends Throwable {
 
     public enum Error {
         // reply errors are produced by wrong client parameters
-        IllegalEntityName(1, "Illegal LeanEntity name."),
+        IllegalEntityKeyFormat(1, "Illegal LeanEntity kind/name."),
         EmptyEntity(2, "LeanEntity contains no properties."),
         EntityNotFound(3, "Entity not found."),
         ErrorSerializingToJson(4, "Object could not be serialized to JSON"),

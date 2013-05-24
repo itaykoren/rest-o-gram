@@ -12,15 +12,20 @@ public class AccountUtils {
     private static final Logger log = Logger.getLogger(AccountUtils.class.getName());
 
     private static String authTokenKind = "_auth_tokens";
-    private static String accountsKind = "_accounts";
+    private static final String accountsKind = "_accounts";
 
     private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    public static Key getAccountKey(long accountID) {
+        if (accountID <= 0) return null;
+         return KeyFactory.createKey(accountsKind, accountID);
+    }
 
     public static LeanAccount getAccount(long accountID) {
         if (accountID <= 0) return null;
         Entity accountEntity;
         try {
-            accountEntity = datastore.get(KeyFactory.createKey(accountsKind, accountID));
+            accountEntity = datastore.get(getAccountKey(accountID));
         } catch (EntityNotFoundException e) {
             return null;
         }
@@ -34,8 +39,8 @@ public class AccountUtils {
             return null;
         }
         Query query = new Query(accountsKind);
-        query.addFilter("_provider_id", Query.FilterOperator.EQUAL, providerID);
-        query.addFilter("_provider", Query.FilterOperator.EQUAL, provider);
+        query.setFilter(new Query.FilterPredicate("_provider_id", Query.FilterOperator.EQUAL, providerID));
+        query.setFilter(new Query.FilterPredicate("_provider", Query.FilterOperator.EQUAL, provider));
         PreparedQuery pq = datastore.prepare(query);
 
         Entity accountEntity = pq.asSingleEntity();
@@ -49,8 +54,8 @@ public class AccountUtils {
             return null;
         }
         Query query = new Query(accountsKind);
-        query.addFilter("email", Query.FilterOperator.EQUAL, email);
-        query.addFilter("_provider", Query.FilterOperator.EQUAL, provider);
+        query.setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
+        query.setFilter(new Query.FilterPredicate("_provider", Query.FilterOperator.EQUAL, provider));
         PreparedQuery pq = datastore.prepare(query);
 
         Entity accountEntity = pq.asSingleEntity();

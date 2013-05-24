@@ -1,8 +1,6 @@
 package rest.o.gram.tasks;
 
-import rest.o.gram.tasks.results.GetInfoResult;
-import rest.o.gram.tasks.results.GetNearbyResult;
-import rest.o.gram.tasks.results.GetPhotosResult;
+import rest.o.gram.tasks.results.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,6 +14,14 @@ public interface ITaskObserver {
     void onFinished(GetInfoResult venue);
 
     void onFinished(GetPhotosResult result);
+
+    void onFinished(CachePhotoResult result);
+
+    void onFinished(FetchPhotosFromCacheResult result);
+
+    void onFinished(CacheVenueResult result);
+
+    void onFinished(FetchVenuesFromCacheResult result);
 
     void onCanceled();
 }

@@ -148,12 +148,22 @@ public class RestogramVenue implements Serializable {
         this.imageUrl = imageUrl;
     }
 
+    /** account related props **/
+
     public long getId() {
         return id;
     }
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public boolean isfavorite() {
+        return is_favorite;
+    }
+
+    public void setfavorite(boolean is_favorite) {
+        this.is_favorite = is_favorite;
     }
 
     private String foursquare_id;
@@ -171,7 +181,10 @@ public class RestogramVenue implements Serializable {
 
     private String description;
     private String imageUrl;
-    private long id = Long.MIN_VALUE;
 
+    /** account related fields **/
+
+    private long id = Long.MIN_VALUE;
+    private boolean is_favorite;
 }
 

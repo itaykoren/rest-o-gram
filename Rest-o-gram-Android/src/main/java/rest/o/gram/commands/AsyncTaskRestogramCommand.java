@@ -3,16 +3,14 @@ package rest.o.gram.commands;
 import android.os.AsyncTask;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.tasks.ITaskObserver;
-import rest.o.gram.tasks.results.GetInfoResult;
-import rest.o.gram.tasks.results.GetNearbyResult;
-import rest.o.gram.tasks.results.GetPhotosResult;
+import rest.o.gram.tasks.results.*;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Roi
  * Date: 5/23/13
  */
-public class AsyncTaskRestogramCommand extends AbstractRestogramCommand implements ITaskObserver {
+public class  AsyncTaskRestogramCommand extends AbstractRestogramCommand implements ITaskObserver {
 
     /**
      * Ctor
@@ -44,6 +42,30 @@ public class AsyncTaskRestogramCommand extends AbstractRestogramCommand implemen
 
     @Override
     public void onFinished(GetPhotosResult result) {
+        notifyFinished();
+        observer.onFinished(result);
+    }
+
+    @Override
+    public void onFinished(CachePhotoResult result) {
+        notifyFinished();
+        observer.onFinished(result);
+    }
+
+    @Override
+    public void onFinished(FetchPhotosFromCacheResult result) {
+        notifyFinished();
+        observer.onFinished(result);
+    }
+
+    @Override
+    public void onFinished(CacheVenueResult result) {
+        notifyFinished();
+        observer.onFinished(result);
+    }
+
+    @Override
+    public void onFinished(FetchVenuesFromCacheResult result) {
         notifyFinished();
         observer.onFinished(result);
     }

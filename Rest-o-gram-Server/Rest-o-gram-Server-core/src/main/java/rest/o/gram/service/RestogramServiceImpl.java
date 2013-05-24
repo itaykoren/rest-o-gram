@@ -1,6 +1,9 @@
 package rest.o.gram.service;
 
+import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
+import com.leanengine.server.LeanException;
+import com.leanengine.server.appengine.DatastoreUtils;
 import fi.foyt.foursquare.api.FoursquareApi;
 import fi.foyt.foursquare.api.FoursquareApiException;
 import fi.foyt.foursquare.api.Result;
@@ -11,9 +14,12 @@ import org.jinstagram.entity.common.Images;
 import org.jinstagram.entity.common.Location;
 import org.jinstagram.entity.common.Pagination;
 import org.jinstagram.entity.locations.LocationSearchFeed;
+import org.jinstagram.entity.media.MediaInfoFeed;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.exceptions.InstagramException;
+import rest.o.gram.Converters;
+import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilter;
@@ -22,6 +28,7 @@ import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.iservice.RestogramService;
 import rest.o.gram.results.*;
 
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import java.util.List;
@@ -165,6 +172,119 @@ public class RestogramServiceImpl implements RestogramService {
 
         Pagination pag = new Gson().fromJson(token, Pagination.class);
         return doGetPhotos(pag, filterType);
+    }
+
+    @Override
+    public boolean cachePhoto(String id) {
+        // TODO: check if photo is already in cache
+        final long lid = Long.parseLong(id);
+        MediaInfoFeed mediaInfo = null;
+        try
+        {
+            mediaInfo = m_instagram.getMediaInfo(lid);
+        } catch (InstagramException e)
+        {
+            log.warning("first get photo has failed, retry");
+            e.printStackTrace();
+            try
+            {
+                mediaInfo = m_instagram.getMediaInfo(lid);
+            } catch (InstagramException e2)
+            {
+                log.severe("second get photo has failed");
+                e2.printStackTrace();
+                return false;
+            }
+        }
+
+        final RestogramPhoto photo = convert(mediaInfo.getData());
+        try
+        {
+            DatastoreUtils.putPublicEntity(Kinds.PHOTO_REFERENCE, photo.getInstagram_id(), Converters.photoToProps(photo));
+        } catch (LeanException e)
+        {
+            log.severe("caching the photo in DS has failed");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public RestogramPhoto[] fetchPhotosFromCache(String[] ids) {
+        Collection<Entity> entities = null;
+        try
+        {
+            entities = DatastoreUtils.getPublicEntities(Kinds.PHOTO, ids);
+        } catch (LeanException e)
+        {
+            log.severe("fetching photos fromm cache has failed");
+            e.printStackTrace();
+        }
+        RestogramPhoto[] photos = new RestogramPhoto[entities.size()];
+        int i = 0;
+        for (final Entity currEntity : entities)
+        {
+            photos[i] = Converters.entityToPhoto(currEntity);
+            ++i;
+        }
+        return photos;
+    }
+
+    @Override
+    public boolean cacheVenue(String id) {
+        //TODO: check if venue is already in cache
+        CompleteVenue compVenue = null;
+        try
+        {
+            compVenue = m_foursquare.venue(id).getResult();
+        } catch (FoursquareApiException e)
+        {
+            log.warning("first get venue has failed, retry");
+            e.printStackTrace();
+            try
+            {
+                compVenue = m_foursquare.venue(id).getResult();
+            } catch (FoursquareApiException e2)
+            {
+                log.severe("second get venue has failed");
+                e2.printStackTrace();
+                return false;
+            }
+        }
+
+        final RestogramVenue venue = convert(compVenue);
+        try
+        {
+            DatastoreUtils.putPublicEntity(Kinds.VENUE, venue.getFoursquare_id(), Converters.venueToProps(venue));
+        } catch (LeanException e)
+        {
+            log.severe("caching the venue in DS has failed");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public RestogramVenue[] fetchVenuesFromCache(String[] ids) {
+        Collection<Entity> entities = null;
+        try
+        {
+            entities = DatastoreUtils.getPublicEntities(Kinds.VENUE, ids);
+        } catch (LeanException e)
+        {
+            log.severe("fetching venues fromm cache has failed");
+            e.printStackTrace();
+        }
+        RestogramVenue[] venues = new RestogramVenue[entities.size()];
+        int i = 0;
+        for (final Entity currEntity : entities)
+        {
+            venues[i] = Converters.entityToVenue(currEntity);
+            ++i;
+        }
+        return venues;
     }
 
     /**
@@ -332,25 +452,8 @@ public class RestogramServiceImpl implements RestogramService {
         RestogramPhoto[] photos = new RestogramPhoto[data.size()];
 
         int i = 0;
-        for (MediaFeedData media : data) {
-
-            String caption = "";
-            if(media.getCaption() != null)
-                caption = media.getCaption().getText();
-
-            String user = "";
-            if(media.getUser() != null)
-                user = media.getUser().getUserName();
-
-            Images images = media.getImages();
-            String thumbnail = images.getThumbnail().getImageUrl();
-            String standardResolution = images.getStandardResolution().getImageUrl();
-
-            photos[i++] = new RestogramPhoto(caption, media.getCreatedTime(), media.getId(),
-                    media.getImageFilter(), thumbnail, standardResolution,
-                    media.getLikes().getCount(), media.getLink(),
-                    media.getType(), user);
-        }
+        for (MediaFeedData media : data)
+            photos[i++] = convert(media);
 
         log.info("GOT " + photos.length + " PHOTOS");
         final Pagination pagination = recentMediaByLocation.getPagination();
@@ -358,6 +461,23 @@ public class RestogramServiceImpl implements RestogramService {
         final String token = (StringUtils.isNotBlank(pagination.getNextUrl()) ?
                                 new Gson().toJson(pagination) : null)  ;
         return new PhotosResult(photos, token);
+    }
+
+    private RestogramPhoto convert(final MediaFeedData media) {
+        String caption = "";
+        if(media.getCaption() != null)
+            caption = media.getCaption().getText();
+
+        String user = "";
+        if(media.getUser() != null)
+            user = media.getUser().getUserName();
+        final Images images = media.getImages();
+        final String thumbnail = images.getThumbnail().getImageUrl();
+        final String standardResolution = images.getStandardResolution().getImageUrl();
+        return new RestogramPhoto(caption, media.getCreatedTime(), media.getId(),
+                media.getImageFilter(), thumbnail, standardResolution,
+                media.getLikes().getCount(), media.getLink(),
+                media.getType(), user);
     }
 
     /**

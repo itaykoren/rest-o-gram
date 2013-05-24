@@ -327,6 +327,8 @@ class RestService {
             String cursor = jsonObject.optString("cursor");
             if (cursor.length() != 0)
                 query.setCursor(cursor);
+            else // no more results...
+                query.setCursor(null);
 
             return JsonDecode.entityListFromJson(jsonObject);
         } catch (IOException e) {
