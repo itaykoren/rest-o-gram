@@ -125,7 +125,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
     public void onFavoriteClicked(View view) {
         if(!LeanAccount.isUserLoggedIn()) {
-            loginHelper.login();
+            loginHelper.login(false);
         }
         else {
             // Add\Remove favorite

@@ -28,7 +28,9 @@ public class LoginHelper {
         dialogManager = new DialogManager();
     }
 
-    public void login() {
+    public void login(boolean switchToPersonalActivity) {
+        this.switchToPersonalActivity = switchToPersonalActivity;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder
                 .setTitle(R.string.restogram_info_title)
@@ -50,7 +52,8 @@ public class LoginHelper {
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "login successful");
 
-                switchToPersonalActivity();
+                if(switchToPersonalActivity)
+                    switchToPersonalActivity();
             }
 
             @Override
@@ -78,4 +81,5 @@ public class LoginHelper {
 
     private DialogManager dialogManager;
     private Activity activity;
+    private boolean switchToPersonalActivity = false;
 }

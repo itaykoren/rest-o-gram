@@ -53,7 +53,7 @@ public class RestogramActivity extends Activity {
                     break;
 
                 if(!LeanAccount.isUserLoggedIn()) {
-                    loginHelper.login();
+                    loginHelper.login(true);
                 }
                 else {
                     loginHelper.switchToPersonalActivity();
