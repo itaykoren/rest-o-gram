@@ -61,7 +61,7 @@
     <ViewSwitcher
             android:id="@+id/viewSwitcher"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="300dp"
             android:inAnimation="@android:anim/slide_in_left" >
            <!-- android:layout_alignParentTop="true"-->
 
@@ -85,10 +85,16 @@
                 android:id="@+id/favoritesView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
-            <ListView
+            <GridView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/lvFavPhotos"
+                    android:columnWidth="90dp"
+                    android:numColumns="3"
+                    android:verticalSpacing="3dp"
+                    android:horizontalSpacing="3dp"
+                    android:stretchMode="columnWidth"
+                    android:gravity="center"
+                    android:id="@+id/gvFavPhotos"
                     android:cacheColorHint="#00000000"
                     android:divider="#000000"
                     android:dividerHeight="1dip"/>

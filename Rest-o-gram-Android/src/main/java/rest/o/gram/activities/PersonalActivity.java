@@ -3,6 +3,8 @@ package rest.o.gram.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.ViewSwitcher;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
@@ -103,22 +105,22 @@ public class PersonalActivity extends RestogramActivity implements IRestogramLis
 
     public void onHistoryClicked(View view) {
         ViewSwitcher viewSwitcher = (ViewSwitcher)findViewById(R.id.viewSwitcher);
-        if(viewSwitcher.getCurrentView() != view)
-            viewSwitcher.showPrevious();
+        viewSwitcher.showPrevious();
     }
 
     public void onFavoritesClicked(View view) {
         ViewSwitcher viewSwitcher = (ViewSwitcher)findViewById(R.id.viewSwitcher);
-        if(viewSwitcher.getCurrentView() != view)
-            viewSwitcher.showNext();
+        viewSwitcher.showNext();
     }
 
     /**
      * Initializes history related data
      */
     private void initHistory() {
-        // Init history venue view adapter
+        // Init history venue list view
+        ListView lv = (ListView)findViewById(R.id.lvHistory);
         historyVenueViewAdapter = new VenueViewAdapter(this, this);
+        lv.setAdapter(historyVenueViewAdapter);
 
         // Get data history manager
         IDataHistoryManager dataHistoryManager = RestogramClient.getInstance().getDataHistoryManager();
@@ -141,8 +143,15 @@ public class PersonalActivity extends RestogramActivity implements IRestogramLis
      * Initializes favorites related data
      */
     private void initFavorites() {
+        // Init favorite venue list view
+        ListView lvFavVenues = (ListView)findViewById(R.id.lvFavVenues);
         favoriteVenueViewAdapter = new VenueViewAdapter(this, this);
+        lvFavVenues.setAdapter(favoriteVenueViewAdapter);
+
+        // Init favorite photo grid view
+        GridView gvFavPhotos = (GridView)findViewById(R.id.gvFavPhotos);
         favoritePhotoViewAdapter = new PhotoViewAdapter(this, Defs.Photos.THUMBNAIL_WIDTH, Defs.Photos.THUMBNAIL_HEIGHT);
+        gvFavPhotos.setAdapter(favoritePhotoViewAdapter);
 
         IDataFavoritesManager dataFavoritesManager = RestogramClient.getInstance().getDataFavoritesManager();
         if(dataFavoritesManager == null)
