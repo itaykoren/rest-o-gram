@@ -3,11 +3,11 @@ package rest.o.gram.data_history;
 import android.content.Context;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
+import rest.o.gram.data_structs.*;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 
 import java.io.*;
-import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -85,18 +85,18 @@ public class FileDataHistoryManager extends DataHistoryManager {
     private void load() {
         // Load data from files
         try {
-            venues = (Deque<RestogramVenue>)Utils.deserialize(new File(context.getFilesDir(), Defs.Data.DATA_VENUES_FILENAME));
-            photos = (Deque<RestogramPhoto>)Utils.deserialize(new File(context.getFilesDir(), Defs.Data.DATA_PHOTOS_FILENAME));
+            venues = (IDictionary<String, RestogramVenue>)Utils.deserialize(new File(context.getFilesDir(), Defs.Data.DATA_VENUES_FILENAME));
+            photos = (IDictionary<String, RestogramPhoto>)Utils.deserialize(new File(context.getFilesDir(), Defs.Data.DATA_PHOTOS_FILENAME));
         }
         catch(Exception e) {
             // TODO: report error
         }
 
         if(venues == null)
-            venues = new ArrayDeque<>();
+            venues = new Dictionary<>();
 
         if(photos == null)
-            photos = new ArrayDeque<>();
+            photos = new Dictionary<>();
 
         isUpToDate = true;
     }

@@ -1,10 +1,9 @@
 package rest.o.gram.data_history;
 
 import rest.o.gram.common.Defs;
+import rest.o.gram.data_structs.*;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
-
-import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,21 +16,21 @@ public class DataHistoryManager implements IDataHistoryManager {
      */
     public DataHistoryManager() {
         // Init containers
-        venues = new ArrayDeque<>();
-        photos = new ArrayDeque<>();
+        venues = new Dictionary<>();
+        photos = new Dictionary<>();
     }
 
     @Override
     public boolean save(RestogramVenue venue, Defs.Data.SortOrder order) {
         try {
-            if(venues.contains(venue)) {
-                venues.remove(venue);
+            if(venues.contains(venue.getFoursquare_id())) {
+                venues.remove(venue.getFoursquare_id());
             }
 
             if(order == Defs.Data.SortOrder.SortOrderFIFO)
-                venues.addLast(venue);
+                venues.putLast(venue.getFoursquare_id(), venue);
             else // if(order == Defs.Data.SortOrder.SortOrderLIFO)
-                venues.addFirst(venue);
+                venues.putFirst(venue.getFoursquare_id(), venue);
         }
         catch(Exception e) {
             return false;
@@ -43,14 +42,14 @@ public class DataHistoryManager implements IDataHistoryManager {
     @Override
     public boolean save(RestogramPhoto photo, Defs.Data.SortOrder order) {
         try {
-            if(photos.contains(photo)) {
-                photos.remove(photo);
+            if(photos.contains(photo.getInstagram_id())) {
+                photos.remove(photo.getInstagram_id());
             }
 
             if(order == Defs.Data.SortOrder.SortOrderFIFO)
-                photos.addLast(photo);
+                photos.putLast(photo.getInstagram_id(), photo);
             else // if(order == Defs.Data.SortOrder.SortOrderLIFO)
-                photos.addFirst(photo);
+                photos.putFirst(photo.getInstagram_id(), photo);
         }
         catch(Exception e) {
             return false;
@@ -113,6 +112,6 @@ public class DataHistoryManager implements IDataHistoryManager {
         // Empty
     }
 
-    protected Deque<RestogramVenue> venues; // Venues list
-    protected Deque<RestogramPhoto> photos; // Photos list
+    protected IDictionary<String, RestogramVenue> venues; // Venues dictionary
+    protected IDictionary<String, RestogramPhoto> photos; // Photos dictionary
 }
