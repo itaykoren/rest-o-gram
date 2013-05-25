@@ -19,6 +19,7 @@ import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.exceptions.InstagramException;
 import rest.o.gram.Converters;
+import rest.o.gram.credentials.*;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
@@ -43,14 +44,20 @@ import java.util.HashMap;
  */
 public class RestogramServiceImpl implements RestogramService {
 
-    private static final Logger log = Logger.getLogger(RestogramServiceImpl.class.getName());
-
     public RestogramServiceImpl()
     {
         try
         {
-            m_foursquare = new FoursquareApi(FOURSQUARE_CLIENT_ID, FOURSQUARE_CLIENT_SECRET, "");
-            m_instagram = new Instagram(INSTAGRAM_CLIENT_ID);
+            //m_factory = new SimpleCredentialsFactory();
+            m_factory = new RandomCredentialsFactory();
+
+            Credentials credentials = m_factory.createFoursquareCredentials();
+            log.warning("service created: foursquare credentials type = " + credentials.getType());
+            m_foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
+
+            credentials = m_factory.createInstagramCredentials();
+            log.warning("service created: instagram credentials type = " + credentials.getType());
+            m_instagram = new Instagram(credentials.getClientId());
         }
         catch(Exception e)
         {
@@ -555,15 +562,10 @@ public class RestogramServiceImpl implements RestogramService {
         return result.encodeStrings();
     }
 
+    private static final Logger log = Logger.getLogger(RestogramServiceImpl.class.getName());
+
     private FoursquareApi m_foursquare;
     private Instagram m_instagram;
 
-    // Foursquare Client Id
-    private static final String FOURSQUARE_CLIENT_ID = "OERIKGO1WPRTY2RWWF3IMX5FUGBLSCES1OJ1F3BBLFOIBF3T";
-
-    // Foursquare Client Secret
-    private static final String FOURSQUARE_CLIENT_SECRET = "3MQLEAAV5YH2O0ZIWDVJ515KYRDROA3DPQJG4ZDPZHXXCMTF";
-
-    // Instagram Client Id
-    private static final String INSTAGRAM_CLIENT_ID = "4d32ff70646e46a992a4ad5a0945ef3f";
+    private ICredentialsFactory m_factory;
 }
