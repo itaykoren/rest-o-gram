@@ -61,12 +61,14 @@ public class VenueViewAdapter extends BaseAdapter {
         Utils.updateTextView((TextView)v.findViewById(R.id.tvAddress), venue.getAddress());
         Utils.updateTextView((TextView)v.findViewById(R.id.tvPhone), venue.getPhone());
 
-        try {
-            String distanceStr = String.format("%1$,.0f", venue.getDistance());
-            Utils.updateTextView((TextView)v.findViewById(R.id.tvDistance), distanceStr + "m away");
-        }
-        catch(Exception e) {
-            // Empty
+        if(showDistance) {
+            try {
+                String distanceStr = String.format("%1$,.0f", venue.getDistance());
+                Utils.updateTextView((TextView)v.findViewById(R.id.tvDistance), distanceStr + "m away");
+            }
+            catch(Exception e) {
+                // Empty
+            }
         }
 
         v.setOnClickListener(new View.OnClickListener() {
@@ -93,7 +95,15 @@ public class VenueViewAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    /**
+     * Determines whether to show distance label
+     */
+    public void showDistance(boolean show) {
+        showDistance = show;
+    }
+
     private IRestogramListener listener;
     private List<RestogramVenue> venueList; // Venue list
     private LayoutInflater inflater;
+    private boolean showDistance = true; // Show distance flag
 }

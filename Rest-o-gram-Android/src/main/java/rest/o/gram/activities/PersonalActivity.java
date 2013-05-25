@@ -120,6 +120,7 @@ public class PersonalActivity extends RestogramActivity implements IRestogramLis
         // Init history venue list view
         ListView lv = (ListView)findViewById(R.id.lvHistory);
         historyVenueViewAdapter = new VenueViewAdapter(this, this);
+        historyVenueViewAdapter.showDistance(false);
         lv.setAdapter(historyVenueViewAdapter);
 
         // Get data history manager

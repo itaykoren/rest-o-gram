@@ -86,7 +86,7 @@ public final class Defs {
             SortOrderLIFO
         }
 
-        public static final boolean DATA_HISTORY_ENABLED = false;
+        public static final boolean DATA_HISTORY_ENABLED = true;
         public static final String DATA_VENUES_FILENAME = "venues.rog";
         public static final String DATA_PHOTOS_FILENAME = "photos.rog";
         public static final boolean CACHE_DATA_HISTORY_ENABLED = true;
