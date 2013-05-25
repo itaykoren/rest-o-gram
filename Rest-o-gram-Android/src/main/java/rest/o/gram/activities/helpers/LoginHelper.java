@@ -31,9 +31,9 @@ public class LoginHelper {
     public void login() {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder
-                .setTitle(R.string.restogram_error_title)
+                .setTitle(R.string.restogram_info_title)
                 .setMessage(R.string.not_logged_in_err_msg)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         showLoginScreen();

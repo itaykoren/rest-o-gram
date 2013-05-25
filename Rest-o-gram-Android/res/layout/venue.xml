@@ -54,6 +54,7 @@
                         android:typeface="sans"
                         android:textSize="16dp"
                         android:textStyle="bold"
+                        android:gravity="left"
                         android:layout_toRightOf="@+id/ivVenue"/>
 
                 <!--venue address-->
@@ -63,6 +64,7 @@
                         android:id="@+id/tvVenueAddress"
                         android:textColor="#040404"
                         android:textSize="14dp"
+                        android:gravity="left"
                         android:layout_below="@+id/tvVenueName"
                         android:layout_toRightOf="@+id/ivVenue"/>
 
@@ -73,6 +75,7 @@
                         android:id="@+id/tvVenuePhone"
                         android:textColor="#040404"
                         android:textSize="14dp"
+                        android:gravity="left"
                         android:layout_below="@+id/tvVenueAddress"
                         android:layout_toRightOf="@+id/ivVenue"/>
 
