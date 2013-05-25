@@ -55,6 +55,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
         // Initialize favorite helper
         favoriteHelper = new FavoriteHelper();
+        favoriteHelper.setVenueId(venue.getFoursquare_id());
         favoriteHelper.setFavoriteVenueButton((ImageButton)findViewById(R.id.bVenueFavorite));
 
         // Initialize using venue parameter

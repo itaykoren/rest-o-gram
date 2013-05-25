@@ -39,6 +39,20 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     }
 
     /**
+     * Sets venue id
+     */
+    public void setVenueId(String id) {
+        venueId = id;
+    }
+
+    /**
+     * Sets photo id
+     */
+    public void setPhotoId(String id) {
+        photoId = id;
+    }
+
+    /**
      * Sets favorite venue button
      */
     public void setFavoriteVenueButton(ImageButton button) {
@@ -107,17 +121,30 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
 
         }
 
+        if(favoritePhotoButton != null && !photoId.isEmpty()) {
+            if(favoritePhotos.containsKey(photoId))
+                favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_on);
+            else
+                favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_off);
+        }
+
         // TODO: handle pagination - if(result.hasMore())...
     }
 
     @Override
     public void onFinished(AddFavoritePhotosResult result) {
+        if(!result.hasSucceded())
+            return;
+
         if(favoritePhotoButton != null)
             favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_on);
     }
 
     @Override
     public void onFinished(RemoveFavoritePhotosResult result) {
+        if(!result.hasSucceded())
+            return;
+
         if(favoritePhotoButton != null)
             favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_off);
     }
@@ -144,17 +171,30 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
 
         }
 
+        if(favoriteVenueButton != null && !venueId.isEmpty()) {
+            if(favoriteVenues.containsKey(venueId))
+                favoriteVenueButton.setBackgroundResource(R.drawable.ic_favorite_on);
+            else
+                favoriteVenueButton.setBackgroundResource(R.drawable.ic_favorite_off);
+        }
+
         // TODO: handle pagination - if(result.hasMore())...
     }
 
     @Override
     public void onFinished(AddFavoriteVenuesResult result) {
+        if(!result.hasSucceded())
+            return;
+
         if(favoriteVenueButton != null)
             favoriteVenueButton.setBackgroundResource(R.drawable.ic_favorite_on);
     }
 
     @Override
     public void onFinished(RemoveFavoriteVenuesResult result) {
+        if(!result.hasSucceded())
+            return;
+
         if(favoriteVenueButton != null)
             favoriteVenueButton.setBackgroundResource(R.drawable.ic_favorite_off);
     }
@@ -168,6 +208,9 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
 
     private Map<String, RestogramVenue> favoriteVenues;
     private Map<String, RestogramPhoto> favoritePhotos;
+
+    private String venueId;
+    private String photoId;
 
     private ImageButton favoriteVenueButton;
     private ImageButton favoritePhotoButton;

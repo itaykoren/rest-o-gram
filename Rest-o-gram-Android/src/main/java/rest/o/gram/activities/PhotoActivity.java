@@ -72,6 +72,7 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
 
         // Initialize favorite helper
         favoriteHelper = new FavoriteHelper();
+        favoriteHelper.setPhotoId(photo.getInstagram_id());
         favoriteHelper.setFavoritePhotoButton((ImageButton)findViewById(R.id.bPhotoFavorite));
 
         // Initialize using photo parameter
