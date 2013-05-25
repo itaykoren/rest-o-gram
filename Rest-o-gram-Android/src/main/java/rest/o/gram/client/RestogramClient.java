@@ -102,7 +102,6 @@ public class RestogramClient implements IRestogramClient {
         // Flush data
         if(dataHistoryManager != null) {
             dataHistoryManager.flush();
-            dataHistoryManager.clear();
         }
 
         // TODO: dispose

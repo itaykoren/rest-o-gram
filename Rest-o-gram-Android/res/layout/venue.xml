@@ -16,91 +16,91 @@
             android:scaleType= "center" android:layout_marginRight="30dp">
 
 
-
-        <RelativeLayout
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal|top">
-            <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="180dp"
-                    android:layout_alignParentLeft="true" android:layout_alignParentTop="true"
-                    android:layout_marginTop="5dp" android:id="@+id/frameLayout">
+                android:layout_gravity="center_horizontal|top"
+                android:orientation="vertical">
+
+
+           <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/venueInfo">
+
+
                 <ImageView
                         android:layout_width="100dp"
-                        android:layout_height="140dp"
+                        android:layout_height="100dp"
                         android:id="@+id/ivVenue"
-                        android:layout_alignParentLeft="true" android:layout_marginLeft="10dp"
-                        android:layout_alignParentTop="true" android:layout_marginTop="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginTop="20dp"
                         android:layout_gravity="left|top"
                         android:background="#0000"
                         android:padding="1dp"/>
-                <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="140dp"
-                        android:id="@+id/venueInfo"
-                        android:layout_alignParentLeft="true" android:layout_marginLeft="100dp"
-                        android:layout_alignParentTop="true" android:layout_marginTop="0dp"
-                        android:layout_gravity="right|center_vertical"
-                        android:layout_marginRight="2dp">
 
+
+                      <!--venue name-->
                     <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/tvVenueName"
                             android:layout_marginRight="2dp"
                             android:textColor="#040404"
                             android:typeface="sans"
                             android:textSize="16dp"
-                            android:layout_gravity="right|top"
-                            android:textStyle="bold" android:layout_toRightOf="@+id/ivVenue"/>
+                            android:textStyle="bold"
+                            android:layout_toRightOf="@+id/ivVenue"/>
 
-
-
-
-
-
+                    <!--venue address-->
                     <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/tvVenueAddress"
-                            android:layout_marginRight="2dp"
-                            android:layout_marginTop="53dp"
                             android:textColor="#040404"
-                            android:layout_gravity="right|top"/>
+                            android:textSize="14dp"
+                            android:layout_below="@+id/tvVenueName"
+                            android:layout_toRightOf="@+id/ivVenue"/>
+
+                    <!--venue phone-->
                     <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/tvVenuePhone"
-                            android:layout_marginRight="2dp"
-                            android:layout_marginTop="93dp"
                             android:textColor="#040404"
-                            android:layout_gravity="right|top"/>
+                            android:textSize="14dp"
+                            android:layout_below="@+id/tvVenueAddress"
+                            android:layout_toRightOf="@+id/ivVenue"/>
 
-                </FrameLayout>
+                    <ImageButton
+                            android:id="@+id/bVenueFavorite"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_favourite"
+                            android:onClick="onFavoriteClicked"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@+id/tvVenuePhone"/>
 
-                <ImageButton
-                        android:id="@+id/bVenueFavorite"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right|bottom"
-                        android:src="@drawable/ic_favourite"
-                        android:onClick="onFavoriteClicked"/>
 
-            </FrameLayout>
+
+           </RelativeLayout>
+
             <GridView
                     android:id="@+id/gvPhotos"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="500dp"
-                    android:columnWidth="50dp"
+                    android:columnWidth="90dp"
                     android:numColumns="3"
-                    android:verticalSpacing="10dp"
-                    android:horizontalSpacing="10dp"
+                    android:verticalSpacing="3dp"
+                    android:horizontalSpacing="3dp"
                     android:stretchMode="columnWidth"
                     android:gravity="center"
-                    android:layout_below="@+id/frameLayout"/>
+                    android:layout_below="@+id/venueInfo"/>
 
-        </RelativeLayout>
+
+        </LinearLayout>
 
 
     </FrameLayout>
