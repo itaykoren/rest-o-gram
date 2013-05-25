@@ -1,6 +1,7 @@
 package rest.o.gram.entities;
 
 import com.google.gson.annotations.SerializedName;
+import rest.o.gram.Utils.EncodingUtils;
 
 import java.io.Serializable;
 
@@ -29,8 +30,22 @@ public class RestogramPhoto implements Serializable {
         this.setUser(user);
     }
 
+    public RestogramPhoto encodeStrings() {
+         encodedCaption = EncodingUtils.encodeString(caption);
+        return this;
+    }
+
+    public RestogramPhoto decodeStrings() {
+        caption = EncodingUtils.decodeString(encodedCaption);
+        return this;
+    }
+
     public String getCaption() {
         return caption;
+    }
+
+    public byte[] getEncodedCaption() {
+        return encodedCaption;
     }
 
     public String getCreatedTime() {
@@ -129,6 +144,9 @@ public class RestogramPhoto implements Serializable {
 
     @SerializedName("caption")
     private String caption;
+
+    @SerializedName("encoded_caption")
+    private byte[] encodedCaption;
 
     @SerializedName("created_time")
     private String createdTime;

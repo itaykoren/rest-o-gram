@@ -80,6 +80,11 @@ public class GetNearbyTask extends AsyncTask<Double, Void, GetNearbyResult> {
     class GetNearbyResultImpl implements GetNearbyResult {
 
         public GetNearbyResultImpl(RestogramVenue[] venues) {
+            if (venues != null)
+            {
+                for (int i = 0; i < venues.length; ++i)
+                    venues[i].decodeStrings();
+            }
             this.venues = venues;
         }
 

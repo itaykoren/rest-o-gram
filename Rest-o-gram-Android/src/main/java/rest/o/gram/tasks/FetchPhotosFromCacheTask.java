@@ -51,6 +51,11 @@ public class FetchPhotosFromCacheTask extends AsyncTask<String,Void,FetchPhotosF
 
         FetchPhotosFromCacheResultImpl(RestogramPhoto[] photos) {
             this.photos = Arrays.asList(photos);
+            if (this.photos != null)
+            {
+                for (RestogramPhoto currPhoto : this.photos)
+                    currPhoto.decodeStrings();
+            }
         }
 
         @Override

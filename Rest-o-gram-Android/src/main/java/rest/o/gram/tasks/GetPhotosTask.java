@@ -67,6 +67,11 @@ public class GetPhotosTask extends AsyncTask<String, Void, GetPhotosResult> {
 
     protected class GetPhotosResultImpl implements GetPhotosResult {
         public GetPhotosResultImpl(RestogramPhoto[] photos, String token) {
+            if (photos != null)
+            {
+                for (int i = 0; i < photos.length; ++i)
+                    photos[i].decodeStrings();
+            }
             this.photos = photos;
             this.token = token;
         }

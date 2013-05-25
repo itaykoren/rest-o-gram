@@ -1,5 +1,6 @@
 package rest.o.gram.entities;
 
+import rest.o.gram.Utils.EncodingUtils;
 import java.io.Serializable;
 
 /**
@@ -36,6 +37,24 @@ public class RestogramVenue implements Serializable {
         this.imageUrl = imageUrl;
     }
 
+    public RestogramVenue encodeStrings() {
+        encodedName = EncodingUtils.encodeString(name);
+        encodedAddress = EncodingUtils.encodeString(address);
+        encodedCity = EncodingUtils.encodeString(city);
+        encodedState = EncodingUtils.encodeString(state);
+        encodedCountry = EncodingUtils.encodeString(country);
+        return this;
+    }
+
+    public RestogramVenue decodeStrings() {
+        name = EncodingUtils.decodeString(encodedName);
+        address = EncodingUtils.decodeString(encodedAddress);
+        city = EncodingUtils.decodeString(encodedCity);
+        state = EncodingUtils.decodeString(encodedState);
+        country = EncodingUtils.decodeString(encodedCountry);
+        return  this;
+    }
+
     public String getFoursquare_id() {
         return foursquare_id;
     }
@@ -52,12 +71,20 @@ public class RestogramVenue implements Serializable {
         this.name = name;
     }
 
+    public byte[] getEncodedName() {
+        return encodedName;
+    }
+
     public String getAddress() {
         return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public byte[] getEncodedAddress() {
+        return encodedAddress;
     }
 
     public String getCity() {
@@ -68,12 +95,20 @@ public class RestogramVenue implements Serializable {
         this.city = city;
     }
 
+    public byte[] getEncodedCity() {
+        return encodedCity;
+    }
+
     public String getState() {
         return state;
     }
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public byte[] getEncodedState() {
+        return encodedState;
     }
 
     public String getPostalCode() {
@@ -90,6 +125,10 @@ public class RestogramVenue implements Serializable {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public byte[] getEncodedCountry() {
+        return encodedCountry;
     }
 
     public double getLatitude() {
@@ -168,11 +207,16 @@ public class RestogramVenue implements Serializable {
 
     private String foursquare_id;
     private String name;
+    private byte[] encodedName;
     private String address;
+    private byte[] encodedAddress;
     private String city;
+    private byte[] encodedCity;
     private String state;
+    private byte[] encodedState;
     private String postalCode;
     private String country;
+    private byte[] encodedCountry;
     private double latitude;
     private double longitude;
     private double distance;

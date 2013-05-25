@@ -41,6 +41,8 @@ public class GetInfoTask extends AsyncTask<String, Void, GetInfoResult> {
     class GetInfoResultImpl implements GetInfoResult {
 
         public GetInfoResultImpl(RestogramVenue venue) {
+            if (venue != null)
+                venue.decodeStrings();
             this.venue = venue;
         }
 

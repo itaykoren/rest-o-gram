@@ -51,6 +51,11 @@ public class FetchVenuesFromCacheTask extends AsyncTask<String,Void,FetchVenuesF
 
         FetchVenuesFromCacheResultImpl(RestogramVenue[] venues) {
             this.venues = Arrays.asList(venues);
+            if (this.venues != null)
+            {
+                for (RestogramVenue currVenue : this.venues)
+                    currVenue.decodeStrings();
+            }
         }
 
         @Override

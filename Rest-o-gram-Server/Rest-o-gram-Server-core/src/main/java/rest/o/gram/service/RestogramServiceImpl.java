@@ -78,7 +78,7 @@ public class RestogramServiceImpl implements RestogramService {
     }
 
     /**
-     * @return array of venus near given location within given radius
+     * @return array of venues near given location within given radius
      */
     @Override
     public VenuesResult getNearby(double latitude, double longitude, double radius)
@@ -221,11 +221,17 @@ public class RestogramServiceImpl implements RestogramService {
             log.severe("fetching photos fromm cache has failed");
             e.printStackTrace();
         }
+
+//        if  (entities == null)
+//        {
+//            log.severe();
+//        }
+
         RestogramPhoto[] photos = new RestogramPhoto[entities.size()];
         int i = 0;
         for (final Entity currEntity : entities)
         {
-            photos[i] = Converters.entityToPhoto(currEntity);
+            photos[i] = Converters.entityToPhoto(currEntity).encodeStrings();
             ++i;
         }
         return photos;
@@ -281,7 +287,7 @@ public class RestogramServiceImpl implements RestogramService {
         int i = 0;
         for (final Entity currEntity : entities)
         {
-            venues[i] = Converters.entityToVenue(currEntity);
+            venues[i] = Converters.entityToVenue(currEntity).encodeStrings();
             ++i;
         }
         return venues;
@@ -329,9 +335,8 @@ public class RestogramServiceImpl implements RestogramService {
         }
 
         RestogramVenue[] venues = new RestogramVenue[arr.length];
-        for(int i = 0; i < arr.length; i++) {
+        for(int i = 0; i < arr.length; i++)
             venues[i] = convert(arr[i]);
-        }
 
         log.info("found " + venues.length + " venues!");
 
@@ -477,7 +482,7 @@ public class RestogramServiceImpl implements RestogramService {
         return new RestogramPhoto(caption, media.getCreatedTime(), media.getId(),
                 media.getImageFilter(), thumbnail, standardResolution,
                 media.getLikes().getCount(), media.getLink(),
-                media.getType(), user);
+                media.getType(), user).encodeStrings();
     }
 
     /**
@@ -504,7 +509,7 @@ public class RestogramServiceImpl implements RestogramService {
                                     location.getLng(),
                                     location.getDistance(),
                                     venue.getUrl(),
-                                    phone);
+                                    phone).encodeStrings();
     }
 
     /**
@@ -536,7 +541,7 @@ public class RestogramServiceImpl implements RestogramService {
             return null;
         }
 
-        return result;
+        return result.encodeStrings();
     }
 
     private FoursquareApi m_foursquare;
