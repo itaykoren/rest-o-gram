@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import com.leanengine.LeanAccount;
 import rest.o.gram.R;
 import rest.o.gram.common.Defs;
-import rest.o.gram.common.LoginHelper;
+import rest.o.gram.activities.helpers.LoginHelper;
 
 /**
  * Created with IntelliJ IDEA.
@@ -67,5 +67,5 @@ public class RestogramActivity extends Activity {
         return true;
     }
 
-    LoginHelper loginHelper; // Login helper
+    private LoginHelper loginHelper; // Login helper
 }

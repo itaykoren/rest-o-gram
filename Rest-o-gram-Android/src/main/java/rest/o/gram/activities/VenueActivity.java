@@ -5,15 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import com.leanengine.LeanAccount;
 import rest.o.gram.R;
+import rest.o.gram.activities.helpers.FavoriteHelper;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
-import rest.o.gram.common.LoginHelper;
+import rest.o.gram.activities.helpers.LoginHelper;
 import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
@@ -54,6 +52,10 @@ public class VenueActivity extends Activity implements ITaskObserver {
 
         // Initialize login helper
         loginHelper = new LoginHelper(this);
+
+        // Initialize favorite helper
+        favoriteHelper = new FavoriteHelper();
+        favoriteHelper.setFavoriteVenueButton((ImageButton)findViewById(R.id.bVenueFavorite));
 
         // Initialize using venue parameter
         initialize(venue);
@@ -125,7 +127,8 @@ public class VenueActivity extends Activity implements ITaskObserver {
             loginHelper.login();
         }
         else {
-            // TODO: Add\Remove favorite
+            // Add\Remove favorite
+            favoriteHelper.toggleFavoriteVenue(venue);
         }
     }
 
@@ -204,4 +207,5 @@ public class VenueActivity extends Activity implements ITaskObserver {
     private String lastToken = null; // Last token
     private boolean isRequestPending = false; // Request pending flag
     private LoginHelper loginHelper; // Login helper
+    private FavoriteHelper favoriteHelper; // Favorite helper
 }

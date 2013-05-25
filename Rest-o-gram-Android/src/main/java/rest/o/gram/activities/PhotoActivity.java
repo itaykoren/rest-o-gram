@@ -5,16 +5,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
 import com.leanengine.LeanAccount;
 import rest.o.gram.R;
+import rest.o.gram.activities.helpers.FavoriteHelper;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.common.Defs;
-import rest.o.gram.common.LoginHelper;
+import rest.o.gram.activities.helpers.LoginHelper;
 import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
@@ -68,7 +67,12 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
         if(dataHistoryManager != null)
             dataHistoryManager.save(photo, Defs.Data.SortOrder.SortOrderLIFO);
 
+        // Initialize login helper
         loginHelper = new LoginHelper(this);
+
+        // Initialize favorite helper
+        favoriteHelper = new FavoriteHelper();
+        favoriteHelper.setFavoritePhotoButton((ImageButton)findViewById(R.id.bPhotoFavorite));
 
         // Initialize using photo parameter
         initialize(photo, bitmap);
@@ -90,7 +94,8 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
             loginHelper.login();
         }
         else {
-            // TODO: Add\Remove favorite
+            // Add\Remove favorite
+            favoriteHelper.toggleFavoritePhoto(photo);
         }
     }
 
@@ -125,4 +130,5 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
     private RestogramPhoto photo; // Photo object
     private IRestogramCommand command; // Command object
     private LoginHelper loginHelper; // Login helper
+    private FavoriteHelper favoriteHelper; // Favorite helper
 }

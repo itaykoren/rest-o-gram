@@ -1,4 +1,4 @@
-package rest.o.gram.common;
+package rest.o.gram.activities.helpers;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +12,7 @@ import rest.o.gram.R;
 import rest.o.gram.activities.DialogManager;
 import rest.o.gram.activities.PersonalActivity;
 import rest.o.gram.client.RestogramClient;
+import rest.o.gram.common.Defs;
 
 /**
  * Created with IntelliJ IDEA.
