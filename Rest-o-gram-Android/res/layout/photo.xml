@@ -58,7 +58,7 @@
                     android:id="@+id/bPhotoFavorite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_favourite" android:layout_alignParentTop="true"
+                    android:src="@drawable/ic_favorite_off" android:layout_alignParentTop="true"
                     android:layout_marginTop="10dp"
                     android:onClick="onFavoriteClicked"/>
 

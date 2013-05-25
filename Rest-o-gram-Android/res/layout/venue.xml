@@ -78,7 +78,7 @@
                             android:id="@+id/bVenueFavorite"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_favourite"
+                            android:src="@drawable/ic_favorite_off"
                             android:onClick="onFavoriteClicked"
                             android:layout_alignParentRight="true"
                             android:layout_below="@+id/tvVenuePhone"/>
