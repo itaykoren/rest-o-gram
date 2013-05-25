@@ -27,6 +27,7 @@ import rest.o.gram.filters.RestogramFilterFactory;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.iservice.RestogramService;
 import rest.o.gram.results.*;
+import rest.o.gram.utils.InstagramUtils;
 
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -177,7 +178,16 @@ public class RestogramServiceImpl implements RestogramService {
     @Override
     public boolean cachePhoto(String id) {
         // TODO: check if photo is already in cache
-        final long lid = Long.parseLong(id);
+        long lid;
+        try
+        {
+            lid = InstagramUtils.extractMediaId(id);
+        } catch (Exception e)
+        {
+            log.severe("cannot extract media id from media feed string id");
+            e.printStackTrace();
+            return false;
+        }
         MediaInfoFeed mediaInfo = null;
         try
         {
@@ -200,7 +210,8 @@ public class RestogramServiceImpl implements RestogramService {
         final RestogramPhoto photo = convert(mediaInfo.getData());
         try
         {
-            DatastoreUtils.putPublicEntity(Kinds.PHOTO_REFERENCE, photo.getInstagram_id(), Converters.photoToProps(photo));
+            DatastoreUtils.putPublicEntity(Kinds.PHOTO,
+                    photo.getInstagram_id(), Converters.photoToProps(photo));
         } catch (LeanException e)
         {
             log.severe("caching the photo in DS has failed");
