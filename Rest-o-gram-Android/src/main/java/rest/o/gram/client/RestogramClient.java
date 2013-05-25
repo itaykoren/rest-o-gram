@@ -63,7 +63,7 @@ public class RestogramClient implements IRestogramClient {
             if (RestogramClient.getInstance().isDebuggable())
                 Log.d("REST-O-GRAM", "CLIENT UP");
 
-            authProvider = new AuthenticationProvider(context, baseHostname);
+            authProvider = new AuthenticationProvider(context, Defs.Transport.BASE_HOST_NAME);
             dataFavoritesManager = new DataFavoritesManager(this);
             transport = new HttpJsonRpcClientTransport(new URL(jsonServiceHostName));
             setJsonEncoding(transport);
@@ -279,9 +279,8 @@ public class RestogramClient implements IRestogramClient {
     }
 
     private static IRestogramClient instance; // Singleton instance
-    private final String baseHostname = "http://rest-o-debug3.appspot.com"; // base Server URL
-    private final String jsonServiceHostName = baseHostname + "/service"; // json rpc non-auth URL
-    private final String jsonAuthServiceHostName = baseHostname + "/auth-service"; // json rpc non-auth URL
+    private final String jsonServiceHostName = Defs.Transport.BASE_HOST_NAME + "/service"; // json rpc non-auth URL
+    private final String jsonAuthServiceHostName = Defs.Transport.BASE_HOST_NAME + "/auth-service"; // json rpc non-auth URL
     private IAuthenticationProvider authProvider;
     private IDataFavoritesManager dataFavoritesManager;
     private HttpJsonRpcClientTransport transport; // Transport object

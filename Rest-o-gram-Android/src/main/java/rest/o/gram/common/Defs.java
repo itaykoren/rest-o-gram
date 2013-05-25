@@ -20,6 +20,13 @@ public final class Defs {
     }
 
     /**
+     * Transport constants
+     */
+    public static class Transport {
+        public static final String BASE_HOST_NAME = "http://restogramapp.appspot.com"; // base Server URL
+    }
+
+    /**
      * Location constants
      */
     public static class Location {
