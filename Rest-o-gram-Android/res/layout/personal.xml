@@ -8,66 +8,74 @@
 
 
 
-<FrameLayout
+
+
+ <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="#FFFFFF" android:layout_marginLeft="30dp"
-            android:scaleType="center" android:layout_marginRight="30dp">
+            android:scaleType="center" android:layout_marginRight="30dp"
+            android:orientation="vertical">
 
      <!--user details: photo and user name-->
-    <LinearLayout
-            android:layout_width="100dp"
-            android:layout_height="100dp" android:layout_gravity="center">
 
-
-        <ImageView
-                android:id="@+id/ivFBPhoto"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center|top"/>
-        <TextView
-                android:id="@+id/tvFBName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" android:layout_marginTop="30dp"
-                android:textStyle="normal" android:typeface="monospace" android:textColor="#000000"
-                android:maxLines="1"/>
-
-
-    </LinearLayout>
-
-    <RelativeLayout
+     <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/history"
-                android:id="@+id/bHistory" android:layout_gravity="center"
-                android:layout_marginLeft="60dp"
-                android:onClick="onHistoryClicked"/>
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/favorites"
-                android:id="@+id/bFavorites" android:layout_gravity="center"
-                android:onClick="onFavoritesClicked"
-                android:layout_toRightOf="@+id/bHistory"/>
+            <ImageView
+                    android:id="@+id/ivFBPhoto"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/user"
+                    android:layout_centerInParent="true"
+                    android:layout_alignParentTop="true"/>
 
-    </RelativeLayout>
+            <TextView
+                    android:id="@+id/tvFBName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Username"
+                    android:textSize="14dp"
+                    android:layout_below="@+id/ivFBPhoto"
+                    android:layout_centerInParent="true"
+                    android:textStyle="normal" android:typeface="monospace" android:textColor="#000000"
+                    android:maxLines="1"/>
+     </RelativeLayout>
+
+
+     <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:orientation="horizontal">
+
+         <Button
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="@string/history"
+                     android:id="@+id/bHistory"
+                     android:layout_marginLeft="50dp"
+                     android:onClick="onHistoryClicked" android:layout_gravity="center"/>
+         <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/favorites"
+                    android:id="@+id/bFavorites"
+                    android:onClick="onFavoritesClicked" android:layout_gravity="center"/>
+
+
+     </LinearLayout>
 
     <ViewSwitcher
             android:id="@+id/viewSwitcher"
-            android:layout_width="wrap_content"
-            android:layout_height="300dp"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
             android:inAnimation="@android:anim/slide_in_left" >
            <!-- android:layout_alignParentTop="true"-->
 
         <LinearLayout
                 android:id="@+id/historyView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
             <ListView
@@ -83,7 +91,7 @@
 
         <LinearLayout
                 android:id="@+id/favoritesView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
             <GridView
                     android:layout_width="match_parent"
@@ -112,8 +120,8 @@
     </ViewSwitcher>
 
 
+ </LinearLayout>
 
-</FrameLayout>
 
 
 </LinearLayout>

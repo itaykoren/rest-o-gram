@@ -15,10 +15,14 @@
             android:background="#FFFFFF" android:layout_marginLeft="30dp"
             android:scaleType= "center" android:layout_marginRight="30dp">
 
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
 
 
-           <RelativeLayout
+            <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -39,52 +43,53 @@
                         android:src="@drawable/ic_rest"/>
 
 
-                      <!--venue name-->
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/tvVenueName"
-                            android:layout_marginRight="2dp"
-                            android:layout_marginTop="5dp"
-                            android:textColor="#040404"
-                            android:typeface="sans"
-                            android:textSize="16dp"
-                            android:textStyle="bold"
-                            android:layout_toRightOf="@+id/ivVenue"/>
+                <!--venue name-->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvVenueName"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginTop="5dp"
+                        android:textColor="#040404"
+                        android:typeface="sans"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:layout_toRightOf="@+id/ivVenue"/>
 
-                    <!--venue address-->
-                    <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/tvVenueAddress"
-                            android:textColor="#040404"
-                            android:textSize="14dp"
-                            android:layout_below="@+id/tvVenueName"
-                            android:layout_toRightOf="@+id/ivVenue"/>
+                <!--venue address-->
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvVenueAddress"
+                        android:textColor="#040404"
+                        android:textSize="14dp"
+                        android:layout_below="@+id/tvVenueName"
+                        android:layout_toRightOf="@+id/ivVenue"/>
 
-                    <!--venue phone-->
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/tvVenuePhone"
-                            android:textColor="#040404"
-                            android:textSize="14dp"
-                            android:layout_below="@+id/tvVenueAddress"
-                            android:layout_toRightOf="@+id/ivVenue"/>
+                <!--venue phone-->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvVenuePhone"
+                        android:textColor="#040404"
+                        android:textSize="14dp"
+                        android:layout_below="@+id/tvVenueAddress"
+                        android:layout_toRightOf="@+id/ivVenue"/>
 
-                    <ImageButton
-                            android:id="@+id/bVenueFavorite"
+                <ImageButton
+                        android:id="@+id/bVenueFavorite"
 
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_favorite_off"
-                            android:onClick="onFavoriteClicked"
-                            android:layout_alignParentRight="true"
-                            android:layout_below="@+id/tvVenuePhone"/>
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_favorite_off"
+                        android:onClick="onFavoriteClicked"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/tvVenuePhone"/>
 
 
 
-           </RelativeLayout>
+            </RelativeLayout>
+
 
 
 
@@ -102,5 +107,6 @@
 
 
 
+        </LinearLayout>
     </FrameLayout>
 </LinearLayout>
