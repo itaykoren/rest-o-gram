@@ -1,5 +1,6 @@
 package rest.o.gram.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import rest.o.gram.R;
-import rest.o.gram.activities.NearbyActivity;
+import rest.o.gram.common.IRestogramListener;
 import rest.o.gram.common.Utils;
 import rest.o.gram.entities.RestogramVenue;
 
@@ -23,9 +24,9 @@ public class VenueViewAdapter extends BaseAdapter {
     /**
      * Ctor
      * */
-    public VenueViewAdapter(NearbyActivity activity) {
-        this.activity = activity;
-        venueList = new LinkedList<RestogramVenue>();
+    public VenueViewAdapter(Activity activity, IRestogramListener listener) {
+        this.listener = listener;
+        venueList = new LinkedList<>();
         inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -71,7 +72,7 @@ public class VenueViewAdapter extends BaseAdapter {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                activity.onVenueClicked(venue);
+                listener.onVenueSelected(venue);
             }
         });
 
@@ -92,7 +93,7 @@ public class VenueViewAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    private NearbyActivity activity;
+    private IRestogramListener listener;
     private List<RestogramVenue> venueList; // Venue list
     private LayoutInflater inflater;
 }

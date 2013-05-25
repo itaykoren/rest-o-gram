@@ -16,7 +16,7 @@ public class DataHistoryManager implements IDataHistoryManager {
      * Ctor
      */
     public DataHistoryManager() {
-        // Init maps
+        // Init containers
         venues = new ArrayDeque<>();
         photos = new ArrayDeque<>();
     }
@@ -101,8 +101,11 @@ public class DataHistoryManager implements IDataHistoryManager {
 
     @Override
     public void clear() {
-        venues.clear();
-        photos.clear();
+        if(venues != null)
+            venues.clear();
+
+        if(photos != null)
+            photos.clear();
     }
 
     @Override

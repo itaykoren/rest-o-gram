@@ -6,6 +6,7 @@ import android.widget.ListView;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
+import rest.o.gram.common.IRestogramListener;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.location.ILocationTracker;
@@ -20,7 +21,7 @@ import static rest.o.gram.location.Utils.distance;
  * User: Roi
  * Date: 16/04/13
  */
-public class NearbyActivity extends RestogramActivity implements ITaskObserver {
+public class NearbyActivity extends RestogramActivity implements ITaskObserver, IRestogramListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class NearbyActivity extends RestogramActivity implements ITaskObserver {
 
         // Init venue list view
         ListView lv = (ListView)findViewById(R.id.lvVenues);
-        viewAdapter = new VenueViewAdapter(this);
+        viewAdapter = new VenueViewAdapter(this, this);
         lv.setAdapter(viewAdapter);
 
         // Get location parameters
@@ -127,6 +128,14 @@ public class NearbyActivity extends RestogramActivity implements ITaskObserver {
         // Empty
     }
 
+    @Override
+    public void onVenueSelected(RestogramVenue venue) {
+        // Switch to "VenueActivity" with parameter "venue"
+        Intent intent = new Intent(this, VenueActivity.class);
+        intent.putExtra("venue", venue);
+        startActivityForResult(intent, Defs.RequestCodes.RC_VENUE);
+    }
+
     private void addVenues(RestogramVenue[] venues) {
         // Traverse given venues
         for(final RestogramVenue venue : venues) {
@@ -145,13 +154,6 @@ public class NearbyActivity extends RestogramActivity implements ITaskObserver {
         }
 
         viewAdapter.refresh();
-    }
-
-    public void onVenueClicked(RestogramVenue venue) {
-        // Switch to "VenueActivity" with parameter "venue"
-        Intent intent = new Intent(this, VenueActivity.class);
-        intent.putExtra("venue", venue);
-        startActivityForResult(intent, Defs.RequestCodes.RC_VENUE);
     }
 
     private double latitude; // Latitude

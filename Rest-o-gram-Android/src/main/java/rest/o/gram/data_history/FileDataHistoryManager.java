@@ -68,8 +68,13 @@ public class FileDataHistoryManager extends DataHistoryManager {
      */
     private void save() {
         // Save data to files
-        Utils.serialize(venues, new File(context.getFilesDir(), Defs.Data.DATA_VENUES_FILENAME));
-        Utils.serialize(photos, new File(context.getFilesDir(), Defs.Data.DATA_PHOTOS_FILENAME));
+        try {
+            Utils.serialize(venues, new File(context.getFilesDir(), Defs.Data.DATA_VENUES_FILENAME));
+            Utils.serialize(photos, new File(context.getFilesDir(), Defs.Data.DATA_PHOTOS_FILENAME));
+        }
+        catch(Exception e) {
+            // TODO: report error
+        }
 
         isUpToDate = true;
     }
@@ -86,6 +91,12 @@ public class FileDataHistoryManager extends DataHistoryManager {
         catch(Exception e) {
             // TODO: report error
         }
+
+        if(venues == null)
+            venues = new ArrayDeque<>();
+
+        if(photos == null)
+            photos = new ArrayDeque<>();
 
         isUpToDate = true;
     }

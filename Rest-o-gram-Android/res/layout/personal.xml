@@ -45,12 +45,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="History"
-                android:id="@+id/bHistory" android:layout_gravity="center"/>
+                android:id="@+id/bHistory" android:layout_gravity="center"
+                android:onClick="onHistoryClicked"/>
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Favorites"
                 android:id="@+id/bFavorites" android:layout_gravity="center"
+                android:onClick="onFavoritesClicked"
                 android:layout_toRightOf="@+id/bHistory"/>
 
     </RelativeLayout>
