@@ -44,13 +44,14 @@
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="History"
+                android:text="@string/history"
                 android:id="@+id/bHistory" android:layout_gravity="center"
+                android:layout_marginLeft="60dp"
                 android:onClick="onHistoryClicked"/>
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Favorites"
+                android:text="@string/favorites"
                 android:id="@+id/bFavorites" android:layout_gravity="center"
                 android:onClick="onFavoritesClicked"
                 android:layout_toRightOf="@+id/bHistory"/>
@@ -61,8 +62,8 @@
             android:id="@+id/viewSwitcher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:inAnimation="@android:anim/slide_in_left" >
+           <!-- android:layout_alignParentTop="true"-->
 
         <LinearLayout
                 android:id="@+id/historyView"

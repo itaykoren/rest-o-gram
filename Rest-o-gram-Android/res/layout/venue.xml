@@ -16,11 +16,6 @@
             android:scaleType= "center" android:layout_marginRight="30dp">
 
 
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal|top"
-                android:orientation="vertical">
 
 
            <RelativeLayout
@@ -36,10 +31,12 @@
                         android:id="@+id/ivVenue"
                         android:layout_marginLeft="10dp"
                         android:layout_alignParentLeft="true"
-                        android:layout_marginTop="20dp"
                         android:layout_gravity="left|top"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="10dp"
                         android:background="#0000"
-                        android:padding="1dp"/>
+                        android:padding="1dp"
+                        android:src="@drawable/ic_rest"/>
 
 
                       <!--venue name-->
@@ -48,6 +45,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/tvVenueName"
                             android:layout_marginRight="2dp"
+                            android:layout_marginTop="5dp"
                             android:textColor="#040404"
                             android:typeface="sans"
                             android:textSize="16dp"
@@ -76,6 +74,7 @@
 
                     <ImageButton
                             android:id="@+id/bVenueFavorite"
+
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_favorite_off"
@@ -86,6 +85,8 @@
 
 
            </RelativeLayout>
+
+
 
             <GridView
                     android:id="@+id/gvPhotos"
@@ -99,8 +100,6 @@
                     android:gravity="center"
                     android:layout_below="@+id/venueInfo"/>
 
-
-        </LinearLayout>
 
 
     </FrameLayout>
