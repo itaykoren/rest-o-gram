@@ -105,12 +105,18 @@ public class PersonalActivity extends RestogramActivity implements IRestogramLis
 
     public void onHistoryClicked(View view) {
         ViewSwitcher viewSwitcher = (ViewSwitcher)findViewById(R.id.viewSwitcher);
-        viewSwitcher.showPrevious();
+        View historyView = findViewById(R.id.historyView);
+
+        if(viewSwitcher.getCurrentView() != historyView)
+            viewSwitcher.showPrevious();
     }
 
     public void onFavoritesClicked(View view) {
         ViewSwitcher viewSwitcher = (ViewSwitcher)findViewById(R.id.viewSwitcher);
-        viewSwitcher.showNext();
+        View favoritesView = findViewById(R.id.favoritesView);
+
+        if(viewSwitcher.getCurrentView() != favoritesView)
+            viewSwitcher.showNext();
     }
 
     /**
