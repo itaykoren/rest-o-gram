@@ -1,7 +1,9 @@
 package rest.o.gram.data;
 
+import android.util.Log;
 import com.leanengine.*;
 import rest.o.gram.client.IRestogramClient;
+import rest.o.gram.client.RestogramClient;
 import rest.o.gram.data.results.*;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
@@ -25,6 +27,8 @@ public class DataFavoritesManager implements IDataFavoritesManager {
     @Override
     public void addFavoritePhoto(final RestogramPhoto photo, final IDataFavoritesOperationsObserver observer) {
         final TaskObserverImpl internalObserver = new TaskObserverImpl(observer, photo);
+        if (RestogramClient.getInstance().isDebuggable())
+            Log.d("REST-O-GRAM", "adding photo to fav - caching photo");
         client.cachePhoto(photo.getInstagram_id(), internalObserver);
     }
 
@@ -93,6 +97,8 @@ public class DataFavoritesManager implements IDataFavoritesManager {
 
     @Override
     public void addFavoriteVenue(final RestogramVenue venue, final IDataFavoritesOperationsObserver observer) {
+        if (RestogramClient.getInstance().isDebuggable())
+            Log.d("REST-O-GRAM", "adding venue to fav - caching venue");
         final TaskObserverImpl internalObserver = new TaskObserverImpl(observer, venue);
         client.cacheVenue(venue.getFoursquare_id(), internalObserver);
     }
@@ -189,16 +195,26 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         @Override
         public void onFinished(CachePhotoResult result) {
             if (!result.hasSucceded())
+            {
+                if (RestogramClient.getInstance().isDebuggable())
+                    Log.d("REST-O-GRAM", "adding photo to fav - caching failed");
                 observer.onFinished(new AddFavoritePhotosResult(false));
+            }
             else // caching succceded
             {
+                if (RestogramClient.getInstance().isDebuggable())
+                    Log.d("REST-O-GRAM", "adding photo to fav - caching succeded");
                 LeanEntity entity = Converters.photoRefToLeanEntity(photo_to_add);
                 entity.put(Props.PhotoRef.IS_FAVORITE, true);
+                if (RestogramClient.getInstance().isDebuggable())
+                    Log.d("REST-O-GRAM", "adding photo to fav - saving photo ref to DS");
                 entity.saveInBackground(new NetworkCallback<Long>() {
 
                     // operation has  fully succeded
                     @Override
                     public void onResult(Long... result) {
+                        if (RestogramClient.getInstance().isDebuggable())
+                            Log.d("REST-O-GRAM", "adding photo to fav - saving photo ref succeded");
                         photo_to_add.set_favorite(true);
                         photo_to_add.setId(result[0]); // TODO: should set it even if already set?
                         observer.onFinished(new AddFavoritePhotosResult(true));
@@ -207,6 +223,8 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                     // photo ref update has failed
                     @Override
                     public void onFailure(LeanError error) {
+                        if (RestogramClient.getInstance().isDebuggable())
+                            Log.d("REST-O-GRAM", "adding photo to fav - saving photo ref failed: " + error.getErrorMessage());
                         observer.onFinished(new AddFavoritePhotosResult(false));
                     }
                 });
@@ -224,16 +242,26 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         @Override
         public void onFinished(CacheVenueResult result) {
             if (!result.hasSucceded())
+            {
+                if (RestogramClient.getInstance().isDebuggable())
+                    Log.d("REST-O-GRAM", "adding venue to fav - caching venue failed");
                 observer.onFinished(new AddFavoriteVenuesResult(false));
+            }
             else // caching succceded
             {
+                if (RestogramClient.getInstance().isDebuggable())
+                    Log.d("REST-O-GRAM", "adding venue to fav - caching venue suceded");
                 LeanEntity entity = Converters.venueRefToLeanEntity(venue_to_add);
                 entity.put(Props.VenueRef.IS_FAVORITE, true);
+                if (RestogramClient.getInstance().isDebuggable())
+                    Log.d("REST-O-GRAM", "adding venue to fav - saving venue ref to DS");
                 entity.saveInBackground(new NetworkCallback<Long>() {
 
                     // operation has  fully succeded
                     @Override
                     public void onResult(Long... result) {
+                        if (RestogramClient.getInstance().isDebuggable())
+                            Log.d("REST-O-GRAM", "adding venue to fav - saving venue ref succeded");
                         photo_to_add.set_favorite(true);
                         photo_to_add.setId(result[0]); // TODO: should set it even if already set?
                         observer.onFinished(new AddFavoriteVenuesResult(true));
@@ -242,6 +270,8 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                     // venue ref update has failed
                     @Override
                     public void onFailure(LeanError error) {
+                        if (RestogramClient.getInstance().isDebuggable())
+                            Log.d("REST-O-GRAM", "adding venue to fav - saving venue ref failed:" + error.getErrorMessage());
                         observer.onFinished(new AddFavoriteVenuesResult(false));
                     }
                 });

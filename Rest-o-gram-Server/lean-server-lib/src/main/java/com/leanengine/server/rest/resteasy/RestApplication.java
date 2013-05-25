@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 public class RestApplication extends Application {
 
-    private Set<Object> singletons = new HashSet<Object>();
+    private Set<Object> singletons = new HashSet<>();
 
     private static final Logger log = Logger.getLogger(RestApplication.class.getName());
 

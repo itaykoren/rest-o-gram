@@ -14,8 +14,8 @@ public class DatastoreUtils {
 
     private static final Logger log = Logger.getLogger(DatastoreUtils.class.getName());
 
-    private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    private static Pattern pattern = Pattern.compile("^[A-Za-z][A-Za-z_0-9]*");
+    private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private static final Pattern pattern = Pattern.compile("^[A-Za-z][A-Za-z_0-9]*");
 
     public static Entity getPrivateEntity(String kind, long entityId) throws LeanException {
         LeanAccount account = findCurrentAccount();
@@ -99,7 +99,7 @@ public class DatastoreUtils {
 
         List<String> kindNames = findAllEntityKinds();
 
-        List<Entity> result = new ArrayList<Entity>();
+        List<Entity> result = new ArrayList<>();
 
         for (String kindName : kindNames) {
             result.addAll(getPrivateEntities(kindName));
@@ -141,20 +141,24 @@ public class DatastoreUtils {
     }
 
     public static long putPrivateEntity(String kind, Map<String, Object> properties) throws LeanException {
-
+        log.severe("PUT PRIVATE ENTITY - kind:" + kind);
         if (!pattern.matcher(kind).matches()) {
             throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
         }
 
+        log.severe("PUT PRIVATE ENTITY - GETTING CURR ACCOUNT - account:" + AuthService.getCurrentAccount().nickName);
         final Key accountKey = getCurrentAccountKey();
+        log.severe("PUT PRIVATE ENTITY - SETTING UP DS ENTITY");
         Entity entityEntity = new Entity(kind, accountKey);
         //entityEntity.setProperty("_account", AuthService.getCurrentAccount().id);
 
+        log.severe("PUT PRIVATE ENTITY - SETTING UP DS ENTITY PROPS");
         if (properties != null) {
             for (Map.Entry<String, Object> entry : properties.entrySet()) {
                 entityEntity.setProperty(entry.getKey(), entry.getValue());
             }
         }
+        log.severe("PUT PRIVATE ENTITY - COMMIT");
         Key result = datastore.put(entityEntity);
         return result.getId();
     }
@@ -191,11 +195,16 @@ public class DatastoreUtils {
     }
 
     private static QueryResult queryEntity(LeanQuery leanQuery, Query query) throws LeanException {
-        for (QueryFilter queryFilter : leanQuery.getFilters()) {
-            query.setFilter(new Query.FilterPredicate(
-                    queryFilter.getProperty(),
-                    queryFilter.getOperator().getFilterOperator(),
-                    queryFilter.getValue()));
+        if (leanQuery.getFilters() != null)
+        {
+            final Collection<Query.Filter> subFilters = new ArrayList<>(leanQuery.getFilters().size());
+            for (QueryFilter queryFilter : leanQuery.getFilters()) {
+                subFilters.add(new Query.FilterPredicate(
+                        queryFilter.getProperty(),
+                        queryFilter.getOperator().getFilterOperator(),
+                        queryFilter.getValue()));
+            }
+            query.setFilter(Query.CompositeFilterOperator.and(subFilters));
         }
 
         for (QuerySort querySort : leanQuery.getSorts()) {
@@ -222,7 +231,7 @@ public class DatastoreUtils {
         }
     }
 
-    public static List<String> findAllEntityKinds() throws LeanException {
+    private static List<String> findAllEntityKinds() throws LeanException {
 
         Query q = new Query(Entities.KIND_METADATA_KIND );
 
@@ -231,7 +240,7 @@ public class DatastoreUtils {
 
         List<Entity> list = pq.asList(FetchOptions.Builder.withDefaults());
 
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (Entity entity : list) {
             if (!entity.getKey().getName().startsWith("_"))
                 result.add(entity.getKey().getName());

@@ -9,8 +9,8 @@ import java.util.List;
  * User: Or
  * Date: 5/23/13
  */
-public class GetDataResult<T> {
-    public GetDataResult(List<T> elements, LeanQuery query){
+class GetDataResult<T> {
+    GetDataResult(List<T> elements, LeanQuery query){
         this.elements = elements;
         this.query = query;
     }

@@ -100,6 +100,7 @@ public class FacebookAuth {
     public static AuthToken authenticateWithOAuthGraphAPI(String currentUrl, String code) throws LeanException {
 
         try {
+            log.severe("FB AUTH - authenticateWithOAuthGraphAPI");
             URL facebookGraphUrl = new URL(FacebookAuth.getGraphAuthUrl(currentUrl, code));
             log.info("facebookGraphUrl="+facebookGraphUrl);
             URLFetchService fetchService = URLFetchServiceFactory.getURLFetchService();
@@ -144,7 +145,12 @@ public class FacebookAuth {
 
                 // account does not yet exist - create it
                 account = parseAccountFB(userData);
+                log.severe("FB AUTH - SAVING ACCOUNT");
                 AccountUtils.saveAccount(account);
+            }
+            else
+            {
+                log.severe("FB AUTH - account exists -- nick:" + account.nickName  + ", id:" +  account.id + ",provider_id: " + providerID);
             }
 
             // create our own authentication token
@@ -166,7 +172,7 @@ public class FacebookAuth {
      */
     public static LeanAccount parseAccountFB(JsonNode userData) {
 
-        Map<String, Object> props = new HashMap<String, Object>(userData.size());
+        Map<String, Object> props = new HashMap<>(userData.size());
         Iterator<String> fields = userData.getFieldNames();
         while (fields.hasNext()) {
             String field = fields.next();

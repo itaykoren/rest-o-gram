@@ -121,7 +121,7 @@ public class OpenIdLoginServlet extends HttpServlet {
             if (account == null) {
                 //todo this is one-to-one mapping between Account and User - change this in the future
 
-                Map<String, Object> props = new HashMap<String, Object>();
+                Map<String, Object> props = new HashMap<>();
                 props.put("email", currentUser.getEmail());
 
                 // account does not yet exist - create it

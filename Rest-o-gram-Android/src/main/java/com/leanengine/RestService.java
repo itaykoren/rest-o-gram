@@ -34,7 +34,7 @@ import java.io.IOException;
 
 class RestService {
 
-    private static RestService INSTANCE = new RestService();
+    private static final RestService INSTANCE = new RestService();
     
     private volatile HttpClient client;
     private Configuration configuration = new Configuration(); // default

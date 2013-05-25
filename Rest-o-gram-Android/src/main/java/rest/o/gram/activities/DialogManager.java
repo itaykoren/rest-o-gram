@@ -93,5 +93,5 @@ public final class DialogManager {
         dialogs.add(alertDialog.show());
     }
 
-    private List<DialogInterface> dialogs = new ArrayList<>();
+    private final List<DialogInterface> dialogs = new ArrayList<>();
 }

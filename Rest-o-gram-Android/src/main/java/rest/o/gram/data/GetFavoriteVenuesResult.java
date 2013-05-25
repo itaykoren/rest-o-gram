@@ -10,7 +10,7 @@ import java.util.List;
  * User: Or
  * Date: 5/23/13
  */
-public class GetFavoriteVenuesResult extends GetDataResult<RestogramVenue> {
+public  class GetFavoriteVenuesResult extends GetDataResult<RestogramVenue> {
     public GetFavoriteVenuesResult(List<RestogramVenue> elements, LeanQuery query) {
         super(elements, query);
     }

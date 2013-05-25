@@ -11,10 +11,10 @@ import java.util.logging.Logger;
 public class AccountUtils {
     private static final Logger log = Logger.getLogger(AccountUtils.class.getName());
 
-    private static String authTokenKind = "_auth_tokens";
+    private static final String authTokenKind = "_auth_tokens";
     private static final String accountsKind = "_accounts";
 
-    private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     public static Key getAccountKey(long accountID) {
         if (accountID <= 0) return null;
@@ -39,8 +39,15 @@ public class AccountUtils {
             return null;
         }
         Query query = new Query(accountsKind);
-        query.setFilter(new Query.FilterPredicate("_provider_id", Query.FilterOperator.EQUAL, providerID));
-        query.setFilter(new Query.FilterPredicate("_provider", Query.FilterOperator.EQUAL, provider));
+        final Query.Filter providerIdFilter =
+                new Query.FilterPredicate("_provider_id", Query.FilterOperator.EQUAL, providerID);
+        final Query.Filter providerFilter =
+                new Query.FilterPredicate("_provider", Query.FilterOperator.EQUAL, provider);
+        final Query.Filter filter =
+                Query.CompositeFilterOperator.and(providerIdFilter, providerFilter);
+        query.setFilter(filter);
+        //query.setFilter(new Query.FilterPredicate("_provider_id", Query.FilterOperator.EQUAL, providerID));
+        //query.setFilter(new Query.FilterPredicate("_provider", Query.FilterOperator.EQUAL, provider));
         PreparedQuery pq = datastore.prepare(query);
 
         Entity accountEntity = pq.asSingleEntity();
@@ -54,8 +61,15 @@ public class AccountUtils {
             return null;
         }
         Query query = new Query(accountsKind);
-        query.setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
-        query.setFilter(new Query.FilterPredicate("_provider", Query.FilterOperator.EQUAL, provider));
+        final Query.Filter mailFilter =
+                new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email);
+        final Query.Filter providerFilter =
+                new Query.FilterPredicate("_provider", Query.FilterOperator.EQUAL, provider);
+        final Query.Filter filter =
+                Query.CompositeFilterOperator.and(mailFilter, providerFilter);
+        query.setFilter(filter);
+        //query.setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
+        //query.setFilter(new Query.FilterPredicate("_provider", Query.FilterOperator.EQUAL, provider));
         PreparedQuery pq = datastore.prepare(query);
 
         Entity accountEntity = pq.asSingleEntity();
@@ -95,14 +109,17 @@ public class AccountUtils {
     }
 
     public static void saveAccount(LeanAccount leanAccount) {
+        log.severe("SAVING LEAN ACCOUNT");
 
         Entity accountEntity;
 
         // Is it a new LeanAccount? They do not have 'id' yet.
         if (leanAccount.id <= 0) {
+            log.severe("CREATING LEAN ACCOUNT");
             // create account
             accountEntity = new Entity(accountsKind);
         } else {
+            log.severe("UPDATING LEAN ACCOUNT");
             // update account
             accountEntity = new Entity(accountsKind, leanAccount.id);
         }
@@ -114,13 +131,14 @@ public class AccountUtils {
             // properties must not start with underscore - this is reserved for system properties
             accountEntity.setProperty(property.getKey(), property.getValue());
         }
+        log.severe("SAVING LEAN ACCOUNT - COMMIT");
         Key accountKey = datastore.put(accountEntity);
         leanAccount.id = accountKey.getId();
     }
 
     public static LeanAccount toLeanAccount(Entity entity) {
 
-        Map<String, Object> props = new HashMap<String, Object>(entity.getProperties().size() - 3);
+        Map<String, Object> props = new HashMap<>(entity.getProperties().size() - 3);
         for (Map.Entry<String, Object> entityProp : entity.getProperties().entrySet()) {
             if(!entityProp.getKey().startsWith("_"))
                 props.put(entityProp.getKey(), entityProp.getValue());

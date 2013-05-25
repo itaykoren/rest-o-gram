@@ -17,8 +17,8 @@ import java.util.List;
  */
 public class LeanQuery {
     private final String kind;
-    private List<QueryFilter> filters = new ArrayList<QueryFilter>();
-    private List<QuerySort> sorts = new ArrayList<QuerySort>();
+    private List<QueryFilter> filters = new ArrayList<>();
+    private List<QuerySort> sorts = new ArrayList<>();
     private String cursor;
     private int limit = 20;
     private int offset = 0;

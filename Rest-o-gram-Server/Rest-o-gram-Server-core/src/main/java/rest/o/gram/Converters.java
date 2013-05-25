@@ -88,7 +88,7 @@ public final class Converters {
     }
 
     public static Map<String, Object> photoToProps(final RestogramPhoto photo){
-        Map<String,Object> props = new HashMap<String,Object>(10);
+        Map<String,Object> props = new HashMap<>(10);
         props.put(Props.Photo.CAPTION, photo.getCaption());
         props.put(Props.Photo.CREATED_TIME, photo.getCreatedTime());
         props.put(Props.Photo.IMAGE_FILTER, photo.getImageFilter());

@@ -11,7 +11,7 @@ import java.util.*;
 
 public class JsonUtils {
 
-    private static ThreadLocal<ObjectMapper> tlObjectMapper = new ThreadLocal<ObjectMapper>();
+    private static ThreadLocal<ObjectMapper> tlObjectMapper = new ThreadLocal<>();
 
     /**
      * Returns a thread-local instance of JSON ObjectMapper.
@@ -55,7 +55,7 @@ public class JsonUtils {
     }
 
     public static Map<String, Object> entityPropertiesFromJson(JsonNode jsonNode) throws LeanException {
-        Map<String, Object> props = new HashMap<String, Object>(jsonNode.size());
+        Map<String, Object> props = new HashMap<>(jsonNode.size());
 
         // must have some properties
         if (jsonNode.size() == 0) throw new LeanException(LeanException.Error.EmptyEntity);
@@ -94,7 +94,7 @@ public class JsonUtils {
     }
 
     private static List<Object> typedArrayFromJson(ArrayNode arrayNode) throws LeanException {
-        List<Object> result = new ArrayList<Object>(arrayNode.size());
+        List<Object> result = new ArrayList<>(arrayNode.size());
         for (JsonNode node : arrayNode) {
             result.add(propertyFromJson(node));
         }

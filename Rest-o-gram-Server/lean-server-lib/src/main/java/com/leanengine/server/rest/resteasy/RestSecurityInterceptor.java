@@ -33,7 +33,7 @@ public class RestSecurityInterceptor implements PreProcessInterceptor {
         if (AuthService.getCurrentAccount() == null) {
             ServerResponse response = new ServerResponse();
             response.setStatus(HttpResponseCodes.SC_UNAUTHORIZED);
-            MultivaluedMap<String, Object> headers = new Headers<Object>();
+            MultivaluedMap<String, Object> headers = new Headers<>();
             headers.add("Content-Type", "text/plain");
             response.setMetadata(headers);
             response.setEntity("{\"code\":401, \"message\":\"HTTP error 401: Unauthorized to access " +

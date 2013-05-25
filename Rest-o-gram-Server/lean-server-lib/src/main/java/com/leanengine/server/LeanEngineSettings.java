@@ -19,7 +19,7 @@ public class LeanEngineSettings {
             leanEntity = datastore.get(key);
             settings = leanEntity.getProperties();
         } catch (EntityNotFoundException e) {
-            settings = new HashMap<String, Object>();
+            settings = new HashMap<>();
 
             // By default enable all logins on Development server
             if (ServerUtils.isDevServer()) {
@@ -82,7 +82,7 @@ public class LeanEngineSettings {
      */
     public static class Builder {
 
-        private Map<String, Object> temp = new HashMap<String, Object>();
+        private Map<String, Object> temp = new HashMap<>();
 
         public Builder add(String name, Object value) {
             temp.put(name, value);

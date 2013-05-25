@@ -30,7 +30,7 @@ public class LeanEntity {
     protected Long id = Long.MIN_VALUE;
     protected String uniqueName;
     protected Long accountID;
-    protected Map<String, Object> properties = new HashMap<String, Object>();
+    protected Map<String, Object> properties = new HashMap<>();
 
     LeanEntity(String kind) {
         this.kind = kind;

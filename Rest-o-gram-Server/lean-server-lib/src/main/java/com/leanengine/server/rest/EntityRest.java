@@ -47,6 +47,7 @@ public class EntityRest {
     @POST
     @Path("/{entityName}")
     public String putEntity(@PathParam("entityName") String entityName, JsonNode entityJson) throws LeanException {
+        log.severe("ENTITY PUT - kind:" + entityName);
         long entityID = DatastoreUtils.putPrivateEntity(entityName, JsonUtils.entityPropertiesFromJson(entityJson));
         return "{\"id\":" + entityID + "}";
     }

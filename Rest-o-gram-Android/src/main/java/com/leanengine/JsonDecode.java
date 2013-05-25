@@ -61,7 +61,7 @@ public class JsonDecode {
     }
 
     private static Map<String, Object> accountPropsFromJson(JSONObject jsonNode) throws LeanException, JSONException {
-        Map<String, Object> props = new HashMap<String, Object>(jsonNode.length());
+        Map<String, Object> props = new HashMap<>(jsonNode.length());
 
         // must have some properties
         if (jsonNode.length() == 0) throw new LeanException(LeanError.Type.ServerError,
@@ -124,7 +124,7 @@ public class JsonDecode {
     }
 
     static Map<String, Object> entityPropertiesFromJson(JSONObject jsonNode) throws LeanException, JSONException {
-        Map<String, Object> props = new HashMap<String, Object>(jsonNode.length());
+        Map<String, Object> props = new HashMap<>(jsonNode.length());
 
         // must have some properties
         if (jsonNode.length() == 0) throw new LeanException(LeanError.Type.ServerError, "Empty reply.");
@@ -151,7 +151,7 @@ public class JsonDecode {
     }
 
     private static List<Object> typedArrayFromJson(JSONArray arrayNode) throws LeanException, JSONException {
-        List<Object> result = new ArrayList<Object>(arrayNode.length());
+        List<Object> result = new ArrayList<>(arrayNode.length());
         for (int i = 0; i < arrayNode.length(); i++) {
             Object node = arrayNode.getJSONObject(i);
             if (node instanceof JSONObject) {

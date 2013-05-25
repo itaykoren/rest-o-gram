@@ -23,7 +23,7 @@ public final class Defs {
      * Transport constants
      */
     public static class Transport {
-        public static final String BASE_HOST_NAME = "http://rest-o-debug3.appspot.com";
+        public static final String BASE_HOST_NAME = "http://rest-o-debug3.appspot.com"; // base Server URL
     }
 
     /**
@@ -38,7 +38,7 @@ public final class Defs {
             TrackerTypeDefault
         }
 
-        public static final TrackerType TRACKER_TYPE = TrackerType.TrackerTypeDefault;
+        public static final TrackerType TRACKER_TYPE = TrackerType.TrackerTypeDummy;
 
         public static final double DEFAULT_FINDME_RADIUS = 50;
         public static final double DEFAULT_NEARBY_RADIUS = 500;

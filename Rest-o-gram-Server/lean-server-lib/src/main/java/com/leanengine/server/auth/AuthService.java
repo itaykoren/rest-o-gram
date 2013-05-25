@@ -12,8 +12,8 @@ public class AuthService {
 
     private static final Logger log = Logger.getLogger(AuthService.class.getName());
 
-    private static ThreadLocal<String> tlAuthToken = new ThreadLocal<String>();
-    private static ThreadLocal<LeanAccount> tlLeanAccount = new ThreadLocal<LeanAccount>();
+    private static final ThreadLocal<String> tlAuthToken = new ThreadLocal<>();
+    private static final ThreadLocal<LeanAccount> tlLeanAccount = new ThreadLocal<>();
 
     public static void startAuthSession(String token) {
         LeanAccount user = getAccountByToken(token);

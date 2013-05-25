@@ -11,7 +11,7 @@ import rest.o.gram.entities.RestogramVenue;
  * User: Or
  * Date: 5/23/13
  */
-public final class Converters {
+final class Converters {
 //    public static LeanEntity venueToLeanEntity(final RestogramVenue venue) {
 //        LeanEntity entity = LeanEntity.initPublicEntity(Kinds.VENUE, venue.getFoursquare_id());
 //        entity.put(Props.Venue.NAME, venue.getName());
