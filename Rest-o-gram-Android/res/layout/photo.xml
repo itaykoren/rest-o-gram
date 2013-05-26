@@ -48,7 +48,18 @@
                     android:layout_toRightOf="@+id/tvLikes"
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="15dp"
-                    android:layout_marginLeft="20dp" />
+                    android:layout_marginLeft="20dp"  />
+
+        <ImageButton
+                android:id="@+id/bPhotoFavorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_favorite_off"
+                android:onClick="onFavoriteClicked"
+                android:layout_alignParentLeft="true"
+                android:layout_below='@id/tvUsername'/>
+            <!--    android:layout_marginTop="480dp"
+                android:layout_alignParentTop="true"-->
 
 
     </RelativeLayout>
@@ -80,16 +91,7 @@
 
 
 
-            <ImageButton
-                    android:id="@+id/bPhotoFavorite"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_favorite_off"
-                    android:onClick="onFavoriteClicked"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginTop="480dp"
-                    android:layout_below='@id/relative_container'/>
+
 
 
             <TextView
@@ -97,11 +99,12 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/tvTitle"
                     android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/bPhotoFavorite"/>
+                    android:layout_below="@+id/relative_container"/>
+               <!--     android:layout_below="@+id/bPhotoFavorite"-->
 
 
 
-    android:gravity="center"
+
 
 
 
