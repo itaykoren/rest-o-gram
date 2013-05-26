@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Path("/v1/entity")
-@Produces("application/json;charset=UTF-8")
-@Consumes("application/json;charset=UTF-8")
+@Produces("application/json")
+@Consumes("application/json")
 public class EntityRest {
 
     private static final Logger log = Logger.getLogger(EntityRest.class.getName());
@@ -47,7 +47,6 @@ public class EntityRest {
     @POST
     @Path("/{entityName}")
     public String putEntity(@PathParam("entityName") String entityName, JsonNode entityJson) throws LeanException {
-        log.severe("ENTITY PUT - kind:" + entityName);
         long entityID = DatastoreUtils.putPrivateEntity(entityName, JsonUtils.entityPropertiesFromJson(entityJson));
         return "{\"id\":" + entityID + "}";
     }

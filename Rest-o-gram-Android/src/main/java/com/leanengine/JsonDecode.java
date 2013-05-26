@@ -105,13 +105,13 @@ public class JsonDecode {
             throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field '_id'.");
         }
         Long accountId;
-        try {
-            accountId = json.getLong("_account");
-        } catch (JSONException e) {
-            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field '_account'.");
-        }
+//        try {
+//            accountId = json.getLong("_account");
+//        } catch (JSONException e) {
+//            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field '_account'.");
+//        }
 
-        LeanEntity entity = new LeanEntity(kind, id, accountId);
+        LeanEntity entity = new LeanEntity(kind, id);
 
         try {
             entity.properties = entityPropertiesFromJson(json);

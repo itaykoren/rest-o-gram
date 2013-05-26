@@ -14,8 +14,8 @@ import javax.ws.rs.*;
 import java.util.logging.Logger;
 
 @Path("/v1/query")
-@Produces("application/json;charset=UTF-8")
-@Consumes("application/json;charset=UTF-8")
+@Produces("application/json")
+@Consumes("application/json")
 public class QueryRest {
 
     private static final Logger log = Logger.getLogger(QueryRest.class.getName());
@@ -23,7 +23,6 @@ public class QueryRest {
     @POST
     @Path("/")
     public JsonNode query(String queryJson) throws LeanException {
-        log.severe("QUERY REST");
         QueryResult result = DatastoreUtils.queryEntityPrivate(LeanQuery.fromJson(queryJson));
         ObjectNode jsonResult = JsonUtils.entityListToJson(result.getResult());
         if (result.getCursor() != null) {

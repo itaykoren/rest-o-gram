@@ -180,10 +180,9 @@ public class DatastoreUtils {
     }
 
     public static QueryResult queryEntityPrivate(LeanQuery leanQuery) throws LeanException {
-        LeanAccount account = findCurrentAccount();
-
+        final LeanAccount account = findCurrentAccount();
         final Key accountKey = getCurrentAccountKey();
-        Query query = new Query(leanQuery.getKind(), accountKey);
+        final Query query = new Query(leanQuery.getKind(), accountKey);
         //query.setFilter(new Query.FilterPredicate("_account", Query.FilterOperator.EQUAL, account.id));
 
         return queryEntity(leanQuery, query);
@@ -197,14 +196,20 @@ public class DatastoreUtils {
     private static QueryResult queryEntity(LeanQuery leanQuery, Query query) throws LeanException {
         if (leanQuery.getFilters() != null)
         {
-            final Collection<Query.Filter> subFilters = new ArrayList<>(leanQuery.getFilters().size());
-            for (QueryFilter queryFilter : leanQuery.getFilters()) {
-                subFilters.add(new Query.FilterPredicate(
-                        queryFilter.getProperty(),
-                        queryFilter.getOperator().getFilterOperator(),
-                        queryFilter.getValue()));
+            if (leanQuery.getFilters().size() == 1)
+            {
+                final QueryFilter leanFilter =
+                        leanQuery.getFilters().get(0);
+                query.setFilter(leanFilterToFilter(leanFilter));
             }
-            query.setFilter(Query.CompositeFilterOperator.and(subFilters));
+            else //has several filters
+            {
+                final Collection<Query.Filter> subFilters = new ArrayList<>(leanQuery.getFilters().size());
+                for (final QueryFilter leanFilter : leanQuery.getFilters()) {
+                    subFilters.add(leanFilterToFilter(leanFilter));
+                }
+                query.setFilter(Query.CompositeFilterOperator.and(subFilters));
+            }
         }
 
         for (QuerySort querySort : leanQuery.getSorts()) {
@@ -229,6 +234,13 @@ public class DatastoreUtils {
         } catch (DatastoreNeedIndexException dnie) {
             throw new LeanException(LeanException.Error.AppEngineMissingIndex);
         }
+    }
+
+    private static Query.FilterPredicate leanFilterToFilter(QueryFilter queryFilter) {
+        return new Query.FilterPredicate(
+                queryFilter.getProperty(),
+                queryFilter.getOperator().getFilterOperator(),
+                queryFilter.getValue());
     }
 
     private static List<String> findAllEntityKinds() throws LeanException {

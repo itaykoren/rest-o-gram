@@ -183,7 +183,15 @@ public class DumpFilter implements Filter {
         filterChain.doFilter(bufferedRequest, wrappedResp);
 
         byte[] bytes = pw.toByteArray();
-        response.getOutputStream().write(bytes);
+        try
+        {
+            response.getOutputStream().write(bytes);
+        }
+        catch (IllegalStateException e)
+        {
+            e.printStackTrace();
+            response.getWriter().write(pw.toString());
+        }
         if (dumpResponse) {
 //            log.severe("RESPONSE -> " + new String(bytes));
             log.severe("RESPONSE -> " + new String(bytes));

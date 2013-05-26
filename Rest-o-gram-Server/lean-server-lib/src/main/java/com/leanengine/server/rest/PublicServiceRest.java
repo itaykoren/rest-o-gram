@@ -13,7 +13,7 @@ public class PublicServiceRest {
 
     @GET
     @Path("/account")
-    @Produces("application/json;charset=UTF-8")
+    @Produces("application/json")
     public String getCurrentAccount() throws LeanException {
         LeanAccount account = AuthService.getCurrentAccount();
         return account != null ? account.toJson() : "{}";
@@ -21,7 +21,7 @@ public class PublicServiceRest {
 
     @GET
     @Path("/logout")
-    @Produces("application/json;charset=UTF-8")
+    @Produces("application/json")
     public String logout() {
         // returns 'false' of user is not logged in
         if (AuthService.getCurrentAccount() == null) {
