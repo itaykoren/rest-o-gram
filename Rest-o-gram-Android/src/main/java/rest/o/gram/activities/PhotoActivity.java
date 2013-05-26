@@ -71,7 +71,14 @@ public class PhotoActivity extends RestogramActivity implements IRestogramComman
         // Initialize favorite helper
         favoriteHelper.setPhotoId(photo.getInstagram_id());
         favoriteHelper.setFavoritePhotoButton((ImageButton)findViewById(R.id.bPhotoFavorite));
-        favoriteHelper.refresh();
+        //favoriteHelper.refresh();
+
+        final ImageButton favoritePhotoButton =
+                (ImageButton)findViewById(R.id.bPhotoFavorite);
+        if(photo.is_favorite())
+            favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_on);
+        else
+            favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_off);
 
         // Initialize using photo parameter
         initialize(photo, bitmap);

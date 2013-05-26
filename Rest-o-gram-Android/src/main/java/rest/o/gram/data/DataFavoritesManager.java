@@ -301,7 +301,10 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                     Log.d("REST-O-GRAM", "fetching fav photos - from cache succeded");
                 int i = 0;
                 for (final RestogramPhoto currPhoto : result.getPhotos())
+                {
                     currPhoto.setId(photo_refs[i++].getId());
+                    currPhoto.set_favorite(true);
+                }
                 observer.onFinished(new GetFavoritePhotosResult(result.getPhotos(), favorites_query));
             }
         }
@@ -360,7 +363,10 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                     Log.d("REST-O-GRAM", "fetching fav venues - from cache succeded");
                 int i = 0;
                 for (final RestogramVenue currVenue : result.getVenues())
+                {
                     currVenue.setId(venue_refs[i++].getId());
+                    currVenue.setfavorite(true);
+                }
                 observer.onFinished(new GetFavoriteVenuesResult(result.getVenues(), favorites_query));
             }
         }

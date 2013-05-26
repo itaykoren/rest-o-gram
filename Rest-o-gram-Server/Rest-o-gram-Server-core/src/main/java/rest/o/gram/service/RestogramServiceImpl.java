@@ -3,7 +3,12 @@ package rest.o.gram.service;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
 import com.leanengine.server.LeanException;
+import com.leanengine.server.appengine.AccountUtils;
 import com.leanengine.server.appengine.DatastoreUtils;
+import com.leanengine.server.auth.AuthService;
+import com.leanengine.server.entity.LeanQuery;
+import com.leanengine.server.entity.QueryFilter;
+import com.leanengine.server.entity.QueryResult;
 import fi.foyt.foursquare.api.FoursquareApi;
 import fi.foyt.foursquare.api.FoursquareApiException;
 import fi.foyt.foursquare.api.Result;
@@ -21,6 +26,7 @@ import org.jinstagram.exceptions.InstagramException;
 import rest.o.gram.Converters;
 import rest.o.gram.credentials.*;
 import rest.o.gram.entities.Kinds;
+import rest.o.gram.entities.Props;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilter;
@@ -134,7 +140,8 @@ public class RestogramServiceImpl implements RestogramService {
             return null;
         }
 
-        return new VenueResult(convert(v));
+        final RestogramVenue venue = convert(v);
+        return new VenueResult(venue);
     }
 
     /**
@@ -359,7 +366,25 @@ public class RestogramServiceImpl implements RestogramService {
 
         RestogramVenue[] venues = new RestogramVenue[arr.length];
         for(int i = 0; i < arr.length; i++)
+        {
             venues[i] = convert(arr[i]);
+            if (AuthService.isUserLoggedIn())
+            {
+                final LeanQuery lquery = new LeanQuery(Kinds.VENUE_REFERENCE);
+                lquery.addFilter(Props.VenueRef.FOURSQUARE_ID, QueryFilter.FilterOperator.EQUAL,
+                        venues[i].getFoursquare_id());
+                lquery.addFilter(Props.VenueRef.IS_FAVORITE, QueryFilter.FilterOperator.EQUAL, true);
+                QueryResult qresult = null;
+                try {
+                    qresult = DatastoreUtils.queryEntityPrivate(lquery);
+                } catch (LeanException e) {
+                    log.severe("error while getting private venue info from DS");
+                    e.printStackTrace();
+                }
+                if (qresult != null && !qresult.getResult().isEmpty())
+                    venues[i].setfavorite(true);
+            }
+        }
 
         log.info("found " + venues.length + " venues!");
 
@@ -481,7 +506,26 @@ public class RestogramServiceImpl implements RestogramService {
 
         int i = 0;
         for (MediaFeedData media : data)
-            photos[i++] = convert(media);
+        {
+            photos[i] = convert(media);
+            if (AuthService.isUserLoggedIn())
+            {
+                final LeanQuery lquery = new LeanQuery(Kinds.PHOTO_REFERENCE);
+                lquery.addFilter(Props.PhotoRef.INSTAGRAM_ID, QueryFilter.FilterOperator.EQUAL,
+                        photos[i].getInstagram_id());
+                lquery.addFilter(Props.PhotoRef.IS_FAVORITE,  QueryFilter.FilterOperator.EQUAL, true);
+                QueryResult result = null;
+                try {
+                    result = DatastoreUtils.queryEntityPrivate(lquery);
+                } catch (LeanException e) {
+                    log.severe("error while getting private photo info from DS");
+                    e.printStackTrace();
+                }
+                if (result != null && !result.getResult().isEmpty())
+                    photos[i].set_favorite(true);
+            }
+            ++i;
+        }
 
         log.info("GOT " + photos.length + " PHOTOS");
         final Pagination pagination = recentMediaByLocation.getPagination();
