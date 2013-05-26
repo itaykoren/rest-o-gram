@@ -11,6 +11,7 @@ import com.leanengine.LoginListener;
 import com.leanengine.NetworkCallback;
 import rest.o.gram.R;
 import rest.o.gram.activities.DialogManager;
+import rest.o.gram.activities.NearbyActivity;
 import rest.o.gram.activities.PersonalActivity;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
@@ -46,7 +47,9 @@ public class LoginHelper {
                 .show();
     }
 
-    public void logout() {
+    public void logout(boolean switchToNearbyActivity) {
+        this.switchToNearbyActivity = switchToNearbyActivity;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder
                 .setTitle(R.string.restogram_logout_title)
@@ -102,6 +105,12 @@ public class LoginHelper {
             @Override
             public void onResult(Boolean... result) {
                 Toast.makeText(activity, "Successfully logged out.", Toast.LENGTH_LONG).show();
+
+                if (RestogramClient.getInstance().isDebuggable())
+                    Log.d("REST-O-GRAM", "logout successful");
+
+                if(switchToNearbyActivity)
+                    switchToNearbyActivity();
             }
 
             @Override
@@ -115,7 +124,14 @@ public class LoginHelper {
         });
     }
 
+    private void switchToNearbyActivity() {
+        // Switch to "NearbyActivity" with no parameters
+        Intent intent = new Intent(activity, NearbyActivity.class);
+        activity.startActivityForResult(intent, Defs.RequestCodes.RC_NEARBY);
+    }
+
     private DialogManager dialogManager;
     private Activity activity;
     private boolean switchToPersonalActivity = false;
+    private boolean switchToNearbyActivity = false;
 }
