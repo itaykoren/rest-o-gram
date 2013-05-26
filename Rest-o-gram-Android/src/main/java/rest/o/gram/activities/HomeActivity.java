@@ -54,16 +54,13 @@ public class HomeActivity extends Activity implements ILocationObserver, ITaskOb
     }
 
     @Override
-    protected void onDestroy() { // Application exiting
+    protected void onDestroy() { // Activity exiting
         super.onDestroy();
 
         if(tracker != null)
             tracker.stop();
 
         diagManager.clear();
-
-        // Dispose client
-        RestogramClient.getInstance().dispose();
     }
 
     @Override

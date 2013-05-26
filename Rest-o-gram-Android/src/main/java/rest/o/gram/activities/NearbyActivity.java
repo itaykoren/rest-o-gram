@@ -67,11 +67,8 @@ public class NearbyActivity extends RestogramActivity implements ITaskObserver, 
     }
 
     @Override
-    protected void onDestroy() { // Application exiting
+    protected void onDestroy() { // Activity exiting
         super.onDestroy();
-
-        // Dispose client
-        RestogramClient.getInstance().dispose();
     }
 
     @Override
