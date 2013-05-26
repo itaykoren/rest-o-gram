@@ -58,7 +58,11 @@ public class RestogramApplication extends Application implements Application.Act
 
     @Override
     public void onActivityStarted(Activity activity) {
-        // Empty
+        if(activity.getClass() == PersonalActivity.class) {
+            IAuthenticationProvider provider = RestogramClient.getInstance().getAuthenticationProvider();
+            if(!provider.isUserLoggedIn())
+                activity.finish();
+        }
     }
 
     @Override
