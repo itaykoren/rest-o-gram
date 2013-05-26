@@ -2,6 +2,8 @@ package rest.o.gram.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ListView;
@@ -131,8 +133,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     private void initUser() {
         try {
             IAuthenticationProvider provider = RestogramClient.getInstance().getAuthenticationProvider();
-            LeanAccount account = provider.getAccountData();
-            Utils.updateTextView((TextView)findViewById(R.id.tvFBName), account.getNickName());
+            updateNickname((TextView)findViewById(R.id.tvFBName), provider);
         } catch (Exception e) {
             // TODO
         }
@@ -212,6 +213,34 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
             // Download image
             RestogramClient.getInstance().downloadImage(photo.getThumbnail(), photo, favoritePhotoViewAdapter, false, null);
         }
+    }
+
+    private void updateNickname(final TextView textView, final IAuthenticationProvider provider) {
+
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                try {
+                    Utils.updateTextView(textView, (String)message.obj);
+                }
+                catch(Exception e) {
+                }
+            }
+        };
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    LeanAccount account = provider.getAccountData();
+                    Message message = handler.obtainMessage(1, account.getNickName());
+                    handler.sendMessage(message);
+                } catch (LeanException e) {
+                    // TODO
+                }
+            }
+        };
+        thread.start();
     }
 
     private VenueViewAdapter historyVenueViewAdapter; // History venue view adapter
