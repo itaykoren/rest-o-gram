@@ -131,6 +131,7 @@ public class LoginHelper {
     private void switchToNearbyActivity() {
         // Switch to "NearbyActivity" with no parameters
         Intent intent = new Intent(activity, NearbyActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivityForResult(intent, Defs.RequestCodes.RC_NEARBY);
     }
 
