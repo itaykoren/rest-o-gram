@@ -104,6 +104,9 @@ public class RestogramClient implements IRestogramClient {
             dataHistoryManager.flush();
         }
 
+        if (dataFavoritesManager != null)
+            dataFavoritesManager.dispose();
+
         // TODO: dispose
     }
 

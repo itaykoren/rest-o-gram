@@ -163,6 +163,11 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         doGetFavoriteVenues(previous, observer);
     }
 
+    @Override
+    public void dispose() {
+        LeanEngine.dispose();
+    }
+
     private void doGetFavoriteVenues(final GetFavoriteVenuesResult previous, final IDataFavoritesOperationsObserver observer) {
         LeanQuery query;
         if (previous != null) // get next

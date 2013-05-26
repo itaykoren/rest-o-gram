@@ -170,5 +170,8 @@ public class LeanEngine {
         return preferences.getString("_auth_token", null);
     }
 
-
+    public static void dispose()
+    {
+        RestService.getInstance().dispose();
+    }
 }

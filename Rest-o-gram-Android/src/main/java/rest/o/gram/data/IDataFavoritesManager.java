@@ -28,4 +28,6 @@ public interface IDataFavoritesManager {
     void getFavoriteVenues(final IDataFavoritesOperationsObserver observer);
 
     void getNextFavoriteVenues(final GetFavoriteVenuesResult previous, final IDataFavoritesOperationsObserver observer);
+
+    void dispose();
 }
