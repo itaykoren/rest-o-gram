@@ -3,6 +3,8 @@ package rest.o.gram.application;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import rest.o.gram.activities.PersonalActivity;
+import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.data_history.IDataHistoryManager;
 
@@ -61,7 +63,11 @@ public class RestogramApplication extends Application implements Application.Act
 
     @Override
     public void onActivityResumed(Activity activity) {
-        // Empty
+        if(activity.getClass() == PersonalActivity.class) {
+            IAuthenticationProvider provider = RestogramClient.getInstance().getAuthenticationProvider();
+            if(!provider.isUserLoggedIn())
+                activity.finish();
+        }
     }
 
     @Override
