@@ -48,13 +48,10 @@ public class VenueActivity extends RestogramActivity implements ITaskObserver {
         if(dataHistoryManager != null)
             dataHistoryManager.save(venue, Defs.Data.SortOrder.SortOrderLIFO);
 
-        // Initialize login helper
-        loginHelper = new LoginHelper(this);
-
         // Initialize favorite helper
-        favoriteHelper = new FavoriteHelper();
         favoriteHelper.setVenueId(venue.getFoursquare_id());
         favoriteHelper.setFavoriteVenueButton((ImageButton)findViewById(R.id.bVenueFavorite));
+        favoriteHelper.refresh();
 
         // Initialize using venue parameter
         initialize(venue);
@@ -205,6 +202,4 @@ public class VenueActivity extends RestogramActivity implements ITaskObserver {
     private PhotoViewAdapter viewAdapter; // View adapter
     private String lastToken = null; // Last token
     private boolean isRequestPending = false; // Request pending flag
-    private LoginHelper loginHelper; // Login helper
-    private FavoriteHelper favoriteHelper; // Favorite helper
 }

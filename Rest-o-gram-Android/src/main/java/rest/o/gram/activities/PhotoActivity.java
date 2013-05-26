@@ -68,13 +68,10 @@ public class PhotoActivity extends RestogramActivity implements IRestogramComman
         if(dataHistoryManager != null)
             dataHistoryManager.save(photo, Defs.Data.SortOrder.SortOrderLIFO);
 
-        // Initialize login helper
-        loginHelper = new LoginHelper(this);
-
         // Initialize favorite helper
-        favoriteHelper = new FavoriteHelper();
         favoriteHelper.setPhotoId(photo.getInstagram_id());
         favoriteHelper.setFavoritePhotoButton((ImageButton)findViewById(R.id.bPhotoFavorite));
+        favoriteHelper.refresh();
 
         // Initialize using photo parameter
         initialize(photo, bitmap);
@@ -131,6 +128,4 @@ public class PhotoActivity extends RestogramActivity implements IRestogramComman
 
     private RestogramPhoto photo; // Photo object
     private IRestogramCommand command; // Command object
-    private LoginHelper loginHelper; // Login helper
-    private FavoriteHelper favoriteHelper; // Favorite helper
 }

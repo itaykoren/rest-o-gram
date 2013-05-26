@@ -2,6 +2,7 @@ package rest.o.gram.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import rest.o.gram.activities.helpers.FavoriteHelper;
 import rest.o.gram.activities.helpers.LoginHelper;
 
 /**
@@ -16,7 +17,25 @@ public class RestogramActivity extends Activity {
 
         // Initialize login helper
         loginHelper = new LoginHelper(this);
+
+        // Initialize favorite helper
+        favoriteHelper = new FavoriteHelper();
+    }
+
+    /**
+     * Called after user has logged in
+     */
+    public void onUserLoggedIn() {
+        favoriteHelper.refresh();
+    }
+
+    /**
+     * Called after user has logged out
+     */
+    public void onUserLoggedOut() {
+        // TODO
     }
 
     protected LoginHelper loginHelper; // Login helper
+    protected FavoriteHelper favoriteHelper; // Favorite helper
 }

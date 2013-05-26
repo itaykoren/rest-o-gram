@@ -1,6 +1,5 @@
 package rest.o.gram.activities.helpers;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +12,7 @@ import rest.o.gram.R;
 import rest.o.gram.activities.DialogManager;
 import rest.o.gram.activities.NearbyActivity;
 import rest.o.gram.activities.PersonalActivity;
+import rest.o.gram.activities.RestogramActivity;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 
@@ -25,7 +25,7 @@ public class LoginHelper {
     /**
      * Ctor
      */
-    public LoginHelper(Activity activity) {
+    public LoginHelper(RestogramActivity activity) {
         this.activity = activity;
         dialogManager = new DialogManager();
     }
@@ -76,6 +76,8 @@ public class LoginHelper {
             public void onSuccess() {
                 Toast.makeText(activity, "Successfully logged in.", Toast.LENGTH_LONG).show();
 
+                activity.onUserLoggedIn();
+
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "login successful");
 
@@ -106,6 +108,8 @@ public class LoginHelper {
             public void onResult(Boolean... result) {
                 Toast.makeText(activity, "Successfully logged out.", Toast.LENGTH_LONG).show();
 
+                activity.onUserLoggedOut();
+
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "logout successful");
 
@@ -131,7 +135,7 @@ public class LoginHelper {
     }
 
     private DialogManager dialogManager;
-    private Activity activity;
+    private RestogramActivity activity;
     private boolean switchToPersonalActivity = false;
     private boolean switchToNearbyActivity = false;
 }

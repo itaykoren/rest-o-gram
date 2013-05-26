@@ -5,11 +5,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
+import com.leanengine.LeanAccount;
+import com.leanengine.LeanException;
 import rest.o.gram.R;
+import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.IRestogramListener;
+import rest.o.gram.common.Utils;
 import rest.o.gram.data.GetFavoritePhotosResult;
 import rest.o.gram.data.GetFavoriteVenuesResult;
 import rest.o.gram.data.IDataFavoritesManager;
@@ -37,6 +42,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
         setContentView(R.layout.personal);
 
+        initUser();
         initHistory();
         initFavorites();
     }
@@ -117,6 +123,19 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
         if(viewSwitcher.getCurrentView() != favoritesView)
             viewSwitcher.showNext();
+    }
+
+    /**
+     * Initializes user related data
+     */
+    private void initUser() {
+        try {
+            IAuthenticationProvider provider = RestogramClient.getInstance().getAuthenticationProvider();
+            LeanAccount account = provider.getAccountData();
+            Utils.updateTextView((TextView)findViewById(R.id.tvFBName), account.getNickName());
+        } catch (Exception e) {
+            // TODO
+        }
     }
 
     /**

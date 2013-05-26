@@ -29,14 +29,25 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
         favoritePhotos = new HashMap<>();
 
         dataFavoritesManager = RestogramClient.getInstance().getDataFavoritesManager();
+
+        // TODO: handle pagination
+    }
+
+    /**
+     * Refreshes this helper: updates favorite venues & photos
+     */
+    public void refresh() {
+        // Clear current favorites
+        favoriteVenues.clear();
+        favoritePhotos.clear();
+
         if(dataFavoritesManager != null) {
             if(RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
+                // Get updated favorites
                 dataFavoritesManager.getFavoriteVenues(this);
                 dataFavoritesManager.getFavoritePhotos(this);
             }
         }
-
-        // TODO: handle pagination
     }
 
     /**
