@@ -79,6 +79,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         {
             query = new LeanQuery(Kinds.PHOTO_REFERENCE);
             query.addFilter(Props.PhotoRef.IS_FAVORITE, LeanQuery.FilterOperator.EQUAL, true);
+            query.addSort(Props.PhotoRef.INSTAGRAM_ID, LeanQuery.SortDirection.ASCENDING);
         }
         final TaskObserverImpl internalObserver = new TaskObserverImpl(observer, query);
 
@@ -88,6 +89,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                     public void onResult(LeanEntity... result) {
                         if (RestogramClient.getInstance().isDebuggable())
                             Log.d("REST-O-GRAM", "fetching fav photos - from DS succeded");
+                        internalObserver.setPhotoRefs(result);
                         client.fetchPhotosFromCache(internalObserver, Converters.photosRefsToNames(result));
                     }
 
@@ -169,6 +171,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         {
             query = new LeanQuery(Kinds.VENUE_REFERENCE);
             query.addFilter(Props.VenueRef.IS_FAVORITE, LeanQuery.FilterOperator.EQUAL, true);
+            query.addSort(Props.VenueRef.FOURSQUARE_ID, LeanQuery.SortDirection.ASCENDING);
         }
         final TaskObserverImpl internalObserver = new TaskObserverImpl(observer, query);
 
@@ -178,6 +181,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                     public void onResult(LeanEntity... result) {
                         if (RestogramClient.getInstance().isDebuggable())
                             Log.d("REST-O-GRAM", "fetching fav venues - from DS succeded");
+                        internalObserver.setVenueRefs(result);
                         client.fetchVenuesFromCache(internalObserver, Converters.venuesRefsToNames(result));
                     }
 
@@ -219,6 +223,14 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         private TaskObserverImpl(final IDataFavoritesOperationsObserver observer, final LeanQuery favorites_query) {
             this.observer = observer;
             this.favorites_query = favorites_query;
+        }
+
+        void  setPhotoRefs(LeanEntity... photoRefs) {
+            this.photo_refs = photoRefs;
+        }
+
+        void  setVenueRefs(LeanEntity... venueRefs) {
+            this.venue_refs = venueRefs;
         }
 
         @Override
@@ -282,6 +294,9 @@ public class DataFavoritesManager implements IDataFavoritesManager {
             {
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "fetching fav photos - from cache succeded");
+                int i = 0;
+                for (final RestogramPhoto currPhoto : result.getPhotos())
+                    currPhoto.setId(photo_refs[i++].getId());
                 observer.onFinished(new GetFavoritePhotosResult(result.getPhotos(), favorites_query));
             }
         }
@@ -338,6 +353,9 @@ public class DataFavoritesManager implements IDataFavoritesManager {
             {
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "fetching fav venues - from cache succeded");
+                int i = 0;
+                for (final RestogramVenue currVenue : result.getVenues())
+                    currVenue.setId(venue_refs[i++].getId());
                 observer.onFinished(new GetFavoriteVenuesResult(result.getVenues(), favorites_query));
             }
         }
@@ -351,6 +369,8 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         private RestogramPhoto photo_to_add;
         private RestogramVenue venue_to_add;
         private LeanQuery favorites_query;
+        private LeanEntity[] photo_refs;
+        private LeanEntity[] venue_refs;
     }
 
     private IRestogramClient client;

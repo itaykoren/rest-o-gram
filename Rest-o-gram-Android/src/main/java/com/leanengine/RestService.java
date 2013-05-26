@@ -271,8 +271,11 @@ class RestService {
         if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Type.NotAuthorizedError);
         //todo externalize URLs (and token insertion)
+        String idParam = "";
+        if (entity.hasId()) // update existing entity
+            idParam = "/" + entity.getId();
         String url = LeanEngine.getHostURI() +
-                "/rest/v1/entity/" + entity.kind + "?lean_token=" +
+                "/rest/v1/entity/" + entity.kind + idParam  + "?lean_token=" +
                 LeanEngine.getAuthToken();
         try {
             JSONObject param = JsonEncode.entityToJson(entity);

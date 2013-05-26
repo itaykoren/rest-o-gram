@@ -141,24 +141,27 @@ public class DatastoreUtils {
     }
 
     public static long putPrivateEntity(String kind, Map<String, Object> properties) throws LeanException {
-        log.severe("PUT PRIVATE ENTITY - kind:" + kind);
+        return putPrivateEntity(kind, Long.MIN_VALUE, properties);
+    }
+
+    public static long putPrivateEntity(String kind, long id, Map<String, Object> properties) throws LeanException {
         if (!pattern.matcher(kind).matches()) {
             throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
         }
 
-        log.severe("PUT PRIVATE ENTITY - GETTING CURR ACCOUNT - account:" + AuthService.getCurrentAccount().nickName);
         final Key accountKey = getCurrentAccountKey();
-        log.severe("PUT PRIVATE ENTITY - SETTING UP DS ENTITY");
-        Entity entityEntity = new Entity(kind, accountKey);
+        Entity entityEntity;
+        if (id > 0) // updates an  existing entity
+            entityEntity = new Entity(kind, id, accountKey);
+        else // creates a new entity
+            entityEntity = new Entity(kind, accountKey);
         //entityEntity.setProperty("_account", AuthService.getCurrentAccount().id);
 
-        log.severe("PUT PRIVATE ENTITY - SETTING UP DS ENTITY PROPS");
         if (properties != null) {
             for (Map.Entry<String, Object> entry : properties.entrySet()) {
                 entityEntity.setProperty(entry.getKey(), entry.getValue());
             }
         }
-        log.severe("PUT PRIVATE ENTITY - COMMIT");
         Key result = datastore.put(entityEntity);
         return result.getId();
     }

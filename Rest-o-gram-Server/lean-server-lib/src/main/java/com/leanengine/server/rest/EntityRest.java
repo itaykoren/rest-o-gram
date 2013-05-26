@@ -50,4 +50,13 @@ public class EntityRest {
         long entityID = DatastoreUtils.putPrivateEntity(entityName, JsonUtils.entityPropertiesFromJson(entityJson));
         return "{\"id\":" + entityID + "}";
     }
+
+    @POST
+    @Path("/{entityName}/{entityId}")
+    public String putEntity(@PathParam("entityName") String entityName, @PathParam("entityId") long entityId,
+                            JsonNode entityJson) throws LeanException {
+        long entityID = DatastoreUtils.putPrivateEntity(entityName, entityId,
+                            JsonUtils.entityPropertiesFromJson(entityJson));
+        return "{\"id\":" + entityID + "}";
+    }
 }

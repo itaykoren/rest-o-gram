@@ -30,12 +30,8 @@ import rest.o.gram.iservice.RestogramService;
 import rest.o.gram.results.*;
 import rest.o.gram.utils.InstagramUtils;
 
-import java.util.Collection;
+import java.util.*;
 import java.util.logging.Logger;
-
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -248,10 +244,14 @@ public class RestogramServiceImpl implements RestogramService {
         RestogramPhoto[] photos = new RestogramPhoto[entities.size()];
         int i = 0;
         for (final Entity currEntity : entities)
-        {
-            photos[i] = Converters.entityToPhoto(currEntity).encodeStrings();
-            ++i;
-        }
+            photos[i++] = Converters.entityToPhoto(currEntity).encodeStrings();
+
+        Arrays.sort(photos, new Comparator<RestogramPhoto>() {
+            @Override
+            public int compare(RestogramPhoto o1, RestogramPhoto o2) {
+                return o1.getInstagram_id().compareTo(o2.getInstagram_id());
+            }
+        });
         return photos;
     }
 
@@ -301,13 +301,18 @@ public class RestogramServiceImpl implements RestogramService {
             log.severe("fetching venues fromm cache has failed");
             e.printStackTrace();
         }
+
         RestogramVenue[] venues = new RestogramVenue[entities.size()];
         int i = 0;
         for (final Entity currEntity : entities)
-        {
-            venues[i] = Converters.entityToVenue(currEntity).encodeStrings();
-            ++i;
-        }
+            venues[i++] = Converters.entityToVenue(currEntity).encodeStrings();
+
+        Arrays.sort(venues, new Comparator<RestogramVenue>() {
+            @Override
+            public int compare(RestogramVenue o1, RestogramVenue o2) {
+                return o1.getFoursquare_id().compareTo(o2.getFoursquare_id());
+            }
+        });
         return venues;
     }
 
