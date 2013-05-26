@@ -21,7 +21,7 @@ import rest.o.gram.tasks.ITaskObserver;
  * User: Roi
  * Date: 16/04/13
  */
-public class HomeActivity extends Activity implements ILocationObserver, ITaskObserver {
+public class HomeActivity extends RestogramActivity implements ILocationObserver, ITaskObserver {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

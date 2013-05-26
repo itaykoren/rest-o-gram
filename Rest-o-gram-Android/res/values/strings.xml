@@ -4,10 +4,15 @@
 
     <!-- error msgs -->
     <string name="restogram_error_title">Rest-o-Gram Error</string>
-    <string name="restogram_info_title">Oops... You\'re Not Logged In</string>
+    <string name="restogram_login_title">Oops... You\'re Not Logged In</string>
+    <string name="restogram_logout_title">Log out</string>
+
     <string name="cannot_track_location_err_msg">Could not detect your current location. Please review your location services settings and relaunch the application.</string>
     <string name="no_connectivity_err_msg">Cannot connect to the internet. Please review your network services settings and relaunch the application.</string>
     <string name="not_logged_in_err_msg">Please login with your Facebook account for more FUN. Would you like to login now?</string>
+
+    <string name="logout_msg">Are you sure you want to log out?</string>
+
     <string name="history">History</string>
     <string name="favorites">Favorites</string>
 </resources>

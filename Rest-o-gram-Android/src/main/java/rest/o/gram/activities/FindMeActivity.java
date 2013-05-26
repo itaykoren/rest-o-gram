@@ -15,7 +15,7 @@ import rest.o.gram.tasks.ITaskObserver;
  * User: Roi
  * Date: 16/04/13
  */
-public class FindMeActivity extends Activity implements ITaskObserver {
+public class FindMeActivity extends RestogramActivity implements ITaskObserver {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

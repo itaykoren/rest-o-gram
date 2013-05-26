@@ -1,17 +1,15 @@
 package rest.o.gram.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
-import com.leanengine.LeanAccount;
 import rest.o.gram.R;
 import rest.o.gram.activities.helpers.FavoriteHelper;
+import rest.o.gram.activities.helpers.LoginHelper;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
-import rest.o.gram.activities.helpers.LoginHelper;
 import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
@@ -26,7 +24,7 @@ import rest.o.gram.view.PhotoViewAdapter;
  * User: Roi
  * Date: 16/04/13
  */
-public class VenueActivity extends Activity implements ITaskObserver {
+public class VenueActivity extends RestogramActivity implements ITaskObserver {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +122,7 @@ public class VenueActivity extends Activity implements ITaskObserver {
     }
 
     public void onFavoriteClicked(View view) {
-        if(!LeanAccount.isUserLoggedIn()) {
+        if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
             loginHelper.login(false);
         }
         else {

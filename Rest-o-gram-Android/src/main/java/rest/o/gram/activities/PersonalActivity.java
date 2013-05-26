@@ -29,7 +29,7 @@ import java.util.List;
  * User: Hen
  * Date: 24/05/13
  */
-public class PersonalActivity extends RestogramActivity implements IRestogramListener, IDataFavoritesOperationsObserver {
+public class PersonalActivity extends RestogramActionBarActivity implements IRestogramListener, IDataFavoritesOperationsObserver {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

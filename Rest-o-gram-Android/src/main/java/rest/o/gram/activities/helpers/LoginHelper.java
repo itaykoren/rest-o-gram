@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 import com.leanengine.LeanError;
 import com.leanengine.LoginListener;
+import com.leanengine.NetworkCallback;
 import rest.o.gram.R;
 import rest.o.gram.activities.DialogManager;
 import rest.o.gram.activities.PersonalActivity;
@@ -33,7 +34,7 @@ public class LoginHelper {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder
-                .setTitle(R.string.restogram_info_title)
+                .setTitle(R.string.restogram_login_title)
                 .setMessage(R.string.not_logged_in_err_msg)
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -45,10 +46,33 @@ public class LoginHelper {
                 .show();
     }
 
+    public void logout() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder
+                .setTitle(R.string.restogram_logout_title)
+                .setMessage(R.string.logout_msg)
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        doLogout();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    public void switchToPersonalActivity() {
+        // Switch to "PersonalActivity" with no parameters
+        Intent intent = new Intent(activity, PersonalActivity.class);
+        activity.startActivityForResult(intent, Defs.RequestCodes.RC_PERSONAL);
+    }
+
     private void showLoginScreen() {
         dialogManager.showLoginDialog(activity, new LoginListener() {
             @Override
             public void onSuccess() {
+                Toast.makeText(activity, "Successfully logged in.", Toast.LENGTH_LONG).show();
+
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "login successful");
 
@@ -73,10 +97,22 @@ public class LoginHelper {
         });
     }
 
-    public void switchToPersonalActivity() {
-        // Switch to "PersonalActivity" with no parameters
-        Intent intent = new Intent(activity, PersonalActivity.class);
-        activity.startActivityForResult(intent, Defs.RequestCodes.RC_PERSONAL);
+    private void doLogout() {
+        RestogramClient.getInstance().getAuthenticationProvider().logoutInBackground(new NetworkCallback<Boolean>() {
+            @Override
+            public void onResult(Boolean... result) {
+                Toast.makeText(activity, "Successfully logged out.", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(LeanError error) {
+                final String errorMsg = error.getErrorMessage();
+                if (RestogramClient.getInstance().isDebuggable())
+                    Log.d("REST-O-GRAM", "logout - Error: " + error.getErrorType() + "Error desc: " + errorMsg);
+                if (errorMsg != null && !errorMsg.isEmpty())
+                    Toast.makeText(activity, error.getErrorMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private DialogManager dialogManager;

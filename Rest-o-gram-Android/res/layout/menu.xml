@@ -16,4 +16,11 @@
             android:showAsAction="always">
     </item>
 
+    <item
+            android:id="@+id/action_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Logout"
+            android:showAsAction="always">
+    </item>
+
 </menu>

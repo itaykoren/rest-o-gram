@@ -21,7 +21,7 @@ import static rest.o.gram.location.Utils.distance;
  * User: Roi
  * Date: 16/04/13
  */
-public class NearbyActivity extends RestogramActivity implements ITaskObserver, IRestogramListener {
+public class NearbyActivity extends RestogramActionBarActivity implements ITaskObserver, IRestogramListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

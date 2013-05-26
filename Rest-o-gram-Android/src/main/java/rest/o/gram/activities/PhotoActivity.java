@@ -1,19 +1,20 @@
 package rest.o.gram.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.*;
-import com.leanengine.LeanAccount;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import rest.o.gram.R;
 import rest.o.gram.activities.helpers.FavoriteHelper;
+import rest.o.gram.activities.helpers.LoginHelper;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.common.Defs;
-import rest.o.gram.activities.helpers.LoginHelper;
 import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
@@ -23,7 +24,7 @@ import rest.o.gram.entities.RestogramPhoto;
  * User: Roi
  * Date: 16/04/13
  */
-public class PhotoActivity extends Activity implements IRestogramCommandObserver {
+public class PhotoActivity extends RestogramActivity implements IRestogramCommandObserver {
 
     @Override
     public void onCanceled(IRestogramCommand command) {
@@ -91,7 +92,7 @@ public class PhotoActivity extends Activity implements IRestogramCommandObserver
     }
 
     public void onFavoriteClicked(View view) {
-        if(!LeanAccount.isUserLoggedIn()) {
+        if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
             loginHelper.login(false);
         }
         else {

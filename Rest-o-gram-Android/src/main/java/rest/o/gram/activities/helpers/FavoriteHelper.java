@@ -1,7 +1,6 @@
 package rest.o.gram.activities.helpers;
 
 import android.widget.ImageButton;
-import com.leanengine.LeanAccount;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.data.GetFavoritePhotosResult;
@@ -31,8 +30,10 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
 
         dataFavoritesManager = RestogramClient.getInstance().getDataFavoritesManager();
         if(dataFavoritesManager != null) {
-            dataFavoritesManager.getFavoriteVenues(this);
-            dataFavoritesManager.getFavoritePhotos(this);
+            if(RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
+                dataFavoritesManager.getFavoriteVenues(this);
+                dataFavoritesManager.getFavoritePhotos(this);
+            }
         }
 
         // TODO: handle pagination
@@ -70,7 +71,7 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
      * Toggles favorite state of given venue according to current user
      */
     public boolean toggleFavoriteVenue(RestogramVenue venue) {
-        if(!LeanAccount.isUserLoggedIn())
+        if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn())
             return false;
 
         if(dataFavoritesManager == null)
@@ -89,7 +90,7 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
      * Toggles favorite state of given photo according to current user
      */
     public boolean toggleFavoritePhoto(RestogramPhoto photo) {
-        if(!LeanAccount.isUserLoggedIn())
+        if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn())
             return false;
 
         if(dataFavoritesManager == null)
