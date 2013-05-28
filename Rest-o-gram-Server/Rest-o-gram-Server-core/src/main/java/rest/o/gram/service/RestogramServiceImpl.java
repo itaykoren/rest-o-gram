@@ -46,23 +46,12 @@ import java.util.logging.Logger;
  */
 public class RestogramServiceImpl implements RestogramService {
 
-    public RestogramServiceImpl()
-    {
-        try
-        {
+    public RestogramServiceImpl() {
+        try {
             //m_factory = new SimpleCredentialsFactory();
             m_factory = new RandomCredentialsFactory();
-
-            Credentials credentials = m_factory.createFoursquareCredentials();
-            log.warning("service created: foursquare credentials type = " + credentials.getType());
-            m_foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
-
-            credentials = m_factory.createInstagramCredentials();
-            log.warning("service created: instagram credentials type = " + credentials.getType());
-            m_instagram = new Instagram(credentials.getClientId());
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
             log.severe("an error occurred while initializing the service");
             e.printStackTrace();
         }
@@ -72,8 +61,7 @@ public class RestogramServiceImpl implements RestogramService {
      * @return array of venus near given location
      */
     @Override
-    public VenuesResult getNearby(double latitude, double longitude)
-    {
+    public VenuesResult getNearby(double latitude, double longitude) {
         String location = latitude + "," + longitude;
 
         // TODO: manage foursquare categories...
@@ -91,8 +79,7 @@ public class RestogramServiceImpl implements RestogramService {
      * @return array of venues near given location within given radius
      */
     @Override
-    public VenuesResult getNearby(double latitude, double longitude, double radius)
-    {
+    public VenuesResult getNearby(double latitude, double longitude, double radius) {
         String location = latitude + "," + longitude;
 
         // TODO: manage foursquare categories...
@@ -113,15 +100,20 @@ public class RestogramServiceImpl implements RestogramService {
     public VenueResult getInfo(String venueID) {
         Result<CompleteVenue> result;
         try {
-            result = m_foursquare.venue(venueID);
+            Credentials credentials = m_factory.createFoursquareCredentials();
+            log.info("foursquare credentials type = " + credentials.getType());
+            FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
+            result = foursquare.venue(venueID);
         } catch (FoursquareApiException e) {
             log.warning("first venue  " + venueID + " retrieval has failed, retry");
             e.printStackTrace();
             try {
-                result = m_foursquare.venue(venueID);
+                Credentials credentials = m_factory.createFoursquareCredentials();
+                log.info("foursquare credentials type = " + credentials.getType());
+                FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
+                result = foursquare.venue(venueID);
             }
-            catch (FoursquareApiException e2)
-            {
+            catch (FoursquareApiException e2) {
                 log.severe("second venue " + venueID + " retrieval has failed");
                 e2.printStackTrace();
                 return null;
@@ -134,8 +126,7 @@ public class RestogramServiceImpl implements RestogramService {
         }
 
         CompleteVenue v = result.getResult();
-        if(v == null)
-        {
+        if(v == null) {
             log.severe("extracting info from venue has failed");
             return null;
         }
@@ -148,8 +139,7 @@ public class RestogramServiceImpl implements RestogramService {
      * @return array of media related to venue given its ID
      */
     @Override
-    public PhotosResult getPhotos(String venueID)
-    {
+    public PhotosResult getPhotos(String venueID) {
         return doGetPhotos(venueID, RestogramFilterType.None);
     }
 
@@ -157,8 +147,7 @@ public class RestogramServiceImpl implements RestogramService {
      * @return array of media related to venue given its ID, after applying given filter
      */
     @Override
-    public PhotosResult getPhotos(String venueID, RestogramFilterType filterType)
-    {
+    public PhotosResult getPhotos(String venueID, RestogramFilterType filterType) {
         return doGetPhotos(venueID, filterType);
     }
 
@@ -180,7 +169,6 @@ public class RestogramServiceImpl implements RestogramService {
      */
     @Override
     public PhotosResult getNextPhotos(String token, RestogramFilterType filterType) {
-
         Pagination pag = new Gson().fromJson(token, Pagination.class);
         return doGetPhotos(pag, filterType);
     }
@@ -189,28 +177,32 @@ public class RestogramServiceImpl implements RestogramService {
     public boolean cachePhoto(String id) {
         // TODO: check if photo is already in cache
         long lid;
-        try
-        {
+        try {
             lid = InstagramUtils.extractMediaId(id);
-        } catch (Exception e)
-        {
+        }
+        catch (Exception e) {
             log.severe("cannot extract media id from media feed string id");
             e.printStackTrace();
             return false;
         }
-        MediaInfoFeed mediaInfo = null;
-        try
-        {
-            mediaInfo = m_instagram.getMediaInfo(lid);
-        } catch (InstagramException e)
-        {
+
+        MediaInfoFeed mediaInfo;
+        try {
+            Credentials credentials = m_factory.createInstagramCredentials();
+            log.info("instagram credentials type = " + credentials.getType());
+            Instagram instagram = new Instagram(credentials.getClientId());
+            mediaInfo = instagram.getMediaInfo(lid);
+        }
+        catch (InstagramException e) {
             log.warning("first get photo has failed, retry");
             e.printStackTrace();
-            try
-            {
-                mediaInfo = m_instagram.getMediaInfo(lid);
-            } catch (InstagramException e2)
-            {
+            try {
+                Credentials credentials = m_factory.createInstagramCredentials();
+                log.info("instagram credentials type = " + credentials.getType());
+                Instagram instagram = new Instagram(credentials.getClientId());
+                mediaInfo = instagram.getMediaInfo(lid);
+            }
+            catch (InstagramException e2) {
                 log.severe("second get photo has failed");
                 e2.printStackTrace();
                 return false;
@@ -218,12 +210,11 @@ public class RestogramServiceImpl implements RestogramService {
         }
 
         final RestogramPhoto photo = convert(mediaInfo.getData());
-        try
-        {
+        try {
             DatastoreUtils.putPublicEntity(Kinds.PHOTO,
                     photo.getInstagram_id(), Converters.photoToProps(photo));
-        } catch (LeanException e)
-        {
+        }
+        catch (LeanException e) {
             log.severe("caching the photo in DS has failed");
             e.printStackTrace();
             return false;
@@ -234,19 +225,13 @@ public class RestogramServiceImpl implements RestogramService {
     @Override
     public RestogramPhoto[] fetchPhotosFromCache(String[] ids) {
         Collection<Entity> entities = null;
-        try
-        {
+        try {
             entities = DatastoreUtils.getPublicEntities(Kinds.PHOTO, ids);
-        } catch (LeanException e)
-        {
+        }
+        catch (LeanException e) {
             log.severe("fetching photos fromm cache has failed");
             e.printStackTrace();
         }
-
-//        if  (entities == null)
-//        {
-//            log.severe();
-//        }
 
         RestogramPhoto[] photos = new RestogramPhoto[entities.size()];
         int i = 0;
@@ -265,19 +250,23 @@ public class RestogramServiceImpl implements RestogramService {
     @Override
     public boolean cacheVenue(String id) {
         //TODO: check if venue is already in cache
-        CompleteVenue compVenue = null;
-        try
-        {
-            compVenue = m_foursquare.venue(id).getResult();
-        } catch (FoursquareApiException e)
-        {
+        CompleteVenue compVenue;
+        try {
+            Credentials credentials = m_factory.createFoursquareCredentials();
+            log.info("foursquare credentials type = " + credentials.getType());
+            FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
+            compVenue = foursquare.venue(id).getResult();
+        }
+        catch (FoursquareApiException e) {
             log.warning("first get venue has failed, retry");
             e.printStackTrace();
-            try
-            {
-                compVenue = m_foursquare.venue(id).getResult();
-            } catch (FoursquareApiException e2)
-            {
+            try {
+                Credentials credentials = m_factory.createFoursquareCredentials();
+                log.info("foursquare credentials type = " + credentials.getType());
+                FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
+                compVenue = foursquare.venue(id).getResult();
+            }
+            catch (FoursquareApiException e2) {
                 log.severe("second get venue has failed");
                 e2.printStackTrace();
                 return false;
@@ -285,11 +274,10 @@ public class RestogramServiceImpl implements RestogramService {
         }
 
         final RestogramVenue venue = convert(compVenue);
-        try
-        {
+        try {
             DatastoreUtils.putPublicEntity(Kinds.VENUE, venue.getFoursquare_id(), Converters.venueToProps(venue));
-        } catch (LeanException e)
-        {
+        }
+        catch (LeanException e) {
             log.severe("caching the venue in DS has failed");
             e.printStackTrace();
             return false;
@@ -300,11 +288,10 @@ public class RestogramServiceImpl implements RestogramService {
     @Override
     public RestogramVenue[] fetchVenuesFromCache(String[] ids) {
         Collection<Entity> entities = null;
-        try
-        {
+        try {
             entities = DatastoreUtils.getPublicEntities(Kinds.VENUE, ids);
-        } catch (LeanException e)
-        {
+        }
+        catch (LeanException e) {
             log.severe("fetching venues fromm cache has failed");
             e.printStackTrace();
         }
@@ -326,50 +313,48 @@ public class RestogramServiceImpl implements RestogramService {
     /**
      * Executes get nearby request
      */
-    private VenuesResult doGetNearby(Map<String, String> params)
-    {
+    private VenuesResult doGetNearby(Map<String, String> params) {
         Result<VenuesSearchResult> result;
-        try
-        {
-            result = m_foursquare.venuesSearch(params);
+        try {
+            Credentials credentials = m_factory.createFoursquareCredentials();
+            log.info("foursquare credentials type = " + credentials.getType());
+            FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
+            result = foursquare.venuesSearch(params);
         }
-        catch (FoursquareApiException e)
-        {
+        catch (FoursquareApiException e) {
             // TODO: test the "second-chance" policy
-            try
-            {
+            try {
                 log.warning("first venue search has failed, retry");
                 e.printStackTrace();
-                result = m_foursquare.venuesSearch(params);
+
+                Credentials credentials = m_factory.createFoursquareCredentials();
+                log.info("foursquare credentials type = " + credentials.getType());
+                FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
+                result = foursquare.venuesSearch(params);
             }
-            catch (FoursquareApiException e2)
-            {
+            catch (FoursquareApiException e2) {
                 log.severe("second venue search has failed");
                 e2.printStackTrace();
                 return null;
             }
         }
 
-        if (result.getMeta().getCode() != 200)
-        {
+        if (result.getMeta().getCode() != 200) {
             log.severe("venue search returned an error code: " + result.getMeta().getCode());
             return null;
         }
 
         CompactVenue[] arr = result.getResult().getVenues();
 
-        if(arr == null || arr.length == 0)
-        {
+        if(arr == null || arr.length == 0) {
             log.severe("venue search returned no venues");
             return null;
         }
 
         RestogramVenue[] venues = new RestogramVenue[arr.length];
-        for(int i = 0; i < arr.length; i++)
-        {
+        for(int i = 0; i < arr.length; i++) {
             venues[i] = convert(arr[i]);
-            if (AuthService.isUserLoggedIn())
-            {
+            if (AuthService.isUserLoggedIn()) {
                 final LeanQuery lquery = new LeanQuery(Kinds.VENUE_REFERENCE);
                 lquery.addFilter(Props.VenueRef.FOURSQUARE_ID, QueryFilter.FilterOperator.EQUAL,
                         venues[i].getFoursquare_id());
@@ -377,7 +362,8 @@ public class RestogramServiceImpl implements RestogramService {
                 QueryResult qresult = null;
                 try {
                     qresult = DatastoreUtils.queryEntityPrivate(lquery);
-                } catch (LeanException e) {
+                }
+                catch (LeanException e) {
                     log.severe("error while getting private venue info from DS");
                     e.printStackTrace();
                 }
@@ -387,60 +373,60 @@ public class RestogramServiceImpl implements RestogramService {
         }
 
         log.info("found " + venues.length + " venues!");
-
         return new VenuesResult(venues);
     }
 
     /**
      * Executes get photos request
      */
-    private PhotosResult doGetPhotos(String venueID, RestogramFilterType filterType)
-    {
+    private PhotosResult doGetPhotos(String venueID, RestogramFilterType filterType) {
         LocationSearchFeed locationSearchFeed = null;
-
-        try
-        {
-            locationSearchFeed = m_instagram.searchFoursquareVenue(venueID);
+        try {
+            Credentials credentials = m_factory.createInstagramCredentials();
+            log.info("instagram credentials type = " + credentials.getType());
+            Instagram instagram = new Instagram(credentials.getClientId());
+            locationSearchFeed = instagram.searchFoursquareVenue(venueID);
         }
-        catch (InstagramException e)
-        {
+        catch (InstagramException e) {
             log.warning("first search for venue: " + venueID + " has failed, retry");
             e.printStackTrace();
-            try
-            {
-                locationSearchFeed = m_instagram.searchFoursquareVenue(venueID);
+            try {
+                Credentials credentials = m_factory.createInstagramCredentials();
+                log.info("instagram credentials type = " + credentials.getType());
+                Instagram instagram = new Instagram(credentials.getClientId());
+                locationSearchFeed = instagram.searchFoursquareVenue(venueID);
             }
-            catch (InstagramException e2)
-            {
+            catch (InstagramException e2) {
                 log.severe("second search for venue: " + venueID + "has failed");
                 e.printStackTrace();
             }
         }
 
         List<Location> locationList = locationSearchFeed.getLocationList();
-        if (locationList.isEmpty()) // TODO: handle in a different way?
-        {
+        if (locationList.isEmpty()) { // TODO: handle in a different way?
             log.severe("venue:  " + venueID + " not found");
             return null;
         }
         long locationId = locationList.get(0).getId(); // TODO: what if we get multiple locations?
 
         MediaFeed recentMediaByLocation;
-        try
-        {
-            recentMediaByLocation = m_instagram.getRecentMediaByLocation(locationId);
+        try {
+            Credentials credentials = m_factory.createInstagramCredentials();
+            log.info("instagram credentials type = " + credentials.getType());
+            Instagram instagram = new Instagram(credentials.getClientId());
+            recentMediaByLocation = instagram.getRecentMediaByLocation(locationId);
         }
-        catch(InstagramException e)
-        {
+        catch(InstagramException e) {
             log.warning("first recent media search for venue: " + venueID + "has failed, retry");
             e.printStackTrace();
 
-            try
-            {
-                recentMediaByLocation = m_instagram.getRecentMediaByLocation(locationId);
+            try {
+                Credentials credentials = m_factory.createInstagramCredentials();
+                log.info("instagram credentials type = " + credentials.getType());
+                Instagram instagram = new Instagram(credentials.getClientId());
+                recentMediaByLocation = instagram.getRecentMediaByLocation(locationId);
             }
-            catch (InstagramException e2)
-            {
+            catch (InstagramException e2) {
                 log.severe("second search for recent media for venue: " + venueID + "has failed");
                 e2.printStackTrace();
                 return null;
@@ -453,24 +439,25 @@ public class RestogramServiceImpl implements RestogramService {
     /**
      * Executes get photos request
      */
-    private PhotosResult doGetPhotos(Pagination pagination, RestogramFilterType filterType)
-    {
+    private PhotosResult doGetPhotos(Pagination pagination, RestogramFilterType filterType) {
         MediaFeed recentMediaByLocation;
-        try
-        {
-            recentMediaByLocation = m_instagram.getRecentMediaNextPage(pagination);
+        try {
+            Credentials credentials = m_factory.createInstagramCredentials();
+            log.info("instagram credentials type = " + credentials.getType());
+            Instagram instagram = new Instagram(credentials.getClientId());
+            recentMediaByLocation = instagram.getRecentMediaNextPage(pagination);
         }
-        catch(InstagramException e)
-        {
+        catch(InstagramException e) {
             log.warning("first next media search has failed, retry");
             e.printStackTrace();
 
-            try
-            {
-                recentMediaByLocation = m_instagram.getRecentMediaNextPage(pagination);
+            try {
+                Credentials credentials = m_factory.createInstagramCredentials();
+                log.info("instagram credentials type = " + credentials.getType());
+                Instagram instagram = new Instagram(credentials.getClientId());
+                recentMediaByLocation = instagram.getRecentMediaNextPage(pagination);
             }
-            catch (InstagramException e2)
-            {
+            catch (InstagramException e2) {
                 log.severe("second next for recent media has failed");
                 e2.printStackTrace();
                 return null;
@@ -481,23 +468,20 @@ public class RestogramServiceImpl implements RestogramService {
     }
 
     private PhotosResult createPhotosResult(MediaFeed recentMediaByLocation, RestogramFilterType filterType) {
-        if(recentMediaByLocation == null)
-        {
+        if(recentMediaByLocation == null) {
             log.severe("next media search returned no media");
             return null;
         }
 
         List<MediaFeedData> data = recentMediaByLocation.getData();
-        if(data == null)
-        {
+        if(data == null) {
             log.severe("next media search returned no media");
             return null;
         }
 
         log.info("fetched " + data.size() + " photos");
         // TODO: apply simple/complex filter
-        if (filterType != RestogramFilterType.None)
-        {
+        if (filterType != RestogramFilterType.None) {
             RestogramFilter restogramFilter = RestogramFilterFactory.createFilter(filterType);
             data = restogramFilter.doFilter(data);
         }
@@ -505,11 +489,9 @@ public class RestogramServiceImpl implements RestogramService {
         RestogramPhoto[] photos = new RestogramPhoto[data.size()];
 
         int i = 0;
-        for (MediaFeedData media : data)
-        {
+        for (MediaFeedData media : data) {
             photos[i] = convert(media);
-            if (AuthService.isUserLoggedIn())
-            {
+            if (AuthService.isUserLoggedIn()) {
                 final LeanQuery lquery = new LeanQuery(Kinds.PHOTO_REFERENCE);
                 lquery.addFilter(Props.PhotoRef.INSTAGRAM_ID, QueryFilter.FilterOperator.EQUAL,
                         photos[i].getInstagram_id());
@@ -612,9 +594,5 @@ public class RestogramServiceImpl implements RestogramService {
     }
 
     private static final Logger log = Logger.getLogger(RestogramServiceImpl.class.getName());
-
-    private FoursquareApi m_foursquare;
-    private Instagram m_instagram;
-
     private ICredentialsFactory m_factory;
 }

@@ -40,7 +40,7 @@ public class RandomCredentialsFactory implements ICredentialsFactory {
             {{"4d32ff70646e46a992a4ad5a0945ef3f","f409c9702dbc4c09a3100198cfd76e03"},
              {"d25c3bd1ff3e40c0bf9a9b7d35edf9e9","89ade00d75184099b56ec3c997eef3f4"},
              {"dd646f1d74714ddb96f15171e7c8a194","f2faf4ab9c6e4f019e7f8718d6363d6c"},
-             {"dd646f1d74714ddb96f15171e7c8a194","f2faf4ab9c6e4f019e7f8718d6363d6c"}};
+             {"047af1e563004a9f9597446a101b1e26","5eb7c5dd916049b99db2f8611ef56bf1"}};
 
     private final int CREDENTIALS_AMOUNT = 4;
     private Random random = new Random();
