@@ -21,14 +21,15 @@ public class FaceBitmapFilter implements IBitmapFilter {
     }
 
     @Override
-    public boolean accept(Bitmap bitmap) {
+    public boolean accept(final Bitmap bitmap) {
         try {
             Bitmap b = createBitmap(bitmap);
             FaceDetector.Face[] faces = new FaceDetector.Face[maxFaces];
 
             // Initialize face detector
-            FaceDetector detector = new FaceDetector(b.getWidth(), b.getHeight(), maxFaces);
+            final FaceDetector detector = new FaceDetector(b.getWidth(), b.getHeight(), maxFaces);
             int amount = detector.findFaces(b, faces);
+            b.recycle();
             return amount == 0;
         }
         catch(Exception e) {

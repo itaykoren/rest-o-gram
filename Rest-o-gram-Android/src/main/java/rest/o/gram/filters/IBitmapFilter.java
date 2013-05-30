@@ -11,5 +11,5 @@ public interface IBitmapFilter {
     /**
      * Returns true whether this bitmap is accepted by this filter
      */
-    boolean accept(Bitmap bitmap);
+    boolean accept(final Bitmap bitmap);
 }

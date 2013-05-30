@@ -9,7 +9,7 @@ import android.graphics.Bitmap;
  */
 public class DefaultBitmapFilter implements IBitmapFilter {
     @Override
-    public boolean accept(Bitmap bitmap) {
+    public boolean accept(final Bitmap bitmap) {
         // Accept all bitmaps
         return true;
     }

@@ -179,7 +179,10 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         matrix.postScale(scaleWidth, scaleHeight);
 
         // Create new bitmap
-        return Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
+        final Bitmap resizedBitmap =
+                Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 
     private String url;
