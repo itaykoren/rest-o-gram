@@ -6,7 +6,7 @@ import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.data_history.IDataHistoryManager;
-import rest.o.gram.data.IDataFavoritesManager;
+import rest.o.gram.data_favorites.IDataFavoritesManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.filters.RestogramFilterType;

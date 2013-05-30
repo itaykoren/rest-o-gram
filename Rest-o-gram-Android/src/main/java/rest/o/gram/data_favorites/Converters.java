@@ -1,4 +1,4 @@
-package rest.o.gram.data;
+package rest.o.gram.data_favorites;
 
 import com.leanengine.LeanEntity;
 import rest.o.gram.entities.Kinds;

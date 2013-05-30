@@ -3,11 +3,11 @@ package rest.o.gram.activities.helpers;
 import android.widget.ImageButton;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
-import rest.o.gram.data.GetFavoritePhotosResult;
-import rest.o.gram.data.GetFavoriteVenuesResult;
-import rest.o.gram.data.IDataFavoritesManager;
-import rest.o.gram.data.IDataFavoritesOperationsObserver;
-import rest.o.gram.data.results.*;
+import rest.o.gram.data_favorites.GetFavoritePhotosResult;
+import rest.o.gram.data_favorites.GetFavoriteVenuesResult;
+import rest.o.gram.data_favorites.IDataFavoritesManager;
+import rest.o.gram.data_favorites.IDataFavoritesOperationsObserver;
+import rest.o.gram.data_favorites.results.*;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 
@@ -162,11 +162,6 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     }
 
     @Override
-    public void onFinished(ClearFavoritePhotosResult result) {
-        // Empty
-    }
-
-    @Override
     public void onFinished(GetFavoriteVenuesResult result) {
         if(result == null)
             return;
@@ -209,11 +204,6 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
 
         if(favoriteVenueButton != null)
             favoriteVenueButton.setBackgroundResource(R.drawable.ic_favorite_off);
-    }
-
-    @Override
-    public void onFinished(ClearFavoriteVenuesResult result) {
-        // Empty
     }
 
     private IDataFavoritesManager dataFavoritesManager;

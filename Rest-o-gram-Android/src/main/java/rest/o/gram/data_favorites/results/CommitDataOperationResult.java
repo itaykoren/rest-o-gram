@@ -1,4 +1,4 @@
-package rest.o.gram.data.results;
+package rest.o.gram.data_favorites.results;
 
 /**
  * Created with IntelliJ IDEA.

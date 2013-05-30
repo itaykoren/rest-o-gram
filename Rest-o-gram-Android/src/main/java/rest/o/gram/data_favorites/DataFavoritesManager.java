@@ -1,10 +1,10 @@
-package rest.o.gram.data;
+package rest.o.gram.data_favorites;
 
 import android.util.Log;
 import com.leanengine.*;
 import rest.o.gram.client.IRestogramClient;
 import rest.o.gram.client.RestogramClient;
-import rest.o.gram.data.results.*;
+import rest.o.gram.data_favorites.results.*;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
 import rest.o.gram.entities.RestogramPhoto;
@@ -54,11 +54,6 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                 observer.onFinished(new RemoveFavoritePhotosResult(false));
             }
         });
-    }
-
-    @Override
-    public void clearFavoritePhotos(final IDataFavoritesOperationsObserver observer) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -146,11 +141,6 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                 observer.onFinished(new RemoveFavoriteVenuesResult(false));
             }
         });
-    }
-
-    @Override
-    public void clearFavoriteVenues(final IDataFavoritesOperationsObserver observer) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

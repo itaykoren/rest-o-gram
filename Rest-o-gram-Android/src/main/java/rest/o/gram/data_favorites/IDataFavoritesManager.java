@@ -1,4 +1,4 @@
-package rest.o.gram.data;
+package rest.o.gram.data_favorites;
 
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
@@ -13,8 +13,6 @@ public interface IDataFavoritesManager {
 
     void removeFavoritePhoto(final RestogramPhoto photo, final IDataFavoritesOperationsObserver observer);
 
-    void clearFavoritePhotos(final IDataFavoritesOperationsObserver observer);
-
     void getFavoritePhotos(final IDataFavoritesOperationsObserver observer);
 
     void getNextFavoritePhotos(final GetFavoritePhotosResult previous, final IDataFavoritesOperationsObserver observer);
@@ -22,8 +20,6 @@ public interface IDataFavoritesManager {
     void addFavoriteVenue(final RestogramVenue venue, final IDataFavoritesOperationsObserver observer);
 
     void removeFavoriteVenue(final RestogramVenue venue, final IDataFavoritesOperationsObserver observer);
-
-    void clearFavoriteVenues(final IDataFavoritesOperationsObserver observer);
 
     void getFavoriteVenues(final IDataFavoritesOperationsObserver observer);
 

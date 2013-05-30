@@ -17,11 +17,11 @@ import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.IRestogramListener;
 import rest.o.gram.common.Utils;
-import rest.o.gram.data.GetFavoritePhotosResult;
-import rest.o.gram.data.GetFavoriteVenuesResult;
-import rest.o.gram.data.IDataFavoritesManager;
-import rest.o.gram.data.IDataFavoritesOperationsObserver;
-import rest.o.gram.data.results.*;
+import rest.o.gram.data_favorites.GetFavoritePhotosResult;
+import rest.o.gram.data_favorites.GetFavoriteVenuesResult;
+import rest.o.gram.data_favorites.IDataFavoritesManager;
+import rest.o.gram.data_favorites.IDataFavoritesOperationsObserver;
+import rest.o.gram.data_favorites.results.*;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
@@ -87,11 +87,6 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     }
 
     @Override
-    public void onFinished(ClearFavoritePhotosResult result) {
-        // Empty
-    }
-
-    @Override
     public void onFinished(GetFavoriteVenuesResult result) {
         setFavoriteVenues(result.getElements());
     }
@@ -103,11 +98,6 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     @Override
     public void onFinished(RemoveFavoriteVenuesResult result) {
-        // Empty
-    }
-
-    @Override
-    public void onFinished(ClearFavoriteVenuesResult result) {
         // Empty
     }
 
