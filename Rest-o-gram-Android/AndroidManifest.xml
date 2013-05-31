@@ -16,7 +16,7 @@
 
     <application android:name=".application.RestogramApplication" android:label="@string/app_name"
                  android:icon="@drawable/ic_rog" android:debuggable="true"
-                 android:theme="@android:style/Theme.Holo">
+                 android:theme="@style/Theme.ROG">
 
         <activity android:name=".activities.HomeActivity"
                   android:label="@string/app_name"

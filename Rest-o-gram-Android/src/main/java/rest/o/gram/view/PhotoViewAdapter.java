@@ -72,12 +72,7 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
 
         if (view == null) { // View is not recycled
             imageView = new ImageView(context);
-
-            if(width > 0 && height > 0)
-                imageView.setLayoutParams(new GridView.LayoutParams(width, height));
-
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(5, 5, 5, 5);
         }
         else { // View is recycled
             imageView = (ImageView)view;
