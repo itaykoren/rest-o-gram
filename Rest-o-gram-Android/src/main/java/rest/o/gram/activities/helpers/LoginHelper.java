@@ -15,6 +15,7 @@ import rest.o.gram.activities.PersonalActivity;
 import rest.o.gram.activities.RestogramActivity;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
+import rest.o.gram.common.Utils;
 
 /**
  * Created with IntelliJ IDEA.
@@ -64,10 +65,10 @@ public class LoginHelper {
                 .show();
     }
 
-    public void switchToPersonalActivity() {
+    private void switchToPersonalActivity() {
         // Switch to "PersonalActivity" with no parameters
         Intent intent = new Intent(activity, PersonalActivity.class);
-        activity.startActivityForResult(intent, Defs.RequestCodes.RC_PERSONAL);
+        Utils.changeActivity(activity, intent, Defs.RequestCodes.RC_PERSONAL, false);
     }
 
     private void showLoginScreen() {
@@ -131,8 +132,7 @@ public class LoginHelper {
     private void switchToNearbyActivity() {
         // Switch to "NearbyActivity" with no parameters
         Intent intent = new Intent(activity, NearbyActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity.startActivityForResult(intent, Defs.RequestCodes.RC_NEARBY);
+        Utils.changeActivity(activity, intent, Defs.RequestCodes.RC_NEARBY, true);
     }
 
     private DialogManager dialogManager;

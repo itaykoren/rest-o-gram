@@ -30,13 +30,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.FindMeActivity"
-                  android:label="Find Me"
-                  android:theme="@android:style/Theme.Holo.NoActionBar"
-                  android:screenOrientation="portrait"
-                  android:configChanges="orientation|screenSize">
-        </activity>
-
         <activity android:name=".activities.NearbyActivity"
                   android:label="Nearby"
                   android:screenOrientation="portrait"

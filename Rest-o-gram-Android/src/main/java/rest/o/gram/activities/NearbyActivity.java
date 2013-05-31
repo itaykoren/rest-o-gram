@@ -7,6 +7,7 @@ import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.IRestogramListener;
+import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.location.ILocationTracker;
@@ -130,7 +131,7 @@ public class NearbyActivity extends RestogramActionBarActivity implements ITaskO
         // Switch to "VenueActivity" with parameter "venue"
         Intent intent = new Intent(this, VenueActivity.class);
         intent.putExtra("venue", venue);
-        startActivityForResult(intent, Defs.RequestCodes.RC_VENUE);
+        Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, false);
     }
 
     private void addVenues(RestogramVenue[] venues) {

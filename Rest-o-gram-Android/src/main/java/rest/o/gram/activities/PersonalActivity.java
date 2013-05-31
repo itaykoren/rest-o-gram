@@ -68,7 +68,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         // Switch to "VenueActivity" with parameter "venue"
         Intent intent = new Intent(this, VenueActivity.class);
         intent.putExtra("venue", venue);
-        startActivityForResult(intent, Defs.RequestCodes.RC_VENUE);
+        Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, false);
     }
 
     @Override

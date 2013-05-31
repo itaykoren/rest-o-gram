@@ -1,5 +1,7 @@
 package rest.o.gram.common;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.widget.TextView;
 
 import java.io.*;
@@ -101,5 +103,15 @@ public class Utils {
         }
 
         return object;
+    }
+
+    /**
+     * Changes activity to a new one according to given parameters
+     */
+    public static void changeActivity(Activity oldActivity, Intent intent, int requestCode, boolean finishOld) {
+        if(finishOld)
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        oldActivity.startActivityForResult(intent, requestCode);
     }
 }

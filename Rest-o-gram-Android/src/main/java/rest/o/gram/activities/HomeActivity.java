@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import rest.o.gram.R;
+import rest.o.gram.common.Utils;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
@@ -123,7 +124,7 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
             Intent intent = new Intent(this, NearbyActivity.class);
             intent.putExtra("latitude", latitude);
             intent.putExtra("longitude", longitude);
-            startActivityForResult(intent, Defs.RequestCodes.RC_NEARBY);
+            Utils.changeActivity(this, intent, Defs.RequestCodes.RC_NEARBY, true);
             return;
         }
 
@@ -145,7 +146,7 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
         // Switch to "VenueActivity" with parameter "venue"
         Intent intent = new Intent(this, VenueActivity.class);
         intent.putExtra("venue", this.venue);
-        startActivityForResult(intent, Defs.RequestCodes.RC_VENUE);
+        Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, true);
     }
 
     @Override

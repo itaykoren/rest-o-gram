@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
+import rest.o.gram.common.Utils;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,7 +38,7 @@ public class RestogramActionBarActivity extends RestogramActivity {
 
         try {
             if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
-                menu.getItem(2).setVisible(false); // Disable logout button
+                menu.getItem(menu.size() - 1).setVisible(false); // Disable logout button
             }
         }
         catch(Exception e) {
@@ -58,7 +59,7 @@ public class RestogramActionBarActivity extends RestogramActivity {
 
                 // Switch to "NearbyActivity" with no parameters
                 Intent intent = new Intent(this, NearbyActivity.class);
-                startActivityForResult(intent, Defs.RequestCodes.RC_NEARBY);
+                Utils.changeActivity(this, intent, Defs.RequestCodes.RC_NEARBY, false);
                 break;
             }
             case R.id.action_personal: {
@@ -69,7 +70,9 @@ public class RestogramActionBarActivity extends RestogramActivity {
                     loginHelper.login(true);
                 }
                 else {
-                    loginHelper.switchToPersonalActivity();
+                    // Switch to "PersonalActivity" with no parameters
+                    Intent intent = new Intent(this, PersonalActivity.class);
+                    Utils.changeActivity(this, intent, Defs.RequestCodes.RC_PERSONAL, false);
                 }
                 break;
             }

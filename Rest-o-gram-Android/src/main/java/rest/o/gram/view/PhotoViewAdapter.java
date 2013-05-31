@@ -13,6 +13,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import rest.o.gram.activities.PhotoActivity;
 import rest.o.gram.common.Defs;
+import rest.o.gram.common.Utils;
 import rest.o.gram.entities.RestogramPhoto;
 
 import java.util.LinkedList;
@@ -125,8 +126,7 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
         Intent intent = new Intent(context, PhotoActivity.class);
         intent.putExtra("photo", photo);
         intent.putExtra("thumbnail_bitmap", bitmap);
-
-        context.startActivityForResult(intent, Defs.RequestCodes.RC_PHOTO);
+        Utils.changeActivity(context, intent, Defs.RequestCodes.RC_PHOTO, false);
     }
 
     private Activity context; // Context
