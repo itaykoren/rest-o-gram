@@ -7,17 +7,14 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import rest.o.gram.R;
-import rest.o.gram.activities.helpers.FavoriteHelper;
-import rest.o.gram.activities.helpers.LoginHelper;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.common.Defs;
-import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.view.PhotoInfoView;
 
 /**
  * Created with IntelliJ IDEA.
@@ -105,6 +102,13 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         }
     }
 
+    public void onInfoClicked(View view) {
+        if(photoInfoView.isOpen())
+            return;
+
+        photoInfoView.open();
+    }
+
     /**
      * Initializes using given photo
      */
@@ -118,14 +122,11 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         if(bitmap != null)
             iv.setImageBitmap(bitmap);
 
-        // Update UI
-        Utils.updateTextView((TextView)findViewById(R.id.tvLikes), String.valueOf(photo.getLikes())+" likes");
-        Utils.updateTextView((TextView)findViewById(R.id.tvCreationTime), Utils.convertDate(photo.getCreatedTime()));
-        Utils.updateTextView((TextView)findViewById(R.id.tvUsername), photo.getUser());
-        Utils.updateTextView((TextView)findViewById(R.id.tvTitle), photo.getCaption());
-
         // Set UI with standard resolution image
         command = RestogramClient.getInstance().downloadImage(photo.getStandardResolution(), iv, true, this);
+
+        // Init photo info view
+        photoInfoView = new PhotoInfoView(this, photo);
     }
 
     private void cancelProgress() {
@@ -135,4 +136,5 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
 
     private RestogramPhoto photo; // Photo object
     private IRestogramCommand command; // Command object
+    private PhotoInfoView photoInfoView; // Photo info view
 }

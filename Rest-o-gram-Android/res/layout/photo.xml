@@ -1,111 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout   xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/background">
+                android:background="#FFFFFF">
 
-
-    <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-
-           <TextView
-                    android:id="@+id/tvUsername"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="14dp"
-                    android:textColor="#FFFFFF"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginTop="15dp"/>
-
-
-            <TextView
-                    android:id="@+id/tvLikes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="14dp"
-                    android:textColor="#FFFFFF"
-                    android:layout_toRightOf="@+id/tvUsername"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginLeft="20dp" />
-
-
-
-            <TextView
-                    android:id="@+id/tvCreationTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="14dp"
-                    android:textColor="#FFFFFF"
-                    android:layout_toRightOf="@+id/tvLikes"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginLeft="20dp"  />
+        <ImageButton
+                android:id="@+id/infoButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_info"
+                android:layout_gravity="right"
+                android:onClick="onInfoClicked"/>
 
         <ImageButton
                 android:id="@+id/bPhotoFavorite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_favorite_off"
-                android:onClick="onFavoriteClicked"
-                android:layout_alignParentLeft="true"
-                android:layout_below='@id/tvUsername'/>
-            <!--    android:layout_marginTop="480dp"
-                android:layout_alignParentTop="true"-->
+                android:onClick="onFavoriteClicked"/>
 
 
-    </RelativeLayout>
+        <ImageView
+                android:id="@+id/ivPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"    />
 
-
-
-    <RelativeLayout
-                android:id="@+id/relative_container"
+        <ProgressBar
+                android:id="@+id/pbImageLoading"
+                style="?android:attr/progressBarStyleSmall"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:layout_gravity="center"/>
 
+    </LinearLayout>
 
-
-            <ImageView
-                    android:id="@+id/ivPhoto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:adjustViewBounds="true"/>
-
-            <ProgressBar
-                    android:id="@+id/pbImageLoading"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:visibility="visible"/>
-
-        </RelativeLayout>
-
-
-
-
-
-
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tvTitle"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/relative_container"/>
-               <!--     android:layout_below="@+id/bPhotoFavorite"-->
-
-
-
-
-
-
-
-    </RelativeLayout>
