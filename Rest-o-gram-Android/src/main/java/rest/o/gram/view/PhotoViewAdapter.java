@@ -71,7 +71,7 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
         final ImageView imageView;
 
         if (view == null) { // View is not recycled
-            imageView = new ImageView(context);
+            imageView = new SquareImageView(context);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
         else { // View is recycled
