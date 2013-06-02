@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Menu;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ListView;
@@ -61,6 +62,21 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         super.onDestroy();
 
         // TODO
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(!super.onCreateOptionsMenu(menu))
+            return false;
+
+        try {
+            menu.getItem(menu.size() - 1).setVisible(true); // Enable logout button
+        }
+        catch(Exception e) {
+            // Empty
+        }
+
+        return true;
     }
 
     @Override

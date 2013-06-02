@@ -35,16 +35,6 @@ public class RestogramActionBarActivity extends RestogramActivity {
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.layout.menu, menu);
-
-        try {
-            if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
-                menu.getItem(menu.size() - 1).setVisible(false); // Disable logout button
-            }
-        }
-        catch(Exception e) {
-
-        }
-
         return true;
     }
 
