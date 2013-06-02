@@ -103,6 +103,9 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
     }
 
     public void onInfoClicked(View view) {
+        if(photoInfoView == null)
+            return;
+
         if(photoInfoView.isOpen())
             return;
 

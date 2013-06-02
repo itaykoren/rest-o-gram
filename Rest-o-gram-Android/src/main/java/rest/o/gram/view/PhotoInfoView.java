@@ -2,11 +2,11 @@ package rest.o.gram.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import rest.o.gram.R;
@@ -71,22 +71,22 @@ public class PhotoInfoView {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             layout = inflater.inflate(R.layout.photo_info, (ViewGroup)context.findViewById(R.id.popup_element));
             popupWindow = new PopupWindow(layout, 350, 350, true);
+            popupWindow.setOutsideTouchable(true);
+            popupWindow.setBackgroundDrawable(new BitmapDrawable());
+            popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    isOpen = false;
+                }
+            });
 
             // Update UI
             Utils.updateTextView((TextView)layout.findViewById(R.id.tvLikes), String.valueOf(photo.getLikes()) + " likes");
             Utils.updateTextView((TextView)layout.findViewById(R.id.tvCreationTime), Utils.convertDate(photo.getCreatedTime()));
             Utils.updateTextView((TextView)layout.findViewById(R.id.tvUsername), photo.getUser());
             Utils.updateTextView((TextView)layout.findViewById(R.id.tvTitle), photo.getCaption());
-
-            Button btnClosePopup = (Button)layout.findViewById(R.id.btn_close_popup);
-            btnClosePopup.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    close();
-                }
-            });
-
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
