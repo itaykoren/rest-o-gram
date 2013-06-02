@@ -17,6 +17,7 @@ public final class Defs {
         public static final int RC_VENUE = 103;
         public static final int RC_PHOTO = 104;
         public static final int RC_PERSONAL = 105;
+        public static final int RC_EXPLORE = 106;
     }
 
     /**
