@@ -21,21 +21,27 @@
                 android:src="@drawable/ic_favorite_off"
                 android:onClick="onFavoriteClicked"/>
 
-
-        <ImageView
-                android:id="@+id/ivPhoto"
+        <RelativeLayout
+                android:id="@+id/relative_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:adjustViewBounds="true"    />
+                android:layout_gravity="center">
 
-        <ProgressBar
-                android:id="@+id/pbImageLoading"
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                android:layout_gravity="center"/>
+            <ImageView
+                    android:id="@+id/ivPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"/>
+
+            <ProgressBar
+                    android:id="@+id/pbImageLoading"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="visible"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
