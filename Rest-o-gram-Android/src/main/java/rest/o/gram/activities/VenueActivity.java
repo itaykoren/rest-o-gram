@@ -24,7 +24,7 @@ import rest.o.gram.view.PhotoViewAdapter;
  * User: Roi
  * Date: 16/04/13
  */
-public class VenueActivity extends RestogramActivity implements ITaskObserver {
+public class VenueActivity extends RestogramActionBarActivity implements ITaskObserver {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

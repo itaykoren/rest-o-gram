@@ -24,7 +24,7 @@ import rest.o.gram.entities.RestogramPhoto;
  * User: Roi
  * Date: 16/04/13
  */
-public class PhotoActivity extends RestogramActivity implements IRestogramCommandObserver {
+public class PhotoActivity extends RestogramActionBarActivity implements IRestogramCommandObserver {
 
     @Override
     public void onCanceled(IRestogramCommand command) {
