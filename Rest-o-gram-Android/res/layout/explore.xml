@@ -6,23 +6,18 @@
               android:layout_height="fill_parent"
               android:background="#FFFFFF">
 
-
     <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="#FFFFFF"
             android:scaleType= "center">
 
-        <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-
             <GridView
                     android:id="@+id/gvPhotos"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
                     android:layout_marginRight="2dp"
                     android:layout_marginLeft="2dp"
                     android:numColumns="3"
@@ -31,7 +26,5 @@
                     android:stretchMode="columnWidth"
                     android:gravity="center"/>
 
-
-        </LinearLayout>
     </FrameLayout>
 </LinearLayout>

@@ -10,18 +10,19 @@
             android:title="Nearby"
             android:showAsAction="always"/>
     <item
+            android:id="@+id/action_explore"
+            android:title="E"
+            android:showAsAction="always"/>
+    <item
             android:id="@+id/action_personal"
             android:icon="@drawable/ic_me"
             android:title="Me"
-            android:showAsAction="always">
-    </item>
-
+            android:showAsAction="always"/>
     <item
             android:id="@+id/action_logout"
             android:icon="@drawable/ic_logout"
             android:title="Logout"
             android:showAsAction="always"
-            android:visible="false">
-    </item>
+            android:visible="false"/>
 
 </menu>

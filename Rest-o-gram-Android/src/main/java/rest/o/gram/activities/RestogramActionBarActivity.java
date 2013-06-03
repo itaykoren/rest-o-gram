@@ -52,6 +52,15 @@ public class RestogramActionBarActivity extends RestogramActivity {
                 Utils.changeActivity(this, intent, Defs.RequestCodes.RC_NEARBY, false);
                 break;
             }
+            case R.id.action_explore: {
+                if(super.getClass() == ExploreActivity.class)
+                    break;
+
+                // Switch to "ExploreActivity" with no parameters
+                Intent intent = new Intent(this, ExploreActivity.class);
+                Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, false);
+                break;
+            }
             case R.id.action_personal: {
                 if(super.getClass() == PersonalActivity.class)
                     break;

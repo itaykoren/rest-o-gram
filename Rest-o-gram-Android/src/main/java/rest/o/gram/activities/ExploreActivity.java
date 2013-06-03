@@ -7,6 +7,7 @@ import android.widget.*;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
+import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
@@ -40,6 +41,13 @@ public class ExploreActivity extends RestogramActionBarActivity implements ITask
                     longitude = tracker.getLongitude();
                 }
 
+                // Load venues from cache
+                IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
+                if(cache != null) {
+                    venues = cache.loadVenues();
+                    initialize();
+                }
+
             } else {
                 latitude = intent.getDoubleExtra("latitude", 0.0);
                 longitude = intent.getDoubleExtra("longitude", 0.0);
@@ -63,13 +71,22 @@ public class ExploreActivity extends RestogramActionBarActivity implements ITask
 
     @Override
     public void onFinished(GetNearbyResult result) {
-
-        this.venues = result.getVenues();
-
-        if (venues == null || venues[0] == null)
+        venues = result.getVenues();
+        if (venues == null || venues.length == 0)
             return;
 
-        initialize(venues);
+        IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
+        if(cache != null) {
+            // Reset cache
+            cache.clear();
+
+            // Save to cache
+            for(final RestogramVenue venue : venues) {
+                cache.save(venue, Defs.Data.SortOrder.SortOrderFIFO);
+            }
+        }
+
+        initialize();
     }
 
     @Override
@@ -122,9 +139,8 @@ public class ExploreActivity extends RestogramActionBarActivity implements ITask
     }
 
 
-    private void initialize(RestogramVenue[] venues) {
-
-        if (venues == null)
+    private void initialize() {
+        if (venues == null || venues.length == 0)
             return;
 
         RestogramVenue firstVenue = venues[0];
