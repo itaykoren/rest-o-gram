@@ -14,8 +14,7 @@ import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
-import rest.o.gram.location.ILocationTracker;
-import rest.o.gram.tasks.results.*;
+import rest.o.gram.tasks.results.GetPhotosResult;
 import rest.o.gram.view.PhotoViewAdapter;
 
 /**
@@ -90,18 +89,12 @@ public class VenueActivity extends RestogramActionBarActivity {
     }
 
     public void onNavigationClicked(View view) {
-        // Get current location
-        ILocationTracker tracker = RestogramClient.getInstance().getLocationTracker();
-        if(tracker == null)
-            return;
-
         try {
             // TODO: create more generic intent
             // Create intent with location parameters
-            String source = tracker.getLatitude() + "," + tracker.getLongitude();
             String destination = venue.getLatitude() + "," + venue.getLongitude();
             Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                    Uri.parse("http://maps.google.com/maps?saddr="+source+"&daddr="+destination));
+                    Uri.parse("http://maps.google.com/maps?daddr="+destination));
 
             // Launch navigation
             startActivity(intent);
