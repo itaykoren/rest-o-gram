@@ -79,15 +79,25 @@
                         android:layout_below="@+id/tvVenueAddress"
                         android:layout_toRightOf="@+id/ivVenue"/>
 
-                <ImageButton
-                        android:id="@+id/bVenueFavorite"
+                <LinearLayout android:orientation="horizontal"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_below="@+id/tvVenuePhone"
+                              android:layout_alignParentRight="true">
 
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_favorite_off"
-                        android:onClick="onFavoriteClicked"
-                        android:layout_alignParentRight="true"
-                        android:layout_below="@+id/tvVenuePhone"/>
+                    <ImageButton android:id="@+id/bVenueNavigate"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:src="@drawable/ic_navigate"
+                                 android:onClick="onNavigationClicked"/>
+
+                    <ImageButton android:id="@+id/bVenueFavorite"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:src="@drawable/ic_favorite_off"
+                                 android:onClick="onFavoriteClicked"/>
+
+                </LinearLayout>
 
 
 
