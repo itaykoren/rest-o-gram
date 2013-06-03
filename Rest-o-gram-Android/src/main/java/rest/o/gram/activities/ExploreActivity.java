@@ -63,12 +63,13 @@ public class ExploreActivity extends RestogramActionBarActivity implements ITask
 
     @Override
     public void onFinished(GetNearbyResult result) {
+
         this.venues = result.getVenues();
 
         if (venues == null || venues[0] == null)
             return;
 
-        initialize(venues[0]);
+        initialize(venues);
     }
 
     @Override
@@ -87,6 +88,9 @@ public class ExploreActivity extends RestogramActionBarActivity implements ITask
 
         // Add new photos
         addPhotos(result.getPhotos());
+
+        // Update last token of current venue
+        tokens[currVenueIndex] = result.getToken();
 
         // Update request pending flag
         isRequestPending = false;
@@ -118,10 +122,15 @@ public class ExploreActivity extends RestogramActionBarActivity implements ITask
     }
 
 
-    private void initialize(RestogramVenue venue) {
+    private void initialize(RestogramVenue[] venues) {
 
-        if (venue == null)
+        if (venues == null)
             return;
+
+        RestogramVenue firstVenue = venues[0];
+
+        // Init tokens array
+        tokens = new String[venues.length];
 
         // Init photo grid view
         GridView gv = (GridView) findViewById(R.id.gvPhotos);
@@ -148,8 +157,8 @@ public class ExploreActivity extends RestogramActionBarActivity implements ITask
             }
         });
 
-        // Send get photos request
-        RestogramClient.getInstance().getPhotos(venue.getFoursquare_id(), RestogramFilterType.Simple, this);
+        // Send get photos request for first venue
+        RestogramClient.getInstance().getPhotos(firstVenue.getFoursquare_id(), RestogramFilterType.Simple, this);
     }
 
     private void addPhotos(RestogramPhoto[] photos) {
@@ -161,6 +170,7 @@ public class ExploreActivity extends RestogramActionBarActivity implements ITask
     }
 
     private void onScrollBottom() {
+
         if (isRequestPending)
             return;
 
@@ -170,14 +180,20 @@ public class ExploreActivity extends RestogramActionBarActivity implements ITask
 
         RestogramVenue nextVenue = getNextVenue(venues);
 
-        RestogramClient.getInstance().getPhotos(nextVenue.getFoursquare_id(), RestogramFilterType.Simple, this);
+        String currToken = tokens[currVenueIndex];
 
+        // if we already got photos from this location, get the next ones
+        if (currToken != null) {
+            RestogramClient.getInstance().getNextPhotos(currToken, RestogramFilterType.Simple, this);
+        } else {
+            RestogramClient.getInstance().getPhotos(nextVenue.getFoursquare_id(), RestogramFilterType.Simple, this);
+        }
     }
 
     private RestogramVenue getNextVenue(RestogramVenue[] venues) {
 
-        int length = venues.length;
-        return venues[++currVenueIndex % length];
+        currVenueIndex = (currVenueIndex + 1) % venues.length;
+        return venues[currVenueIndex];
 
     }
 
@@ -186,5 +202,6 @@ public class ExploreActivity extends RestogramActionBarActivity implements ITask
     private PhotoViewAdapter viewAdapter; // View adapter
     private boolean isRequestPending = false;
     private RestogramVenue[] venues;
+    private String[] tokens;
     private int currVenueIndex = 0;
 }
