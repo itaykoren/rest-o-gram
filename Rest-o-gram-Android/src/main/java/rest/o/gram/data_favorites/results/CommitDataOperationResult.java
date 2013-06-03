@@ -5,7 +5,7 @@ package rest.o.gram.data_favorites.results;
  * User: Or
  * Date: 5/23/13
  */
-public class CommitDataOperationResult {
+public abstract class CommitDataOperationResult {
     public CommitDataOperationResult(boolean hasSucceded)  {
         this.hasSucceded = hasSucceded;
     }

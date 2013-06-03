@@ -148,6 +148,9 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
         if(!result.hasSucceded())
             return;
 
+        final RestogramPhoto addedPhoto = result.getPhoto();
+        favoritePhotos.put(addedPhoto.getInstagram_id(), addedPhoto);
+
         if(favoritePhotoButton != null)
             favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_on);
     }
@@ -156,6 +159,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     public void onFinished(RemoveFavoritePhotosResult result) {
         if(!result.hasSucceded())
             return;
+
+        favoritePhotos.remove(result.getPhoto().getInstagram_id());
 
         if(favoritePhotoButton != null)
             favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_off);
@@ -193,6 +198,9 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
         if(!result.hasSucceded())
             return;
 
+        final RestogramVenue addedVenue = result.getVenue();
+        favoriteVenues.put(addedVenue.getFoursquare_id(), addedVenue);
+
         if(favoriteVenueButton != null)
             favoriteVenueButton.setBackgroundResource(R.drawable.ic_favorite_on);
     }
@@ -201,6 +209,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     public void onFinished(RemoveFavoriteVenuesResult result) {
         if(!result.hasSucceded())
             return;
+
+        favoriteVenues.remove(result.getVenue().getFoursquare_id());
 
         if(favoriteVenueButton != null)
             favoriteVenueButton.setBackgroundResource(R.drawable.ic_favorite_off);
