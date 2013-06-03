@@ -229,7 +229,7 @@ public class RestogramServiceImpl implements RestogramService {
             entities = DatastoreUtils.getPublicEntities(Kinds.PHOTO, ids);
         }
         catch (LeanException e) {
-            log.severe("fetching photos fromm cache has failed");
+            log.severe("fetching photos from cache has failed");
             e.printStackTrace();
         }
 

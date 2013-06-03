@@ -11,6 +11,7 @@ package com.leanengine;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import rest.o.gram.entities.QueryReference;
 
 import java.util.Date;
 import java.util.List;
@@ -80,6 +81,15 @@ public class JsonEncode {
             json.put("limit", query.getLimit());
             if (query.getOffset() != 0) json.put("offset", query.getOffset());
             if (query.getCursor() != null) json.put("cursor", query.getCursor());
+
+            final QueryReference reference = query.getReference();
+            if (reference != null)
+            {
+                JSONObject jsonReference = new JSONObject();
+                jsonReference.put("property", reference.getProperty());
+                jsonReference.put("kind", reference.getKind());
+                json.put("reference", jsonReference);
+            }
 
             return json;
         } catch (JSONException e) {

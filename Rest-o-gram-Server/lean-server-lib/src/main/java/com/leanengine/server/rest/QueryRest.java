@@ -1,16 +1,18 @@
 package com.leanengine.server.rest;
 
+import com.google.appengine.api.datastore.Entity;
 import com.leanengine.server.JsonUtils;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
-import com.leanengine.server.entity.LeanQuery;
-import com.leanengine.server.entity.QueryFilter;
-import com.leanengine.server.entity.QueryResult;
-import com.leanengine.server.entity.QuerySort;
+import com.leanengine.server.entity.*;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+import rest.o.gram.entities.QueryReference;
 
 import javax.ws.rs.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Path("/v1/query")
@@ -23,8 +25,29 @@ public class QueryRest {
     @POST
     @Path("/")
     public JsonNode query(String queryJson) throws LeanException {
-        QueryResult result = DatastoreUtils.queryEntityPrivate(LeanQuery.fromJson(queryJson));
-        ObjectNode jsonResult = JsonUtils.entityListToJson(result.getResult());
+        final LeanQuery leanQuery = LeanQuery.fromJson(queryJson);
+        final QueryResult result = DatastoreUtils.queryEntityPrivate(leanQuery);
+        final List<Entity> entities = result.getResult();
+
+        // handling cross(join) query
+        final QueryReference queryReference = leanQuery.getReference();
+        if (queryReference != null)
+        {
+            HashMap<String, Entity> refPropertyToEntity = new HashMap<>();
+            final String[] keys = new String[entities.size()];
+            for (int i = 0; i < entities.size(); ++i)
+            {
+                final Entity currEntity = entities.get(i);
+                keys[i] = (String)currEntity.getProperty(queryReference.getProperty());
+                refPropertyToEntity.put(keys[i], currEntity);
+            }
+            final Collection<Entity> joinedEntities =
+                    DatastoreUtils.getPublicEntities(queryReference.getKind(), keys);
+            // TODO: make sure private data is set(id, props other than ref prop)
+            for (final Entity currEntity : joinedEntities)
+                currEntity.setPropertiesFrom(refPropertyToEntity.get(currEntity.getProperty(queryReference.getProperty()))); // TODO: resets or overrides?
+        }
+        ObjectNode jsonResult = JsonUtils.entityListToJson(entities);
         if (result.getCursor() != null) {
             jsonResult.put("cursor", result.getCursor().toWebSafeString());
         }

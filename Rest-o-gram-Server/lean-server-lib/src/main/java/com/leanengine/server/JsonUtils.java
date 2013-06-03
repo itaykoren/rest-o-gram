@@ -31,7 +31,7 @@ public class JsonUtils {
         return new ObjectMapper();
     }
 
-    public static ObjectNode entityListToJson(List<Entity> entityList) throws LeanException {
+    public static ObjectNode entityListToJson(Collection<Entity> entityList) throws LeanException {
         ObjectNode json = getObjectMapper().createObjectNode();
         ArrayNode array = getObjectMapper().createArrayNode();
 

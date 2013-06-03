@@ -8,6 +8,8 @@
 
 package com.leanengine;
 
+import rest.o.gram.entities.QueryReference;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class LeanQuery {
     private String cursor;
     private int limit = 20;
     private int offset = 0;
+    private QueryReference queryReference;
 
     /**
      * Constructor to initialize query.
@@ -203,6 +206,14 @@ public class LeanQuery {
     public LeanQuery offset(int offset) {
         this.offset = offset;
         return this;
+    }
+
+    public QueryReference getReference() {
+        return queryReference;
+    }
+
+    public void setReference(QueryReference queryReference) {
+        this.queryReference = queryReference;
     }
 
     /**

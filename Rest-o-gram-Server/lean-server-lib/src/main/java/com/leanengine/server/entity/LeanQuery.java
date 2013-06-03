@@ -5,6 +5,7 @@ import com.leanengine.server.JsonUtils;
 import com.leanengine.server.LeanException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+import rest.o.gram.entities.QueryReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class LeanQuery {
     private Cursor cursor;
     private Integer offset;
     private Integer limit;
+    private QueryReference reference;
 
     public LeanQuery(String kind) {
         this.kind = kind;
@@ -80,6 +82,14 @@ public class LeanQuery {
 
         if (this.cursor != null) {
            json.put("cursor", cursor.toWebSafeString());
+        }
+
+        if (this.reference != null)
+        {
+            final ObjectNode jsonReference = JsonUtils.getObjectMapper().createObjectNode();
+            jsonReference.put("property", reference.getProperty());
+            jsonReference.put("kind", reference.getKind());
+            json.put("reference", jsonReference);
         }
 
         return json;
@@ -163,6 +173,27 @@ public class LeanQuery {
             query.offset = offsetNode.getIntValue();
         }
 
+        // get 'reference'
+        ObjectNode reference;
+        try {
+            reference = (ObjectNode) jsonNode.get("reference");
+        } catch (ClassCastException cce) {
+            throw new LeanException(LeanException.Error.QueryJSON, " Property 'reference' must be a JSON object.");
+        }
+        if (reference != null)
+        {
+            JsonNode propertyNode = reference.get("property");
+            if (propertyNode == null)
+                throw new LeanException(LeanException.Error.QueryJSON, "'reference' object's 'property' property is not set");
+            final String refProperty = propertyNode.getTextValue();
+            JsonNode kindNode = reference.get("kind");
+            if (kindNode == null)
+                throw new LeanException(LeanException.Error.QueryJSON, "'reference' object's 'kind' property is not set");
+            final String refKind = propertyNode.getTextValue();
+
+            query.reference = new QueryReference(refProperty, refKind);
+        }
+
         return query;
     }
 
@@ -180,5 +211,13 @@ public class LeanQuery {
 
     public void setLimit(int limit) {
         this.limit = limit;
+    }
+
+    public QueryReference getReference() {
+        return reference;
+    }
+
+    public void setReference(QueryReference reference) {
+        this.reference = reference;
     }
 }
