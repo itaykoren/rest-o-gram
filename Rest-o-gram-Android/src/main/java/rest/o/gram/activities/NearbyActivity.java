@@ -11,7 +11,6 @@ import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.location.ILocationTracker;
-import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.*;
 import rest.o.gram.view.VenueViewAdapter;
 
@@ -22,7 +21,7 @@ import static rest.o.gram.location.Utils.distance;
  * User: Roi
  * Date: 16/04/13
  */
-public class NearbyActivity extends RestogramActionBarActivity implements ITaskObserver, IRestogramListener {
+public class NearbyActivity extends RestogramActionBarActivity implements IRestogramListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,41 +88,6 @@ public class NearbyActivity extends RestogramActionBarActivity implements ITaskO
         }
 
         addVenues(result.getVenues());
-    }
-
-    @Override
-    public void onFinished(GetInfoResult result) {
-        // Empty
-    }
-
-    @Override
-    public void onFinished(GetPhotosResult result) {
-        // Empty
-    }
-
-    @Override
-    public void onFinished(CachePhotoResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onFinished(FetchPhotosFromCacheResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onFinished(CacheVenueResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onFinished(FetchVenuesFromCacheResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onCanceled() {
-        // Empty
     }
 
     @Override

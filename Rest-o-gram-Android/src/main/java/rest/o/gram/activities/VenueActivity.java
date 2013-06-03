@@ -6,8 +6,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import rest.o.gram.R;
-import rest.o.gram.activities.helpers.FavoriteHelper;
-import rest.o.gram.activities.helpers.LoginHelper;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
@@ -15,7 +13,6 @@ import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
-import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.*;
 import rest.o.gram.view.PhotoViewAdapter;
 
@@ -24,7 +21,7 @@ import rest.o.gram.view.PhotoViewAdapter;
  * User: Roi
  * Date: 16/04/13
  */
-public class VenueActivity extends RestogramActionBarActivity implements ITaskObserver {
+public class VenueActivity extends RestogramActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,16 +70,6 @@ public class VenueActivity extends RestogramActionBarActivity implements ITaskOb
     }
 
     @Override
-    public void onFinished(GetNearbyResult result) {
-        // Empty
-    }
-
-    @Override
-    public void onFinished(GetInfoResult result) {
-        // Empty
-    }
-
-    @Override
     public void onFinished(GetPhotosResult result) {
         if(result == null)
             return;
@@ -98,31 +85,6 @@ public class VenueActivity extends RestogramActionBarActivity implements ITaskOb
 
         // Update request pending flag
         isRequestPending = false;
-    }
-
-    @Override
-    public void onFinished(CachePhotoResult result) {
-        // Empty
-    }
-
-    @Override
-    public void onFinished(FetchPhotosFromCacheResult result) {
-        // Empty
-    }
-
-    @Override
-    public void onFinished(CacheVenueResult result) {
-        // Empty
-    }
-
-    @Override
-    public void onFinished(FetchVenuesFromCacheResult result) {
-        // Empty
-    }
-
-    @Override
-    public void onCanceled() {
-        // Empty
     }
 
     public void onFavoriteClicked(View view) {

@@ -4,13 +4,15 @@ import android.app.Activity;
 import android.os.Bundle;
 import rest.o.gram.activities.helpers.FavoriteHelper;
 import rest.o.gram.activities.helpers.LoginHelper;
+import rest.o.gram.tasks.ITaskObserver;
+import rest.o.gram.tasks.results.*;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Hen
  * Date: 24/05/13
  */
-public class RestogramActivity extends Activity {
+public class RestogramActivity extends Activity implements ITaskObserver {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +36,46 @@ public class RestogramActivity extends Activity {
      */
     public void onUserLoggedOut() {
         // TODO
+    }
+
+    @Override
+    public void onFinished(GetNearbyResult venues) {
+        // Empty
+    }
+
+    @Override
+    public void onFinished(GetInfoResult venue) {
+        // Empty
+    }
+
+    @Override
+    public void onFinished(GetPhotosResult result) {
+        // Empty
+    }
+
+    @Override
+    public void onFinished(CachePhotoResult result) {
+        // Empty
+    }
+
+    @Override
+    public void onFinished(FetchPhotosFromCacheResult result) {
+        // Empty
+    }
+
+    @Override
+    public void onFinished(CacheVenueResult result) {
+        // Empty
+    }
+
+    @Override
+    public void onFinished(FetchVenuesFromCacheResult result) {
+        // Empty
+    }
+
+    @Override
+    public void onCanceled() {
+        // Empty
     }
 
     protected LoginHelper loginHelper; // Login helper

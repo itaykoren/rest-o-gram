@@ -15,14 +15,13 @@ import rest.o.gram.location.ILocationObserver;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.tasks.results.*;
-import rest.o.gram.tasks.ITaskObserver;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Roi
  * Date: 16/04/13
  */
-public class HomeActivity extends RestogramActivity implements ILocationObserver, ITaskObserver {
+public class HomeActivity extends RestogramActivity implements ILocationObserver {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,36 +146,6 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
         Intent intent = new Intent(this, VenueActivity.class);
         intent.putExtra("venue", this.venue);
         Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, true);
-    }
-
-    @Override
-    public void onFinished(GetPhotosResult result) {
-        // Empty
-    }
-
-    @Override
-    public void onFinished(CachePhotoResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onFinished(FetchPhotosFromCacheResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onFinished(CacheVenueResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onFinished(FetchVenuesFromCacheResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onCanceled() {
-        // Empty
     }
 
     private void cancelProgress() {

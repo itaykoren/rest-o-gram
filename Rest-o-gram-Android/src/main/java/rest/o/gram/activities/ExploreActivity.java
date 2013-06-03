@@ -12,7 +12,6 @@ import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
-import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.*;
 import rest.o.gram.view.PhotoViewAdapter;
 
@@ -21,7 +20,7 @@ import rest.o.gram.view.PhotoViewAdapter;
  * User: Itay
  * Date: 01/06/13
  */
-public class ExploreActivity extends RestogramActionBarActivity implements ITaskObserver {
+public class ExploreActivity extends RestogramActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,11 +89,6 @@ public class ExploreActivity extends RestogramActionBarActivity implements ITask
     }
 
     @Override
-    public void onFinished(GetInfoResult result) {
-        // Empty
-    }
-
-    @Override
     public void onFinished(GetPhotosResult result) {
 
         if (result == null)
@@ -112,32 +106,6 @@ public class ExploreActivity extends RestogramActionBarActivity implements ITask
         // Update request pending flag
         isRequestPending = false;
     }
-
-    @Override
-    public void onFinished(CachePhotoResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onFinished(FetchPhotosFromCacheResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onFinished(CacheVenueResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onFinished(FetchVenuesFromCacheResult result) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onCanceled() {
-        // Empty
-    }
-
 
     private void initialize() {
         if (venues == null || venues.length == 0)
