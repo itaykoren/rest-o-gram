@@ -189,7 +189,7 @@ public class LeanQuery {
             JsonNode kindNode = reference.get("kind");
             if (kindNode == null)
                 throw new LeanException(LeanException.Error.QueryJSON, "'reference' object's 'kind' property is not set");
-            final String refKind = propertyNode.getTextValue();
+            final String refKind = kindNode.getTextValue();
 
             query.reference = new QueryReference(refProperty, refKind);
         }

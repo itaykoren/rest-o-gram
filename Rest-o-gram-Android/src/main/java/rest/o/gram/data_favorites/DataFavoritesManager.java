@@ -5,12 +5,11 @@ import com.leanengine.*;
 import rest.o.gram.client.IRestogramClient;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.data_favorites.results.*;
-import rest.o.gram.entities.Kinds;
-import rest.o.gram.entities.Props;
-import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.entities.*;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.*;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -96,18 +95,20 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         {
             query = new LeanQuery(Kinds.PHOTO_REFERENCE);
             query.addFilter(Props.PhotoRef.IS_FAVORITE, LeanQuery.FilterOperator.EQUAL, true);
-            query.addSort(Props.PhotoRef.INSTAGRAM_ID, LeanQuery.SortDirection.ASCENDING);
+            query.setReference(new QueryReference(Props.PhotoRef.INSTAGRAM_ID,  Kinds.PHOTO));
         }
-        final TaskObserverImpl internalObserver = new TaskObserverImpl(observer, query);
 
+        final LeanQuery actualQuery = query;
         NetworkCallback<LeanEntity> callback =
                 new NetworkCallback<LeanEntity>() {
                     @Override
                     public void onResult(LeanEntity... result) {
                         if (RestogramClient.getInstance().isDebuggable())
                             Log.d("REST-O-GRAM", "fetching fav photos - from DS succeded");
-                        internalObserver.setPhotoRefs(result);
-                        client.fetchPhotosFromCache(internalObserver, Converters.photosRefsToNames(result));
+
+                        final List<RestogramPhoto> photos =
+                                result == null ? null : Converters.leanEntitiesToPhotos(result);
+                        observer.onFinished(new GetFavoritePhotosResult(photos, actualQuery));
                     }
 
                     @Override
@@ -210,18 +211,20 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         {
             query = new LeanQuery(Kinds.VENUE_REFERENCE);
             query.addFilter(Props.VenueRef.IS_FAVORITE, LeanQuery.FilterOperator.EQUAL, true);
-            query.addSort(Props.VenueRef.FOURSQUARE_ID, LeanQuery.SortDirection.ASCENDING);
+            query.setReference(new QueryReference(Props.VenueRef.FOURSQUARE_ID, Kinds.VENUE));
         }
-        final TaskObserverImpl internalObserver = new TaskObserverImpl(observer, query);
 
+        final LeanQuery actualQuery = query;
         NetworkCallback<LeanEntity> callback =
                 new NetworkCallback<LeanEntity>() {
                     @Override
                     public void onResult(LeanEntity... result) {
                         if (RestogramClient.getInstance().isDebuggable())
                             Log.d("REST-O-GRAM", "fetching fav venues - from DS succeded");
-                        internalObserver.setVenueRefs(result);
-                        client.fetchVenuesFromCache(internalObserver, Converters.venuesRefsToNames(result));
+
+                         final List<RestogramVenue> venues =
+                                 result == null ? null :  Converters.leanEntitiesToVenues(result);
+                        observer.onFinished(new GetFavoriteVenuesResult(venues, actualQuery));
                     }
 
                     @Override
@@ -249,21 +252,6 @@ public class DataFavoritesManager implements IDataFavoritesManager {
 
     private class TaskObserverImpl implements ITaskObserver {
 
-        private TaskObserverImpl() {}
-
-        private TaskObserverImpl(final IDataFavoritesOperationsObserver observer, final LeanQuery favorites_query) {
-            this.observer = observer;
-            this.favorites_query = favorites_query;
-        }
-
-        void  setPhotoRefs(LeanEntity... photoRefs) {
-            this.photo_refs = photoRefs;
-        }
-
-        void  setVenueRefs(LeanEntity... venueRefs) {
-            this.venue_refs = venueRefs;
-        }
-
         @Override
         public void onFinished(GetNearbyResult venues) { }
 
@@ -288,26 +276,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         }
 
         @Override
-        public void onFinished(FetchPhotosFromCacheResult result) {
-            if (result.getPhotos() == null)
-            {
-                if (RestogramClient.getInstance().isDebuggable())
-                    Log.d("REST-O-GRAM", "fetching fav photos - from cache failed");
-                observer.onFinished(new GetFavoritePhotosResult(null, null));
-            }
-            else
-            {
-                if (RestogramClient.getInstance().isDebuggable())
-                    Log.d("REST-O-GRAM", "fetching fav photos - from cache succeded");
-                int i = 0;
-                for (final RestogramPhoto currPhoto : result.getPhotos())
-                {
-                    currPhoto.setId(photo_refs[i++].getId());
-                    currPhoto.set_favorite(true);
-                }
-                observer.onFinished(new GetFavoritePhotosResult(result.getPhotos(), favorites_query));
-            }
-        }
+        public void onFinished(FetchPhotosFromCacheResult result) { }
 
         @Override
         public void onFinished(CacheVenueResult result) {
@@ -324,36 +293,12 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         }
 
         @Override
-        public void onFinished(FetchVenuesFromCacheResult result) {
-            if (result.getVenues() == null)
-            {
-                if (RestogramClient.getInstance().isDebuggable())
-                    Log.d("REST-O-GRAM", "fetching fav venues - from cache failed");
-                observer.onFinished(new GetFavoriteVenuesResult(null, null));
-            }
-            else
-            {
-                if (RestogramClient.getInstance().isDebuggable())
-                    Log.d("REST-O-GRAM", "fetching fav venues - from cache succeded");
-                int i = 0;
-                for (final RestogramVenue currVenue : result.getVenues())
-                {
-                    currVenue.setId(venue_refs[i++].getId());
-                    currVenue.setfavorite(true);
-                }
-                observer.onFinished(new GetFavoriteVenuesResult(result.getVenues(), favorites_query));
-            }
-        }
+        public void onFinished(FetchVenuesFromCacheResult result) { }
 
         @Override
         public void onCanceled() {
             //To change body of implemented methods use File | Settings | File Templates.
         }
-
-        private IDataFavoritesOperationsObserver observer;
-        private LeanQuery favorites_query;
-        private LeanEntity[] photo_refs;
-        private LeanEntity[] venue_refs;
     }
 
     private IRestogramClient client;

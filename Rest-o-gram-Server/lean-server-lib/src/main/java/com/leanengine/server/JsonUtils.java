@@ -1,6 +1,7 @@
 package com.leanengine.server;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Text;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -44,7 +45,13 @@ public class JsonUtils {
 
     public static JsonNode entityToJson(Entity entity) throws LeanException {
         ObjectNode json = getObjectMapper().createObjectNode();
-        json.put("_id", entity.getKey().getId());
+        final Key entityKey = entity.getKey();
+        if (entityKey.getId() > 0)
+            json.put("_id", entity.getKey().getId());
+        else if (entityKey.getName() !=  null && !entityKey.getName().isEmpty())
+            json.put("_name", entity.getKey().getName());
+        else // an  entity must have either id or name
+            throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
         json.putPOJO("_kind", entity.getKind());
         json.putPOJO("_account", entity.getProperty("_account"));
         Map<String, Object> props = entity.getProperties();

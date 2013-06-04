@@ -8,6 +8,7 @@
 
 package com.leanengine;
 
+import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,20 +99,35 @@ public class JsonDecode {
         } catch (JSONException e) {
             throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field '_kind'.");
         }
-        Long id;
-        try {
+
+        Long id = 0L;
+        String uniqueName  = null;
+        try
+        {
             id = json.getLong("_id");
-        } catch (JSONException e) {
-            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field '_id'.");
+        } catch (JSONException e)
+        {
+            try
+            {
+                uniqueName = json.getString("_name");
+            } catch (JSONException e1)
+            {
+                throw new LeanException(LeanError.Type.ServerError,
+                        "Malformed reply: Entity JSON either '_id'  or  '_name' fields should be set.");
+            }
         }
-        Long accountId;
+//        Long accountId;
 //        try {
 //            accountId = json.getLong("_account");
 //        } catch (JSONException e) {
 //            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field '_account'.");
 //        }
 
-        LeanEntity entity = new LeanEntity(kind, id);
+        LeanEntity entity = null;
+        if (id >  0) // has an id
+            entity = new LeanEntity(kind, id);
+        else // has a unique name
+            entity = new LeanEntity(kind, uniqueName);
 
         try {
             entity.properties = entityPropertiesFromJson(json);
@@ -147,6 +163,15 @@ public class JsonDecode {
         } else if (jsonNode instanceof JSONArray) {
             return typedArrayFromJson((JSONArray) jsonNode);
         }
+
+        // numeric values from remote are always considered as longs
+        // the boxed integer  cannot be directly converted to a long...
+        if (jsonNode.getClass() == Integer.class)
+        {
+            final int jsonNodeUnboxed = (int)jsonNode;
+            return (long)jsonNodeUnboxed;
+        }
+
         return jsonNode;
     }
 

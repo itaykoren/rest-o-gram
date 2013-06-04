@@ -13,6 +13,7 @@ import javax.ws.rs.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Path("/v1/query")
@@ -29,29 +30,49 @@ public class QueryRest {
         final QueryResult result = DatastoreUtils.queryEntityPrivate(leanQuery);
         final List<Entity> entities = result.getResult();
 
-        // handling cross(join) query
         final QueryReference queryReference = leanQuery.getReference();
-        if (queryReference != null)
-        {
-            HashMap<String, Entity> refPropertyToEntity = new HashMap<>();
-            final String[] keys = new String[entities.size()];
-            for (int i = 0; i < entities.size(); ++i)
-            {
-                final Entity currEntity = entities.get(i);
-                keys[i] = (String)currEntity.getProperty(queryReference.getProperty());
-                refPropertyToEntity.put(keys[i], currEntity);
-            }
-            final Collection<Entity> joinedEntities =
-                    DatastoreUtils.getPublicEntities(queryReference.getKind(), keys);
-            // TODO: make sure private data is set(id, props other than ref prop)
-            for (final Entity currEntity : joinedEntities)
-                currEntity.setPropertiesFrom(refPropertyToEntity.get(currEntity.getProperty(queryReference.getProperty()))); // TODO: resets or overrides?
-        }
-        ObjectNode jsonResult = JsonUtils.entityListToJson(entities);
+        Collection<Entity> results = null;
+        if (queryReference == null)
+            results = entities;
+        else // handling cross(join) query
+            results = queryCross(entities, queryReference);
+        ObjectNode jsonResult = JsonUtils.entityListToJson(results);
         if (result.getCursor() != null) {
             jsonResult.put("cursor", result.getCursor().toWebSafeString());
         }
         return jsonResult;
+    }
+
+    private Collection<Entity> queryCross(List<Entity> entities, QueryReference queryReference) throws LeanException {
+
+        // preparing for cross query
+        final HashMap<String, Entity> refPropertyToEntity = new HashMap<>(entities.size());
+        final String[] names = new String[entities.size()];
+        for (int i = 0; i < entities.size(); ++i)
+        {
+            final Entity currEntity = entities.get(i);
+            names[i] = (String)currEntity.getProperty(queryReference.getProperty());
+            refPropertyToEntity.put(names[i], currEntity);
+        }
+
+        // execute cross query
+        Collection<Entity> crossEntities =
+                DatastoreUtils.getPublicEntities(queryReference.getKind(), names);
+
+        // re
+        for (final Entity currEntity : crossEntities)
+        {
+            final Entity privateEntity =
+                refPropertyToEntity.get(currEntity.getKey().getName());
+            for (final Map.Entry<String,Object> currProp : privateEntity.getProperties().entrySet())
+            {
+                final String propName = currProp.getKey();
+                if (!propName.startsWith("_") && !propName.equals(queryReference.getProperty()))
+                currEntity.setProperty(propName, currProp.getValue());
+            }
+
+        }
+        return crossEntities;
     }
 
     @GET

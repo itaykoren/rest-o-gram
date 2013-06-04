@@ -1,10 +1,15 @@
 package rest.o.gram.data_favorites;
 
+import android.util.Log;
 import com.leanengine.LeanEntity;
+import rest.o.gram.client.RestogramClient;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -59,7 +64,18 @@ final class Converters {
         venue.setPhone(entity.getString(Props.Venue.PHONE));
         //venue.setDescription(entity.getText(Props.Venue.DESCRIPTION));
         //venue.setImageUrl(entity.getString(Props.Venue.IMAGE_URL));
+
+        if (RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn())
+            venue.setfavorite(entity.getBoolean(Props.VenueRef.IS_FAVORITE));
+
         return venue;
+    }
+
+    public static List<RestogramVenue> leanEntitiesToVenues(final LeanEntity... leanEntities){
+        final List<RestogramVenue> venues = new ArrayList<>(leanEntities.length);
+        for (int i = 0; i < leanEntities.length; ++i)
+            venues.add(leanEntityToVenue(leanEntities[i]));
+        return  venues;
     }
 
 //    public static LeanEntity photoToLeanEntity(final RestogramPhoto photo) {
@@ -102,24 +118,35 @@ final class Converters {
         photo.setLink(entity.getString(Props.Photo.LINK));
         photo.setType(entity.getString(Props.Photo.TYPE));
         photo.setUser(entity.getString(Props.Photo.USER));
+
+        if (RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn())
+            photo.set_favorite(entity.getBoolean(Props.PhotoRef.IS_FAVORITE));
+
         return photo;
     }
 
-    public static String[] photosRefsToNames(LeanEntity[] photosRefs) {
-        String[] ids = new String[photosRefs.length];
-        for (int i = 0; i < photosRefs.length; i++)
-        {
-            ids[i] = photosRefs[i].getString(Props.PhotoRef.INSTAGRAM_ID);
-        }
-        return ids;
+    public static List<RestogramPhoto> leanEntitiesToPhotos(final LeanEntity... leanEntities){
+        final List<RestogramPhoto> photos = new ArrayList<>(leanEntities.length);
+        for (int i = 0; i < leanEntities.length; ++i)
+            photos.add(leanEntityToPhoto(leanEntities[i]));
+        return  photos;
     }
 
-    public static String[] venuesRefsToNames(LeanEntity[] venuesRefs) {
-        String[] ids = new String[venuesRefs.length];
-        for (int i = 0; i < venuesRefs.length; i++)
-        {
-            ids[i] = venuesRefs[i].getString(Props.VenueRef.FOURSQUARE_ID);
-        }
-        return ids;
-    }
+//    public static String[] photosRefsToNames(LeanEntity[] photosRefs) {
+//        String[] ids = new String[photosRefs.length];
+//        for (int i = 0; i < photosRefs.length; i++)
+//        {
+//            ids[i] = photosRefs[i].getString(Props.PhotoRef.INSTAGRAM_ID);
+//        }
+//        return ids;
+//    }
+//
+//    public static String[] venuesRefsToNames(LeanEntity[] venuesRefs) {
+//        String[] ids = new String[venuesRefs.length];
+//        for (int i = 0; i < venuesRefs.length; i++)
+//        {
+//            ids[i] = venuesRefs[i].getString(Props.VenueRef.FOURSQUARE_ID);
+//        }
+//        return ids;
+//    }
 }
