@@ -11,11 +11,13 @@
             android:showAsAction="always"/>
     <item
             android:id="@+id/action_explore"
-            android:title="E"
+            android:icon="@drawable/ic_explore"
+            android:title="Explore"
             android:showAsAction="always"/>
     <item
             android:id="@+id/action_map"
-            android:title="M"
+            android:icon="@drawable/ic_map"
+            android:title="Map"
             android:showAsAction="always"/>
     <item
             android:id="@+id/action_personal"
