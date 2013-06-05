@@ -12,4 +12,10 @@
         <item name="android:backgroundStacked">@drawable/background</item>
         <item name="android:backgroundSplit">@drawable/background</item>
     </style>
+
+    <!--animation for popup window  -->
+    <style name="PopupWindowAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/enter_from_right</item>
+        <item name="android:windowExitAnimation">@anim/fadeout</item>
+    </style>
 </resources>

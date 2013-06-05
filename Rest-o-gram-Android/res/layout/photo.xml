@@ -6,20 +6,38 @@
                 android:layout_height="match_parent"
                 android:background="#FFFFFF">
 
-        <ImageButton
-                android:id="@+id/infoButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_info"
-                android:layout_gravity="right"
-                android:onClick="onInfoClicked"/>
+    <LinearLayout
+           android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <ImageButton
                 android:id="@+id/bPhotoFavorite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_favorite_off"
                 android:onClick="onFavoriteClicked"/>
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right" >
+
+        <ImageButton
+                android:id="@+id/infoButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_info"
+                android:layout_marginRight="10dp"
+                android:onClick="onInfoClicked"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
 
         <RelativeLayout
                 android:id="@+id/relative_container"

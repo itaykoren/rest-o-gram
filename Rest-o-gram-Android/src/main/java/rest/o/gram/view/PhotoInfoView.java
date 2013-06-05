@@ -79,6 +79,7 @@ public class PhotoInfoView {
                     isOpen = false;
                 }
             });
+            popupWindow.setAnimationStyle(R.style.PopupWindowAnimation);
 
             // Update UI
             Utils.updateTextView((TextView)layout.findViewById(R.id.tvLikes), String.valueOf(photo.getLikes()) + " likes");
