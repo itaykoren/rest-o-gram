@@ -46,6 +46,16 @@ public final class DialogManager {
         }, 500);
     }
 
+    public void showNoVenuesAlert(final Activity activity) {
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showErrorAlert(activity, R.string.no_venues_err_msg);
+            }
+        }, 500);
+    }
+
     public void showLoginDialog(final Activity activity, LoginListener loginListener) {
         Uri loginUri = RestogramClient.getInstance().getAuthenticationProvider().getFacebookLoginUri();
 
@@ -82,6 +92,28 @@ public final class DialogManager {
 
         // on pressing cancel button
         alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        dialogs.remove(dialog);
+                        activity.finish();
+                    }
+                });
+
+        dialogs.add(alertDialog.show());
+    }
+
+    private void showErrorAlert(final Activity activity, final int message) {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+
+        // Setting Dialog Title
+        alertDialog.setTitle(R.string.restogram_error_title);
+
+        // Setting Dialog Message
+        alertDialog.setMessage(message);
+
+        // on pressing cancel button
+        alertDialog.setPositiveButton("OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();

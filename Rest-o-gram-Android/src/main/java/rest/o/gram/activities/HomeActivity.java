@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import rest.o.gram.R;
 import rest.o.gram.common.Utils;
+import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
@@ -86,23 +87,8 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
             return;
         }
 
-        this.latitude = latitude;
-        this.longitude = longitude;
-
-        // Switch to "ExploreActivity" with parameters: "latitude", "longitude"
-        Intent intent = new Intent(this, ExploreActivity.class);
-        intent.putExtra("latitude", latitude);
-        intent.putExtra("longitude", longitude);
-        Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, true);
-
-//        double radius;
-//        if (rest.o.gram.location.Utils.isAccurate(accuracy, provider))
-//            radius = Defs.Location.DEFAULT_FINDME_RADIUS;
-//        else
-//            radius = Defs.Location.DEFAULT_NEARBY_RADIUS;
-//
-//        // Send get nearby request
-//        RestogramClient.getInstance().getNearby(latitude, longitude, radius, this);
+        // Send get nearby request
+        RestogramClient.getInstance().getNearby(latitude, longitude, Defs.Location.DEFAULT_NEARBY_RADIUS, this);
     }
 
     @Override
@@ -114,43 +100,36 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
 
     @Override
     public void onFinished(GetNearbyResult result) {
-//        final RestogramVenue[] venues = result.getVenues();
-//        if(venues == null || venues.length == 0 || venues.length >= Defs.VENUES_AMBIGOUITY_LEVEL)
-//        {
-//            if (RestogramClient.getInstance().isDebuggable())
-//            {
-//                if (venues == null)
-//                    Log.d("REST-O-GRAM", "an error occurred while searching for venues");
-//                else
-//                    Log.d("REST-O-GRAM", "no venues found");
-//            }
-//            // Switch to "ExploreActivity" with parameters: "latitude", "longitude"
-//            Intent intent = new Intent(this, ExploreActivity.class);
-//            intent.putExtra("latitude", latitude);
-//            intent.putExtra("longitude", longitude);
-//            Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, true);
-//            return;
-//        }
-//
-//        venue = venues[0];
-//
-//        // Send get info request
-//        RestogramClient.getInstance().getInfo(venue.getFoursquare_id(), this);
-    }
+        final RestogramVenue[] venues = result.getVenues();
+        if(venues == null || venues.length == 0)
+        {
+            if (RestogramClient.getInstance().isDebuggable())
+            {
+                if (venues == null)
+                    Log.d("REST-O-GRAM", "an error occurred while searching for venues");
+                else
+                    Log.d("REST-O-GRAM", "no venues found");
+            }
 
-    @Override
-    public void onFinished(GetInfoResult result) {
-//        final RestogramVenue venue = result.getVenue();
-//        if(venue == null)
-//            return;
-//
-//        // Set image url to current venue member object
-//        this.venue.setImageUrl(venue.getImageUrl());
-//
-//        // Switch to "VenueActivity" with parameter "venue"
-//        Intent intent = new Intent(this, VenueActivity.class);
-//        intent.putExtra("venue", this.venue);
-//        Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, true);
+            // Show error dialog
+            diagManager.showNoVenuesAlert(this);
+            return;
+        }
+
+        IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
+        if(cache != null) {
+            // Reset cache
+            cache.clear();
+
+            // Save to cache
+            for(final RestogramVenue venue : result.getVenues()) {
+                cache.save(venue, Defs.Data.SortOrder.SortOrderFIFO);
+            }
+        }
+
+        // Switch to "ExploreActivity" with no parameters
+        Intent intent = new Intent(this, ExploreActivity.class);
+        Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, true);
     }
 
     private void cancelProgress() {
@@ -159,9 +138,6 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
     }
 
     private ILocationTracker tracker; // Location tracker
-    private double latitude;
-    private double longitude;
     private boolean gotLocation;
-    private RestogramVenue venue;
     private DialogManager diagManager;
 }

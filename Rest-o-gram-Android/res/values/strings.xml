@@ -9,6 +9,7 @@
 
     <string name="cannot_track_location_err_msg">Could not detect your current location. Please review your location services settings and relaunch the application.</string>
     <string name="no_connectivity_err_msg">Cannot connect to the internet. Please review your network services settings and relaunch the application.</string>
+    <string name="no_venues_err_msg">Sorry, no restaurants found. Please make sure you\'re not in the desert and relaunch the application.</string>
     <string name="not_logged_in_err_msg">Please login with your Facebook account to use this feature. Would you like to login now?</string>
 
     <string name="logout_msg">Are you sure you want to log out?</string>
