@@ -72,7 +72,7 @@ public final class Defs {
      * Filtering constants
      */
     public static class Filtering {
-        public static final boolean FACE_FILTERING_ENABLED = true;
+        public static final boolean FACE_FILTERING_ENABLED = false;
         public static final int MAX_FACES_TO_DETECT = 5;
     }
 
