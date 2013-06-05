@@ -19,14 +19,14 @@
             <id>json-rpc</id>
             <url>http://json-rpc.googlecode.com/svn/mavenrepo</url>
         </repository>
-        <!--<repository>-->
-            <!--<id>my-internal-site</id>-->
-            <!--<url>file:///${env.HOMEPATH}/.m2/repository</url>-->
-        <!--</repository>-->
+        <repository>
+            <id>my-internal-site</id>
+            <url>file:///${env.HOMEPATH}/.m2/repository</url>
+        </repository>
     </repositories>
 
     <properties>
-        <platform.version>4.1.1.4</platform.version>
+        <platform.version>4.1.2_r4</platform.version>
     </properties>
 
     <dependencies>
@@ -36,10 +36,27 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.google.android</groupId>
+            <groupId>android</groupId>
             <artifactId>android</artifactId>
             <version>${platform.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>support-v4</artifactId>
+            <version>r6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>google-play-services</artifactId>
+            <version>7</version>
+            <type>apklib</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>google-play-services</artifactId>
+            <version>7</version>
+            <type>jar</type>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>com.leanengine</groupId>-->

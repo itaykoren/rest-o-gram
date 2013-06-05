@@ -61,6 +61,15 @@ public class RestogramActionBarActivity extends RestogramActivity {
                 Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, false);
                 break;
             }
+            case R.id.action_map: {
+                if(super.getClass() == MapActivity.class)
+                    break;
+
+                // Switch to "MapActivity" with no parameters
+                Intent intent = new Intent(this, MapActivity.class);
+                Utils.changeActivity(this, intent, Defs.RequestCodes.RC_MAP, false);
+                break;
+            }
             case R.id.action_personal: {
                 if(super.getClass() == PersonalActivity.class)
                     break;
@@ -79,12 +88,6 @@ public class RestogramActionBarActivity extends RestogramActivity {
                 if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn())
                     break;
                 else {
-                    if(super.getClass() == NearbyActivity.class) {
-                        loginHelper.logout(false);
-                        invalidateOptionsMenu();
-                        break;
-                    }
-
                     if(super.getClass() == PersonalActivity.class) {
                         loginHelper.logout(true);
                         break;

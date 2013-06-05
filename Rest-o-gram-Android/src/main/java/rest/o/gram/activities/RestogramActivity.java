@@ -1,6 +1,6 @@
 package rest.o.gram.activities;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import rest.o.gram.activities.helpers.FavoriteHelper;
 import rest.o.gram.activities.helpers.LoginHelper;
@@ -12,7 +12,7 @@ import rest.o.gram.tasks.results.*;
  * User: Hen
  * Date: 24/05/13
  */
-public class RestogramActivity extends Activity implements ITaskObserver {
+public class RestogramActivity extends FragmentActivity implements ITaskObserver {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
