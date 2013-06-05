@@ -89,14 +89,20 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
         this.latitude = latitude;
         this.longitude = longitude;
 
-        double radius;
-        if (rest.o.gram.location.Utils.isAccurate(accuracy, provider))
-            radius = Defs.Location.DEFAULT_FINDME_RADIUS;
-        else
-            radius = Defs.Location.DEFAULT_NEARBY_RADIUS;
+        // Switch to "ExploreActivity" with parameters: "latitude", "longitude"
+        Intent intent = new Intent(this, ExploreActivity.class);
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
+        Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, true);
 
-        // Send get nearby request
-        RestogramClient.getInstance().getNearby(latitude, longitude, radius, this);
+//        double radius;
+//        if (rest.o.gram.location.Utils.isAccurate(accuracy, provider))
+//            radius = Defs.Location.DEFAULT_FINDME_RADIUS;
+//        else
+//            radius = Defs.Location.DEFAULT_NEARBY_RADIUS;
+//
+//        // Send get nearby request
+//        RestogramClient.getInstance().getNearby(latitude, longitude, radius, this);
     }
 
     @Override
@@ -108,43 +114,43 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
 
     @Override
     public void onFinished(GetNearbyResult result) {
-        final RestogramVenue[] venues = result.getVenues();
-        if(venues == null || venues.length == 0 || venues.length >= Defs.VENUES_AMBIGOUITY_LEVEL)
-        {
-            if (RestogramClient.getInstance().isDebuggable())
-            {
-                if (venues == null)
-                    Log.d("REST-O-GRAM", "an error occured while searching for venues");
-                else
-                    Log.d("REST-O-GRAM", "no venues found");
-            }
-            // Switch to "NearbyActivity" with parameters: "latitude", "longitude"
-            Intent intent = new Intent(this, NearbyActivity.class);
-            intent.putExtra("latitude", latitude);
-            intent.putExtra("longitude", longitude);
-            Utils.changeActivity(this, intent, Defs.RequestCodes.RC_NEARBY, true);
-            return;
-        }
-
-        venue = venues[0];
-
-        // Send get info request
-        RestogramClient.getInstance().getInfo(venue.getFoursquare_id(), this);
+//        final RestogramVenue[] venues = result.getVenues();
+//        if(venues == null || venues.length == 0 || venues.length >= Defs.VENUES_AMBIGOUITY_LEVEL)
+//        {
+//            if (RestogramClient.getInstance().isDebuggable())
+//            {
+//                if (venues == null)
+//                    Log.d("REST-O-GRAM", "an error occurred while searching for venues");
+//                else
+//                    Log.d("REST-O-GRAM", "no venues found");
+//            }
+//            // Switch to "ExploreActivity" with parameters: "latitude", "longitude"
+//            Intent intent = new Intent(this, ExploreActivity.class);
+//            intent.putExtra("latitude", latitude);
+//            intent.putExtra("longitude", longitude);
+//            Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, true);
+//            return;
+//        }
+//
+//        venue = venues[0];
+//
+//        // Send get info request
+//        RestogramClient.getInstance().getInfo(venue.getFoursquare_id(), this);
     }
 
     @Override
     public void onFinished(GetInfoResult result) {
-        final RestogramVenue venue = result.getVenue();
-        if(venue == null)
-            return;
-
-        // Set image url to current venue member object
-        this.venue.setImageUrl(venue.getImageUrl());
-
-        // Switch to "VenueActivity" with parameter "venue"
-        Intent intent = new Intent(this, VenueActivity.class);
-        intent.putExtra("venue", this.venue);
-        Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, true);
+//        final RestogramVenue venue = result.getVenue();
+//        if(venue == null)
+//            return;
+//
+//        // Set image url to current venue member object
+//        this.venue.setImageUrl(venue.getImageUrl());
+//
+//        // Switch to "VenueActivity" with parameter "venue"
+//        Intent intent = new Intent(this, VenueActivity.class);
+//        intent.putExtra("venue", this.venue);
+//        Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, true);
     }
 
     private void cancelProgress() {
