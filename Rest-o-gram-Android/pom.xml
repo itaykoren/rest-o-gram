@@ -26,7 +26,7 @@
     </repositories>
 
     <properties>
-        <platform.version>4.1.2_r4</platform.version>
+        <platform.version>4.2.2_r2</platform.version>
     </properties>
 
     <dependencies>
@@ -64,6 +64,11 @@
             <!--<version>0.8</version>-->
         <!--</dependency>-->
         <dependency>
+            <groupId>com.littlefluffytoys</groupId>
+            <artifactId>littlefluffylocationlibrary</artifactId>
+            <version>15</version>
+        </dependency>
+        <dependency>
             <groupId>org.json.rpc</groupId>
             <artifactId>jsonrpc</artifactId>
             <version>1.0</version>
@@ -95,7 +100,7 @@
                     <resourceDirectory>${project.basedir}/res</resourceDirectory>
                     <nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>
                     <sdk>
-                        <platform>16</platform>
+                        <platform>17</platform>
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                 </configuration>
