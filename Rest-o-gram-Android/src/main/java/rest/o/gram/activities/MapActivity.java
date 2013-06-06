@@ -179,9 +179,6 @@ public class MapActivity extends RestogramActionBarActivity {
         update = CameraUpdateFactory.zoomTo(15);
         map.animateCamera(update); // Zoom to location
 
-        // Add my location marker
-        map.addMarker(createMarker(latitude, longitude, "You are here", Color.GREEN));
-
         // Set marker click listener
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -194,6 +191,9 @@ public class MapActivity extends RestogramActionBarActivity {
                 return true;
             }
         });
+
+        // Enable user location display (with standard top right button)
+        map.setMyLocationEnabled(true);
     }
 
     /**
