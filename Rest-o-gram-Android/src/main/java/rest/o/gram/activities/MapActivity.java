@@ -94,7 +94,7 @@ public class MapActivity extends RestogramActionBarActivity {
 
         // Traverse given venues
         for(final RestogramVenue venue : venues) {
-            Marker m = map.addMarker(createMarker(venue.getLatitude(), venue.getLongitude(), venue.getName(), Color.BLUE));
+            Marker m = map.addMarker(createMarker(venue.getLatitude(), venue.getLongitude(), venue.getName(), R.drawable.ic_map_venue));
             this.venues.put(m.getId(), venue);
         }
     }
@@ -230,33 +230,36 @@ public class MapActivity extends RestogramActionBarActivity {
     }
 
     /**
-     * Creates a custom marker at given location with given text and color
+     * Creates a custom marker at given location with given text and resource
      */
-    MarkerOptions createMarker(double latitude, double longitude, String text, int color) {
+    MarkerOptions createMarker(double latitude, double longitude, String text, int resource) {
         // Set location
         LatLng location = new LatLng(latitude, longitude);
 
+        // Create paint object
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.LINEAR_TEXT_FLAG);
 
+        // Calculate text bounds
         Rect bounds = new Rect();
         paint.getTextBounds(text, 0, text.length(), bounds);
 
-        int width = bounds.width() * 2;
-        int height = bounds.height() * 2;
+        // Create icon from given resource
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), resource);
 
-        Bitmap bmp = Bitmap.createBitmap(width + 10, height + 5, Bitmap.Config.ARGB_8888);
+        // Create canvas with proper width and height
+        int width = Math.max(bounds.width(), icon.getWidth()) * 2;
+        int height = bounds.height() * 2 + icon.getHeight();
+        Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bmp);
 
-        paint.setColor(Color.WHITE);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawPaint(paint);
-
-        paint.setColor(color);
-        paint.setTextSize(height);
+        // Draw text
+        paint.setColor(Color.BLUE);
+        paint.setTextSize(bounds.height());
         paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(text, width >> 1, height + 2, paint);
+        canvas.drawText(text, width >> 1, bounds.height(), paint);
 
-        //canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_rog), 0, 0, paint);
+        // Draw icon
+        canvas.drawBitmap(icon, width >> 1, bounds.height() * 2, paint);
 
         return new MarkerOptions()
                 .position(location)
