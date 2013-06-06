@@ -48,9 +48,7 @@ public class LoginHelper {
                 .show();
     }
 
-    public void logout(boolean switchToNearbyActivity) {
-        this.switchToNearbyActivity = switchToNearbyActivity;
-
+    public void logout() {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder
                 .setTitle(R.string.restogram_logout_title)
@@ -113,9 +111,6 @@ public class LoginHelper {
 
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "logout successful");
-
-                if(switchToNearbyActivity)
-                    switchToNearbyActivity();
             }
 
             @Override
@@ -129,14 +124,7 @@ public class LoginHelper {
         });
     }
 
-    private void switchToNearbyActivity() {
-        // Switch to "NearbyActivity" with no parameters
-        Intent intent = new Intent(activity, NearbyActivity.class);
-        Utils.changeActivity(activity, intent, Defs.RequestCodes.RC_NEARBY, true);
-    }
-
     private DialogManager dialogManager;
     private RestogramActivity activity;
     private boolean switchToPersonalActivity = false;
-    private boolean switchToNearbyActivity = false;
 }

@@ -88,10 +88,8 @@ public class RestogramActionBarActivity extends RestogramActivity {
                 if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn())
                     break;
                 else {
-                    if(super.getClass() == PersonalActivity.class) {
-                        loginHelper.logout(true);
-                        break;
-                    }
+                    loginHelper.logout();
+                    break;
                 }
             }
             default:

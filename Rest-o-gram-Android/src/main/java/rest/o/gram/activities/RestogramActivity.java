@@ -35,7 +35,7 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
      * Called after user has logged out
      */
     public void onUserLoggedOut() {
-        // TODO
+        // Empty
     }
 
     @Override

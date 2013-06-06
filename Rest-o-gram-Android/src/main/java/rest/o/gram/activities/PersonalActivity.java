@@ -80,6 +80,15 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     }
 
     @Override
+    public void onUserLoggedOut() {
+        super.onUserLoggedOut();
+
+        // Switch to "ExploreActivity" with no parameters
+        Intent intent = new Intent(this, ExploreActivity.class);
+        Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, true);
+    }
+
+    @Override
     public void onVenueSelected(RestogramVenue venue) {
         // Switch to "VenueActivity" with parameter "venue"
         Intent intent = new Intent(this, VenueActivity.class);
