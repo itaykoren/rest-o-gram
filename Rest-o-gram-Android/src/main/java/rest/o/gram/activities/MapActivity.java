@@ -83,6 +83,10 @@ public class MapActivity extends RestogramActionBarActivity {
 
         // Add new venues
         addVenues(result.getVenues());
+
+        // Update current marker
+        if(currentMarkerOptions != null)
+            currentMarker = map.addMarker(currentMarkerOptions);
     }
 
     /**
@@ -220,8 +224,16 @@ public class MapActivity extends RestogramActionBarActivity {
                 // Point point = map.getProjection().toScreenLocation(latLng);
                 // TODO: show popup - explore this area
 
+                // Update current marker
+                if(currentMarker != null)
+                    currentMarker.remove();
+                currentMarkerOptions = createMarker(latLng.latitude, latLng.longitude);
+                currentMarker = map.addMarker(currentMarkerOptions);
+
                 // Send get nearby request
                 RestogramClient.getInstance().getNearby(latLng.latitude, latLng.longitude, Defs.Location.DEFAULT_NEARBY_RADIUS, activity);
+
+                // Show message
                 Toast.makeText(activity, "Loading restaurants...", Toast.LENGTH_SHORT).show();
             }
         });
@@ -301,8 +313,22 @@ public class MapActivity extends RestogramActionBarActivity {
                 .anchor(0.5f, 1);
     }
 
+    /**
+     * Creates a default marker at the given location
+     */
+    MarkerOptions createMarker(double latitude, double longitude) {
+        // Set location
+        LatLng location = new LatLng(latitude, longitude);
+
+        return new MarkerOptions()
+                .position(location)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+    }
+
     private double latitude; // Latitude
     private double longitude; // Longitude
     private GoogleMap map; // Map object
     private Map<String, RestogramVenue> venues = new HashMap<>(); // Venues map
+    private Marker currentMarker; // Current marker
+    private MarkerOptions currentMarkerOptions; // Current marker options
 }
