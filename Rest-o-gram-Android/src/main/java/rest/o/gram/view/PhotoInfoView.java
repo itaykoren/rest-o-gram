@@ -70,7 +70,7 @@ public class PhotoInfoView {
             LayoutInflater inflater = (LayoutInflater)context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             layout = inflater.inflate(R.layout.photo_info, (ViewGroup)context.findViewById(R.id.popup_element));
-            popupWindow = new PopupWindow(layout, 350, 350, true);
+            popupWindow = new PopupWindow(layout, 400, 400, true);
             popupWindow.setOutsideTouchable(true);
             popupWindow.setBackgroundDrawable(new BitmapDrawable());
             popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
