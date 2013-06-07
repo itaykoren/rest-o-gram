@@ -149,20 +149,20 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         // Init photo info view
         photoInfoView = new PhotoInfoView(this, photo);
 
-        // Init venue information: attempt to load from cache. if not found - send request to server
-//        String id = ""; // photo.getFoursquare_id();
-//
-//        IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
-//        if(cache != null) {
-//            RestogramVenue venue = cache.findVenue(id);
-//            if(venue != null) {
-//                initialize(venue);
-//                return;
-//            }
-//        }
-//
-//        // Send get info request
-//        RestogramClient.getInstance().getInfo(id, this);
+//      Init venue information: attempt to load from cache. if not found - send request to server
+        String id = photo.getOriginVenueId();
+
+        IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
+        if(cache != null) {
+            RestogramVenue venue = cache.findVenue(id);
+            if(venue != null) {
+                initialize(venue);
+                return;
+            }
+        }
+
+        // Send get info request
+        RestogramClient.getInstance().getInfo(id, this);
     }
 
     /**

@@ -24,6 +24,7 @@ public class GetNextPhotosTask extends GetPhotosTask {
     protected GetPhotosResult doInBackground(String... params) {
         String token =  params[0];
         RestogramFilterType filterType = RestogramFilterType.valueOf(params[1]);
+        String originVenueId = params[2];
 
         JsonRpcInvoker invoker = new JsonRpcInvoker();
         RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
@@ -31,22 +32,22 @@ public class GetNextPhotosTask extends GetPhotosTask {
         if (RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "Getting some more photos");
 
-        PhotosResult result = safeGetNextPhotos(service, token, filterType);
+        PhotosResult result = safeGetNextPhotos(service, token, filterType, originVenueId);
         if (result == null)
             return null;
         return (new GetPhotosResultImpl(result.getPhotos(), result.getToken()));
     }
 
-    private PhotosResult safeGetNextPhotos(RestogramService service, String token, RestogramFilterType filterType) {
+    private PhotosResult safeGetNextPhotos(RestogramService service, String token, RestogramFilterType filterType, String originVenueId) {
         try
         {
-            return service.getNextPhotos(token, filterType);
+            return service.getNextPhotos(token, filterType, originVenueId);
         }
         catch (Exception e)
         {
             Log.e("REST-O-GRAM", "GET NEXT PHOTOS - FIRST ATTEMPT FAILED");
             e.printStackTrace();
-            return service.getNextPhotos(token, filterType);
+            return service.getNextPhotos(token, filterType, originVenueId);
         }
     }
 

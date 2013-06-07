@@ -22,7 +22,7 @@ public class CachePhotoTask extends AsyncTask<String,Void,CachePhotoResult> {
     protected CachePhotoResult doInBackground(String... params) {
         JsonRpcInvoker invoker = new JsonRpcInvoker();
         RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
-        return safeCachePhoto(service, params[0]);
+        return safeCachePhoto(service, params[0], params[1]);
     }
 
     @Override
@@ -30,16 +30,16 @@ public class CachePhotoTask extends AsyncTask<String,Void,CachePhotoResult> {
         observer.onFinished(result);
     }
 
-    private CachePhotoResult safeCachePhoto(RestogramService service, String id) {
+    private CachePhotoResult safeCachePhoto(RestogramService service, String id, String originVenueId) {
         try
         {
-            return new CachePhotoResultImpl(service.cachePhoto(id));
+            return new CachePhotoResultImpl(service.cachePhoto(id, originVenueId));
         }
         catch (Exception e)
         {
             Log.e("REST-O-GRAM", "CACHE PHOTO - FIRST ATTEMPT FAILED");
             e.printStackTrace();
-            return new CachePhotoResultImpl(service.cachePhoto(id));
+            return new CachePhotoResultImpl(service.cachePhoto(id, originVenueId));
         }
     }
 

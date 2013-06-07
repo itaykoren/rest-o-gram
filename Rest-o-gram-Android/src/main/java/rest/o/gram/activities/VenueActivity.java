@@ -180,7 +180,7 @@ public class VenueActivity extends RestogramActionBarActivity {
             if(RestogramClient.getInstance().isDebuggable())
                 Log.d("REST-O-GRAM", "Requesting more photos");
 
-            RestogramClient.getInstance().getNextPhotos(lastToken, this);
+            RestogramClient.getInstance().getNextPhotos(lastToken, venue.getFoursquare_id(), this);
         }
     }
 

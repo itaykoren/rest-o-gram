@@ -148,16 +148,16 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public void getNextPhotos(String token, ITaskObserver observer) {
+    public void getNextPhotos(String token, String originVenueId, ITaskObserver observer) {
         setJsonAuthToken(transport);
-        IRestogramCommand command = new GetNextPhotosCommand(transport, observer, token);
+        IRestogramCommand command = new GetNextPhotosCommand(transport, observer, token, originVenueId);
         commandQueue.pushForce(command);
     }
 
     @Override
-    public void getNextPhotos(String token, RestogramFilterType filterType, ITaskObserver observer) {
+    public void getNextPhotos(String token, RestogramFilterType filterType, String originVenueId, ITaskObserver observer) {
         setJsonAuthToken(transport);
-        IRestogramCommand command = new GetNextPhotosCommand(transport, observer, token, filterType);
+        IRestogramCommand command = new GetNextPhotosCommand(transport, observer, token, filterType, originVenueId);
         commandQueue.pushForce(command);
     }
 
@@ -194,9 +194,9 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public void cachePhoto(String id, ITaskObserver observer) {
+    public void cachePhoto(String id, String originVenueId, ITaskObserver observer) {
         setJsonAuthToken(transport);
-        IRestogramCommand command = new CachePhotoCommand(transport, observer, id);
+        IRestogramCommand command = new CachePhotoCommand(transport, observer, id, originVenueId);
         commandQueue.pushForce(command);
     }
 

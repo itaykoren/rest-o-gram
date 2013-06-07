@@ -62,12 +62,12 @@ public interface IRestogramClient {
     /**
      * Executes get next photos request
      */
-    void getNextPhotos(String token, ITaskObserver observer);
+    void getNextPhotos(String token, String originVenueId, ITaskObserver observer);
 
     /**
      * Executes get next photos request with filter
      */
-    void getNextPhotos(String token, RestogramFilterType filterType, ITaskObserver observer);
+    void getNextPhotos(String token, RestogramFilterType filterType, String originVenueId, ITaskObserver observer);
 
     /**
      * Executes download image request
@@ -85,7 +85,7 @@ public interface IRestogramClient {
      * Executes cache photo request
      * Returns command object
      */
-    void cachePhoto(String id, ITaskObserver observer);
+    void cachePhoto(String id, String originVenueId, ITaskObserver observer);
 
     /**
      * Executes fetch photos from cache request

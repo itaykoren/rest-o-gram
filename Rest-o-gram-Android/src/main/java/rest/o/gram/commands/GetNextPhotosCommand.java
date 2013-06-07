@@ -12,14 +12,15 @@ import rest.o.gram.tasks.ITaskObserver;
  */
 public class GetNextPhotosCommand extends AsyncTaskRestogramCommand {
     public GetNextPhotosCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer,
-                                String token) {
+                                String token, String originVenueId) {
         super(transport, observer);
         this.token = token;
+        this.originVenueId = originVenueId;
     }
 
     public GetNextPhotosCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer,
-                                String token, RestogramFilterType filterType) {
-        this(transport, observer, token);
+                                String token, RestogramFilterType filterType, String originVenueId) {
+        this(transport, observer, token, originVenueId);
         this.filterType = filterType;
     }
 
@@ -29,11 +30,12 @@ public class GetNextPhotosCommand extends AsyncTaskRestogramCommand {
             return false;
 
         GetNextPhotosTask t = new GetNextPhotosTask(transport, this);
-        t.execute(token, filterType.toString());
+        t.execute(token, filterType.toString(), originVenueId);
         task = t;
         return true;
     }
 
     private String token;
     private RestogramFilterType filterType = RestogramFilterType.None;
+    private String originVenueId;
 }

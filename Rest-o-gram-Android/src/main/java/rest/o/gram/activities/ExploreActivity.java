@@ -163,14 +163,15 @@ public class ExploreActivity extends RestogramActionBarActivity {
             Log.d("REST-O-GRAM", "Requesting photos for next venue");
 
         RestogramVenue nextVenue = getNextVenue(venues);
+        String nextVenueId = nextVenue.getFoursquare_id();
 
         String currToken = tokens[currVenueIndex];
 
         // if we already got photos from this location, get the next ones
         if (currToken != null) {
-            RestogramClient.getInstance().getNextPhotos(currToken, RestogramFilterType.Simple, this);
+            RestogramClient.getInstance().getNextPhotos(currToken, RestogramFilterType.Simple, nextVenueId, this);
         } else {
-            RestogramClient.getInstance().getPhotos(nextVenue.getFoursquare_id(), RestogramFilterType.Simple, this);
+            RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Simple, this);
         }
     }
 

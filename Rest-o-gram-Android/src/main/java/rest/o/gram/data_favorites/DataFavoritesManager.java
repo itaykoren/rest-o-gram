@@ -39,7 +39,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                 photo.set_favorite(true);
                 photo.setId(result[0]);
                 observer.onFinished(new AddFavoritePhotosResult(true, photo));
-                client.cachePhoto(photo.getInstagram_id(), internalObserver);
+                client.cachePhoto(photo.getInstagram_id(), photo.getOriginVenueId(), internalObserver);
             }
 
             // photo ref update has failed

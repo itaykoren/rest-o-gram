@@ -11,9 +11,10 @@ import rest.o.gram.tasks.ITaskObserver;
  */
 public class CachePhotoCommand extends AsyncTaskRestogramCommand {
 
-    public CachePhotoCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer, String id) {
+    public CachePhotoCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer, String id, String originVenueId) {
         super(transport, observer);
         this.id = id;
+        this.originVenueId = originVenueId;
     }
 
     @Override
@@ -22,7 +23,7 @@ public class CachePhotoCommand extends AsyncTaskRestogramCommand {
             return false;
 
         CachePhotoTask t = new CachePhotoTask(transport, this);
-        t.execute(id);
+        t.execute(id, originVenueId);
 
         task = t;
 
@@ -30,4 +31,5 @@ public class CachePhotoCommand extends AsyncTaskRestogramCommand {
     }
 
     private String id;
+    private String originVenueId;
 }
