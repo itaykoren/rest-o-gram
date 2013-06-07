@@ -41,23 +41,26 @@ public interface RestogramService {
 
     /**
      * @param token identifying previous session for getting next photos
+     * @param originVenueId the identifier of the venue from which the photo is taken
      * @return array of media related to venue given its ID
      */
-    PhotosResult getNextPhotos(String token);
+    PhotosResult getNextPhotos(String token, String originVenueId);
 
     /**
      *
      * @param token identifying previous session for getting next photos
+     * @param originVenueId the identifier of the venue from which the photo is taken
      * @return array of media related to venue given its ID, after applying given filter
      */
-    PhotosResult getNextPhotos(String token, RestogramFilterType filterType);
+    PhotosResult getNextPhotos(String token, RestogramFilterType filterType, String originVenueId);
 
     /**
      * Make sure the photo represented by the given id is in cache
      * @param id the identifier of the photo
-     * @return has operation executed succfully
+     * @param originVenueId the identifier of the venue in which the photo was taken
+     * @return has operation executed successfully
      */
-    boolean cachePhoto(String id);
+    boolean cachePhoto(String id, String originVenueId);
 
     /**
      * Fetch photos represented by the given ids from cache
