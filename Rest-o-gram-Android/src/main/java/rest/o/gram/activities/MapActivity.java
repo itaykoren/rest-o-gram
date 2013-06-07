@@ -222,7 +222,7 @@ public class MapActivity extends RestogramActionBarActivity {
 
                 // Send get nearby request
                 RestogramClient.getInstance().getNearby(latLng.latitude, latLng.longitude, Defs.Location.DEFAULT_NEARBY_RADIUS, activity);
-
+                Toast.makeText(activity, "Loading restaurants...", Toast.LENGTH_LONG).show();
             }
         });
 
