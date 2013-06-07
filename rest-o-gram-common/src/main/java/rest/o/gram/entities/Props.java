@@ -38,6 +38,7 @@ public final class Props {
         public final static String LINK = "link";
         public final static String TYPE = "type";
         public final static String USER = "user";
+        public final static String ORIGIN_VENUE_ID = "origin_venue_id";
     }
 
     public static  class PhotoRef {

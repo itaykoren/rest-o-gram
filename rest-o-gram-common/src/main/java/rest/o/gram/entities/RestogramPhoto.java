@@ -17,7 +17,7 @@ public class RestogramPhoto implements Serializable {
 
     public RestogramPhoto(String caption, String createdTime, String instagram_id, String imageFilter,
                           String thumbnail, String standardResolution, long likes, String link,
-                          String type, String user) {
+                          String type, String user, String originVenueId) {
         this.setCaption(caption);
         this.setCreatedTime(createdTime);
         this.setInstagram_id(instagram_id);
@@ -28,6 +28,7 @@ public class RestogramPhoto implements Serializable {
         this.setLink(link);
         this.setType(type);
         this.setUser(user);
+        this.setOriginVenueId(originVenueId);
     }
 
     public RestogramPhoto encodeStrings() {
@@ -84,6 +85,10 @@ public class RestogramPhoto implements Serializable {
         return user;
     }
 
+    public String getOriginVenueId() {
+        return originVenueId;
+    }
+
     public void setCaption(String caption) {
         this.caption = caption;
     }
@@ -122,6 +127,10 @@ public class RestogramPhoto implements Serializable {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public void setOriginVenueId(String originVenueId) {
+        this.originVenueId = originVenueId;
     }
 
     /** account related props **/
@@ -174,6 +183,9 @@ public class RestogramPhoto implements Serializable {
 
     @SerializedName("user")
     private String user;
+
+    @SerializedName("originVenueId")
+    private String originVenueId;
 
     /** account related fields **/
 
