@@ -1,7 +1,6 @@
 package rest.o.gram.commands;
 
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -61,7 +60,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
             return false;
 
         // Cancel
-        isCancled = true;
+        isCanceled = true;
         return true;
     }
 
@@ -82,7 +81,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
             @Override
             public void handleMessage(Message message) {
                 try {
-                    if(isCancled) {
+                    if(isCanceled) {
                         notifyCanceled();
                         return;
                     }
@@ -115,17 +114,12 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
             @Override
             public void handleMessage(Message message) {
                 try {
-                    if(isCancled) {
+                    if(isCanceled) {
                         notifyCanceled();
                         return;
                     }
 
                     Drawable drawable = (Drawable)message.obj;
-
-                    if(viewAdapter.width() <= 0 && viewAdapter.height() <= 0) {
-                        notifyError();
-                        return;
-                    }
 
                     Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
                     final IBitmapFilter filter = RestogramClient.getInstance().getBitmapFilter();
@@ -135,8 +129,6 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                         notifyFinished();
                         return;
                     }
-
-                    bitmap = resizeBitmap(bitmap, viewAdapter.width(), viewAdapter.height());
 
                     // Add photo to view adapter
                     viewAdapter.addPhoto(photo, bitmap);
@@ -168,26 +160,9 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         return response.getEntity().getContent();
     }
 
-    private Bitmap resizeBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-
-        // Resize bitmap
-        Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // Create new bitmap
-        final Bitmap resizedBitmap =
-                Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
-
     private String url;
     private ImageView imageView;
     private RestogramPhoto photo;
     private IPhotoViewAdapter viewAdapter;
-    private boolean isCancled = false;
+    private boolean isCanceled = false;
 }

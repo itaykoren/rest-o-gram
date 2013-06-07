@@ -118,7 +118,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
         // Init photo grid view
         GridView gv = (GridView) findViewById(R.id.gvPhotos);
-        viewAdapter = new PhotoViewAdapter(this, Defs.Photos.THUMBNAIL_WIDTH, Defs.Photos.THUMBNAIL_HEIGHT);
+        viewAdapter = new PhotoViewAdapter(this);
         gv.setAdapter(viewAdapter);
 
         // Set scroll listener

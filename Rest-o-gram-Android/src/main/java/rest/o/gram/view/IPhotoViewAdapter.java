@@ -23,14 +23,4 @@ public interface IPhotoViewAdapter {
      * Clears all photos
      */
     void clear();
-
-    /**
-     * Returns photo width
-     */
-    int width();
-
-    /**
-     * Returns photo height
-     */
-    int height();
 }

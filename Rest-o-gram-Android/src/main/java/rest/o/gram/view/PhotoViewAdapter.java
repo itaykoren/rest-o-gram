@@ -36,15 +36,6 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
         photoList = new LinkedList<>();
     }
 
-    /**
-     * Ctor
-     */
-    public PhotoViewAdapter(Activity context, int width, int height) {
-        this(context);
-        this.width = width;
-        this.height = height;
-    }
-
     @Override
     public int getCount() {
         return photoList.size();
@@ -106,16 +97,6 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
         photoList.clear();
     }
 
-    @Override
-    public int width() {
-        return width;
-    }
-
-    @Override
-    public int height() {
-        return height;
-    }
-
     private void onPhotoClicked(RestogramPhoto photo, Bitmap bitmap) {
         // Switch to "PhotoActivity" with parameters "photo" & "thumbnail_bitmap"
         Intent intent = new Intent(context, PhotoActivity.class);
@@ -126,6 +107,4 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
 
     private Activity context; // Context
     private List<Pair<RestogramPhoto,Bitmap>> photoList; // Photos list
-    private int width = -1; // Photo width
-    private int height = -1; // Photo height
 }

@@ -192,7 +192,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
         // Init favorite photo grid view
         GridView gvFavPhotos = (GridView)findViewById(R.id.gvFavPhotos);
-        favoritePhotoViewAdapter = new PhotoViewAdapter(this, Defs.Photos.THUMBNAIL_WIDTH, Defs.Photos.THUMBNAIL_HEIGHT);
+        favoritePhotoViewAdapter = new PhotoViewAdapter(this);
         gvFavPhotos.setAdapter(favoritePhotoViewAdapter);
 
         IDataFavoritesManager dataFavoritesManager = RestogramClient.getInstance().getDataFavoritesManager();

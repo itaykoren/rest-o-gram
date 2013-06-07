@@ -63,14 +63,6 @@ public final class Defs {
     }
 
     /**
-     * Photos constants
-     */
-    public static class Photos {
-        public static final int THUMBNAIL_WIDTH = 120;
-        public static final int THUMBNAIL_HEIGHT = 120;
-    }
-
-    /**
      * Filtering constants
      */
     public static class Filtering {
