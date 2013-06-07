@@ -31,6 +31,12 @@ public interface IDataHistoryManager {
     RestogramPhoto[] loadPhotos();
 
     /**
+     * Attempts to find venue according to given id
+     * Returns venue if successful, null otherwise
+     */
+    RestogramVenue findVenue(String id);
+
+    /**
      * Clears all data
      */
     void clear();

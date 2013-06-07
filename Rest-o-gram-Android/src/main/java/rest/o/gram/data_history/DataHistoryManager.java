@@ -99,6 +99,11 @@ public class DataHistoryManager implements IDataHistoryManager {
     }
 
     @Override
+    public RestogramVenue findVenue(String id) {
+        return venues.find(id);
+    }
+
+    @Override
     public void clear() {
         if(venues != null)
             venues.clear();

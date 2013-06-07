@@ -19,6 +19,12 @@ public interface IDictionary<K, V> extends Iterable<V> {
     boolean putLast(K key, V value);
 
     /**
+     * Attempts to find value according to given key
+     * Returns value if successful, null otherwise
+     */
+    V find(final K key);
+
+    /**
      * Return true whether given key exists in the dictionary, false otherwise
      */
     boolean contains(K key);

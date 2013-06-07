@@ -45,6 +45,14 @@ public class Dictionary<K, V> implements IDictionary<K, V> {
     }
 
     @Override
+    public V find(final K key) {
+        if(!contains(key))
+            return null;
+
+        return map.get(key);
+    }
+
+    @Override
     public boolean contains(K key) {
         return map.containsKey(key);
     }
