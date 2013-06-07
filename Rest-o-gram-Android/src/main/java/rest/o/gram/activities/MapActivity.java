@@ -64,8 +64,10 @@ public class MapActivity extends RestogramActionBarActivity {
 
     @Override
     public void onFinished(GetNearbyResult result) {
-        if(result.getVenues() == null)
+        if(result.getVenues() == null) {
+            Toast.makeText(this, "No restaurants found", Toast.LENGTH_SHORT).show();
             return;
+        }
 
         IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
         if(cache != null) {
