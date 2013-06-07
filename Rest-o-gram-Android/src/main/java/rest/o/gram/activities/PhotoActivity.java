@@ -130,6 +130,13 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         photoInfoView.open();
     }
 
+    public void onVenueInfoClicked(View view) {
+        // Switch to "VenueActivity" with parameter "venue"
+        Intent intent = new Intent(this, VenueActivity.class);
+        intent.putExtra("venue", venue);
+        Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, false);
+    }
+
     /**
      * Initializes using given photo
      */
@@ -149,7 +156,7 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         // Init photo info view
         photoInfoView = new PhotoInfoView(this, photo);
 
-//      Init venue information: attempt to load from cache. if not found - send request to server
+        // Init venue information: attempt to load from cache. if not found - send request to server
         String id = photo.getOriginVenueId();
 
         IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
@@ -169,6 +176,8 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
      * Initializes using given venue
      */
     private void initialize(RestogramVenue venue) {
+        this.venue = venue;
+
         // Set UI with venue information
         Utils.updateTextView((TextView)findViewById(R.id.tvVenueName), venue.getName());
         if(venue.getAddress() != null)
@@ -191,4 +200,5 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
     private RestogramPhoto photo; // Photo object
     private IRestogramCommand command; // Command object
     private PhotoInfoView photoInfoView; // Photo info view
+    private RestogramVenue venue; // Venue object
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-    <application>restogramapp</application>
+    <application>rest-o-gram-pilot-2</application>
     <version>9</version>
     <threadsafe>false</threadsafe>
     <sessions-enabled>true</sessions-enabled>
