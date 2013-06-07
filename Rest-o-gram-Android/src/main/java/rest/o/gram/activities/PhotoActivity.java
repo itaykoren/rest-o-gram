@@ -7,13 +7,17 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.common.Defs;
+import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.tasks.results.GetInfoResult;
 import rest.o.gram.view.PhotoInfoView;
 
 /**
@@ -98,6 +102,14 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         }
     }
 
+    @Override
+    public void onFinished(GetInfoResult venue) {
+        if(venue == null || venue.getVenue() == null)
+            return;
+
+        initialize(venue.getVenue());
+    }
+
     public void onFavoriteClicked(View view) {
         if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
             loginHelper.login(false);
@@ -136,6 +148,39 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
 
         // Init photo info view
         photoInfoView = new PhotoInfoView(this, photo);
+
+        // Init venue information: attempt to load from cache. if not found - send request to server
+//        String id = ""; // photo.getFoursquare_id();
+//
+//        IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
+//        if(cache != null) {
+//            RestogramVenue venue = cache.findVenue(id);
+//            if(venue != null) {
+//                initialize(venue);
+//                return;
+//            }
+//        }
+//
+//        // Send get info request
+//        RestogramClient.getInstance().getInfo(id, this);
+    }
+
+    /**
+     * Initializes using given venue
+     */
+    private void initialize(RestogramVenue venue) {
+        // Set UI with venue information
+        Utils.updateTextView((TextView)findViewById(R.id.tvVenueName), venue.getName());
+        if(venue.getAddress() != null)
+            Utils.updateTextView((TextView)findViewById(R.id.tvVenueAddress), venue.getAddress());
+        if(venue.getPhone() != null)
+            Utils.updateTextView((TextView)findViewById(R.id.tvVenuePhone), venue.getPhone());
+
+        // Set UI with venue image
+        if(venue.getImageUrl() != null && !venue.getImageUrl().isEmpty()) {
+            ImageView iv = (ImageView)findViewById(R.id.ivVenue);
+            RestogramClient.getInstance().downloadImage(venue.getImageUrl(), iv, true, null);
+        }
     }
 
     private void cancelProgress() {
