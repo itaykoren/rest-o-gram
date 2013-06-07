@@ -78,9 +78,16 @@ public class MapActivity extends RestogramActionBarActivity {
             }
         }
 
+        // Clear current data
+        clear();
+
+        // Add new venues
         addVenues(result.getVenues());
     }
 
+    /**
+     * Called after a venue was selected on map
+     */
     private void onVenueSelected(RestogramVenue venue) {
         // Switch to "VenueActivity" with parameter "venue"
         Intent intent = new Intent(this, VenueActivity.class);
@@ -88,6 +95,9 @@ public class MapActivity extends RestogramActionBarActivity {
         Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, false);
     }
 
+    /**
+     * Adds a marker for each given venue
+     */
     private void addVenues(RestogramVenue[] venues) {
         if(!isMapReady())
             return;
@@ -97,6 +107,17 @@ public class MapActivity extends RestogramActionBarActivity {
             Marker m = map.addMarker(createMarker(venue.getLatitude(), venue.getLongitude(), venue.getName(), R.drawable.ic_map_venue));
             this.venues.put(m.getId(), venue);
         }
+    }
+
+    /**
+     *  Clears all data
+     */
+    private void clear() {
+        if(!isMapReady())
+            return;
+
+        map.clear();
+        venues.clear();
     }
 
     /**
@@ -192,11 +213,16 @@ public class MapActivity extends RestogramActionBarActivity {
             }
         });
 
+        final MapActivity activity = this;
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                Point point = map.getProjection().toScreenLocation(latLng);
+                // Point point = map.getProjection().toScreenLocation(latLng);
                 // TODO: show popup - explore this area
+
+                // Send get nearby request
+                RestogramClient.getInstance().getNearby(latLng.latitude, latLng.longitude, Defs.Location.DEFAULT_NEARBY_RADIUS, activity);
+
             }
         });
 
