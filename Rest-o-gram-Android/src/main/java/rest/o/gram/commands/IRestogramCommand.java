@@ -16,7 +16,8 @@ public interface IRestogramCommand {
         CS_Canceling,
         CS_Canceled,
         CS_Finished,
-        CS_Failed
+        CS_Failed,
+        CS_TimedOut
     }
 
     /**
@@ -45,4 +46,9 @@ public interface IRestogramCommand {
      * Returns command state
      */
     State state();
+
+    /**
+     * Returns timeout interval in milliseconds
+     */
+    long getTimeoutInterval();
 }

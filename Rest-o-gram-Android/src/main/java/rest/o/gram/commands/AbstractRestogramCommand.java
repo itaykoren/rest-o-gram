@@ -1,10 +1,15 @@
 package rest.o.gram.commands;
 
+import android.os.Handler;
+import android.os.Looper;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
+import rest.o.gram.common.Defs;
 import rest.o.gram.tasks.ITaskObserver;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,6 +35,7 @@ public abstract class AbstractRestogramCommand implements IRestogramCommand {
             return false;
 
         state = State.CS_Executing;
+        startTimer();
         return true;
     }
 
@@ -58,11 +64,18 @@ public abstract class AbstractRestogramCommand implements IRestogramCommand {
         return state;
     }
 
+    @Override
+    public long getTimeoutInterval() {
+        return Defs.Commands.DEFAULT_SHORT_TIMEOUT;
+    }
+
     /**
      * Notifies observers on canceled event
      */
     protected void notifyCanceled() {
         state = State.CS_Canceled;
+        stopTimer();
+
         for(IRestogramCommandObserver o : observers)
             o.onCanceled(this);
     }
@@ -72,6 +85,8 @@ public abstract class AbstractRestogramCommand implements IRestogramCommand {
      */
     protected void notifyFinished() {
         state = State.CS_Finished;
+        stopTimer();
+
         for(IRestogramCommandObserver o : observers)
             o.onFinished(this);
     }
@@ -81,8 +96,56 @@ public abstract class AbstractRestogramCommand implements IRestogramCommand {
      */
     protected void notifyError() {
         state = State.CS_Failed;
+        stopTimer();
+
         for(IRestogramCommandObserver o : observers)
             o.onError(this);
+    }
+
+    /**
+     * Notifies observers on timeout event
+     */
+    protected void notifyTimeout() {
+        state = State.CS_TimedOut;
+        stopTimer();
+
+        for(IRestogramCommandObserver o : observers)
+            o.onTimeout(this);
+    }
+
+    /**
+     * Starts command timeout timer
+     */
+    private void startTimer() {
+        if(timer != null)
+            return;
+
+        timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        notifyTimeout();
+                    }
+                });
+            }
+
+            private Handler handler = new Handler(Looper.getMainLooper());
+        };
+
+        timer.schedule(task, getTimeoutInterval());
+    }
+
+    /**
+     * Stops command timeout timer
+     */
+    private void stopTimer() {
+        if(timer == null)
+            return;
+
+        timer.cancel();
+        timer.purge();
     }
 
     protected HttpJsonRpcClientTransport transport; // Transport object
@@ -90,4 +153,6 @@ public abstract class AbstractRestogramCommand implements IRestogramCommand {
 
     private State state; // Task state
     private Set<IRestogramCommandObserver> observers; // Command observers
+
+    private Timer timer; // Timer object
 }

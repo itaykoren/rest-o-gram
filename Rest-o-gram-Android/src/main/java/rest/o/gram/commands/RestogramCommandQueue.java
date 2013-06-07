@@ -104,6 +104,15 @@ public class RestogramCommandQueue implements IRestogramCommandQueue, IRestogram
         update();
     }
 
+    @Override
+    public void onTimeout(IRestogramCommand command) {
+        if(isCanceling)
+            return;
+
+        executing.remove(command);
+        update();
+    }
+
     /**
      * Updates this command queue
      */

@@ -21,4 +21,9 @@ public interface IRestogramCommandObserver {
      * Called after command has encountered an error
      */
     void onError(IRestogramCommand command);
+
+    /**
+     * Called after command has timed out
+     */
+    void onTimeout(IRestogramCommand command);
 }

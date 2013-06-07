@@ -2,6 +2,7 @@ package rest.o.gram.commands;
 
 import android.os.AsyncTask;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
+import rest.o.gram.common.Defs;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.*;
 
@@ -26,6 +27,11 @@ public class  AsyncTaskRestogramCommand extends AbstractRestogramCommand impleme
 
         task.cancel(true);
         return true;
+    }
+
+    @Override
+    public long getTimeoutInterval() {
+        return Defs.Commands.DEFAULT_LONG_TIMEOUT;
     }
 
     @Override

@@ -42,6 +42,12 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
     }
 
     @Override
+    public void onTimeout(IRestogramCommand command) {
+        cancelProgress();
+        this.command = null;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
