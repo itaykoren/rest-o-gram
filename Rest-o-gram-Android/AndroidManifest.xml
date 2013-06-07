@@ -56,7 +56,7 @@
         </activity>
 
         <activity android:name=".activities.VenueActivity"
-                  android:label="Venue"
+                  android:label="Restaurant"
                   android:screenOrientation="portrait"
                   android:configChanges="orientation|screenSize">
         </activity>
