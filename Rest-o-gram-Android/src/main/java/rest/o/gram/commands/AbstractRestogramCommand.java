@@ -73,6 +73,9 @@ public abstract class AbstractRestogramCommand implements IRestogramCommand {
      * Notifies observers on canceled event
      */
     protected void notifyCanceled() {
+        if(state == State.CS_TimedOut)
+            return;
+
         state = State.CS_Canceled;
         stopTimer();
 
@@ -127,6 +130,7 @@ public abstract class AbstractRestogramCommand implements IRestogramCommand {
                 handler.post(new Runnable() {
                     public void run() {
                         notifyTimeout();
+                        cancel();
                     }
                 });
             }
