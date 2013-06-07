@@ -192,6 +192,14 @@ public class MapActivity extends RestogramActionBarActivity {
             }
         });
 
+        map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                Point point = map.getProjection().toScreenLocation(latLng);
+                // TODO: show popup - explore this area
+            }
+        });
+
         // Enable user location display (with standard top right button)
         map.setMyLocationEnabled(true);
     }
