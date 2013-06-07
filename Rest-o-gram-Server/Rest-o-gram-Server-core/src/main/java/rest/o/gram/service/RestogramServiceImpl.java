@@ -156,10 +156,10 @@ public class RestogramServiceImpl implements RestogramService {
      * @return array of media related to venue given its ID
      */
     @Override
-    public PhotosResult getNextPhotos(String token) {
+    public PhotosResult getNextPhotos(String token, String originVenueId) {
         Pagination pag =
                 new Gson().fromJson(token, Pagination.class);
-        return doGetPhotos(pag, RestogramFilterType.None);
+        return doGetPhotos(pag, RestogramFilterType.None, originVenueId);
     }
 
     /**
@@ -168,13 +168,13 @@ public class RestogramServiceImpl implements RestogramService {
      * @return array of media related to venue given its ID, after applying given filter
      */
     @Override
-    public PhotosResult getNextPhotos(String token, RestogramFilterType filterType) {
+    public PhotosResult getNextPhotos(String token, RestogramFilterType filterType, String originVenueId) {
         Pagination pag = new Gson().fromJson(token, Pagination.class);
-        return doGetPhotos(pag, filterType);
+        return doGetPhotos(pag, filterType, originVenueId);
     }
 
     @Override
-    public boolean cachePhoto(String id) {
+    public boolean cachePhoto(String id, String originVenueId) {
         // TODO: check if photo is already in cache
         long lid;
         try {
@@ -209,7 +209,7 @@ public class RestogramServiceImpl implements RestogramService {
             }
         }
 
-        final RestogramPhoto photo = convert(mediaInfo.getData());
+        final RestogramPhoto photo = convert(mediaInfo.getData(), originVenueId);
         try {
             DatastoreUtils.putPublicEntity(Kinds.PHOTO,
                     photo.getInstagram_id(), Converters.photoToProps(photo));
@@ -433,13 +433,13 @@ public class RestogramServiceImpl implements RestogramService {
             }
         }
 
-        return createPhotosResult(recentMediaByLocation, filterType);
+        return createPhotosResult(recentMediaByLocation, filterType, venueID);
     }
 
     /**
      * Executes get photos request
      */
-    private PhotosResult doGetPhotos(Pagination pagination, RestogramFilterType filterType) {
+    private PhotosResult doGetPhotos(Pagination pagination, RestogramFilterType filterType, String venueId) {
         MediaFeed recentMediaByLocation;
         try {
             Credentials credentials = m_factory.createInstagramCredentials();
@@ -464,10 +464,10 @@ public class RestogramServiceImpl implements RestogramService {
             }
         }
 
-        return createPhotosResult(recentMediaByLocation, filterType);
+        return createPhotosResult(recentMediaByLocation, filterType, venueId);
     }
 
-    private PhotosResult createPhotosResult(MediaFeed recentMediaByLocation, RestogramFilterType filterType) {
+    private PhotosResult createPhotosResult(MediaFeed recentMediaByLocation, RestogramFilterType filterType, String originVenueId) {
         if(recentMediaByLocation == null) {
             log.severe("next media search returned no media");
             return null;
@@ -490,7 +490,7 @@ public class RestogramServiceImpl implements RestogramService {
 
         int i = 0;
         for (MediaFeedData media : data) {
-            photos[i] = convert(media);
+            photos[i] = convert(media, originVenueId);
             if (AuthService.isUserLoggedIn()) {
                 final LeanQuery lquery = new LeanQuery(Kinds.PHOTO_REFERENCE);
                 lquery.addFilter(Props.PhotoRef.INSTAGRAM_ID, QueryFilter.FilterOperator.EQUAL,
@@ -517,7 +517,7 @@ public class RestogramServiceImpl implements RestogramService {
         return new PhotosResult(photos, token);
     }
 
-    private RestogramPhoto convert(final MediaFeedData media) {
+    private RestogramPhoto convert(final MediaFeedData media, String originVenueId) {
         String caption = "";
         if(media.getCaption() != null)
             caption = media.getCaption().getText();
@@ -531,7 +531,7 @@ public class RestogramServiceImpl implements RestogramService {
         return new RestogramPhoto(caption, media.getCreatedTime(), media.getId(),
                 media.getImageFilter(), thumbnail, standardResolution,
                 media.getLikes().getCount(), media.getLink(),
-                media.getType(), user).encodeStrings();
+                media.getType(), user, originVenueId).encodeStrings();
     }
 
     /**

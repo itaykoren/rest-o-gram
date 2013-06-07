@@ -84,6 +84,7 @@ public final class Converters {
         entity.setUnindexedProperty(Props.Photo.LINK, photo.getLink());
         entity.setUnindexedProperty(Props.Photo.TYPE, photo.getType());
         entity.setUnindexedProperty(Props.Photo.USER, photo.getUser());
+        entity.setUnindexedProperty(Props.Photo.ORIGIN_VENUE_ID, photo.getOriginVenueId());
         return entity;
     }
 
@@ -99,6 +100,7 @@ public final class Converters {
         props.put(Props.Photo.LINK, photo.getLink());
         props.put(Props.Photo.TYPE, photo.getType());
         props.put(Props.Photo.USER, photo.getUser());
+        props.put(Props.Photo.ORIGIN_VENUE_ID, photo.getOriginVenueId());
         return props;
     }
 
@@ -117,6 +119,7 @@ public final class Converters {
         photo.setLink((String)entity.getProperty(Props.Photo.LINK));
         photo.setType((String)entity.getProperty(Props.Photo.TYPE));
         photo.setUser((String)entity.getProperty(Props.Photo.USER));
+        photo.setOriginVenueId((String)entity.getProperty(Props.Photo.ORIGIN_VENUE_ID));
         return photo;
     }
 }
