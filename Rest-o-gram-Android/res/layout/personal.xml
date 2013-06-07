@@ -7,16 +7,6 @@
               android:background="#FFFFFF">
 
 
-
-
-
- <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFFFFF" android:layout_marginLeft="30dp"
-            android:scaleType="center" android:layout_marginRight="30dp"
-            android:orientation="vertical">
-
      <!--user details: photo and user name-->
 
      <RelativeLayout
@@ -39,32 +29,59 @@
                     android:textSize="14dp"
                     android:layout_below="@+id/ivFBPhoto"
                     android:layout_centerInParent="true"
-                    android:textStyle="normal" android:typeface="monospace" android:textColor="#000000"
+                    android:textStyle="normal"
+                    android:typeface="sans"
+                    android:textColor="#000000"
                     android:maxLines="1"/>
      </RelativeLayout>
 
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000000"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"/>
 
      <LinearLayout
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:orientation="horizontal">
 
+
+
+
+
          <Button
-                     android:layout_width="wrap_content"
+                     android:layout_width="0dp"
                      android:layout_height="wrap_content"
+                     android:layout_weight="1"
                      android:text="@string/history"
                      android:id="@+id/bHistory"
-                     android:layout_marginLeft="50dp"
-                     android:onClick="onHistoryClicked" android:layout_gravity="center"/>
+                     android:onClick="onHistoryClicked"
+                     android:layout_gravity="center"
+                     android:textColor="#656565"
+                     android:drawableTop="@drawable/ic_history"/>
+
+
          <Button
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/favorites"
+                    android:layout_weight="1"
+                    android:text="@string/yumm"
                     android:id="@+id/bFavorites"
-                    android:onClick="onFavoritesClicked" android:layout_gravity="center"/>
+                    android:textColor="#656565"
+                    android:onClick="onFavoritesClicked" android:layout_gravity="center"
+                    android:drawableTop="@drawable/ic_favorite_off"/>
 
 
      </LinearLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000000"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"/>
 
     <ViewSwitcher
             android:id="@+id/viewSwitcher"
@@ -122,6 +139,3 @@
 
  </LinearLayout>
 
-
-
-</LinearLayout>
