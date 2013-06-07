@@ -9,16 +9,11 @@
 
 
 
-    <FrameLayout
+    <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="#FFFFFF"
-            android:scaleType= "center">
-
-        <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+            android:orientation="vertical">
 
 
 
@@ -122,5 +117,4 @@
 
 
         </LinearLayout>
-    </FrameLayout>
 </LinearLayout>

@@ -1,13 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout   xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#FFFFFF">
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:id="@+id/venueInfo">
+
+
+        <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/ivVenue"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="left|top"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:background="#0000"
+                android:padding="1dp"
+                android:src="@drawable/ic_rest"/>
+
+
+        <!--venue name-->
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvVenueName"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="5dp"
+                android:textColor="#040404"
+                android:typeface="sans"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:gravity="left"
+                android:layout_toRightOf="@+id/ivVenue"/>
+
+        <!--venue address-->
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvVenueAddress"
+                android:textColor="#040404"
+                android:textSize="14dp"
+                android:gravity="left"
+                android:layout_below="@+id/tvVenueName"
+                android:layout_toRightOf="@+id/ivVenue"/>
+
+        <!--venue phone-->
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvVenuePhone"
+                android:textColor="#040404"
+                android:textSize="14dp"
+                android:gravity="left"
+                android:layout_below="@+id/tvVenueAddress"
+                android:layout_toRightOf="@+id/ivVenue"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:id="@+id/relative_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp">
+
+        <ImageView
+                android:id="@+id/ivPhoto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#FFFFFF">
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"/>
+
+        <ProgressBar
+                android:id="@+id/pbImageLoading"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="visible"/>
+
+    </RelativeLayout>
 
     <LinearLayout
-           android:orientation="horizontal"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -23,43 +105,19 @@
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right" >
+                android:gravity="right">
 
-        <ImageButton
-                android:id="@+id/infoButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_info"
-                android:layout_marginRight="10dp"
-                android:onClick="onInfoClicked"/>
+            <ImageButton
+                    android:id="@+id/infoButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_info"
+                    android:layout_marginRight="10dp"
+                    android:onClick="onInfoClicked"/>
 
         </LinearLayout>
 
-
-
     </LinearLayout>
 
-        <RelativeLayout
-                android:id="@+id/relative_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center">
-
-            <ImageView
-                    android:id="@+id/ivPhoto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:adjustViewBounds="true"/>
-
-            <ProgressBar
-                    android:id="@+id/pbImageLoading"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:visibility="visible"/>
-
-        </RelativeLayout>
-
-    </LinearLayout>
+</LinearLayout>
 
