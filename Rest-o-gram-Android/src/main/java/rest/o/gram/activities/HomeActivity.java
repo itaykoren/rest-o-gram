@@ -102,32 +102,58 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
         super.onFinished(result);
 
         final RestogramVenue[] venues = result.getVenues();
-        if(venues == null || venues.length == 0)
-        {
-            if (RestogramClient.getInstance().isDebuggable())
-            {
+        if(venues == null || venues.length == 0) {
+            if (RestogramClient.getInstance().isDebuggable()) {
                 if (venues == null)
                     Log.d("REST-O-GRAM", "an error occurred while searching for venues");
                 else
                     Log.d("REST-O-GRAM", "no venues found");
             }
 
-            // Show error dialog
-            diagManager.showNoVenuesAlert(this);
-            return;
+            isFoundVenues = false;
+        }
+        else {
+            isFoundVenues = true;
         }
 
-        // Switch to "ExploreActivity" with no parameters
-        Intent intent = new Intent(this, ExploreActivity.class);
-        Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, true);
+        if(Defs.Flow.WELCOME_SCREENS_ENABLED) {
+            if(Utils.isShowWelcomeScreen(this)) {
+                setContentView(R.layout.welcome);
+                return;
+            }
+        }
+
+        start();
+    }
+
+    public void onOkClicked(View view) {
+        Utils.setIsShowWelcomeScreen(this, false);
+        start();
+    }
+
+    private void start() {
+        if(!isFoundVenues) {
+            // Show error dialog
+            diagManager.showNoVenuesAlert(this);
+        }
+        else {
+            // Switch to "ExploreActivity" with no parameters
+            Intent intent = new Intent(this, ExploreActivity.class);
+            Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, true);
+        }
     }
 
     private void cancelProgress() {
-        ProgressBar pb = (ProgressBar)findViewById(R.id.pbLoading);
+        View v = findViewById(R.id.pbLoading);
+        if(v == null)
+            return;
+
+        ProgressBar pb = (ProgressBar)v;
         pb.setVisibility(View.GONE);
     }
 
     private ILocationTracker tracker; // Location tracker
     private boolean gotLocation;
     private DialogManager diagManager;
+    private boolean isFoundVenues = false;
 }

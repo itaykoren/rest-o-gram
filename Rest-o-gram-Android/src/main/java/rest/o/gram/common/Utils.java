@@ -2,6 +2,7 @@ package rest.o.gram.common;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.widget.TextView;
 
 import java.io.*;
@@ -113,5 +114,23 @@ public class Utils {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
         oldActivity.startActivityForResult(intent, requestCode);
+    }
+
+    /**
+     * Returns true whether welcome screen should be shown for the given activity
+     */
+    public static boolean isShowWelcomeScreen(Activity activity) {
+        SharedPreferences preferences = activity.getPreferences(0);
+        return preferences.getBoolean("show_welcome", true);
+    }
+
+    /**
+     * Sets is show welcome screen state for the given activity
+     */
+    public static void setIsShowWelcomeScreen(Activity activity, boolean isShow) {
+        SharedPreferences preferences = activity.getPreferences(0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("show_welcome", isShow);
+        editor.commit();
     }
 }

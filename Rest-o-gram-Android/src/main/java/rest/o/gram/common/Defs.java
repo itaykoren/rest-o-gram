@@ -88,5 +88,10 @@ public final class Defs {
         public static final boolean CACHE_DATA_HISTORY_ENABLED = true;
     }
 
-    public static final int VENUES_AMBIGOUITY_LEVEL = 2;
+    /**
+     * Flow constants
+     */
+    public static class Flow {
+        public static final boolean WELCOME_SCREENS_ENABLED = true;
+    }
 }

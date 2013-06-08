@@ -66,7 +66,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="O.K"
-                android:id="@+id/button" android:layout_gravity="right|center_vertical"/>
+                android:id="@+id/button" android:layout_gravity="right|center_vertical"
+                android:onClick="onOkClicked"/>
         <!--<CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
