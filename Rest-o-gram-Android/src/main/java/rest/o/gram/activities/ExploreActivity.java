@@ -1,18 +1,23 @@
 package rest.o.gram.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.*;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
+import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.tasks.results.*;
+import rest.o.gram.view.GenericPopupView;
+import rest.o.gram.view.IPopupView;
 import rest.o.gram.view.PhotoViewAdapter;
 
 /**
@@ -27,6 +32,12 @@ public class ExploreActivity extends RestogramActionBarActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.explore);
+
+        if(Defs.Flow.WELCOME_SCREENS_ENABLED) {
+            if(Utils.isShowWelcomeScreen(this)) {
+                showWelcomeScreen();
+            }
+        }
 
         // Get location parameters
         try {
@@ -172,6 +183,19 @@ public class ExploreActivity extends RestogramActionBarActivity {
         currVenueIndex = (currVenueIndex + 1) % venues.length;
         return venues[currVenueIndex];
 
+    }
+
+    private void showWelcomeScreen() {
+        final Handler h = new Handler();
+        final Activity activity = this;
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                IPopupView popupView = new GenericPopupView(activity, R.layout.explore_welcome, R.id.popup_explore, 400, 200);
+                popupView.open();
+                Utils.setIsShowWelcomeScreen(activity, false);
+            }
+        }, 500);
     }
 
     private double latitude; // Latitude

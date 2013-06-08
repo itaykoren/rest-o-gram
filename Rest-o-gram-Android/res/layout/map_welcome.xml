@@ -4,8 +4,11 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="#FFFFFF">
-    <EditText
+              style="@style/CustomDialogTheme"
+              android:background="@drawable/customshape"
+              android:id="@+id/popup_map">
+
+    <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Click on icon will get you into the restaurant page. You can also press and hold on a specific area to explore the restaurants there"

@@ -1,5 +1,6 @@
 package rest.o.gram.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.*;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.tasks.results.*;
+import rest.o.gram.view.GenericPopupView;
+import rest.o.gram.view.IPopupView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +39,12 @@ public class MapActivity extends RestogramActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(Defs.Flow.WELCOME_SCREENS_ENABLED) {
+            if(Utils.isShowWelcomeScreen(this)) {
+                showWelcomeScreen();
+            }
+        }
 
         // Initialize map
         if(!initializeMap())
@@ -339,6 +348,19 @@ public class MapActivity extends RestogramActionBarActivity {
         return new MarkerOptions()
                 .position(location)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+    }
+
+    private void showWelcomeScreen() {
+        final Handler h = new Handler();
+        final Activity activity = this;
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                IPopupView popupView = new GenericPopupView(activity, R.layout.map_welcome, R.id.popup_map, 400, 200);
+                popupView.open();
+                Utils.setIsShowWelcomeScreen(activity, false);
+            }
+        }, 500);
     }
 
     private double latitude; // Latitude
