@@ -10,6 +10,7 @@ import com.leanengine.*;
  * Date: 5/17/13
  */
 public class AuthenticationProvider implements IAuthenticationProvider {
+
     public AuthenticationProvider(Context context, String baseHostname) {
         LeanEngine.init(context, baseHostname);
     }
@@ -25,8 +26,16 @@ public class AuthenticationProvider implements IAuthenticationProvider {
     }
 
     @Override
-    public boolean logout() throws LeanException {
-        return LeanAccount.logout();
+    public boolean logout() {
+
+        boolean result = false;
+
+        try {
+            result = LeanAccount.logout();
+        } catch (LeanException e) {
+            // TODO
+        }
+        return result;
     }
 
     @Override
@@ -35,8 +44,17 @@ public class AuthenticationProvider implements IAuthenticationProvider {
     }
 
     @Override
-    public LeanAccount getAccountData() throws LeanException {
-        return LeanAccount.getAccountData();
+    public LeanAccount getAccountData() {
+
+        LeanAccount account = null;
+
+        try {
+            account = LeanAccount.getAccountData();
+        } catch (LeanException e) {
+            // TODO
+        }
+
+        return account;
     }
 
     @Override

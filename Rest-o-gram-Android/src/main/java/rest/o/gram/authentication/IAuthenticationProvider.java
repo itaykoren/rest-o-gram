@@ -9,10 +9,34 @@ import com.leanengine.NetworkCallback;
  * Date: 5/17/13
  */
 public interface IAuthenticationProvider {
+
+    /**
+     * Returns whether or not user is logged in
+     */
     boolean isUserLoggedIn();
+
+    /**
+     * Returns Facebook Login URI
+     */
     Uri getFacebookLoginUri();
-    boolean logout() throws com.leanengine.LeanException;
+
+    /**
+     * Performs Logout of user and returns whether or not the action was successful
+     */
+    boolean logout();
+
+    /**
+     * Performs Logout of user asynchronously
+     */
     void logoutInBackground(NetworkCallback<Boolean> callback);
-    com.leanengine.LeanAccount getAccountData() throws com.leanengine.LeanException;
+
+    /**
+     * Returns account data of user
+     */
+    com.leanengine.LeanAccount getAccountData();
+
+    /**
+     * Returns authentication token of user
+     */
     String getAuthToken();
 }
