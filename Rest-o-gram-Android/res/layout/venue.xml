@@ -84,13 +84,15 @@
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
                                  android:src="@drawable/ic_navigate"
-                                 android:onClick="onNavigationClicked"/>
+                                 android:onClick="onNavigationClicked"
+                                 android:background="@null"/>
 
                     <ImageButton android:id="@+id/bVenueFavorite"
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
                                  android:src="@drawable/ic_favorite_off"
-                                 android:onClick="onFavoriteClicked"/>
+                                 android:onClick="onFavoriteClicked"
+                                 android:background="@null"/>
 
                 </LinearLayout>
 

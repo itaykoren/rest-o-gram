@@ -107,7 +107,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_favorite_off"
-                android:onClick="onFavoriteClicked"/>
+                android:onClick="onFavoriteClicked"
+                android:background="@null"/>
 
         <LinearLayout
                 android:orientation="horizontal"
@@ -121,7 +122,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_info"
                     android:layout_marginRight="10dp"
-                    android:onClick="onInfoClicked"/>
+                    android:onClick="onInfoClicked"
+                    android:background="@null"/>
 
         </LinearLayout>
 
