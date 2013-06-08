@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#FFFFFF">
+
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Here you can explore photos from restaurants nearby you. Just click on any photo and start explore!"
+            android:id="@+id/editText"
+            android:textColor="#727272"
+            android:layout_marginTop="10dp"
+            android:textSize="12dp"
+            android:typeface="sans"
+            android:layout_gravity="left|center_vertical"/>
+
+</LinearLayout>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#FFFFFF">
+
+    <EditText
+            android:id="@+id/editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome to Rest-o-Gram!"
+            android:textColor="#727272"
+            android:textSize="18dp"
+            android:typeface="sans"
+            android:textAlignment="center"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="left|center_vertical"/>
+
+
+    <EditText
+            android:id="@+id/editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rest-o-Gram is an Instagram based restaurant experience which allows you to explore the restaurant through the eyes of others."
+            android:textColor="#727272"
+            android:textSize="18dp"
+            android:typeface="sans"
+            android:textAlignment="center"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="left|center_vertical"/>
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rest-o-Gram helps you decide where to eat by viewing photos taken by Instagram users at restaurants nearby your location."
+        android:textColor="#727272"
+        android:textSize="18dp"
+        android:typeface="sans"
+        android:textAlignment="center"
+        android:layout_marginTop="15dp"
+        android:layout_gravity="left|center_vertical"/>
+
+    <EditText
+            android:id="@+id/editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ready? Let's go!"
+            android:textColor="#727272"
+            android:textSize="18dp"
+            android:typeface="sans"
+            android:textAlignment="center"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="left|center_vertical"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="O.K"
+            android:id="@+id/button" android:layout_gravity="right|center_vertical"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Don't show again"
+            android:textColor="#727272"
+            android:layout_marginTop="10dp"
+            android:textSize="12dp"
+            android:typeface="sans"
+            android:id="@+id/checkBox" android:layout_gravity="left|center_vertical"/>
+
+</LinearLayout>
+
