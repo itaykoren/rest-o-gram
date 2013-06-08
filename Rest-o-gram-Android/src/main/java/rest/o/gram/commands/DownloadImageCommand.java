@@ -131,7 +131,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                     }
 
                     // Add photo to view adapter
-                    viewAdapter.addPhoto(photo, bitmap);
+                    viewAdapter.addPhoto(photo.getInstagram_id(), bitmap);
                     viewAdapter.refresh();
 
                     notifyFinished();

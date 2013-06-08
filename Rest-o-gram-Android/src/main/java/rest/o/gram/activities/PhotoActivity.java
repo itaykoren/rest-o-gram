@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import rest.o.gram.R;
+import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
@@ -58,17 +59,20 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         setContentView(R.layout.photo);
 
         // Get photo parameter
-        RestogramPhoto photo;
         Bitmap bitmap;
         try {
             Intent intent = getIntent();
-            photo = (RestogramPhoto)intent.getSerializableExtra("photo");
+            photoId = intent.getStringExtra("photo");
             bitmap = (Bitmap)intent.getParcelableExtra("thumbnail_bitmap");
         }
         catch(Exception e) {
             // TODO: implementation
             return;
         }
+
+        // Get venue from cache
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        RestogramPhoto photo = cache.findPhoto(photoId);
 
         // Save photo if needed
         IDataHistoryManager dataHistoryManager = RestogramClient.getInstance().getDataHistoryManager();
@@ -103,11 +107,13 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
     }
 
     @Override
-    public void onFinished(GetInfoResult venue) {
-        if(venue == null || venue.getVenue() == null)
+    public void onFinished(GetInfoResult result) {
+        super.onFinished(result);
+
+        if(result == null || result.getVenue() == null)
             return;
 
-        initialize(venue.getVenue());
+        initialize(result.getVenue());
     }
 
     public void onFavoriteClicked(View view) {
@@ -116,7 +122,7 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         }
         else {
             // Add\Remove favorite
-            favoriteHelper.toggleFavoritePhoto(photo);
+            favoriteHelper.toggleFavoritePhoto(photoId);
         }
     }
 
@@ -133,7 +139,7 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
     public void onVenueInfoClicked(View view) {
         // Switch to "VenueActivity" with parameter "venue"
         Intent intent = new Intent(this, VenueActivity.class);
-        intent.putExtra("venue", venue);
+        intent.putExtra("venue", venueId);
         Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, false);
     }
 
@@ -141,7 +147,7 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
      * Initializes using given photo
      */
     private void initialize(RestogramPhoto photo, Bitmap bitmap) {
-        this.photo = photo;
+        photoId = photo.getInstagram_id();
 
         // Get image view
         ImageView iv = (ImageView)findViewById(R.id.ivPhoto);
@@ -176,7 +182,7 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
      * Initializes using given venue
      */
     private void initialize(RestogramVenue venue) {
-        this.venue = venue;
+        venueId = venue.getFoursquare_id();
 
         // Set UI with venue information
         Utils.updateTextView((TextView)findViewById(R.id.tvVenueName), venue.getName());
@@ -197,8 +203,8 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         pb.setVisibility(View.GONE);
     }
 
-    private RestogramPhoto photo; // Photo object
+    private String photoId; // Photo object
     private IRestogramCommand command; // Command object
     private PhotoInfoView photoInfoView; // Photo info view
-    private RestogramVenue venue; // Venue object
+    private String venueId; // Venue object
 }

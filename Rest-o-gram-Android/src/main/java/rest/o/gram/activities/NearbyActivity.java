@@ -73,19 +73,10 @@ public class NearbyActivity extends RestogramActionBarActivity implements IResto
 
     @Override
     public void onFinished(GetNearbyResult result) {
+        super.onFinished(result);
+
         if(result.getVenues() == null)
             return;
-
-        IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
-        if(cache != null) {
-            // Reset cache
-            cache.clear();
-
-            // Save to cache
-            for(final RestogramVenue venue : result.getVenues()) {
-                cache.save(venue, Defs.Data.SortOrder.SortOrderFIFO);
-            }
-        }
 
         addVenues(result.getVenues());
     }
@@ -94,7 +85,7 @@ public class NearbyActivity extends RestogramActionBarActivity implements IResto
     public void onVenueSelected(RestogramVenue venue) {
         // Switch to "VenueActivity" with parameter "venue"
         Intent intent = new Intent(this, VenueActivity.class);
-        intent.putExtra("venue", venue);
+        intent.putExtra("venue", venue.getFoursquare_id());
         Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, false);
     }
 
@@ -112,7 +103,7 @@ public class NearbyActivity extends RestogramActionBarActivity implements IResto
                 venue.setDistance(d);
 
             // Add venue
-            viewAdapter.addVenue(venue);
+            viewAdapter.addVenue(venue.getFoursquare_id());
         }
 
         viewAdapter.refresh();

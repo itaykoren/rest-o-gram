@@ -6,15 +6,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import rest.o.gram.R;
-import rest.o.gram.common.Utils;
-import rest.o.gram.data_history.IDataHistoryManager;
-import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
+import rest.o.gram.common.Utils;
+import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.location.ILocationObserver;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.network.INetworkStateProvider;
-import rest.o.gram.tasks.results.*;
+import rest.o.gram.tasks.results.GetNearbyResult;
 
 /**
  * Created with IntelliJ IDEA.
@@ -100,6 +99,8 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
 
     @Override
     public void onFinished(GetNearbyResult result) {
+        super.onFinished(result);
+
         final RestogramVenue[] venues = result.getVenues();
         if(venues == null || venues.length == 0)
         {
@@ -114,17 +115,6 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
             // Show error dialog
             diagManager.showNoVenuesAlert(this);
             return;
-        }
-
-        IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
-        if(cache != null) {
-            // Reset cache
-            cache.clear();
-
-            // Save to cache
-            for(final RestogramVenue venue : result.getVenues()) {
-                cache.save(venue, Defs.Data.SortOrder.SortOrderFIFO);
-            }
         }
 
         // Switch to "ExploreActivity" with no parameters

@@ -4,6 +4,12 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import rest.o.gram.activities.helpers.FavoriteHelper;
 import rest.o.gram.activities.helpers.LoginHelper;
+import rest.o.gram.cache.IRestogramCache;
+import rest.o.gram.client.RestogramClient;
+import rest.o.gram.common.Defs;
+import rest.o.gram.data_history.IDataHistoryManager;
+import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.*;
 
@@ -39,18 +45,55 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
     }
 
     @Override
-    public void onFinished(GetNearbyResult venues) {
-        // Empty
+    public void onFinished(GetNearbyResult result) {
+        if(result.getVenues() == null)
+            return;
+
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        if(cache != null) {
+            // Add all venues to cache
+            for(final RestogramVenue venue : result.getVenues()) {
+                cache.add(venue);
+            }
+        }
+
+        IDataHistoryManager cacheDataHistoryManager = RestogramClient.getInstance().getCacheDataHistoryManager();
+        if(cacheDataHistoryManager != null) {
+            // Reset cache data history
+            cacheDataHistoryManager.clear();
+
+            // Save to cache data history
+            for(final RestogramVenue venue : result.getVenues()) {
+                cacheDataHistoryManager.save(venue, Defs.Data.SortOrder.SortOrderFIFO);
+            }
+        }
     }
 
     @Override
-    public void onFinished(GetInfoResult venue) {
-        // Empty
+    public void onFinished(GetInfoResult result) {
+       if(result.getVenue() == null)
+           return;
+
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        if(cache != null) {
+            // Reinsert venue to cache
+            cache.removeVenue(result.getVenue().getFoursquare_id());
+            cache.add(result.getVenue());
+        }
     }
 
     @Override
     public void onFinished(GetPhotosResult result) {
-        // Empty
+        if(result.getPhotos() == null)
+            return;
+
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        if(cache != null) {
+            // Add all photos to cache
+            for(final RestogramPhoto photo : result.getPhotos()) {
+                cache.add(photo);
+            }
+        }
     }
 
     @Override

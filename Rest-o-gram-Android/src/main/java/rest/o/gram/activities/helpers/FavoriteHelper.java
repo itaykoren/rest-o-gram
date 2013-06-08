@@ -2,6 +2,7 @@ package rest.o.gram.activities.helpers;
 
 import android.widget.ImageButton;
 import rest.o.gram.R;
+import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.data_favorites.GetFavoritePhotosResult;
 import rest.o.gram.data_favorites.GetFavoriteVenuesResult;
@@ -81,12 +82,16 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     /**
      * Toggles favorite state of given venue according to current user
      */
-    public boolean toggleFavoriteVenue(RestogramVenue venue) {
+    public boolean toggleFavoriteVenue(String venueId) {
         if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn())
             return false;
 
         if(dataFavoritesManager == null)
             return false;
+
+        // Get venue from cache
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        RestogramVenue venue = cache.findVenue(venueId);
 
         if(!favoriteVenues.containsKey(venue.getFoursquare_id())) {
             dataFavoritesManager.addFavoriteVenue(venue, this);
@@ -100,12 +105,16 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     /**
      * Toggles favorite state of given photo according to current user
      */
-    public boolean toggleFavoritePhoto(RestogramPhoto photo) {
+    public boolean toggleFavoritePhoto(String photoId) {
         if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn())
             return false;
 
         if(dataFavoritesManager == null)
             return false;
+
+        // Get venue from cache
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        RestogramPhoto photo = cache.findPhoto(photoId);
 
         if(!favoritePhotos.containsKey(photo.getInstagram_id())) {
             dataFavoritesManager.addFavoritePhoto(photo, this);

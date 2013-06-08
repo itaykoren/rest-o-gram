@@ -9,9 +9,9 @@ import rest.o.gram.tasks.results.*;
  */
 public interface ITaskObserver {
 
-    void onFinished(GetNearbyResult venues);
+    void onFinished(GetNearbyResult result);
 
-    void onFinished(GetInfoResult venue);
+    void onFinished(GetInfoResult result);
 
     void onFinished(GetPhotosResult result);
 

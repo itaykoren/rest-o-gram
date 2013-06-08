@@ -12,7 +12,7 @@ public interface IPhotoViewAdapter {
     /**
      * Adds photo
      * */
-    void addPhoto(RestogramPhoto photo, Bitmap bitmap);
+    void addPhoto(String photoId, Bitmap bitmap);
 
     /**
      * Refreshes this adapter

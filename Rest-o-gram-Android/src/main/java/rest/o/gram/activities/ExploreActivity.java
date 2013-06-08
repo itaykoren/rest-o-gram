@@ -70,26 +70,18 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
     @Override
     public void onFinished(GetNearbyResult result) {
+        super.onFinished(result);
+
         venues = result.getVenues();
         if (venues == null || venues.length == 0)
             return;
-
-        IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
-        if(cache != null) {
-            // Reset cache
-            cache.clear();
-
-            // Save to cache
-            for(final RestogramVenue venue : venues) {
-                cache.save(venue, Defs.Data.SortOrder.SortOrderFIFO);
-            }
-        }
 
         initialize();
     }
 
     @Override
     public void onFinished(GetPhotosResult result) {
+        super.onFinished(result);
 
         if (result == null)
             return;

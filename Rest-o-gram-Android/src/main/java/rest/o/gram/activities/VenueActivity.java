@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import rest.o.gram.R;
+import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
@@ -31,23 +32,27 @@ public class VenueActivity extends RestogramActionBarActivity {
         setContentView(R.layout.venue);
 
         // Get venue parameter
-        RestogramVenue venue;
         try {
             Intent intent = getIntent();
-            venue = (RestogramVenue)intent.getSerializableExtra("venue");
+            venueId = intent.getStringExtra("venue");
         }
         catch(Exception e) {
             // TODO: implementation
             return;
         }
 
+        // Get venue from cache
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        RestogramVenue venue = cache.findVenue(venueId);
+
         // Save venue if needed
         IDataHistoryManager dataHistoryManager = RestogramClient.getInstance().getDataHistoryManager();
-        if(dataHistoryManager != null)
+        if(dataHistoryManager != null) {
             dataHistoryManager.save(venue, Defs.Data.SortOrder.SortOrderLIFO);
+        }
 
         // Initialize favorite helper
-        favoriteHelper.setVenueId(venue.getFoursquare_id());
+        favoriteHelper.setVenueId(venueId);
         favoriteHelper.setFavoriteVenueButton((ImageButton)findViewById(R.id.bVenueFavorite));
         //favoriteHelper.refresh();
 
@@ -72,6 +77,8 @@ public class VenueActivity extends RestogramActionBarActivity {
 
     @Override
     public void onFinished(GetPhotosResult result) {
+        super.onFinished(result);
+
         if(result == null)
             return;
 
@@ -91,6 +98,11 @@ public class VenueActivity extends RestogramActionBarActivity {
     public void onNavigationClicked(View view) {
         try {
             // TODO: create more generic intent
+
+            // Get venue from cache
+            IRestogramCache cache = RestogramClient.getInstance().getCache();
+            RestogramVenue venue = cache.findVenue(venueId);
+
             // Create intent with location parameters
             String destination = venue.getLatitude() + "," + venue.getLongitude();
             Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
@@ -110,7 +122,7 @@ public class VenueActivity extends RestogramActionBarActivity {
         }
         else {
             // Add\Remove favorite
-            favoriteHelper.toggleFavoriteVenue(venue);
+            favoriteHelper.toggleFavoriteVenue(venueId);
         }
     }
 
@@ -118,7 +130,7 @@ public class VenueActivity extends RestogramActionBarActivity {
      * Initializes using given venue
      */
     private void initialize(RestogramVenue venue) {
-        this.venue = venue;
+        venueId = venue.getFoursquare_id();
 
         // Init photo grid view
         GridView gv = (GridView)findViewById(R.id.gvPhotos);
@@ -180,11 +192,11 @@ public class VenueActivity extends RestogramActionBarActivity {
             if(RestogramClient.getInstance().isDebuggable())
                 Log.d("REST-O-GRAM", "Requesting more photos");
 
-            RestogramClient.getInstance().getNextPhotos(lastToken, venue.getFoursquare_id(), this);
+            RestogramClient.getInstance().getNextPhotos(lastToken, venueId, this);
         }
     }
 
-    private RestogramVenue venue; // Venue object
+    private String venueId; // Venue object
     private PhotoViewAdapter viewAdapter; // View adapter
     private String lastToken = null; // Last token
     private boolean isRequestPending = false; // Request pending flag

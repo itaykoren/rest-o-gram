@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import rest.o.gram.authentication.AuthenticationProvider;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
+import rest.o.gram.cache.IRestogramCache;
+import rest.o.gram.cache.RestogramCache;
 import rest.o.gram.commands.*;
 import rest.o.gram.common.Defs;
 import rest.o.gram.data_favorites.*;
@@ -78,6 +80,8 @@ public class RestogramClient implements IRestogramClient {
             networkStateProvider = new NetworkStateProvider(context);
             commandQueue = new RestogramCommandQueue();
 
+            cache = new RestogramCache();
+
             if(Defs.Data.DATA_HISTORY_ENABLED)
                 dataHistoryManager = new FileDataHistoryManager(context);
 
@@ -104,10 +108,17 @@ public class RestogramClient implements IRestogramClient {
             dataHistoryManager.flush();
         }
 
-        if (dataFavoritesManager != null)
+        // Clear cache data history
+        if(cacheDataHistoryManager != null)
+            cacheDataHistoryManager.clear();
+
+        // Clear cache
+        if(cache != null)
+            cache.clear();
+
+        if(dataFavoritesManager != null)
             dataFavoritesManager.dispose();
 
-        // TODO: dispose
     }
 
     /* NON-AUTH SERVICES */
@@ -262,6 +273,11 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
+    public IRestogramCache getCache() {
+        return cache;
+    }
+
+    @Override
     public boolean isDebuggable() {
         return debuggable;
     }
@@ -294,5 +310,6 @@ public class RestogramClient implements IRestogramClient {
     private IDataHistoryManager cacheDataHistoryManager; // Cache data history manager
     private IBitmapFilter bitmapFilter; // Bitmap filter
     private IRestogramCommandQueue commandQueue; // Command queue
+    private IRestogramCache cache; // Cache object
     private boolean debuggable = false; // debuggable flag
 }

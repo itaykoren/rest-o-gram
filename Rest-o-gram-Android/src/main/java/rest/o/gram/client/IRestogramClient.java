@@ -3,6 +3,7 @@ package rest.o.gram.client;
 import android.content.Context;
 import android.widget.ImageView;
 import rest.o.gram.authentication.IAuthenticationProvider;
+import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.data_history.IDataHistoryManager;
@@ -144,6 +145,11 @@ public interface IRestogramClient {
      * Returns the data favorites manager
      */
     IDataFavoritesManager getDataFavoritesManager();
+
+    /**
+     * Returns the cache
+     */
+    IRestogramCache getCache();
 
     /**
      * @return is the application in debug mode?

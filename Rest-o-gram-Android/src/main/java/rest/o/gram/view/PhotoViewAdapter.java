@@ -69,7 +69,7 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
             imageView = (ImageView)view;
         }
 
-        final Pair<RestogramPhoto, Bitmap> item = photoList.get(i);
+        final Pair<String, Bitmap> item = photoList.get(i);
         imageView.setImageBitmap(item.second);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,8 +82,8 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
     }
 
     @Override
-    public void addPhoto(RestogramPhoto photo, Bitmap bitmap) {
-        Pair<RestogramPhoto, Bitmap> pair = new Pair<>(photo, bitmap);
+    public void addPhoto(String photoId, Bitmap bitmap) {
+        Pair<String, Bitmap> pair = new Pair<>(photoId, bitmap);
         photoList.add(pair);
     }
 
@@ -97,14 +97,14 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
         photoList.clear();
     }
 
-    private void onPhotoClicked(RestogramPhoto photo, Bitmap bitmap) {
+    private void onPhotoClicked(String photoId, Bitmap bitmap) {
         // Switch to "PhotoActivity" with parameters "photo" & "thumbnail_bitmap"
         Intent intent = new Intent(context, PhotoActivity.class);
-        intent.putExtra("photo", photo);
+        intent.putExtra("photo", photoId);
         intent.putExtra("thumbnail_bitmap", bitmap);
         Utils.changeActivity(context, intent, Defs.RequestCodes.RC_PHOTO, false);
     }
 
     private Activity context; // Context
-    private List<Pair<RestogramPhoto,Bitmap>> photoList; // Photos list
+    private List<Pair<String,Bitmap>> photoList; // Photos list
 }

@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import rest.o.gram.R;
+import rest.o.gram.cache.IRestogramCache;
+import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.IRestogramListener;
 import rest.o.gram.common.Utils;
 import rest.o.gram.entities.RestogramVenue;
@@ -54,7 +56,11 @@ public class VenueViewAdapter extends BaseAdapter {
             return null;
 
         View v = inflater.inflate(R.layout.nearby_list_item, null);
-        final RestogramVenue venue = venueList.get(i);
+        final String venueId = venueList.get(i);
+
+        // Get venue from cache
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        RestogramVenue venue = cache.findVenue(venueId);
 
         // Set UI with venue information
         Utils.updateTextView((TextView)v.findViewById(R.id.tvName), venue.getName());
@@ -74,6 +80,8 @@ public class VenueViewAdapter extends BaseAdapter {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                IRestogramCache cache = RestogramClient.getInstance().getCache();
+                RestogramVenue venue = cache.findVenue(venueId);
                 listener.onVenueSelected(venue);
             }
         });
@@ -84,8 +92,8 @@ public class VenueViewAdapter extends BaseAdapter {
     /**
      * Adds venue
      * */
-    public void addVenue(RestogramVenue venue) {
-        venueList.add(venue);
+    public void addVenue(String venueId) {
+        venueList.add(venueId);
     }
 
     /**
@@ -103,7 +111,7 @@ public class VenueViewAdapter extends BaseAdapter {
     }
 
     private IRestogramListener listener;
-    private List<RestogramVenue> venueList; // Venue list
+    private List<String> venueList; // Venue list
     private LayoutInflater inflater;
     private boolean showDistance = true; // Show distance flag
 }

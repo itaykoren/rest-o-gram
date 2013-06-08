@@ -72,23 +72,14 @@ public class MapActivity extends RestogramActionBarActivity {
 
     @Override
     public void onFinished(GetNearbyResult result) {
+        super.onFinished(result);
+
         // Set is request pending flag to false
         isRequestPending = false;
 
         if(result.getVenues() == null) {
             Toast.makeText(this, "No restaurants found", Toast.LENGTH_SHORT).show();
             return;
-        }
-
-        IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
-        if(cache != null) {
-            // Reset cache
-            cache.clear();
-
-            // Save to cache
-            for(final RestogramVenue venue : result.getVenues()) {
-                cache.save(venue, Defs.Data.SortOrder.SortOrderFIFO);
-            }
         }
 
         // Clear current data
@@ -111,10 +102,10 @@ public class MapActivity extends RestogramActionBarActivity {
     /**
      * Called after a venue was selected on map
      */
-    private void onVenueSelected(RestogramVenue venue) {
+    private void onVenueSelected(String venueId) {
         // Switch to "VenueActivity" with parameter "venue"
         Intent intent = new Intent(this, VenueActivity.class);
-        intent.putExtra("venue", venue);
+        intent.putExtra("venue", venueId);
         Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, false);
     }
 
@@ -131,7 +122,7 @@ public class MapActivity extends RestogramActionBarActivity {
         // Traverse given venues
         for(final RestogramVenue venue : venues) {
             Marker m = map.addMarker(createMarker(venue.getLatitude(), venue.getLongitude(), venue.getName(), R.drawable.ic_map_venue));
-            this.venues.put(m.getId(), venue);
+            this.venues.put(m.getId(), venue.getFoursquare_id());
         }
     }
 
@@ -230,11 +221,11 @@ public class MapActivity extends RestogramActionBarActivity {
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                RestogramVenue venue = venues.get(marker.getId());
-                if(venue == null)
+                String venueId = venues.get(marker.getId());
+                if(venueId == null)
                     return false;
 
-                onVenueSelected(venue);
+                onVenueSelected(venueId);
                 return true;
             }
         });
@@ -353,7 +344,7 @@ public class MapActivity extends RestogramActionBarActivity {
     private double latitude; // Latitude
     private double longitude; // Longitude
     private GoogleMap map; // Map object
-    private Map<String, RestogramVenue> venues = new HashMap<>(); // Venues map
+    private Map<String, String> venues = new HashMap<>(); // Venues map
     private Marker currentMarker; // Current marker
     private MarkerOptions currentMarkerOptions; // Current marker options
     private boolean isRequestPending = false; // Request pending flag

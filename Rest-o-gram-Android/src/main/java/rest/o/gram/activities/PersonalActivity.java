@@ -14,6 +14,7 @@ import com.leanengine.LeanAccount;
 import com.leanengine.LeanException;
 import rest.o.gram.R;
 import rest.o.gram.authentication.IAuthenticationProvider;
+import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.IRestogramListener;
@@ -92,7 +93,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     public void onVenueSelected(RestogramVenue venue) {
         // Switch to "VenueActivity" with parameter "venue"
         Intent intent = new Intent(this, VenueActivity.class);
-        intent.putExtra("venue", venue);
+        intent.putExtra("venue", venue.getFoursquare_id());
         Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, false);
     }
 
@@ -175,7 +176,11 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
             return;
 
         for(RestogramVenue venue : venues) {
-            historyVenueViewAdapter.addVenue(venue);
+            // Add venue to cache (if needed)
+            IRestogramCache cache = RestogramClient.getInstance().getCache();
+            cache.add(venue);
+
+            historyVenueViewAdapter.addVenue(venue.getFoursquare_id());
         }
 
         historyVenueViewAdapter.refresh();
@@ -211,7 +216,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
             return;
 
         for(RestogramVenue venue : venues) {
-            favoriteVenueViewAdapter.addVenue(venue);
+            favoriteVenueViewAdapter.addVenue(venue.getFoursquare_id());
         }
 
         favoriteVenueViewAdapter.refresh();
