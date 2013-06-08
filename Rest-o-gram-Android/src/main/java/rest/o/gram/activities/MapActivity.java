@@ -122,6 +122,9 @@ public class MapActivity extends RestogramActionBarActivity {
      * Adds a marker for each given venue
      */
     private void addVenues(RestogramVenue[] venues) {
+        if(venues == null)
+            return;
+
         if(!isMapReady())
             return;
 

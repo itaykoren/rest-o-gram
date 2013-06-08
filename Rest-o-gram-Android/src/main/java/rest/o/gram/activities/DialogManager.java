@@ -7,13 +7,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
-import android.widget.Toast;
-import com.leanengine.LeanError;
 import com.leanengine.LoginDialog;
 import com.leanengine.LoginListener;
 import rest.o.gram.R;
 import rest.o.gram.client.RestogramClient;
+import rest.o.gram.common.Defs;
+import rest.o.gram.common.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +89,7 @@ public final class DialogManager {
                     }
                 });
 
-        // on pressing cancel button
+        // On pressing cancel button
         alertDialog.setNegativeButton("Cancel",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -112,13 +111,16 @@ public final class DialogManager {
         // Setting Dialog Message
         alertDialog.setMessage(message);
 
-        // on pressing cancel button
+        // On pressing ok button
         alertDialog.setPositiveButton("OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                         dialogs.remove(dialog);
-                        activity.finish();
+
+                        // Switch to "MapActivity" with no parameters
+                        Intent intent = new Intent(activity, MapActivity.class);
+                        Utils.changeActivity(activity, intent, Defs.RequestCodes.RC_MAP, true);
                     }
                 });
 
