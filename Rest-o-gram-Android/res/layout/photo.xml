@@ -108,7 +108,7 @@
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_favorite_off"
                 android:onClick="onFavoriteClicked"
-                android:background="@null"/>
+                android:background="@android:color/transparent"/>
 
         <LinearLayout
                 android:orientation="horizontal"
@@ -123,7 +123,7 @@
                     android:src="@drawable/ic_info"
                     android:layout_marginRight="10dp"
                     android:onClick="onInfoClicked"
-                    android:background="@null"/>
+                    android:background="@android:color/transparent"/>
 
         </LinearLayout>
 
