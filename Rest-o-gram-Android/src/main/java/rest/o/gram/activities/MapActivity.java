@@ -45,6 +45,14 @@ public class MapActivity extends RestogramActionBarActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Set is request pending flag to false
+        isRequestPending = false;
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -64,6 +72,9 @@ public class MapActivity extends RestogramActionBarActivity {
 
     @Override
     public void onFinished(GetNearbyResult result) {
+        // Set is request pending flag to false
+        isRequestPending = false;
+
         if(result.getVenues() == null) {
             Toast.makeText(this, "No restaurants found", Toast.LENGTH_SHORT).show();
             return;
@@ -89,6 +100,12 @@ public class MapActivity extends RestogramActionBarActivity {
         // Update current marker
         if(currentMarkerOptions != null)
             currentMarker = map.addMarker(currentMarkerOptions);
+    }
+
+    @Override
+    public void onCanceled() {
+        // Set is request pending flag to false
+        isRequestPending = false;
     }
 
     /**
@@ -223,8 +240,11 @@ public class MapActivity extends RestogramActionBarActivity {
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                // Point point = map.getProjection().toScreenLocation(latLng);
-                // TODO: show popup - explore this area
+                if(isRequestPending)
+                    return;
+
+                // Set is request pending flag to true
+                isRequestPending = true;
 
                 // Update current marker
                 if(currentMarker != null)
@@ -333,4 +353,5 @@ public class MapActivity extends RestogramActionBarActivity {
     private Map<String, RestogramVenue> venues = new HashMap<>(); // Venues map
     private Marker currentMarker; // Current marker
     private MarkerOptions currentMarkerOptions; // Current marker options
+    private boolean isRequestPending = false; // Request pending flag
 }
