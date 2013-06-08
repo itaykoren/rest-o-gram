@@ -251,12 +251,11 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         Thread thread = new Thread() {
             @Override
             public void run() {
-                try {
-                    LeanAccount account = provider.getAccountData();
+
+                LeanAccount account = provider.getAccountData();
+                if (account != null) {
                     Message message = handler.obtainMessage(1, account.getNickName());
                     handler.sendMessage(message);
-                } catch (LeanException e) {
-                    // TODO
                 }
             }
         };
