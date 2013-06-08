@@ -40,17 +40,22 @@ public class MapActivity extends RestogramActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(Defs.Flow.WELCOME_SCREENS_ENABLED) {
-            if(Utils.isShowWelcomeScreen(this)) {
-                showWelcomeScreen();
-            }
-        }
-
         // Initialize map
         if(!initializeMap())
             return;
 
         setContentView(R.layout.map);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(Defs.Flow.WELCOME_SCREENS_ENABLED) {
+            if(Utils.isShowWelcomeScreen(this)) {
+                showWelcomeScreen();
+            }
+        }
     }
 
     @Override
@@ -360,7 +365,7 @@ public class MapActivity extends RestogramActionBarActivity {
                 popupView.open();
                 Utils.setIsShowWelcomeScreen(activity, false);
             }
-        }, 500);
+        }, 1000);
     }
 
     private double latitude; // Latitude

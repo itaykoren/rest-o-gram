@@ -33,12 +33,6 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
         setContentView(R.layout.explore);
 
-        if(Defs.Flow.WELCOME_SCREENS_ENABLED) {
-            if(Utils.isShowWelcomeScreen(this)) {
-                showWelcomeScreen();
-            }
-        }
-
         // Get location parameters
         try {
             Intent intent = getIntent();
@@ -68,6 +62,17 @@ public class ExploreActivity extends RestogramActionBarActivity {
         } catch (Exception e) {
             // TODO: implementation
             return;
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(Defs.Flow.WELCOME_SCREENS_ENABLED) {
+            if(Utils.isShowWelcomeScreen(this)) {
+                showWelcomeScreen();
+            }
         }
     }
 
@@ -195,7 +200,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
                 popupView.open();
                 Utils.setIsShowWelcomeScreen(activity, false);
             }
-        }, 500);
+        }, 1000);
     }
 
     private double latitude; // Latitude
