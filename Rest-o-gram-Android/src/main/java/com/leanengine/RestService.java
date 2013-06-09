@@ -32,7 +32,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-class RestService {
+public class RestService {
 
     private static final RestService INSTANCE = new RestService();
     
@@ -86,7 +86,7 @@ class RestService {
         }
     }
     
-    private JSONObject doGet(String uri) throws IOException {
+    public JSONObject doGet(String uri) throws IOException {
         HttpGet httpget = new HttpGet(uri);
         httpget.addHeader("Accept", "application/json");
         httpget.addHeader("Accept-Charset", "UTF-8");
