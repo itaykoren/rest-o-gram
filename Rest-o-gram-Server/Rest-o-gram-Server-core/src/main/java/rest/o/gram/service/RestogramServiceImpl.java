@@ -583,7 +583,29 @@ public class RestogramServiceImpl implements RestogramService {
                 return null;
 
             photoUrl = items[0].getUrl();
-            result = new RestogramVenue(venue.getId(), venue.getName(), venue.getDescription(), photoUrl);
+
+            fi.foyt.foursquare.api.entities.Location location = venue.getLocation();
+
+            Contact contact = venue.getContact();
+            String phone = "";
+            if(contact != null)
+                phone = contact.getPhone();
+
+            result = new RestogramVenue(venue.getId(),
+                    venue.getName(),
+                    location.getAddress(),
+                    location.getCity(),
+                    location.getState(),
+                    location.getPostalCode(),
+                    location.getCountry(),
+                    location.getLat(),
+                    location.getLng(),
+                    location.getDistance(),
+                    venue.getUrl(),
+                    phone);
+
+            result.setDescription(venue.getDescription());
+            result.setImageUrl(photoUrl);
         }
         catch(Exception e) {
             log.severe("venue object conversion failed");
