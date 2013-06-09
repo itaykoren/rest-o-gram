@@ -23,5 +23,7 @@ public interface ITaskObserver {
 
     void onFinished(FetchVenuesFromCacheResult result);
 
+    void onFinished(GetProfilePhotoUrlResult result);
+
     void onCanceled();
 }

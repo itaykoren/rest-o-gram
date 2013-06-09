@@ -77,6 +77,12 @@ public class  AsyncTaskRestogramCommand extends AbstractRestogramCommand impleme
     }
 
     @Override
+    public void onFinished(GetProfilePhotoUrlResult result) {
+        notifyFinished();
+        observer.onFinished(result);
+    }
+
+    @Override
     public void onCanceled() {
         notifyCanceled();
         observer.onCanceled();

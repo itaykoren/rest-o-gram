@@ -296,6 +296,9 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         public void onFinished(FetchVenuesFromCacheResult result) { }
 
         @Override
+        public void onFinished(GetProfilePhotoUrlResult result) { }
+
+        @Override
         public void onCanceled() {
             //To change body of implemented methods use File | Settings | File Templates.
         }

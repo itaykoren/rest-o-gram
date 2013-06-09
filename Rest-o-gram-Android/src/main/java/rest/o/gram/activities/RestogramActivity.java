@@ -117,6 +117,11 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
     }
 
     @Override
+    public void onFinished(GetProfilePhotoUrlResult result) {
+        // Empty
+    }
+
+    @Override
     public void onCanceled() {
         // Empty
     }
