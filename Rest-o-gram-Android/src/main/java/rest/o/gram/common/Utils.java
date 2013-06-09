@@ -3,6 +3,7 @@ package rest.o.gram.common;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.widget.TextView;
 
 import java.io.*;
@@ -114,6 +115,19 @@ public class Utils {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
         oldActivity.startActivityForResult(intent, requestCode);
+    }
+
+    /**
+     * Starts navigation to given destination
+     */
+    public static void startNavigation(Activity activity, double latitude, double longitude) {
+        // Create intent with location parameters
+        String destination = latitude + "," + longitude;
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?daddr=" + destination));
+
+        // Launch navigation
+        activity.startActivity(intent);
     }
 
     /**

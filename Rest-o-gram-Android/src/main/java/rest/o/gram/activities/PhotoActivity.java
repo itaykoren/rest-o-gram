@@ -116,6 +116,20 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         initialize(result.getVenue());
     }
 
+    public void onNavigationClicked(View view) {
+        try {
+            // Get venue from cache
+            IRestogramCache cache = RestogramClient.getInstance().getCache();
+            RestogramVenue venue = cache.findVenue(venueId);
+
+            // Start navigation
+            Utils.startNavigation(this, venue.getLatitude(), venue.getLongitude());
+        }
+        catch(Exception e) {
+            // Empty
+        }
+    }
+
     public void onFavoriteClicked(View view) {
         if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
             loginHelper.login(false);

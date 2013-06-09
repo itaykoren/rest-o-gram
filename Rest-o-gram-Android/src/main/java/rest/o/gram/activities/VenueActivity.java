@@ -1,7 +1,6 @@
 package rest.o.gram.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -97,19 +96,12 @@ public class VenueActivity extends RestogramActionBarActivity {
 
     public void onNavigationClicked(View view) {
         try {
-            // TODO: create more generic intent
-
             // Get venue from cache
             IRestogramCache cache = RestogramClient.getInstance().getCache();
             RestogramVenue venue = cache.findVenue(venueId);
 
-            // Create intent with location parameters
-            String destination = venue.getLatitude() + "," + venue.getLongitude();
-            Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                    Uri.parse("http://maps.google.com/maps?daddr="+destination));
-
-            // Launch navigation
-            startActivity(intent);
+            // Start navigation
+            Utils.startNavigation(this, venue.getLatitude(), venue.getLongitude());
         }
         catch(Exception e) {
             // Empty
