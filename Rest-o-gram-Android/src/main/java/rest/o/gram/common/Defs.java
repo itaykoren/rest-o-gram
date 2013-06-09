@@ -47,7 +47,7 @@ public final class Defs {
             TrackerTypeDefault
         }
 
-        public static final TrackerType TRACKER_TYPE = TrackerType.TrackerTypeDummy;
+        public static final TrackerType TRACKER_TYPE = TrackerType.TrackerTypeDefault;
 
         public static final double DEFAULT_FINDME_RADIUS = 50;
         public static final double DEFAULT_NEARBY_RADIUS = 500;

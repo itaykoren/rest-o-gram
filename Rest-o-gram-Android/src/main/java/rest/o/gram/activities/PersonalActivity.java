@@ -37,7 +37,7 @@ import java.util.List;
  * User: Hen
  * Date: 24/05/13
  */
-public class PersonalActivity extends RestogramActionBarActivity implements IRestogramListener, IDataFavoritesOperationsObserver, ITaskObserver {
+public class PersonalActivity extends RestogramActionBarActivity implements IRestogramListener, IDataFavoritesOperationsObserver {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,9 +97,8 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     @Override
     public void onFinished(GetProfilePhotoUrlResult result) {
-
         String profilePhotoUrl = result.getProfilePhotoUrl();
-        new DownloadImageCommand(profilePhotoUrl, profileImageView).execute();
+        RestogramClient.getInstance().downloadImage(profilePhotoUrl, profileImageView, true, null);
     }
 
     @Override
