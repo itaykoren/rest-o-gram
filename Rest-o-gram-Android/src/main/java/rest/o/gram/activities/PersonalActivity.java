@@ -6,16 +6,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.Menu;
 import android.view.View;
-import android.widget.GridView;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.ViewSwitcher;
+import android.widget.*;
 import com.leanengine.LeanAccount;
-import com.leanengine.LeanException;
 import rest.o.gram.R;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
+import rest.o.gram.commands.DownloadImageCommand;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.IRestogramListener;
 import rest.o.gram.common.Utils;
@@ -27,6 +24,8 @@ import rest.o.gram.data_favorites.results.*;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.tasks.ITaskObserver;
+import rest.o.gram.tasks.results.GetProfilePhotoUrlResult;
 import rest.o.gram.view.PhotoViewAdapter;
 import rest.o.gram.view.VenueViewAdapter;
 
@@ -38,7 +37,7 @@ import java.util.List;
  * User: Hen
  * Date: 24/05/13
  */
-public class PersonalActivity extends RestogramActionBarActivity implements IRestogramListener, IDataFavoritesOperationsObserver {
+public class PersonalActivity extends RestogramActionBarActivity implements IRestogramListener, IDataFavoritesOperationsObserver, ITaskObserver {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +66,12 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(!super.onCreateOptionsMenu(menu))
+        if (!super.onCreateOptionsMenu(menu))
             return false;
 
         try {
             menu.getItem(menu.size() - 1).setVisible(true); // Enable logout button
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             // Empty
         }
 
@@ -95,6 +93,13 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         Intent intent = new Intent(this, VenueActivity.class);
         intent.putExtra("venue", venue.getFoursquare_id());
         Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, false);
+    }
+
+    @Override
+    public void onFinished(GetProfilePhotoUrlResult result) {
+
+        String profilePhotoUrl = result.getProfilePhotoUrl();
+        new DownloadImageCommand(profilePhotoUrl, profileImageView).execute();
     }
 
     @Override
@@ -150,6 +155,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         try {
             IAuthenticationProvider provider = RestogramClient.getInstance().getAuthenticationProvider();
             updateNickname((TextView)findViewById(R.id.tvFBName), provider);
+            updateProfilePhoto((ImageView)findViewById(R.id.ivFBPhoto), provider);
         } catch (Exception e) {
             // TODO
         }
@@ -262,8 +268,43 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         thread.start();
     }
 
+    private void updateProfilePhoto(final ImageView imageView, final IAuthenticationProvider provider) {
+
+        this.profileImageView = imageView;
+
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                try {
+                    String facebookId = (String) message.obj;
+                    getProfilePhotoUrl(facebookId);
+                } catch (Exception e) {
+                }
+            }
+        };
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+
+                LeanAccount account = provider.getAccountData();
+                if (account != null) {
+                    Message message = handler.obtainMessage(1, account.getProviderId());
+                    handler.sendMessage(message);
+                }
+            }
+        };
+        thread.start();
+    }
+
+    private void getProfilePhotoUrl(String facebookId) {
+        RestogramClient.getInstance().getProfilePhotoUrl(facebookId, this);
+    }
+
     private VenueViewAdapter historyVenueViewAdapter; // History venue view adapter
 
     private VenueViewAdapter favoriteVenueViewAdapter; // Favorite venue view adapter
     private PhotoViewAdapter favoritePhotoViewAdapter; // Favorite photo View Adapter
+
+    private ImageView profileImageView; // profile photo image view
 }
