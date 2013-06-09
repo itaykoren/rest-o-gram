@@ -104,6 +104,13 @@ public class VenueViewAdapter extends BaseAdapter {
     }
 
     /**
+     * Clears all venues
+     */
+    public void clear() {
+        venueList.clear();
+    }
+
+    /**
      * Determines whether to show distance label
      */
     public void showDistance(boolean show) {

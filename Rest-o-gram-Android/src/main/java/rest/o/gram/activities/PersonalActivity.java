@@ -132,6 +132,8 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     }
 
     public void onHistoryClicked(View view) {
+        updateHistory();
+
         ViewSwitcher viewSwitcher = (ViewSwitcher)findViewById(R.id.viewSwitcher);
         View historyView = findViewById(R.id.historyView);
 
@@ -170,25 +172,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         historyVenueViewAdapter.showDistance(false);
         lv.setAdapter(historyVenueViewAdapter);
 
-        // Get data history manager
-        IDataHistoryManager dataHistoryManager = RestogramClient.getInstance().getDataHistoryManager();
-        if(dataHistoryManager == null)
-            return;
-
-        // Get saved venues
-        RestogramVenue[] venues = dataHistoryManager.loadVenues();
-        if(venues == null)
-            return;
-
-        for(RestogramVenue venue : venues) {
-            // Add venue to cache (if needed)
-            IRestogramCache cache = RestogramClient.getInstance().getCache();
-            cache.add(venue);
-
-            historyVenueViewAdapter.addVenue(venue.getFoursquare_id());
-        }
-
-        historyVenueViewAdapter.refresh();
+        updateHistory();
     }
 
     /**
@@ -222,6 +206,10 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
         for(RestogramVenue venue : venues) {
             favoriteVenueViewAdapter.addVenue(venue.getFoursquare_id());
+
+            // Add venue to cache (if needed)
+            IRestogramCache cache = RestogramClient.getInstance().getCache();
+            cache.add(venue);
         }
 
         favoriteVenueViewAdapter.refresh();
@@ -235,9 +223,39 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
             return;
 
         for(RestogramPhoto photo : photos) {
+            // Add photo to cache (if needed)
+            IRestogramCache cache = RestogramClient.getInstance().getCache();
+            cache.add(photo);
+
             // Download image
             RestogramClient.getInstance().downloadImage(photo.getThumbnail(), photo, favoritePhotoViewAdapter, false, null);
         }
+    }
+
+    /**
+     * Updates history
+     */
+    private void updateHistory() {
+        // Get data history manager
+        IDataHistoryManager dataHistoryManager = RestogramClient.getInstance().getDataHistoryManager();
+        if(dataHistoryManager == null)
+            return;
+
+        // Get saved venues
+        RestogramVenue[] venues = dataHistoryManager.loadVenues();
+        if(venues == null)
+            return;
+
+        historyVenueViewAdapter.clear();
+        for(RestogramVenue venue : venues) {
+            // Add venue to cache (if needed)
+            IRestogramCache cache = RestogramClient.getInstance().getCache();
+            cache.add(venue);
+
+            historyVenueViewAdapter.addVenue(venue.getFoursquare_id());
+        }
+
+        historyVenueViewAdapter.refresh();
     }
 
     private void updateNickname(final TextView textView, final IAuthenticationProvider provider) {
