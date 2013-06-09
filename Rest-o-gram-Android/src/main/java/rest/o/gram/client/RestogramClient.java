@@ -173,6 +173,13 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
+    public void getProfilePhotoUrl(String facebookId, ITaskObserver observer) {
+        setJsonAuthToken(transport);
+        IRestogramCommand command = new GetProfilePhotoUrlCommand(transport, observer, facebookId);
+        commandQueue.pushForce(command);
+    }
+
+    @Override
     public IRestogramCommand downloadImage(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter,
                               boolean force, IRestogramCommandObserver observer) {
         IRestogramCommand command = new DownloadImageCommand(url, photo, viewAdapter);

@@ -71,6 +71,10 @@ public interface IRestogramClient {
     void getNextPhotos(String token, RestogramFilterType filterType, String originVenueId, ITaskObserver observer);
 
     /**
+     * Executes get get profile photo url request
+     */
+    void getProfilePhotoUrl(String facebookId, ITaskObserver observer);
+    /**
      * Executes download image request
      * Returns command object
      */
