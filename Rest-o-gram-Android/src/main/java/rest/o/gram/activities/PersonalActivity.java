@@ -132,21 +132,23 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     }
 
     public void onHistoryClicked(View view) {
-        updateHistory();
-
         ViewSwitcher viewSwitcher = (ViewSwitcher)findViewById(R.id.viewSwitcher);
         View historyView = findViewById(R.id.historyView);
 
-        if(viewSwitcher.getCurrentView() != historyView)
+        if(viewSwitcher.getCurrentView() != historyView) {
+            updateHistory();
             viewSwitcher.showPrevious();
+        }
     }
 
     public void onFavoritesClicked(View view) {
         ViewSwitcher viewSwitcher = (ViewSwitcher)findViewById(R.id.viewSwitcher);
         View favoritesView = findViewById(R.id.favoritesView);
 
-        if(viewSwitcher.getCurrentView() != favoritesView)
+        if(viewSwitcher.getCurrentView() != favoritesView) {
+            updateFavorites();
             viewSwitcher.showNext();
+        }
     }
 
     /**
@@ -256,6 +258,44 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         }
 
         historyVenueViewAdapter.refresh();
+    }
+
+    /**
+     * Updates favorites
+     */
+    private void updateFavorites() {
+        // Get data favorites manager
+        IDataFavoritesManager dataFavoritesManager = RestogramClient.getInstance().getDataFavoritesManager();
+        if(dataFavoritesManager == null)
+            return;
+
+        // Update favorite venues
+        Iterable<String> venues = dataFavoritesManager.getFavoriteVenues();
+        if(venues != null) {
+            favoriteVenueViewAdapter.clear();
+
+            for(String id : venues) {
+                favoriteVenueViewAdapter.addVenue(id);
+            }
+
+            favoriteVenueViewAdapter.refresh();
+        }
+
+        // Update favorite photos
+        Iterable<String> photos = dataFavoritesManager.getFavoritePhotos();
+        if(photos != null) {
+            favoritePhotoViewAdapter.clear();
+            for(String id : photos) {
+                // Get photo from cache
+                IRestogramCache cache = RestogramClient.getInstance().getCache();
+                RestogramPhoto photo = cache.findPhoto(id);
+                if(photo == null)
+                    continue;
+
+                // Download image
+                RestogramClient.getInstance().downloadImage(photo.getThumbnail(), photo, favoritePhotoViewAdapter, false, null);
+            }
+        }
     }
 
     private void updateNickname(final TextView textView, final IAuthenticationProvider provider) {

@@ -9,7 +9,9 @@ import rest.o.gram.entities.*;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,6 +23,8 @@ public class DataFavoritesManager implements IDataFavoritesManager {
 
     public DataFavoritesManager(final IRestogramClient client) {
         this.client = client;
+        favoriteVenues = new HashSet<>();
+        favoritePhotos = new HashSet<>();
     }
 
     @Override
@@ -38,6 +42,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                     Log.d("REST-O-GRAM", "adding photo to fav - saving photo ref succeded");
                 photo.set_favorite(true);
                 photo.setId(result[0]);
+                favoritePhotos.add(photo.getInstagram_id());
                 observer.onFinished(new AddFavoritePhotosResult(true, photo));
                 client.cachePhoto(photo.getInstagram_id(), photo.getOriginVenueId(), internalObserver);
             }
@@ -65,6 +70,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "removing photo from fav - updating DS succeded");
                 photo.set_favorite(false);
+                favoritePhotos.remove(photo.getInstagram_id());
                 observer.onFinished(new RemoveFavoritePhotosResult(true, photo));
             }
 
@@ -80,6 +86,11 @@ public class DataFavoritesManager implements IDataFavoritesManager {
     @Override
     public void getFavoritePhotos(final IDataFavoritesOperationsObserver observer) {
         doGetFavoritePhotos(null, observer);
+    }
+
+    @Override
+    public Set<String> getFavoritePhotos() {
+        return favoritePhotos;
     }
 
     @Override
@@ -108,6 +119,14 @@ public class DataFavoritesManager implements IDataFavoritesManager {
 
                         final List<RestogramPhoto> photos =
                                 result == null ? null : Converters.leanEntitiesToPhotos(result);
+
+                        if(photos != null) {
+                            favoritePhotos.clear();
+                            for(RestogramPhoto p : photos) {
+                                favoritePhotos.add(p.getInstagram_id());
+                            }
+                        }
+
                         observer.onFinished(new GetFavoritePhotosResult(photos, actualQuery));
                     }
 
@@ -149,6 +168,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                     Log.d("REST-O-GRAM", "adding venue to fav - saving venue ref succeded");
                 venue.setfavorite(true);
                 venue.setId(result[0]);
+                favoriteVenues.add(venue.getFoursquare_id());
                 observer.onFinished(new AddFavoriteVenuesResult(true, venue));
                 client.cacheVenue(venue.getFoursquare_id(), internalObserver);
             }
@@ -176,6 +196,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "removing venue from fav - updating DS succeded");
                 venue.setfavorite(false);
+                favoriteVenues.remove(venue.getFoursquare_id());
                 observer.onFinished(new RemoveFavoriteVenuesResult(true, venue));
             }
 
@@ -191,6 +212,11 @@ public class DataFavoritesManager implements IDataFavoritesManager {
     @Override
     public void getFavoriteVenues(final IDataFavoritesOperationsObserver observer) {
         doGetFavoriteVenues(null, observer);
+    }
+
+    @Override
+    public Set<String> getFavoriteVenues() {
+        return favoriteVenues;
     }
 
     @Override
@@ -224,6 +250,14 @@ public class DataFavoritesManager implements IDataFavoritesManager {
 
                          final List<RestogramVenue> venues =
                                  result == null ? null :  Converters.leanEntitiesToVenues(result);
+
+                        if(venues != null) {
+                            favoriteVenues.clear();
+                            for(RestogramVenue v : venues) {
+                                favoriteVenues.add(v.getFoursquare_id());
+                            }
+                        }
+
                         observer.onFinished(new GetFavoriteVenuesResult(venues, actualQuery));
                     }
 
@@ -305,4 +339,6 @@ public class DataFavoritesManager implements IDataFavoritesManager {
     }
 
     private IRestogramClient client;
+    private Set<String> favoriteVenues;
+    private Set<String> favoritePhotos;
 }

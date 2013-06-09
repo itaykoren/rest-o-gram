@@ -25,10 +25,6 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
      * Ctor
      */
     public FavoriteHelper() {
-        // Init lists
-        favoriteVenues = new HashMap<>();
-        favoritePhotos = new HashMap<>();
-
         dataFavoritesManager = RestogramClient.getInstance().getDataFavoritesManager();
 
         // TODO: handle pagination
@@ -38,10 +34,6 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
      * Refreshes this helper: updates favorite venues & photos
      */
     public void refresh() {
-        // Clear current favorites
-        favoriteVenues.clear();
-        favoritePhotos.clear();
-
         if(dataFavoritesManager != null) {
             if(RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
                 // Get updated favorites
@@ -93,7 +85,7 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
         IRestogramCache cache = RestogramClient.getInstance().getCache();
         RestogramVenue venue = cache.findVenue(venueId);
 
-        if(!favoriteVenues.containsKey(venue.getFoursquare_id())) {
+        if(!dataFavoritesManager.getFavoriteVenues().contains(venue.getFoursquare_id())) {
             dataFavoritesManager.addFavoriteVenue(venue, this);
         }
         else {
@@ -116,7 +108,7 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
         IRestogramCache cache = RestogramClient.getInstance().getCache();
         RestogramPhoto photo = cache.findPhoto(photoId);
 
-        if(!favoritePhotos.containsKey(photo.getInstagram_id())) {
+        if(!dataFavoritesManager.getFavoritePhotos().contains(photo.getInstagram_id())) {
             dataFavoritesManager.addFavoritePhoto(photo, this);
         }
         else {
@@ -133,17 +125,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
         if(result.getElements() == null || result.getElements().isEmpty())
             return;
 
-        try {
-            for(RestogramPhoto photo : result.getElements()) {
-                favoritePhotos.put(photo.getInstagram_id(), photo);
-            }
-        }
-        catch(Exception e) {
-
-        }
-
         if(favoritePhotoButton != null && !photoId.isEmpty()) {
-            if(favoritePhotos.containsKey(photoId))
+            if(dataFavoritesManager.getFavoritePhotos().contains(photoId))
                 favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_on);
             else
                 favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_off);
@@ -157,9 +140,6 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
         if(!result.hasSucceded())
             return;
 
-        final RestogramPhoto addedPhoto = result.getPhoto();
-        favoritePhotos.put(addedPhoto.getInstagram_id(), addedPhoto);
-
         if(favoritePhotoButton != null)
             favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_on);
     }
@@ -168,8 +148,6 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     public void onFinished(RemoveFavoritePhotosResult result) {
         if(!result.hasSucceded())
             return;
-
-        favoritePhotos.remove(result.getPhoto().getInstagram_id());
 
         if(favoritePhotoButton != null)
             favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_off);
@@ -183,17 +161,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
         if(result.getElements() == null || result.getElements().isEmpty())
             return;
 
-        try {
-            for(RestogramVenue venue : result.getElements()) {
-                favoriteVenues.put(venue.getFoursquare_id(), venue);
-            }
-        }
-        catch(Exception e) {
-
-        }
-
         if(favoriteVenueButton != null && !venueId.isEmpty()) {
-            if(favoriteVenues.containsKey(venueId))
+            if(dataFavoritesManager.getFavoriteVenues().contains(venueId))
                 favoriteVenueButton.setBackgroundResource(R.drawable.ic_favorite_on);
             else
                 favoriteVenueButton.setBackgroundResource(R.drawable.ic_favorite_off);
@@ -207,9 +176,6 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
         if(!result.hasSucceded())
             return;
 
-        final RestogramVenue addedVenue = result.getVenue();
-        favoriteVenues.put(addedVenue.getFoursquare_id(), addedVenue);
-
         if(favoriteVenueButton != null)
             favoriteVenueButton.setBackgroundResource(R.drawable.ic_favorite_on);
     }
@@ -219,16 +185,11 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
         if(!result.hasSucceded())
             return;
 
-        favoriteVenues.remove(result.getVenue().getFoursquare_id());
-
         if(favoriteVenueButton != null)
             favoriteVenueButton.setBackgroundResource(R.drawable.ic_favorite_off);
     }
 
     private IDataFavoritesManager dataFavoritesManager;
-
-    private Map<String, RestogramVenue> favoriteVenues;
-    private Map<String, RestogramPhoto> favoritePhotos;
 
     private String venueId;
     private String photoId;

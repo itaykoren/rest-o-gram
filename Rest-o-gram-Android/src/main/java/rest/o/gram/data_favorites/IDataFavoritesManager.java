@@ -3,6 +3,8 @@ package rest.o.gram.data_favorites;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 
+import java.util.Set;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Or
@@ -15,6 +17,8 @@ public interface IDataFavoritesManager {
 
     void getFavoritePhotos(final IDataFavoritesOperationsObserver observer);
 
+    Set<String> getFavoritePhotos();
+
     void getNextFavoritePhotos(final GetFavoritePhotosResult previous, final IDataFavoritesOperationsObserver observer);
 
     void addFavoriteVenue(final RestogramVenue venue, final IDataFavoritesOperationsObserver observer);
@@ -22,6 +26,8 @@ public interface IDataFavoritesManager {
     void removeFavoriteVenue(final RestogramVenue venue, final IDataFavoritesOperationsObserver observer);
 
     void getFavoriteVenues(final IDataFavoritesOperationsObserver observer);
+
+    Set<String> getFavoriteVenues();
 
     void getNextFavoriteVenues(final GetFavoriteVenuesResult previous, final IDataFavoritesOperationsObserver observer);
 
