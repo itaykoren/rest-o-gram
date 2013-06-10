@@ -585,7 +585,7 @@ public class RestogramServiceImpl implements RestogramService {
                     location.getCountry(),
                     location.getLat(),
                     location.getLng(),
-                    location.getDistance(),
+                    0.0, // Cannot use location.getDistance()
                     venue.getUrl(),
                     phone);
 
