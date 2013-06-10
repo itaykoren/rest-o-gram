@@ -12,7 +12,6 @@ import rest.o.gram.R;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
-import rest.o.gram.commands.DownloadImageCommand;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.IRestogramListener;
 import rest.o.gram.common.Utils;
@@ -24,12 +23,12 @@ import rest.o.gram.data_favorites.results.*;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
-import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.GetProfilePhotoUrlResult;
 import rest.o.gram.view.PhotoViewAdapter;
 import rest.o.gram.view.VenueViewAdapter;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -103,6 +102,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     @Override
     public void onFinished(GetFavoritePhotosResult result) {
+        isPhotosRequestPending = false;
         setFavoritePhotos(result.getElements());
     }
 
@@ -118,6 +118,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     @Override
     public void onFinished(GetFavoriteVenuesResult result) {
+        isVenuesRequestPending = false;
         setFavoriteVenues(result.getElements());
     }
 
@@ -146,7 +147,9 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         View favoritesView = findViewById(R.id.favoritesView);
 
         if(viewSwitcher.getCurrentView() != favoritesView) {
-            updateFavorites();
+            if(!isPhotosRequestPending && !isVenuesRequestPending)
+                updateFavorites();
+
             viewSwitcher.showNext();
         }
     }
@@ -191,12 +194,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         favoritePhotoViewAdapter = new PhotoViewAdapter(this);
         gvFavPhotos.setAdapter(favoritePhotoViewAdapter);
 
-        IDataFavoritesManager dataFavoritesManager = RestogramClient.getInstance().getDataFavoritesManager();
-        if(dataFavoritesManager == null)
-            return;
-
-        dataFavoritesManager.getFavoriteVenues(this);
-        dataFavoritesManager.getFavoritePhotos(this);
+        updateFavorites();
     }
 
     /**
@@ -270,8 +268,8 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
             return;
 
         // Update favorite venues
-        Iterable<String> venues = dataFavoritesManager.getFavoriteVenues();
-        if(venues != null) {
+        Set<String> venues = dataFavoritesManager.getFavoriteVenues();
+        if(venues != null && !venues.isEmpty()) {
             favoriteVenueViewAdapter.clear();
 
             for(String id : venues) {
@@ -280,10 +278,14 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
             favoriteVenueViewAdapter.refresh();
         }
+        else {
+            dataFavoritesManager.getFavoriteVenues(this);
+            isVenuesRequestPending = true;
+        }
 
         // Update favorite photos
-        Iterable<String> photos = dataFavoritesManager.getFavoritePhotos();
-        if(photos != null) {
+        Set<String> photos = dataFavoritesManager.getFavoritePhotos();
+        if(photos != null && !photos.isEmpty()) {
             favoritePhotoViewAdapter.clear();
             for(String id : photos) {
                 // Get photo from cache
@@ -295,6 +297,10 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
                 // Download image
                 RestogramClient.getInstance().downloadImage(photo.getThumbnail(), photo, favoritePhotoViewAdapter, false, null);
             }
+        }
+        else {
+            dataFavoritesManager.getFavoritePhotos(this);
+            isPhotosRequestPending = true;
         }
     }
 
@@ -364,4 +370,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     private PhotoViewAdapter favoritePhotoViewAdapter; // Favorite photo View Adapter
 
     private ImageView profileImageView; // profile photo image view
+
+    private boolean isVenuesRequestPending = false; // Venues request pending flag
+    private boolean isPhotosRequestPending = false; // Photos request pending flag
 }
