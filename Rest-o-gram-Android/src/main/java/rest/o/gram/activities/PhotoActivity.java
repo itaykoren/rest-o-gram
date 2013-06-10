@@ -184,7 +184,8 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         // Init venue information: attempt to load from cache. if not found - send request to server
         String id = photo.getOriginVenueId();
 
-        IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
+        // Load venue from cache if possible
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
         if(cache != null) {
             RestogramVenue venue = cache.findVenue(id);
             if(venue != null) {
