@@ -84,7 +84,7 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
 
     @Override
     public void onFinished(GetPhotosResult result) {
-        if(result.getPhotos() == null)
+        if(result == null || result.getPhotos() == null)
             return;
 
         IRestogramCache cache = RestogramClient.getInstance().getCache();
