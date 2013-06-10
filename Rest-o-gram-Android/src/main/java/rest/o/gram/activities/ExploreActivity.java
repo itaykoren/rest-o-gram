@@ -196,7 +196,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                IPopupView popupView = new GenericPopupView(activity, R.layout.explore_welcome, R.id.popup_explore, 400, 200);
+                IPopupView popupView = new GenericPopupView(activity, R.layout.explore_welcome, R.id.popup_explore, 400, 350);
                 popupView.open();
                 Utils.setIsShowWelcomeScreen(activity, false);
             }
