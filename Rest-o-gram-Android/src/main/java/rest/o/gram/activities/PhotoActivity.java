@@ -151,6 +151,11 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
     }
 
     public void onVenueInfoClicked(View view) {
+        // Get venue from cache
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        if(cache.findVenue(venueId) == null)
+            return;
+
         // Switch to "VenueActivity" with parameter "venue"
         Intent intent = new Intent(this, VenueActivity.class);
         intent.putExtra("venue", venueId);
