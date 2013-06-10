@@ -87,9 +87,9 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         final ImageButton favoritePhotoButton =
                 (ImageButton)findViewById(R.id.bPhotoFavorite);
         if(photo.is_favorite())
-            favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_on);
+            favoritePhotoButton.setImageResource(R.drawable.ic_favorite_on);
         else
-            favoritePhotoButton.setBackgroundResource(R.drawable.ic_favorite_off);
+            favoritePhotoButton.setImageResource(R.drawable.ic_favorite_off);
 
         // Initialize using photo parameter
         initialize(photo, bitmap);

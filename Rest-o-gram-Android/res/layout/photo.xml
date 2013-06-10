@@ -63,12 +63,28 @@
                 android:layout_below="@+id/tvVenueAddress"
                 android:layout_toRightOf="@+id/ivVenue"/>
 
+        <LinearLayout android:orientation="horizontal"
+                      android:id="@+id/navigateLayout"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_below="@+id/tvVenuePhone"
+                      android:layout_alignParentRight="true">
+
+        <ImageButton android:id="@+id/bVenueNavigate"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:src="@drawable/ic_navigate"
+                     android:onClick="onNavigationClicked"/>
+        </LinearLayout>
+
         <ImageView
                 android:id="@+id/imArrow"
                 android:layout_width="54dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_arrow" android:layout_alignParentRight="true"/>
+                android:src="@drawable/ic_arrow" android:layout_alignParentRight="true"
+                android:layout_above="@+id/navigateLayout"
+                android:layout_marginBottom="5dp"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -107,8 +123,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_favorite_off"
-                android:onClick="onFavoriteClicked"
-                android:background="@android:color/transparent"/>
+                android:onClick="onFavoriteClicked"/>
+
 
         <LinearLayout
                 android:orientation="horizontal"
@@ -122,8 +138,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_info"
                     android:layout_marginRight="10dp"
-                    android:onClick="onInfoClicked"
-                    android:background="@android:color/transparent"/>
+                    android:onClick="onInfoClicked"/>
+
 
         </LinearLayout>
 

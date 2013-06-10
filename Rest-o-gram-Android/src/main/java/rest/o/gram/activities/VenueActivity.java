@@ -58,9 +58,9 @@ public class VenueActivity extends RestogramActionBarActivity {
         final ImageButton favoriteVenueButton =
                 (ImageButton)findViewById(R.id.bVenueFavorite);
         if(venue.isfavorite())
-            favoriteVenueButton.setBackgroundResource(R.drawable.ic_favorite_on);
+            favoriteVenueButton.setImageResource(R.drawable.ic_favorite_on);
         else
-            favoriteVenueButton.setBackgroundResource(R.drawable.ic_favorite_off);
+            favoriteVenueButton.setImageResource(R.drawable.ic_favorite_off);
 
         // Initialize using venue parameter
         initialize(venue);
