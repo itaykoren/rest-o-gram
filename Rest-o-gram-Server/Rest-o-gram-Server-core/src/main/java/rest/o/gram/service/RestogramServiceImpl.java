@@ -565,25 +565,10 @@ public class RestogramServiceImpl implements RestogramService {
      * Converts complete venue foursquare object to restogram venue
      */
     private RestogramVenue convert(CompleteVenue venue) {
-        RestogramVenue result;
+        RestogramVenue result = null;
         String photoUrl;
 
         try {
-            Photos photos = venue.getPhotos();
-            if(photos == null)
-                return null;
-
-            PhotoGroup[] groups = photos.getGroups();
-            if(groups == null || groups.length < 2)
-                return null;
-
-            PhotoGroup group = groups[1];
-            Photo[] items = group.getItems();
-            if(items == null || items.length == 0)
-                return null;
-
-            photoUrl = items[0].getUrl();
-
             fi.foyt.foursquare.api.entities.Location location = venue.getLocation();
 
             Contact contact = venue.getContact();
@@ -604,12 +589,27 @@ public class RestogramServiceImpl implements RestogramService {
                     venue.getUrl(),
                     phone);
 
+            Photos photos = venue.getPhotos();
+            if(photos == null)
+                return result;
+
+            PhotoGroup[] groups = photos.getGroups();
+            if(groups == null || groups.length < 2)
+                return result;
+
+            PhotoGroup group = groups[1];
+            Photo[] items = group.getItems();
+            if(items == null || items.length == 0)
+                return result;
+
+            photoUrl = items[0].getUrl();
+
             result.setDescription(venue.getDescription());
             result.setImageUrl(photoUrl);
         }
         catch(Exception e) {
             log.severe("venue object conversion failed");
-            return null;
+            return result;
         }
 
         return result.encodeStrings();
