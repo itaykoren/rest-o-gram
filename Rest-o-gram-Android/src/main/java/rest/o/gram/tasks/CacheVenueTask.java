@@ -22,7 +22,7 @@ public class CacheVenueTask extends AsyncTask<String,Void,CacheVenueResult> {
     protected CacheVenueResult doInBackground(String... params) {
         JsonRpcInvoker invoker = new JsonRpcInvoker();
         RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
-        return safeCachePhoto(service, params[0]);
+        return safeCacheVenue(service, params[0]);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class CacheVenueTask extends AsyncTask<String,Void,CacheVenueResult> {
         observer.onFinished(result);
     }
 
-    private CacheVenueResult safeCachePhoto(RestogramService service, String id) {
+    private CacheVenueResult safeCacheVenue(RestogramService service, String id) {
         try
         {
             return new CacheVenueResultImpl(service.cacheVenue(id));

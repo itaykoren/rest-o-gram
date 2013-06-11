@@ -161,7 +161,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         if (RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "adding venue to fav - saving venue ref to DS");
         entity.saveInBackground(new NetworkCallback<Long>() {
-            // operation has  fully succeded
+            // operation has fully succeeded
             @Override
             public void onResult(Long... result) {
                 if (RestogramClient.getInstance().isDebuggable())
