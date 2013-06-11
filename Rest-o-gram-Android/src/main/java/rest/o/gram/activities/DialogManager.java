@@ -55,6 +55,16 @@ public final class DialogManager {
         }, 500);
     }
 
+    public void showNoPhotosAlert(final Activity activity) {
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showErrorAlert(activity, R.string.no_photos_err_msg);
+            }
+        }, 500);
+    }
+
     public void showLoginDialog(final Activity activity, LoginListener loginListener) {
         Uri loginUri = RestogramClient.getInstance().getAuthenticationProvider().getFacebookLoginUri();
 
