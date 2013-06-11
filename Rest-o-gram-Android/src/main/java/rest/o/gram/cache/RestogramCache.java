@@ -1,10 +1,9 @@
 package rest.o.gram.cache;
 
+import rest.o.gram.data_structs.Dictionary;
+import rest.o.gram.data_structs.IDictionary;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,8 +15,9 @@ public class RestogramCache implements IRestogramCache {
      * Ctor
      */
     public RestogramCache() {
-        venues = new HashMap<>();
-        photos = new HashMap<>();
+        venues = new Dictionary<>();
+        photos = new Dictionary<>();
+        venuePhotos = new Dictionary<>();
     }
 
     @Override
@@ -25,7 +25,7 @@ public class RestogramCache implements IRestogramCache {
         if(findVenue(venue.getFoursquare_id()) != null)
             return false;
 
-        venues.put(venue.getFoursquare_id(), venue);
+        venues.putLast(venue.getFoursquare_id(), venue);
         return true;
     }
 
@@ -34,28 +34,37 @@ public class RestogramCache implements IRestogramCache {
         if(findPhoto(photo.getInstagram_id()) != null)
             return false;
 
-        photos.put(photo.getInstagram_id(), photo);
+        photos.putLast(photo.getInstagram_id(), photo);
+
+        String venueId = photo.getOriginVenueId();
+        RestogramPhotos photos = venuePhotos.find(venueId);
+        if(photos == null) {
+            photos = new RestogramPhotos();
+            venuePhotos.putLast(venueId, photos);
+        }
+        photos.getPhotos().add(photo);
+
         return true;
     }
 
     @Override
     public boolean removeVenue(String id) {
-        return venues.remove(id) != null;
-    }
-
-    @Override
-    public boolean removePhoto(String id) {
-        return photos.remove(id) != null;
+        return venues.remove(id);
     }
 
     @Override
     public RestogramVenue findVenue(String id) {
-        return venues.get(id);
+        return venues.find(id);
     }
 
     @Override
     public RestogramPhoto findPhoto(String id) {
-        return photos.get(id);
+        return photos.find(id);
+    }
+
+    @Override
+    public RestogramPhotos findPhotos(String venueId) {
+        return venuePhotos.find(venueId);
     }
 
     @Override
@@ -64,6 +73,7 @@ public class RestogramCache implements IRestogramCache {
         photos.clear();
     }
 
-    private Map<String, RestogramVenue> venues; // Venues map
-    private Map<String, RestogramPhoto> photos; // Photos map
+    private IDictionary<String, RestogramVenue> venues; // Venues dictionary
+    private IDictionary<String, RestogramPhoto> photos; // Photos dictionary
+    private IDictionary<String, RestogramPhotos> venuePhotos; // Venue photos dictionary
 }

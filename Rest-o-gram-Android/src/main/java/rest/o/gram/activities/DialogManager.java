@@ -45,12 +45,12 @@ public final class DialogManager {
         }, 500);
     }
 
-    public void showNoVenuesAlert(final Activity activity) {
+    public void showNoVenuesAlert(final Activity activity, final boolean switchToMap) {
         final Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                showErrorAlert(activity, R.string.no_venues_err_msg);
+                showErrorAlert(activity, R.string.no_venues_err_msg, switchToMap);
             }
         }, 500);
     }
@@ -60,7 +60,7 @@ public final class DialogManager {
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                showErrorAlert(activity, R.string.no_photos_err_msg);
+                showErrorAlert(activity, R.string.no_photos_err_msg, false);
             }
         }, 500);
     }
@@ -112,7 +112,7 @@ public final class DialogManager {
         dialogs.add(alertDialog.show());
     }
 
-    private void showErrorAlert(final Activity activity, final int message) {
+    private void showErrorAlert(final Activity activity, final int message, final boolean switchToMap) {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
 
         // Setting Dialog Title
@@ -128,9 +128,11 @@ public final class DialogManager {
                         dialog.cancel();
                         dialogs.remove(dialog);
 
-                        // Switch to "MapActivity" with no parameters
-                        Intent intent = new Intent(activity, MapActivity.class);
-                        Utils.changeActivity(activity, intent, Defs.RequestCodes.RC_MAP, true);
+                        if(switchToMap) {
+                            // Switch to "MapActivity" with no parameters
+                            Intent intent = new Intent(activity, MapActivity.class);
+                            Utils.changeActivity(activity, intent, Defs.RequestCodes.RC_MAP, true);
+                        }
                     }
                 });
 

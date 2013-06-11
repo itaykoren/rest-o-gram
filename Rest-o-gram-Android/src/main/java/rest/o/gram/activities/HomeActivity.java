@@ -133,8 +133,8 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
 
     private void start() {
         if(!isFoundVenues) {
-            // Show error dialog
-            diagManager.showNoVenuesAlert(this);
+            // Show error dialog and switch to map after "ok"
+            diagManager.showNoVenuesAlert(this, true);
         }
         else {
             // Switch to "ExploreActivity" with no parameters

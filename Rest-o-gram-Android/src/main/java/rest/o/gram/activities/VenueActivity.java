@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.*;
 import rest.o.gram.R;
 import rest.o.gram.cache.IRestogramCache;
+import rest.o.gram.cache.RestogramPhotos;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
@@ -83,6 +84,9 @@ public class VenueActivity extends RestogramActionBarActivity {
     public void onFinished(GetPhotosResult result) {
         super.onFinished(result);
 
+        // Update request pending flag
+        isRequestPending = false;
+
         if(result == null || result.getPhotos() == null) {
             // Show error dialog
             dialogManager.showNoPhotosAlert(this);
@@ -98,8 +102,11 @@ public class VenueActivity extends RestogramActionBarActivity {
         // Update last token
         lastToken = result.getToken();
 
-        // Update request pending flag
-        isRequestPending = false;
+        // Update last token in cache
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        RestogramPhotos venuePhotos = cache.findPhotos(venueId);
+        if(venuePhotos != null)
+            venuePhotos.setToken(lastToken);
     }
 
     @Override
@@ -186,8 +193,25 @@ public class VenueActivity extends RestogramActionBarActivity {
 //            RestogramClient.getInstance().getInfo(venueId, this);
 //        }
 
-        // Send get photos request
-        RestogramClient.getInstance().getPhotos(venue.getFoursquare_id(), RestogramFilterType.Simple, this);
+        // Try to load previous photos from cache
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        RestogramPhotos venuePhotos = cache.findPhotos(venueId);
+        if(venuePhotos == null || venuePhotos.getToken() == null) { // No photos found
+            isRequestPending = true;
+
+            // Send get photos request
+            RestogramClient.getInstance().getPhotos(venue.getFoursquare_id(), RestogramFilterType.Simple, this);
+        }
+        else { // Photos were found
+            // Save last token
+            lastToken = venuePhotos.getToken();
+
+            // Download all photos
+            for(final RestogramPhoto photo : venuePhotos.getPhotos()) {
+                // Download image
+                RestogramClient.getInstance().downloadImage(photo.getThumbnail(), photo, viewAdapter, false, null);
+            }
+        }
     }
 
     private void addPhotos(RestogramPhoto[] photos) {

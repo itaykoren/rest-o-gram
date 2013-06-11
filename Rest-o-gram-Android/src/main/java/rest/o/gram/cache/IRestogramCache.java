@@ -28,12 +28,6 @@ public interface IRestogramCache {
     boolean removeVenue(String id);
 
     /**
-     * Attempts to remove given photo from cache
-     * Returns true if successful, false otherwise
-     */
-    boolean removePhoto(String id);
-
-    /**
      * Attempts to find venue according to its id
      * Returns venue if successful, null otherwise
      */
@@ -44,6 +38,12 @@ public interface IRestogramCache {
      * Returns photo if successful, null otherwise
      */
     RestogramPhoto findPhoto(String id);
+
+    /**
+     * Attempts to find photos according to venue id
+     * Returns photos if successful, null otherwise
+     */
+    RestogramPhotos findPhotos(String venueId);
 
     /**
      * Clears all data from cache
