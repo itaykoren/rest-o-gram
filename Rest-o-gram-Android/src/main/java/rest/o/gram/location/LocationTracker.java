@@ -116,7 +116,7 @@ public class LocationTracker implements ILocationTracker {
 
     private void informObserver() {
         observer.onLocationUpdated((double)location.lastLat, (double)location.lastLong,
-                                   location.lastAccuracy, location.lastProvider);
+                                   location.lastAccuracy);
     }
 
     private final BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {

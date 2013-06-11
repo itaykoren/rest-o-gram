@@ -3,7 +3,6 @@ package rest.o.gram.location;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.location.LocationManager;
 import android.os.Looper;
 import android.os.Handler;
 
@@ -67,7 +66,7 @@ public class LocationTrackerDummy implements ILocationTracker {
             // ...
             mHandler.post(new Runnable() {
                 public void run() {
-                    observer.onLocationUpdated(location[0], location[1], 0, LocationManager.GPS_PROVIDER);
+                    observer.onLocationUpdated(location[0], location[1], 0);
                     stop();
                 }
             });

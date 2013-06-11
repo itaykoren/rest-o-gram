@@ -63,7 +63,7 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
     }
 
     @Override
-    public void onLocationUpdated(double latitude, double longitude, int accuracy, String provider) {
+    public void onLocationUpdated(double latitude, double longitude, int accuracy) {
         if (gotLocation)
             return;
         gotLocation = true;

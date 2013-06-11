@@ -37,7 +37,7 @@ public class LocationTrackerSimple extends Service implements ILocationTracker, 
     @Override
     public void force() {
         if (lastLocation != null)
-            observer.onLocationUpdated(lastLocation.getLatitude(), lastLocation.getLongitude(), (int)lastLocation.getAccuracy(), lastLocation.getProvider());
+            observer.onLocationUpdated(lastLocation.getLatitude(), lastLocation.getLongitude(), (int)lastLocation.getAccuracy());
     }
 
     @Override
@@ -160,7 +160,7 @@ public class LocationTrackerSimple extends Service implements ILocationTracker, 
             handler.post(new Runnable() {
                 public void run() {
                     if(lastLocation != null) { // TODO: minimal accuracy?
-                        observer.onLocationUpdated(lastLocation.getLatitude(), lastLocation.getLongitude(), (int)lastLocation.getAccuracy(), lastLocation.getProvider());
+                        observer.onLocationUpdated(lastLocation.getLatitude(), lastLocation.getLongitude(), (int)lastLocation.getAccuracy());
                         stop();
                     }
                 }
