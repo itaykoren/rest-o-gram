@@ -11,7 +11,7 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Click on icon will get you into the restaurant page. You can also press and hold on a specific area to explore the restaurants there"
+            android:text="Click on icon will get you into the restaurant page. You can also press and hold on a specific area to explore the restaurants there. Click outside the box to dismiss."
             android:id="@+id/editText"
             android:textColor="#727272"
             android:layout_marginTop="10dp"
