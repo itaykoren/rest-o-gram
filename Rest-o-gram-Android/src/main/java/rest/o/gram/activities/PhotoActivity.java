@@ -212,9 +212,13 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
             Utils.updateTextView((TextView)findViewById(R.id.tvVenuePhone), venue.getPhone());
 
         // Set UI with venue image
-        if(venue.getImageUrl() != null && !venue.getImageUrl().isEmpty()) {
-            ImageView iv = (ImageView)findViewById(R.id.ivVenue);
-            RestogramClient.getInstance().downloadImage(venue.getImageUrl(), iv, true, null);
+        String imageUrl = venue.getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            ImageView iv = (ImageView) findViewById(R.id.ivVenue);
+            RestogramClient.getInstance().downloadImage(imageUrl, iv, true, null);
+        } else {
+            // Send get info request
+            RestogramClient.getInstance().getInfo(venueId, this);
         }
     }
 
