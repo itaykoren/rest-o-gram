@@ -46,7 +46,7 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
 
     @Override
     public void onFinished(GetNearbyResult result) {
-        if(result.getVenues() == null)
+        if(result == null || result.getVenues() == null)
             return;
 
         IRestogramCache cache = RestogramClient.getInstance().getCache();
@@ -71,7 +71,7 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
 
     @Override
     public void onFinished(GetInfoResult result) {
-       if(result.getVenue() == null)
+       if(result == null || result.getVenue() == null)
            return;
 
         IRestogramCache cache = RestogramClient.getInstance().getCache();

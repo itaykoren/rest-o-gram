@@ -14,6 +14,7 @@ import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
+import rest.o.gram.tasks.results.GetInfoResult;
 import rest.o.gram.tasks.results.GetPhotosResult;
 import rest.o.gram.view.PhotoViewAdapter;
 
@@ -78,7 +79,7 @@ public class VenueActivity extends RestogramActionBarActivity {
     public void onFinished(GetPhotosResult result) {
         super.onFinished(result);
 
-        if(result == null)
+        if(result == null || result.getPhotos() == null)
             return;
 
         if(RestogramClient.getInstance().isDebuggable())
@@ -92,6 +93,19 @@ public class VenueActivity extends RestogramActionBarActivity {
 
         // Update request pending flag
         isRequestPending = false;
+    }
+
+    @Override
+    public void onFinished(GetInfoResult result) {
+        super.onFinished(result);
+
+        final RestogramVenue venue = result.getVenue();
+        if(result == null || venue == null)
+            return;
+
+        if(venue.getImageUrl() != null && !venue.getImageUrl().isEmpty()) {
+            setVenuePhoto(venue.getImageUrl());
+        }
     }
 
     public void onNavigationClicked(View view) {
@@ -158,9 +172,12 @@ public class VenueActivity extends RestogramActionBarActivity {
 
         // Set UI with venue image
         if(venue.getImageUrl() != null && !venue.getImageUrl().isEmpty()) {
-            ImageView iv = (ImageView)findViewById(R.id.ivVenue);
-            RestogramClient.getInstance().downloadImage(venue.getImageUrl(), iv, true, null);
+            setVenuePhoto(venue.getImageUrl());
         }
+//        else {
+//            // Send get info request
+//            RestogramClient.getInstance().getInfo(venueId, this);
+//        }
 
         // Send get photos request
         RestogramClient.getInstance().getPhotos(venue.getFoursquare_id(), RestogramFilterType.Simple, this);
@@ -186,6 +203,11 @@ public class VenueActivity extends RestogramActionBarActivity {
 
             RestogramClient.getInstance().getNextPhotos(lastToken, venueId, this);
         }
+    }
+
+    private void setVenuePhoto(String url) {
+        ImageView iv = (ImageView)findViewById(R.id.ivVenue);
+        RestogramClient.getInstance().downloadImage(url, iv, true, null);
     }
 
     private String venueId; // Venue object
