@@ -170,6 +170,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                 venue.setId(result[0]);
                 favoriteVenues.add(venue.getFoursquare_id());
                 observer.onFinished(new AddFavoriteVenuesResult(true, venue));
+                // TODO - consider removing as now the server caches every venue in getInfo
                 client.cacheVenue(venue.getFoursquare_id(), internalObserver);
             }
 
