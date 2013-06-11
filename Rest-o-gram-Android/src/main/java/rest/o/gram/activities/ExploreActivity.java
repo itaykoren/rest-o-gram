@@ -99,10 +99,19 @@ public class ExploreActivity extends RestogramActionBarActivity {
     public void onFinished(GetPhotosResult result) {
         super.onFinished(result);
 
-        if (result == null)
-            return;
+        // Update request pending flag
+        isRequestPending = false;
 
-        if (RestogramClient.getInstance().isDebuggable())
+        if(result == null || result.getPhotos() == null) {
+            // Update last token of current venue
+            tokens[currVenueIndex] = null;
+
+            // Get photos from next venue (if possible)
+            onScrollBottom();
+            return;
+        }
+
+        if(RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "Adding " + result.getPhotos().length + " photos");
 
         // Add new photos
@@ -110,9 +119,6 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
         // Update last token of current venue
         tokens[currVenueIndex] = result.getToken();
-
-        // Update request pending flag
-        isRequestPending = false;
     }
 
     private void initialize() {
