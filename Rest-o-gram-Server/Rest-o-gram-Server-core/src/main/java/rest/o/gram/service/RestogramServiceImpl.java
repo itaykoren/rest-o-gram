@@ -132,6 +132,9 @@ public class RestogramServiceImpl implements RestogramService {
         }
 
         final RestogramVenue venue = convert(v);
+
+        cacheVenue(venue);
+
         return new VenueResult(venue);
     }
 
@@ -256,8 +259,7 @@ public class RestogramServiceImpl implements RestogramService {
             log.info("foursquare credentials type = " + credentials.getType());
             FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
             compVenue = foursquare.venue(id).getResult();
-        }
-        catch (FoursquareApiException e) {
+        } catch (FoursquareApiException e) {
             log.warning("first get venue has failed, retry");
             e.printStackTrace();
             try {
@@ -265,19 +267,21 @@ public class RestogramServiceImpl implements RestogramService {
                 log.info("foursquare credentials type = " + credentials.getType());
                 FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
                 compVenue = foursquare.venue(id).getResult();
-            }
-            catch (FoursquareApiException e2) {
+            } catch (FoursquareApiException e2) {
                 log.severe("second get venue has failed");
                 e2.printStackTrace();
                 return false;
             }
         }
 
-        final RestogramVenue venue = convert(compVenue);
+        return cacheVenue(convert(compVenue));
+    }
+
+    private boolean cacheVenue(final RestogramVenue venue) {
+
         try {
             DatastoreUtils.putPublicEntity(Kinds.VENUE, venue.getFoursquare_id(), Converters.venueToProps(venue));
-        }
-        catch (LeanException e) {
+        } catch (LeanException e) {
             log.severe("caching the venue in DS has failed");
             e.printStackTrace();
             return false;
@@ -346,14 +350,18 @@ public class RestogramServiceImpl implements RestogramService {
 
         CompactVenue[] arr = result.getResult().getVenues();
 
-        if(arr == null || arr.length == 0) {
+        int length = arr.length;
+        if(arr == null || length == 0) {
             log.severe("venue search returned no venues");
             return null;
         }
 
-        RestogramVenue[] venues = new RestogramVenue[arr.length];
-        for(int i = 0; i < arr.length; i++) {
+        String[] venueIds = new String[length];
+        RestogramVenue[] venues = new RestogramVenue[length];
+
+        for(int i = 0; i < length; i++) {
             venues[i] = convert(arr[i]);
+            venueIds[i] = arr[i].getId();
             if (AuthService.isUserLoggedIn()) {
                 final LeanQuery lquery = new LeanQuery(Kinds.VENUE_REFERENCE);
                 lquery.addFilter(Props.VenueRef.FOURSQUARE_ID, QueryFilter.FilterOperator.EQUAL,
@@ -369,6 +377,22 @@ public class RestogramServiceImpl implements RestogramService {
                 }
                 if (qresult != null && !qresult.getResult().isEmpty())
                     venues[i].setfavorite(true);
+            }
+        }
+
+        RestogramVenue[] venuesFromCache = fetchVenuesFromCache(venueIds);
+
+        for (int i = 0; i < length; i++) {
+
+            RestogramVenue currVenue = venuesFromCache[i];
+
+            if (currVenue != null) {
+
+                String imageUrl = currVenue.getImageUrl();
+                if (imageUrl != null && imageUrl != "") {
+
+                    venues[i].setImageUrl(imageUrl);
+                }
             }
         }
 
