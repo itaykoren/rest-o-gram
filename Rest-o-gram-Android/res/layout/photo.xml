@@ -61,7 +61,8 @@
                 android:textSize="14dp"
                 android:gravity="left"
                 android:layout_below="@+id/tvVenueAddress"
-                android:layout_toRightOf="@+id/ivVenue"/>
+                android:layout_toRightOf="@+id/ivVenue"
+                android:autoLink="phone"/>
 
         <LinearLayout android:orientation="horizontal"
                       android:id="@+id/navigateLayout"
