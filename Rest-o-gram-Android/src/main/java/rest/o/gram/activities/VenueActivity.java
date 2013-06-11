@@ -188,10 +188,10 @@ public class VenueActivity extends RestogramActionBarActivity {
         if(venue.getImageUrl() != null && !venue.getImageUrl().isEmpty()) {
             setVenuePhoto(venue.getImageUrl());
         }
-//        else {
-//            // Send get info request
-//            RestogramClient.getInstance().getInfo(venueId, this);
-//        }
+        else {
+            // Send get info request
+            RestogramClient.getInstance().getInfo(venueId, this);
+        }
 
         // Try to load previous photos from cache
         IRestogramCache cache = RestogramClient.getInstance().getCache();
