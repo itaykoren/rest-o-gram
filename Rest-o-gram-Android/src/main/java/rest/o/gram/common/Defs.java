@@ -25,7 +25,7 @@ public final class Defs {
      * Transport constants
      */
     public static class Transport {
-        public static final String BASE_HOST_NAME = "http://rest-o-gram-pilot-2a.appspot.com";
+        public static final String BASE_HOST_NAME = "http://restogramapp.appspot.com";
     }
 
     /**
@@ -90,6 +90,7 @@ public final class Defs {
         }
 
         public static final boolean DATA_HISTORY_ENABLED = true;
+        public static final boolean FORCE_FLUSH = true;
         public static final String DATA_VENUES_FILENAME = "venues.rog";
         public static final String DATA_PHOTOS_FILENAME = "photos.rog";
         public static final boolean CACHE_DATA_HISTORY_ENABLED = true;

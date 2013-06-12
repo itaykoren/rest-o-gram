@@ -68,9 +68,8 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         try {
             InputStream is = fetch(urlString);
             return Drawable.createFromStream(is, "src");
-        } catch (MalformedURLException e) {
-            return null;
-        } catch (IOException e) {
+        }
+        catch (Exception e) {
             return null;
         }
     }

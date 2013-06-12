@@ -3,13 +3,13 @@ package rest.o.gram.application;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
 import rest.o.gram.activities.PersonalActivity;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.client.RestogramClient;
-import rest.o.gram.data_history.IDataHistoryManager;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,8 +22,8 @@ public class RestogramApplication extends Application implements Application.Act
     public void onCreate() {
         super.onCreate();
 
-        // Initialize activities map
-        activities = new HashMap<>();
+        // Initialize activities set
+        activities = new HashSet<>();
 
         // Initialize client
         RestogramClient.getInstance().initialize(getApplicationContext());
@@ -44,12 +44,17 @@ public class RestogramApplication extends Application implements Application.Act
 
         // Clear activities map
         activities.clear();
+
+        if(RestogramClient.getInstance().isDebuggable()) {
+            Log.d("REST-O-GRAM", "Application terminated");
+        }
     }
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         try {
-            activities.put(activity.getLocalClassName(), activity);
+            if(!activities.contains(activity))
+                activities.add(activity);
         }
         catch(Exception e) {
             // TODO
@@ -92,17 +97,13 @@ public class RestogramApplication extends Application implements Application.Act
     @Override
     public void onActivityDestroyed(Activity activity) {
         try {
-            activities.remove(activity.getLocalClassName());
+            activities.remove(activity);
 
             if(activities.size() == 0) {
-                onTerminate();
-            }
-            else {
-                // Flush data
-                IDataHistoryManager dataHistoryManager = RestogramClient.getInstance().getDataHistoryManager();
-                if(dataHistoryManager != null) {
-                    dataHistoryManager.flush();
+                if(RestogramClient.getInstance().isDebuggable()) {
+                    Log.d("REST-O-GRAM", "Activity stack empty");
                 }
+                onTerminate();
             }
         }
         catch(Exception e) {
@@ -110,5 +111,5 @@ public class RestogramApplication extends Application implements Application.Act
         }
     }
 
-    private Map<String, Activity> activities;
+    private Set<Activity> activities;
 }

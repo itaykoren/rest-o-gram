@@ -25,6 +25,9 @@ public class FileDataHistoryManager extends DataHistoryManager {
         // Set is up to date flag to false
         isUpToDate = false;
 
+        // Set is flushing flag to false
+        isFlushing = false;
+
         // Load from files
         load();
     }
@@ -35,6 +38,10 @@ public class FileDataHistoryManager extends DataHistoryManager {
             return false;
 
         isUpToDate = false;
+
+        if(Defs.Data.FORCE_FLUSH)
+            flushOnThread();
+
         return true;
     }
 
@@ -44,6 +51,10 @@ public class FileDataHistoryManager extends DataHistoryManager {
             return false;
 
         isUpToDate = false;
+
+        if(Defs.Data.FORCE_FLUSH)
+            flushOnThread();
+
         return true;
     }
 
@@ -52,6 +63,9 @@ public class FileDataHistoryManager extends DataHistoryManager {
         super.clear();
 
         isUpToDate = false;
+
+        if(Defs.Data.FORCE_FLUSH)
+            flushOnThread();
     }
 
     @Override
@@ -59,8 +73,17 @@ public class FileDataHistoryManager extends DataHistoryManager {
         if(isUpToDate)
             return; // Up to date, no need to flush
 
+        if(isFlushing)
+            return; // Currently flushing
+
+        // Set flag to true
+        isFlushing = true;
+
         // Save data to files
         save();
+
+        // Set flag to false
+        isFlushing = false;
     }
 
     /**
@@ -101,6 +124,20 @@ public class FileDataHistoryManager extends DataHistoryManager {
         isUpToDate = true;
     }
 
+    /**
+     * Flushes all data in a new thread
+     */
+    private void flushOnThread() {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                flush();
+            }
+        };
+        thread.start();
+    }
+
     private Context context; // Context
     private boolean isUpToDate; // Is up to date flag
+    private boolean isFlushing; // Is flushing flag
 }
