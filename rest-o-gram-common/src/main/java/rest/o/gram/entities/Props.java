@@ -28,6 +28,11 @@ public final class Props {
         public final static String IS_FAVORITE = "is_fav";
     }
 
+    public static  class VenueMeta {
+        public final static String FOURSQUARE_ID = "foursquare_id";
+        public final static String APPROVED = "approved";
+    }
+
     public static class Photo {
         public final static String CAPTION = "caption";
         public final static String CREATED_TIME = "created_time";
@@ -44,5 +49,11 @@ public final class Props {
     public static  class PhotoRef {
         public final static String INSTAGRAM_ID = "instagram_id";
         public final static String IS_FAVORITE = "is_fav";
+    }
+
+    public static  class PhotoMeta {
+        public final static String INSTAGRAM_ID = "instagram_id";
+        public final static String APPROVED = "approved";
+        public final static String VENUE_ID = "venue_id";
     }
 }

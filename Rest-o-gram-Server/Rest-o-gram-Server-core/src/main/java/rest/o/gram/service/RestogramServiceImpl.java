@@ -23,7 +23,9 @@ import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.exceptions.InstagramException;
 import rest.o.gram.Converters;
+import rest.o.gram.TasksManager.TasksManager;
 import rest.o.gram.credentials.*;
+import rest.o.gram.data.DataManager;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
 import rest.o.gram.entities.RestogramPhoto;
@@ -379,21 +381,21 @@ public class RestogramServiceImpl implements RestogramService {
             }
         }
 
-        RestogramVenue[] venuesFromCache = fetchVenuesFromCache(venueIds);
-
-        for (int i = 0; i < venuesFromCache.length; i++) {
-
-            RestogramVenue currVenue = venuesFromCache[i];
-
-            if (currVenue != null) {
-
-                String imageUrl = currVenue.getImageUrl();
-                if (imageUrl != null && !imageUrl.isEmpty()) {
-
-                    addImageUrlToVenue(venues, currVenue.getId(), imageUrl);
-                }
-            }
-        }
+//        RestogramVenue[] venuesFromCache = fetchVenuesFromCache(venueIds);
+//
+//        for (int i = 0; i < venuesFromCache.length; i++) {
+//
+//            RestogramVenue currVenue = venuesFromCache[i];
+//
+//            if (currVenue != null) {
+//
+//                String imageUrl = currVenue.getImageUrl();
+//                if (imageUrl != null && !imageUrl.isEmpty()) {
+//
+//                    addImageUrlToVenue(venues, currVenue.getId(), imageUrl);
+//                }
+//            }
+//        }
 
         log.info("found " + venues.length + " venues!");
         return new VenuesResult(venues);
@@ -511,16 +513,47 @@ public class RestogramServiceImpl implements RestogramService {
             return null;
         }
 
+        // converts to ids
+        final String[] instaIds = new String[data.size()];
+        int i = 0;
+        for (final MediaFeedData currMediaFeedData : data)
+            instaIds[i++] = currMediaFeedData.getId();
+
+        // gets filter rules for photos
+        Map<String,Boolean> photoToRule = null;
+        try
+        {
+            photoToRule = DataManager.getPhotoToRuleMapping(instaIds);
+        } catch (LeanException e)
+        {
+            e.printStackTrace();
+            log.severe("cannot get photos filter rules");
+        }
+
+        // enque filtering task for unknown photos
+        final Map<String,String> photoIdToUrl = new HashMap<>();
+        for (final MediaFeedData currMediaFeedData : data)
+        {
+            final String currId = currMediaFeedData.getId();
+            if (!photoToRule.containsKey(currId))
+                // TODO: try low resolution
+                photoIdToUrl.put(currId, currMediaFeedData.getImages().getStandardResolution().getImageUrl());
+        }
+
+        if (!photoIdToUrl.isEmpty())
+            TasksManager.enqueueFilterTask(originVenueId, photoIdToUrl);
+
         log.info("fetched " + data.size() + " photos");
-        // TODO: apply simple/complex filter
-        if (filterType != RestogramFilterType.None) {
-            RestogramFilter restogramFilter = RestogramFilterFactory.createFilter(filterType);
+        if (filterType != RestogramFilterType.None)
+        {
+            final RestogramFilter restogramFilter =
+                    RestogramFilterFactory.createFilter(filterType, photoToRule);
             data = restogramFilter.doFilter(data);
         }
 
         RestogramPhoto[] photos = new RestogramPhoto[data.size()];
 
-        int i = 0;
+        i = 0;
         for (MediaFeedData media : data) {
             photos[i] = convert(media, originVenueId);
             if (AuthService.isUserLoggedIn()) {

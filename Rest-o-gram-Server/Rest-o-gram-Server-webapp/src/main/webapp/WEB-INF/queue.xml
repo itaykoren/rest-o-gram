@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<queue-entries>
+    <total-storage-limit>50M</total-storage-limit>
+    <queue>
+        <name>outgoing-queue</name>
+        <mode>pull</mode>
+        <retry-parameters>
+            <task-retry-limit>2</task-retry-limit>
+        </retry-parameters>
+        <acl>
+            <!-- can list, get, lease, delete, and update tasks -->
+            <user-email>or.noyman@gmail.com</user-email>
+            <user-email>1068427818709-9f1h2fvdrtuopk94uvamdlimfjgg4b75@developer.gserviceaccount.com</user-email>
+        </acl>
+    </queue>
+
+    <queue>
+        <name>incoming-queue</name>
+        <mode>pull</mode>
+        <retry-parameters>
+            <task-retry-limit>2</task-retry-limit>
+        </retry-parameters>
+        <acl>
+            <!-- can insert tasks -->
+            <writer-email>or.noyman@gmail.com</writer-email>
+            <writer-email>1068427818709-9f1h2fvdrtuopk94uvamdlimfjgg4b75@developer.gserviceaccount.com</writer-email>
+        </acl>
+    </queue>
+</queue-entries>
