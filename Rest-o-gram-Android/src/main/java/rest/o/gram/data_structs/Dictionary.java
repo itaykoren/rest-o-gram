@@ -1,14 +1,14 @@
 package rest.o.gram.data_structs;
 
+import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Roi
  * Date: 5/25/13
  */
-public class Dictionary<K, V> implements IDictionary<K, V> {
+public class Dictionary<K, V> implements IDictionary<K, V>, Serializable {
     /**
      * Ctor
      */

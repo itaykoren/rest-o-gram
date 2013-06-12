@@ -3,11 +3,10 @@ package rest.o.gram.data_history;
 import android.content.Context;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
-import rest.o.gram.data_structs.*;
+import rest.o.gram.data_structs.Dictionary;
+import rest.o.gram.data_structs.IDictionary;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
-
-import java.io.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -92,8 +91,8 @@ public class FileDataHistoryManager extends DataHistoryManager {
     private void save() {
         // Save data to files
         try {
-            Utils.serialize(venues, new File(context.getFilesDir(), Defs.Data.DATA_VENUES_FILENAME));
-            Utils.serialize(photos, new File(context.getFilesDir(), Defs.Data.DATA_PHOTOS_FILENAME));
+            Utils.serialize(venues, context.openFileOutput(Defs.Data.DATA_VENUES_FILENAME, Context.MODE_PRIVATE));
+            Utils.serialize(photos, context.openFileOutput(Defs.Data.DATA_PHOTOS_FILENAME, Context.MODE_PRIVATE));
         }
         catch(Exception e) {
             // TODO: report error
@@ -108,8 +107,8 @@ public class FileDataHistoryManager extends DataHistoryManager {
     private void load() {
         // Load data from files
         try {
-            venues = (IDictionary<String, RestogramVenue>)Utils.deserialize(new File(context.getFilesDir(), Defs.Data.DATA_VENUES_FILENAME));
-            photos = (IDictionary<String, RestogramPhoto>)Utils.deserialize(new File(context.getFilesDir(), Defs.Data.DATA_PHOTOS_FILENAME));
+            venues = (IDictionary<String, RestogramVenue>)Utils.deserialize(context.openFileInput(Defs.Data.DATA_VENUES_FILENAME));
+            photos = (IDictionary<String, RestogramPhoto>)Utils.deserialize(context.openFileInput(Defs.Data.DATA_PHOTOS_FILENAME));
         }
         catch(Exception e) {
             // TODO: report error

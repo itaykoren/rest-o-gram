@@ -70,15 +70,14 @@ public class Utils {
     /**
      * Serializes object to given file
      */
-    public static void serialize(Object object, File file) {
+    public static void serialize(Object object, FileOutputStream stream) {
         try{
-            FileOutputStream fileOut = new FileOutputStream(file);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            ObjectOutputStream out = new ObjectOutputStream(stream);
 
             out.writeObject(object);
 
             out.close();
-            fileOut.close();
+            stream.close();
         }
         catch(Exception e) {
             // TODO: report error
@@ -88,16 +87,15 @@ public class Utils {
     /**
      * Deserializes object from given file
      */
-    public static Object deserialize(File file) {
+    public static Object deserialize(FileInputStream stream) {
         Object object;
         try{
-            FileInputStream fileIn = new FileInputStream(file);
-            ObjectInputStream in = new ObjectInputStream(fileIn);
+            ObjectInputStream in = new ObjectInputStream(stream);
 
             object = in.readObject();
 
             in.close();
-            fileIn.close();
+            stream.close();
         }
         catch(Exception e) {
             // TODO: report error
