@@ -3,7 +3,6 @@ package rest.o.gram.service;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
 import com.leanengine.server.LeanException;
-import com.leanengine.server.appengine.AccountUtils;
 import com.leanengine.server.appengine.DatastoreUtils;
 import com.leanengine.server.auth.AuthService;
 import com.leanengine.server.entity.LeanQuery;
@@ -382,22 +381,31 @@ public class RestogramServiceImpl implements RestogramService {
 
         RestogramVenue[] venuesFromCache = fetchVenuesFromCache(venueIds);
 
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < venuesFromCache.length; i++) {
 
             RestogramVenue currVenue = venuesFromCache[i];
 
             if (currVenue != null) {
 
                 String imageUrl = currVenue.getImageUrl();
-                if (imageUrl != null && imageUrl != "") {
+                if (imageUrl != null && !imageUrl.isEmpty()) {
 
-                    venues[i].setImageUrl(imageUrl);
+                    addImageUrlToVenue(venues, currVenue.getId(), imageUrl);
                 }
             }
         }
 
         log.info("found " + venues.length + " venues!");
         return new VenuesResult(venues);
+    }
+
+    private void addImageUrlToVenue(RestogramVenue[] venues, long id, String imageUrl) {
+
+        for (RestogramVenue venue : venues) {
+            if (venue != null && venue.getId() == id) {
+                venue.setImageUrl(imageUrl);
+            }
+        }
     }
 
     /**
