@@ -63,11 +63,11 @@
             <!--<artifactId>android-lib</artifactId>-->
             <!--<version>0.8</version>-->
         <!--</dependency>-->
-        <dependency>
-            <groupId>com.littlefluffytoys</groupId>
-            <artifactId>littlefluffylocationlibrary</artifactId>
-            <version>15</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.littlefluffytoys</groupId>-->
+            <!--<artifactId>littlefluffylocationlibrary</artifactId>-->
+            <!--<version>15</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.json.rpc</groupId>
             <artifactId>jsonrpc</artifactId>
