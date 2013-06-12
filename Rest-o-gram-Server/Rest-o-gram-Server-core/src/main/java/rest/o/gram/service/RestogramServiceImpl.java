@@ -381,21 +381,21 @@ public class RestogramServiceImpl implements RestogramService {
             }
         }
 
-//        RestogramVenue[] venuesFromCache = fetchVenuesFromCache(venueIds);
-//
-//        for (int i = 0; i < venuesFromCache.length; i++) {
-//
-//            RestogramVenue currVenue = venuesFromCache[i];
-//
-//            if (currVenue != null) {
-//
-//                String imageUrl = currVenue.getImageUrl();
-//                if (imageUrl != null && !imageUrl.isEmpty()) {
-//
-//                    addImageUrlToVenue(venues, currVenue.getId(), imageUrl);
-//                }
-//            }
-//        }
+        RestogramVenue[] venuesFromCache = fetchVenuesFromCache(venueIds);
+
+        for (int i = 0; i < venuesFromCache.length; i++) {
+
+            RestogramVenue currVenue = venuesFromCache[i];
+
+            if (currVenue != null) {
+
+                String imageUrl = currVenue.getImageUrl();
+                if (imageUrl != null && !imageUrl.isEmpty()) {
+
+                    addImageUrlToVenue(venues, currVenue.getId(), imageUrl);
+                }
+            }
+        }
 
         log.info("found " + venues.length + " venues!");
         return new VenuesResult(venues);
