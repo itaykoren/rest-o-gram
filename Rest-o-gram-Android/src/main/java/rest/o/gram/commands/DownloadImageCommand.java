@@ -69,6 +69,9 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
             InputStream is = fetch(urlString);
             return Drawable.createFromStream(is, "src");
         }
+        catch (OutOfMemoryError e) {
+            return null;
+        }
         catch (Exception e) {
             return null;
         }
