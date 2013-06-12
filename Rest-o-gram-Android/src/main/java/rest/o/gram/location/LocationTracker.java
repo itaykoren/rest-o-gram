@@ -33,6 +33,7 @@ public class LocationTracker implements ILocationTracker {
 
         try
         {
+            LocationLibrary.startAlarmAndListener(context);
             if (Defs.Location.INTENSE_LOCATION_UPDATES)
                 LocationLibrary.initialiseLibrary(context, true, "rest.o.gram");
             else // uses defined intervals
