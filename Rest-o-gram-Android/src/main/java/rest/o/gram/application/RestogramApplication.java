@@ -36,9 +36,6 @@ public class RestogramApplication extends Application implements Application.Act
     public void onTerminate() { // Not guaranteed to be called from android
         super.onTerminate();
 
-        // Unregister callbacks
-        unregisterActivityLifecycleCallbacks(this);
-
         // Dispose client
         RestogramClient.getInstance().dispose();
 

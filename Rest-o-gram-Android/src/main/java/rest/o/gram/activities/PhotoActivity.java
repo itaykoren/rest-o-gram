@@ -65,7 +65,7 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
             photoId = intent.getStringExtra("photo");
             bitmap = (Bitmap)intent.getParcelableExtra("thumbnail_bitmap");
         }
-        catch(Exception e) {
+        catch(Exception | OutOfMemoryError e) {
             // TODO: implementation
             return;
         }

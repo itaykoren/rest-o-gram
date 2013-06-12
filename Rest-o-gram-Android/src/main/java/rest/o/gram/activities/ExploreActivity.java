@@ -52,10 +52,17 @@ public class ExploreActivity extends RestogramActionBarActivity {
                 // Load venues from cache
                 IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
                 if(cache != null) {
-                    initialize(cache.loadVenues());
+                    RestogramVenue[] venues = cache.loadVenues();
+                    if(venues != null && venues.length > 0) {
+                        initialize(venues);
+                        return;
+                    }
                 }
 
-            } else {
+                // No venues are available - send get nearby request
+                RestogramClient.getInstance().getNearby(latitude, longitude, Defs.Location.DEFAULT_NEARBY_RADIUS, this);
+            }
+            else {
                 latitude = intent.getDoubleExtra("latitude", 0.0);
                 longitude = intent.getDoubleExtra("longitude", 0.0);
 
@@ -64,7 +71,6 @@ public class ExploreActivity extends RestogramActionBarActivity {
             }
         } catch (Exception e) {
             // TODO: implementation
-            return;
         }
     }
 
