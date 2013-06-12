@@ -71,6 +71,7 @@ public class RestogramCache implements IRestogramCache {
     public void clear() {
         venues.clear();
         photos.clear();
+        venuePhotos.clear();
     }
 
     private IDictionary<String, RestogramVenue> venues; // Venues dictionary
