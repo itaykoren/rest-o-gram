@@ -26,12 +26,12 @@
                     android:id="@+id/tvFBName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Username"
+                    android:text=""
                     android:textSize="14dp"
                     android:layout_below="@+id/ivFBPhoto"
                     android:layout_centerInParent="true"
                     android:textStyle="normal"
-                    android:typeface="sans"
+                    android:typeface="serif"
                     android:textColor="#000000"
                     android:maxLines="1"/>
      </RelativeLayout>
@@ -61,6 +61,7 @@
                      android:onClick="onHistoryClicked"
                      android:layout_gravity="center"
                      android:textColor="#656565"
+                     android:typeface="serif"
                      android:drawableTop="@drawable/ic_history"
                      android:background="@drawable/custom_button"/>
 
@@ -72,6 +73,7 @@
                     android:text="@string/yumm"
                     android:id="@+id/bFavorites"
                     android:textColor="#656565"
+                    android:typeface="serif"
                     android:onClick="onFavoritesClicked" android:layout_gravity="center"
                     android:drawableTop="@drawable/ic_favorite_off"
                     android:background="@drawable/custom_button"/>
