@@ -63,8 +63,16 @@ public class BitmapCache implements IBitmapCache {
     }
 
     @Override
-    public void clear() {
-        // Clear all data
+    public boolean clear() {
+        try {
+            // Clear all data
+            clearExternal();
+            clearInternal();
+            return true;
+        }
+        catch(Exception | Error e) {
+            return false;
+        }
     }
 
     /**
@@ -88,6 +96,7 @@ public class BitmapCache implements IBitmapCache {
      * Returns true if successful, false otherwise
      */
     boolean saveInternal(String id, Bitmap bitmap) {
+        // TODO
         return false;
     }
 
@@ -99,8 +108,7 @@ public class BitmapCache implements IBitmapCache {
         String state = Environment.getExternalStorageState();
 
         if(Environment.MEDIA_MOUNTED.equals(state) ||
-           Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            // Can read
+           Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) { // Can read
             File file = new File(context.getExternalCacheDir(), id);
             return loadBitmap(file);
         }
@@ -114,7 +122,26 @@ public class BitmapCache implements IBitmapCache {
      * Returns bitmap if successful, null otherwise
      */
     private Bitmap loadInternal(String id) {
+        // TODO
         return null;
+    }
+
+    /**
+     * Clears all external data
+     */
+    private void clearExternal() {
+        String state = Environment.getExternalStorageState();
+
+        if(Environment.MEDIA_MOUNTED.equals(state)) {  // Can write
+            clearDirectory(context.getExternalCacheDir());
+        }
+    }
+
+    /**
+     * Clears all internal data
+     */
+    private void clearInternal() {
+        // TODO
     }
 
     /**
@@ -146,6 +173,19 @@ public class BitmapCache implements IBitmapCache {
         }
         catch(Exception | Error e) {
             return null;
+        }
+    }
+
+    /**
+     * Clears all files in given directory
+     */
+    private void clearDirectory(File directory) {
+        if(!directory.exists() && !directory.isDirectory())
+            return;
+
+        File[] files = directory.listFiles();
+        for(File f : files) {
+            f.delete();
         }
     }
 

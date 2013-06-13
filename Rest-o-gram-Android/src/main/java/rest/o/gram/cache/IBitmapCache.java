@@ -22,6 +22,7 @@ public interface IBitmapCache {
 
     /**
      * Clears all data
+     * Returns true if successful, false otherwise
      */
-    void clear();
+    boolean clear();
 }
