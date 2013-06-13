@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import rest.o.gram.activities.PersonalActivity;
 import rest.o.gram.authentication.IAuthenticationProvider;
+import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
 
 import java.util.HashSet;
@@ -106,6 +107,16 @@ public class RestogramApplication extends Application implements Application.Act
         catch(Exception e) {
             // TODO
         }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+
+        // Clear cache
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        if(cache != null)
+            cache.clear();
     }
 
     private Set<Activity> activities;

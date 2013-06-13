@@ -3,6 +3,7 @@ package rest.o.gram.client;
 import android.content.Context;
 import android.widget.ImageView;
 import rest.o.gram.authentication.IAuthenticationProvider;
+import rest.o.gram.cache.IBitmapCache;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
@@ -154,6 +155,11 @@ public interface IRestogramClient {
      * Returns the cache
      */
     IRestogramCache getCache();
+
+    /**
+     * Returns the bitmap cache
+     */
+    IBitmapCache getBitmapCache();
 
     /**
      * @return is the application in debug mode?

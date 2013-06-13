@@ -93,7 +93,10 @@ public final class Defs {
         public static final boolean FORCE_FLUSH = true;
         public static final String DATA_VENUES_FILENAME = "venues.rog";
         public static final String DATA_PHOTOS_FILENAME = "photos.rog";
+
         public static final boolean CACHE_DATA_HISTORY_ENABLED = true;
+
+        public static final boolean BITMAP_CACHE_ENABLED = false;
     }
 
     /**
