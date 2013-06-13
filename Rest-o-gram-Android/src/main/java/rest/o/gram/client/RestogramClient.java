@@ -8,10 +8,7 @@ import android.widget.ImageView;
 import rest.o.gram.authentication.AuthenticationProvider;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
-import rest.o.gram.cache.BitmapCache;
-import rest.o.gram.cache.IBitmapCache;
-import rest.o.gram.cache.IRestogramCache;
-import rest.o.gram.cache.RestogramCache;
+import rest.o.gram.cache.*;
 import rest.o.gram.commands.*;
 import rest.o.gram.common.Defs;
 import rest.o.gram.data_favorites.*;
@@ -86,6 +83,8 @@ public class RestogramClient implements IRestogramClient {
 
             if(Defs.Data.BITMAP_CACHE_ENABLED)
                 bitmapCache = new BitmapCache(context);
+            else
+                bitmapCache = new DummyBitmapCache();
 
             if(Defs.Data.DATA_HISTORY_ENABLED)
                 dataHistoryManager = new FileDataHistoryManager(context);
