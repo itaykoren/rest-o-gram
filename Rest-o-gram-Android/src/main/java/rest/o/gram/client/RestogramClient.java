@@ -70,7 +70,9 @@ public class RestogramClient implements IRestogramClient {
             setJsonEncoding(authTransport);
 
             ILocationTrackerFactory factory = new LocationTrackerFactory(context);
-            tracker = factory.create(Defs.Location.TRACKER_TYPE);
+            tracker = factory.create(Defs.Location.PRIMARY_TRACKER_TYPE);
+            if(!tracker.canDetectLocation())
+                tracker = factory.create(Defs.Location.SECONDARY_TRACKER_TYPE);
 
             networkStateProvider = new NetworkStateProvider(context);
             commandQueue = new RestogramCommandQueue();

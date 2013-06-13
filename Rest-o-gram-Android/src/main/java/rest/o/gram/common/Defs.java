@@ -44,22 +44,20 @@ public final class Defs {
          */
         public enum TrackerType {
             TrackerTypeDummy,
-            TrackerTypeDefault,
+            TrackerTypeFluffy,
             TrackerTypeSimple,
             TrackerTypeGoogle
         }
 
-        public static final TrackerType TRACKER_TYPE = TrackerType.TrackerTypeDefault;
+        public static final TrackerType PRIMARY_TRACKER_TYPE = TrackerType.TrackerTypeGoogle;
+        public static final TrackerType SECONDARY_TRACKER_TYPE = TrackerType.TrackerTypeFluffy;
 
-        public static final double DEFAULT_FINDME_RADIUS = 50;
         public static final double DEFAULT_NEARBY_RADIUS = 500;
 
         public static final boolean INTENSE_LOCATION_UPDATES = true;
         public static final int MAX_LOCATION_AGE = 20 * 60 * 1000; // 20 minutes
         public static final long LOCATION_UPDATE_INTERVAL = 5 * 60 * 1000; // 5 minutes
         public static final int TRACKING_TIMEOUT = 20 * 1000; // 20 seconds
-
-        public static final double FINDME_UNCERTAINTY_FACTOR = 1.5;
     }
 
     /**

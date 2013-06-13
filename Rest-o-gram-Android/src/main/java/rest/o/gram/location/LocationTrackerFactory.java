@@ -21,7 +21,7 @@ public class LocationTrackerFactory implements ILocationTrackerFactory {
         switch(type) {
             case TrackerTypeDummy:
                 return new LocationTrackerDummy();
-            case TrackerTypeDefault:
+            case TrackerTypeFluffy:
                 return new LocationTracker(context);
             case TrackerTypeSimple:
                 return new LocationTrackerSimple(context);
