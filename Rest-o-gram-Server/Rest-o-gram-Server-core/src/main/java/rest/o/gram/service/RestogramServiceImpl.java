@@ -540,8 +540,8 @@ public class RestogramServiceImpl implements RestogramService {
                 photoIdToUrl.put(currId, currMediaFeedData.getImages().getStandardResolution().getImageUrl());
         }
 
-//        if (!photoIdToUrl.isEmpty())
-//            TasksManager.enqueueFilterTask(originVenueId, photoIdToUrl);
+        if (!photoIdToUrl.isEmpty())
+            TasksManager.enqueueFilterTask(originVenueId, photoIdToUrl);
 
         log.info("fetched " + data.size() + " photos");
         if (filterType != RestogramFilterType.None)

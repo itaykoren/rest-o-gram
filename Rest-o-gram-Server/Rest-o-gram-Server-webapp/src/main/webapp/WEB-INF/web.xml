@@ -61,6 +61,22 @@
         <url-pattern>/loginerror</url-pattern>
     </servlet-mapping>
 
+    <!--Backends-->
+    <servlet>
+        <description>stores filter rules</description>
+        <display-name>filter-rules-update</display-name>
+        <servlet-name>filter-rules-update</servlet-name>
+        <servlet-class>rest.o.gram.service.backend.FilterRulesServlet</servlet-class>
+    </servlet>
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>filter-rules-update</servlet-name>-->
+        <!--<url-pattern>/_ah/start</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <servlet-mapping>
+        <servlet-name>filter-rules-update</servlet-name>
+        <url-pattern>/filter-rules-update</url-pattern>
+    </servlet-mapping>
+
     <!--Resteasy-->
     <context-param>
         <param-name>javax.ws.rs.Application</param-name>

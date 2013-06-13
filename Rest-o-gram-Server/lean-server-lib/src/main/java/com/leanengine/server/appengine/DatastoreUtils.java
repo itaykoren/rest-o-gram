@@ -2,6 +2,8 @@ package com.leanengine.server.appengine;
 
 import com.google.appengine.api.datastore.*;
 import com.leanengine.server.LeanException;
+import com.leanengine.server.appengine.datastore.PutBatchOperation;
+import com.leanengine.server.appengine.datastore.PutBatchOperationImpl;
 import com.leanengine.server.auth.AuthService;
 import com.leanengine.server.auth.LeanAccount;
 import com.leanengine.server.entity.*;
@@ -166,7 +168,8 @@ public class DatastoreUtils {
         return result.getId();
     }
 
-    public static void putPublicEntity(String kind, String name, Map<String, Object> properties) throws LeanException {
+    public static void putPublicEntity(String kind, String name, Map<String, Object> properties)
+            throws LeanException {
 
         if (!pattern.matcher(kind).matches()) {
             throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
@@ -180,6 +183,21 @@ public class DatastoreUtils {
             }
         }
         datastore.put(entityEntity);
+    }
+
+    public static void putPublicEntities(final Collection<Entity> entities) {
+        datastore.put(entities);
+    }
+
+    public static PutBatchOperation startPutBatch() {
+        return new PutBatchOperationImpl();
+    }
+
+    public static boolean endPutBatch(PutBatchOperation operation) {
+        if (operation == null ||  operation.getEntities() == null)
+            return false;
+        datastore.put(operation.getEntities());
+        return true;
     }
 
     public static QueryResult queryEntityPrivate(LeanQuery leanQuery) throws LeanException {

@@ -21,6 +21,9 @@ public final class Props {
 
         public final static String DESCRIPTION = "desc";
         public final static String IMAGE_URL = "image_url";
+
+        //meta-data
+       //public final static String APPROVED = "approved";
     }
 
     public static  class VenueRef {
@@ -44,6 +47,7 @@ public final class Props {
         public final static String TYPE = "type";
         public final static String USER = "user";
         public final static String ORIGIN_VENUE_ID = "origin_venue_id";
+        //public final static String APPROVED = "approved";
     }
 
     public static  class PhotoRef {
