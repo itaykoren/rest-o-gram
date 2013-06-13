@@ -113,12 +113,13 @@
                 android:layout_centerInParent="true"
                 android:visibility="visible"/>
 
-    </RelativeLayout>
+        </RelativeLayout>
 
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/photoOptions">
 
         <ImageButton
                 android:id="@+id/bPhotoFavorite"
@@ -126,14 +127,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_favorite_off"
+                android:layout_alignParentLeft="true"
                 android:onClick="onFavoriteClicked"/>
 
-
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
+    <!--photo yummies-->
+        <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="right">
+                android:id="@+id/tvPhotoYummies"
+                android:textColor="#040404"
+                android:textSize="14dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_centerInParent="true"
+                android:text="@string/default_yummies_text"
+                android:typeface="serif"/>
 
             <ImageButton
                     android:id="@+id/infoButton"
@@ -141,12 +149,10 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_info"
                     android:layout_marginRight="10dp"
+                    android:layout_alignParentRight="true"
                     android:onClick="onInfoClicked"/>
 
+    </RelativeLayout>
 
-        </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
-
