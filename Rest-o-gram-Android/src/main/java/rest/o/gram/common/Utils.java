@@ -1,10 +1,13 @@
 package rest.o.gram.common;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.widget.TextView;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -144,5 +147,21 @@ public class Utils {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("show_welcome", isShow);
         editor.commit();
+    }
+
+    /**
+     * Returns true whether google play services is available, false otherwise
+     */
+    public static boolean isPlayServicesAvailable(Context context) {
+        // Check google play services
+        final int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
+        if(status == ConnectionResult.SERVICE_MISSING ||
+                status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED ||
+                status == ConnectionResult.SERVICE_DISABLED) {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 }

@@ -7,7 +7,7 @@ package rest.o.gram.location;
  */
 public interface ILocationTracker {
     /**
-     * Forces an immidiate estimation of the current location
+     * Forces an immediate estimation of the current location
      */
     void force();
 

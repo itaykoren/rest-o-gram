@@ -157,10 +157,7 @@ public class MapActivity extends RestogramActionBarActivity {
      */
     private boolean initializeMap() {
         // Check google play services
-        final int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if(status == ConnectionResult.SERVICE_MISSING ||
-                status == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED ||
-                status == ConnectionResult.SERVICE_DISABLED) {
+        if(!Utils.isPlayServicesAvailable(this)) {
             Toast.makeText(this, "Error: google play services", Toast.LENGTH_LONG).show();
             return false;
         }

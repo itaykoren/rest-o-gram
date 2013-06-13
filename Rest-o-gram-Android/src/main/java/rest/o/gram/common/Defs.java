@@ -44,7 +44,9 @@ public final class Defs {
          */
         public enum TrackerType {
             TrackerTypeDummy,
-            TrackerTypeDefault
+            TrackerTypeDefault,
+            TrackerTypeSimple,
+            TrackerTypeGoogle
         }
 
         public static final TrackerType TRACKER_TYPE = TrackerType.TrackerTypeDefault;
