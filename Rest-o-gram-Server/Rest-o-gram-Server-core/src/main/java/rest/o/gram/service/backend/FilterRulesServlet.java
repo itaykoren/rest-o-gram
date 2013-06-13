@@ -37,7 +37,7 @@ public class FilterRulesServlet extends HttpServlet {
         try
         {
             //TODO: make it a backend servlet....
-
+            processFilterResults();
             resp.sendError(200, "OK");
         } catch (IOException e)
         {
