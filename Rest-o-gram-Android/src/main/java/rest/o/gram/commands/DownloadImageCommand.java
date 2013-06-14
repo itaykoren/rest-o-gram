@@ -70,7 +70,8 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
     public Drawable fetchDrawable(String urlString, String photoId) {
         try {
             IBitmapCache cache = RestogramClient.getInstance().getBitmapCache();
-            Bitmap bitmap = cache.load(photoId);
+            String filename = generateFilename(urlString, photoId);
+            Bitmap bitmap = cache.load(filename);
 
             if(bitmap == null) {
                 // Download image
@@ -79,7 +80,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
 
                 // Save bitmap to cache
                 bitmap = ((BitmapDrawable)drawable).getBitmap();
-                cache.save(photoId, bitmap);
+                cache.save(filename, bitmap);
                 return drawable;
             }
             else {
@@ -177,6 +178,10 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         HttpGet request = new HttpGet(urlString);
         HttpResponse response = httpClient.execute(request);
         return response.getEntity().getContent();
+    }
+
+    private String generateFilename(String urlString, String photoId) {
+        return photoId; // TODO: use urlString (convert "/"...)
     }
 
     private Context context;
