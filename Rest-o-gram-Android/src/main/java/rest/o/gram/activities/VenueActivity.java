@@ -200,7 +200,7 @@ public class VenueActivity extends RestogramActionBarActivity {
             isRequestPending = true;
 
             // Send get photos request
-            RestogramClient.getInstance().getPhotos(venue.getFoursquare_id(), RestogramFilterType.Simple, this);
+            RestogramClient.getInstance().getPhotos(venue.getFoursquare_id(), RestogramFilterType.Complex, this);
         }
         else { // Photos were found
             // Save last token
@@ -232,7 +232,7 @@ public class VenueActivity extends RestogramActionBarActivity {
             if(RestogramClient.getInstance().isDebuggable())
                 Log.d("REST-O-GRAM", "Requesting more photos");
 
-            RestogramClient.getInstance().getNextPhotos(lastToken, venueId, this);
+            RestogramClient.getInstance().getNextPhotos(lastToken, RestogramFilterType.Complex, venueId, this);
         }
     }
 

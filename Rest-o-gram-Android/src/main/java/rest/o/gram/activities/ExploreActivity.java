@@ -200,10 +200,10 @@ public class ExploreActivity extends RestogramActionBarActivity {
             isRequestPending = true;
 
             if(nextToken != null) {
-                RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
+                RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Complex, nextVenueId, this);
             }
             else {
-                RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Simple, this);
+                RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Complex, this);
             }
         }
         else { // Photos were found

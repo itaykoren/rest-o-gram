@@ -546,8 +546,11 @@ public class RestogramServiceImpl implements RestogramService {
         {
             final String currId = currMediaFeedData.getId();
             if (!photoToRule.containsKey(currId))
-                // TODO: try low resolution
-                photoIdToUrl.put(currId, currMediaFeedData.getImages().getStandardResolution().getImageUrl());
+            {
+                final Images currImages = currMediaFeedData.getImages();
+                if (currImages != null && currImages.getStandardResolution() != null)
+                    photoIdToUrl.put(currId, currImages.getStandardResolution().getImageUrl());
+            }
         }
 
         if (!photoIdToUrl.isEmpty())
