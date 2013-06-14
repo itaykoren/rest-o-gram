@@ -2,6 +2,7 @@ package rest.o.gram.data_favorites;
 
 import android.util.Log;
 import com.leanengine.*;
+import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.IRestogramClient;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.data_favorites.results.*;
@@ -124,6 +125,13 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                             favoritePhotos.clear();
                             for(RestogramPhoto p : photos) {
                                 favoritePhotos.add(p.getInstagram_id());
+
+                                IRestogramCache cache = RestogramClient.getInstance().getCache();
+                                if(cache != null) {
+                                    RestogramPhoto photo = cache.findPhoto(p.getInstagram_id());
+                                    if(photo != null)
+                                        photo.set_favorite(true);
+                                }
                             }
                         }
 
@@ -256,6 +264,13 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                             favoriteVenues.clear();
                             for(RestogramVenue v : venues) {
                                 favoriteVenues.add(v.getFoursquare_id());
+
+                                IRestogramCache cache = RestogramClient.getInstance().getCache();
+                                if(cache != null) {
+                                    RestogramVenue venue = cache.findVenue(v.getFoursquare_id());
+                                    if(venue != null)
+                                        venue.setfavorite(true);
+                                }
                             }
                         }
 
