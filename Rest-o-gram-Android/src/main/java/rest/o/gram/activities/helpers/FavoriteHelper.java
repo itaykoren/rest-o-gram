@@ -12,9 +12,6 @@ import rest.o.gram.data_favorites.results.*;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Roi
@@ -136,7 +133,7 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     }
 
     @Override
-    public void onFinished(AddFavoritePhotosResult result) {
+    public void onFinished(AddFavoritePhotoResult result) {
         if(!result.hasSucceded())
             return;
 
@@ -145,7 +142,7 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     }
 
     @Override
-    public void onFinished(RemoveFavoritePhotosResult result) {
+    public void onFinished(RemoveFavoritePhotoResult result) {
         if(!result.hasSucceded())
             return;
 
@@ -172,7 +169,7 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     }
 
     @Override
-    public void onFinished(AddFavoriteVenuesResult result) {
+    public void onFinished(AddFavoriteVenueResult result) {
         if(!result.hasSucceded())
             return;
 
@@ -181,7 +178,7 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     }
 
     @Override
-    public void onFinished(RemoveFavoriteVenuesResult result) {
+    public void onFinished(RemoveFavoriteVenueResult result) {
         if(!result.hasSucceded())
             return;
 

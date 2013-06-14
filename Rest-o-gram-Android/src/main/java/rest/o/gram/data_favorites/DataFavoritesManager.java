@@ -43,7 +43,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                 photo.set_favorite(true);
                 photo.setId(result[0]);
                 favoritePhotos.add(photo.getInstagram_id());
-                observer.onFinished(new AddFavoritePhotosResult(true, photo));
+                observer.onFinished(new AddFavoritePhotoResult(true, photo.getInstagram_id()));
                 client.cachePhoto(photo.getInstagram_id(), photo.getOriginVenueId(), internalObserver);
             }
 
@@ -53,7 +53,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                 if (RestogramClient.getInstance().isDebuggable() && error != null)
                     Log.d("REST-O-GRAM", "adding photo to fav - saving photo ref failed: " + error.getErrorMessage()+
                             ", error_code:" + error.getErrorCode() + ", error_type:" + error.getErrorType());
-                observer.onFinished(new AddFavoritePhotosResult(false, null));
+                observer.onFinished(new AddFavoritePhotoResult(false, null));
             }
         });
     }
@@ -71,14 +71,14 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                     Log.d("REST-O-GRAM", "removing photo from fav - updating DS succeded");
                 photo.set_favorite(false);
                 favoritePhotos.remove(photo.getInstagram_id());
-                observer.onFinished(new RemoveFavoritePhotosResult(true, photo));
+                observer.onFinished(new RemoveFavoritePhotoResult(true, photo.getInstagram_id()));
             }
 
             @Override
             public void onFailure(LeanError error) {
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "removing photo from fav - updating DS failed");
-                observer.onFinished(new RemoveFavoritePhotosResult(false, null));
+                observer.onFinished(new RemoveFavoritePhotoResult(false, null));
             }
         });
     }
@@ -169,7 +169,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                 venue.setfavorite(true);
                 venue.setId(result[0]);
                 favoriteVenues.add(venue.getFoursquare_id());
-                observer.onFinished(new AddFavoriteVenuesResult(true, venue));
+                observer.onFinished(new AddFavoriteVenueResult(true, venue.getFoursquare_id()));
                 // TODO - consider removing as now the server caches every venue in getInfo
                 client.cacheVenue(venue.getFoursquare_id(), internalObserver);
             }
@@ -180,7 +180,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "adding venue to fav - saving venue ref failed:" + error.getErrorMessage() +
                             ", error_code:" + error.getErrorCode() + ", error_type:" + error.getErrorType());
-                observer.onFinished(new AddFavoriteVenuesResult(false, null));
+                observer.onFinished(new AddFavoriteVenueResult(false, null));
             }
         });
     }
@@ -198,14 +198,14 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                     Log.d("REST-O-GRAM", "removing venue from fav - updating DS succeded");
                 venue.setfavorite(false);
                 favoriteVenues.remove(venue.getFoursquare_id());
-                observer.onFinished(new RemoveFavoriteVenuesResult(true, venue));
+                observer.onFinished(new RemoveFavoriteVenueResult(true, venue.getFoursquare_id()));
             }
 
             @Override
             public void onFailure(LeanError error) {
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "removing venue from fav - updating DS failed");
-                observer.onFinished(new RemoveFavoriteVenuesResult(false, null));
+                observer.onFinished(new RemoveFavoriteVenueResult(false, null));
             }
         });
     }

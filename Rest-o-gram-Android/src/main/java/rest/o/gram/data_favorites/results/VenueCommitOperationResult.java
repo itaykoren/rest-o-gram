@@ -1,21 +1,19 @@
 package rest.o.gram.data_favorites.results;
 
-import rest.o.gram.entities.RestogramVenue;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Or
  * Date: 6/3/13
  */
 public abstract class VenueCommitOperationResult extends CommitDataOperationResult {
-    public VenueCommitOperationResult(boolean hasSucceded, RestogramVenue venue) {
+    public VenueCommitOperationResult(boolean hasSucceded, String venueId) {
         super(hasSucceded);
-        this.venue = venue;
+        this.venueId = venueId;
     }
 
-    public RestogramVenue getVenue() {
-        return venue;
+    public String getVenueId() {
+        return venueId;
     }
 
-    private RestogramVenue venue;
+    private String venueId;
 }
