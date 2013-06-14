@@ -97,7 +97,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     @Override
     public void onFinished(GetProfilePhotoUrlResult result) {
         String profilePhotoUrl = result.getProfilePhotoUrl();
-        RestogramClient.getInstance().downloadImage(profilePhotoUrl, profileImageView, true, null);
+        RestogramClient.getInstance().downloadImage(profilePhotoUrl, profilePhotoUrl, profileImageView, true, null);
     }
 
     @Override

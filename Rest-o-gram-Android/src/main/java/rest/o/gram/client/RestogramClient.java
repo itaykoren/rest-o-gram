@@ -47,6 +47,8 @@ public class RestogramClient implements IRestogramClient {
     public void initialize(Context context) {
         try
         {
+            this.context = context;
+
             // sets debuggable flag
             PackageManager pm = context.getPackageManager();
             try
@@ -188,7 +190,7 @@ public class RestogramClient implements IRestogramClient {
     @Override
     public IRestogramCommand downloadImage(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter,
                               boolean force, IRestogramCommandObserver observer) {
-        IRestogramCommand command = new DownloadImageCommand(url, photo, viewAdapter);
+        IRestogramCommand command = new DownloadImageCommand(context, url, photo.getInstagram_id(), viewAdapter);
 
         if(observer != null)
             command.addObserver(observer);
@@ -202,9 +204,9 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public IRestogramCommand downloadImage(String url, ImageView imageView,
+    public IRestogramCommand downloadImage(String url, String id, ImageView imageView,
                               boolean force, IRestogramCommandObserver observer) {
-        IRestogramCommand command = new DownloadImageCommand(url, imageView);
+        IRestogramCommand command = new DownloadImageCommand(context, url, id, imageView);
 
         if(observer != null)
             command.addObserver(observer);
@@ -316,6 +318,7 @@ public class RestogramClient implements IRestogramClient {
     }
 
     private static IRestogramClient instance; // Singleton instance
+    private Context context; // Context
     private final String jsonServiceHostName = Defs.Transport.BASE_HOST_NAME + "/service"; // json rpc non-auth URL
     private final String jsonAuthServiceHostName = Defs.Transport.BASE_HOST_NAME + "/auth-service"; // json rpc non-auth URL
     private IAuthenticationProvider authProvider;

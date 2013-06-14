@@ -176,7 +176,7 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
             iv.setImageBitmap(bitmap);
 
         // Set UI with standard resolution image
-        command = RestogramClient.getInstance().downloadImage(photo.getStandardResolution(), iv, true, this);
+        command = RestogramClient.getInstance().downloadImage(photo.getStandardResolution(), photoId, iv, true, this);
 
         // init yummies count
         // TODO - change from getLikes to getYummies (currently there's no such field in restogramphoto)
@@ -221,7 +221,7 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         String imageUrl = venue.getImageUrl();
         if (imageUrl != null && !imageUrl.isEmpty()) {
             ImageView iv = (ImageView) findViewById(R.id.ivVenue);
-            RestogramClient.getInstance().downloadImage(imageUrl, iv, true, null);
+            RestogramClient.getInstance().downloadImage(imageUrl, venueId, iv, true, null);
         } else {
             // Send get info request
             RestogramClient.getInstance().getInfo(venueId, this);
