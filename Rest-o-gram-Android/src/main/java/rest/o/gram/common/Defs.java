@@ -96,7 +96,7 @@ public final class Defs {
 
         public static final boolean CACHE_DATA_HISTORY_ENABLED = true;
 
-        public static final boolean BITMAP_CACHE_ENABLED = false;
+        public static final boolean BITMAP_CACHE_ENABLED = true;
         public static final String BITMAP_CACHE_PREFIX = "/photos/";
     }
 
