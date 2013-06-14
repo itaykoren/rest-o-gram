@@ -6,8 +6,8 @@ package rest.o.gram.data_favorites.results;
  * Date: 6/3/13
  */
 public abstract class VenueCommitOperationResult extends CommitDataOperationResult {
-    public VenueCommitOperationResult(boolean hasSucceded, String venueId) {
-        super(hasSucceded);
+    public VenueCommitOperationResult(boolean hasSucceeded, String venueId) {
+        super(hasSucceeded);
         this.venueId = venueId;
     }
 

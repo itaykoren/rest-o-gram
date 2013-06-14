@@ -3,6 +3,8 @@ package rest.o.gram.commands;
 import android.os.AsyncTask;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.common.Defs;
+import rest.o.gram.data_favorites.results.AddPhotoToFavoritesResult;
+import rest.o.gram.data_favorites.results.RemovePhotoFromFavoritesResult;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.*;
 
@@ -78,6 +80,18 @@ public class  AsyncTaskRestogramCommand extends AbstractRestogramCommand impleme
 
     @Override
     public void onFinished(GetProfilePhotoUrlResult result) {
+        notifyFinished();
+        observer.onFinished(result);
+    }
+
+    @Override
+    public void onFinished(AddPhotoToFavoritesResult result) {
+        notifyFinished();
+        observer.onFinished(result);
+    }
+
+    @Override
+    public void onFinished(RemovePhotoFromFavoritesResult result) {
         notifyFinished();
         observer.onFinished(result);
     }

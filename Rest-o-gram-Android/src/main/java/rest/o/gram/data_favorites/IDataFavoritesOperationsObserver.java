@@ -9,10 +9,10 @@ import rest.o.gram.data_favorites.results.*;
  */
 public interface IDataFavoritesOperationsObserver {
     void onFinished(GetFavoritePhotosResult result);
-    void onFinished(AddFavoritePhotoResult result);
-    void onFinished(RemoveFavoritePhotoResult result);
+    void onFinished(AddPhotoToFavoritesResult result);
+    void onFinished(RemovePhotoFromFavoritesResult result);
 
     void onFinished(GetFavoriteVenuesResult result);
-    void onFinished(AddFavoriteVenueResult result);
-    void onFinished(RemoveFavoriteVenueResult result);
+    void onFinished(AddVenueToFavoritesResult result);
+    void onFinished(RemoveVenueFromFavoritesResult result);
 }

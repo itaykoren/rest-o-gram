@@ -6,8 +6,8 @@ package rest.o.gram.data_favorites.results;
  * Date: 6/3/13
  */
 public abstract class PhotoCommitOperationResult extends CommitDataOperationResult {
-    public PhotoCommitOperationResult(boolean hasSucceded, String photoId) {
-        super(hasSucceded);
+    public PhotoCommitOperationResult(boolean hasSucceeded, String photoId) {
+        super(hasSucceeded);
         this.photoId = photoId;
     }
 

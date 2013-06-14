@@ -6,13 +6,13 @@ package rest.o.gram.data_favorites.results;
  * Date: 5/23/13
  */
 public abstract class CommitDataOperationResult {
-    public CommitDataOperationResult(boolean hasSucceded)  {
-        this.hasSucceded = hasSucceded;
+    public CommitDataOperationResult(boolean hasSucceeded)  {
+        this.hasSucceeded = hasSucceeded;
     }
 
-    public boolean hasSucceded() {
-        return hasSucceded;
+    public boolean hasSucceeded() {
+        return hasSucceeded;
     }
 
-    private boolean hasSucceded;
+    private boolean hasSucceeded;
 }

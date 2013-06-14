@@ -1,5 +1,7 @@
 package rest.o.gram.tasks;
 
+import rest.o.gram.data_favorites.results.AddPhotoToFavoritesResult;
+import rest.o.gram.data_favorites.results.RemovePhotoFromFavoritesResult;
 import rest.o.gram.tasks.results.*;
 
 /**
@@ -24,6 +26,10 @@ public interface ITaskObserver {
     void onFinished(FetchVenuesFromCacheResult result);
 
     void onFinished(GetProfilePhotoUrlResult result);
+
+    void onFinished(AddPhotoToFavoritesResult result);
+
+    void onFinished(RemovePhotoFromFavoritesResult result);
 
     void onCanceled();
 }

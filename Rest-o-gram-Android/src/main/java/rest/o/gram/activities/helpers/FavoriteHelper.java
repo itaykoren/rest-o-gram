@@ -11,13 +11,15 @@ import rest.o.gram.data_favorites.IDataFavoritesOperationsObserver;
 import rest.o.gram.data_favorites.results.*;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.tasks.ITaskObserver;
+import rest.o.gram.tasks.results.*;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Roi
  * Date: 5/25/13
  */
-public class FavoriteHelper implements IDataFavoritesOperationsObserver {
+public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskObserver {
     /**
      * Ctor
      */
@@ -101,15 +103,15 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
         if(dataFavoritesManager == null)
             return false;
 
-        // Get venue from cache
+        // Get photo from cache
         IRestogramCache cache = RestogramClient.getInstance().getCache();
         RestogramPhoto photo = cache.findPhoto(photoId);
 
         if(!dataFavoritesManager.getFavoritePhotos().contains(photo.getInstagram_id())) {
-            dataFavoritesManager.addFavoritePhoto(photo, this);
+            RestogramClient.getInstance().addPhotoToFavorites(photo.getInstagram_id(), this);
         }
         else {
-            dataFavoritesManager.removeFavoritePhoto(photo, this);
+            RestogramClient.getInstance().addPhotoToFavorites(photo.getInstagram_id(), this);
         }
         return true;
     }
@@ -133,8 +135,32 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     }
 
     @Override
-    public void onFinished(AddFavoritePhotoResult result) {
-        if(!result.hasSucceded())
+    public void onFinished(GetNearbyResult result) { }
+
+    @Override
+    public void onFinished(GetInfoResult result) { }
+
+    @Override
+    public void onFinished(GetPhotosResult result) { }
+
+    @Override
+    public void onFinished(CachePhotoResult result) { }
+
+    @Override
+    public void onFinished(FetchPhotosFromCacheResult result) { }
+
+    @Override
+    public void onFinished(CacheVenueResult result) { }
+
+    @Override
+    public void onFinished(FetchVenuesFromCacheResult result) { }
+
+    @Override
+    public void onFinished(GetProfilePhotoUrlResult result) { }
+
+    @Override
+    public void onFinished(AddPhotoToFavoritesResult result) {
+        if(!result.hasSucceeded())
             return;
 
         if(favoritePhotoButton != null)
@@ -142,12 +168,17 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     }
 
     @Override
-    public void onFinished(RemoveFavoritePhotoResult result) {
-        if(!result.hasSucceded())
+    public void onFinished(RemovePhotoFromFavoritesResult result) {
+        if(!result.hasSucceeded())
             return;
 
         if(favoritePhotoButton != null)
             favoritePhotoButton.setImageResource(R.drawable.ic_favorite_off);
+    }
+
+    @Override
+    public void onCanceled() {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -169,8 +200,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     }
 
     @Override
-    public void onFinished(AddFavoriteVenueResult result) {
-        if(!result.hasSucceded())
+    public void onFinished(AddVenueToFavoritesResult result) {
+        if(!result.hasSucceeded())
             return;
 
         if(favoriteVenueButton != null)
@@ -178,8 +209,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver {
     }
 
     @Override
-    public void onFinished(RemoveFavoriteVenueResult result) {
-        if(!result.hasSucceded())
+    public void onFinished(RemoveVenueFromFavoritesResult result) {
+        if(!result.hasSucceeded())
             return;
 
         if(favoriteVenueButton != null)

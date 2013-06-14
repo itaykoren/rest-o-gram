@@ -220,6 +220,20 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
+    public void addPhotoToFavorites(String photoId, ITaskObserver observer) {
+        setJsonAuthToken(transport);
+        IRestogramCommand command = new AddPhotoToFavoritesCommand(transport, observer, photoId);
+        commandQueue.pushForce(command);
+    }
+
+    @Override
+    public void removePhotoFromFavorites(String photoId, ITaskObserver observer) {
+        setJsonAuthToken(transport);
+        IRestogramCommand command = new RemovePhotoFromFavoritesCommand(transport, observer, photoId);
+        commandQueue.pushForce(command);
+    }
+
+    @Override
     public void cachePhoto(String id, String originVenueId, ITaskObserver observer) {
         setJsonAuthToken(transport);
         IRestogramCommand command = new CachePhotoCommand(transport, observer, id, originVenueId);

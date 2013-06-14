@@ -108,12 +108,12 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     }
 
     @Override
-    public void onFinished(AddFavoritePhotoResult result) {
+    public void onFinished(AddPhotoToFavoritesResult result) {
         // Empty
     }
 
     @Override
-    public void onFinished(RemoveFavoritePhotoResult result) {
+    public void onFinished(RemovePhotoFromFavoritesResult result) {
         // Empty
     }
 
@@ -124,12 +124,12 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     }
 
     @Override
-    public void onFinished(AddFavoriteVenueResult result) {
+    public void onFinished(AddVenueToFavoritesResult result) {
         // Empty
     }
 
     @Override
-    public void onFinished(RemoveFavoriteVenueResult result) {
+    public void onFinished(RemoveVenueFromFavoritesResult result) {
         // Empty
     }
 

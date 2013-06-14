@@ -2,6 +2,7 @@ package rest.o.gram.data_favorites;
 
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.tasks.ITaskObserver;
 
 import java.util.Set;
 
@@ -11,9 +12,9 @@ import java.util.Set;
  * Date: 5/22/13
  */
 public interface IDataFavoritesManager {
-    void addFavoritePhoto(final RestogramPhoto photo, final IDataFavoritesOperationsObserver observer);
+    void addPhotoToFavorites(String photoId, final ITaskObserver observer);
 
-    void removeFavoritePhoto(final RestogramPhoto photo, final IDataFavoritesOperationsObserver observer);
+    void removePhotoFromFavorites(String photoId, final ITaskObserver observer);
 
     void getFavoritePhotos(final IDataFavoritesOperationsObserver observer);
 

@@ -28,61 +28,73 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         favoritePhotos = new HashSet<>();
     }
 
-    @Override
-    public void addFavoritePhoto(final RestogramPhoto photo, final IDataFavoritesOperationsObserver observer) {
-        final TaskObserverImpl internalObserver = new TaskObserverImpl();
-        final LeanEntity entity = Converters.photoRefToLeanEntity(photo);
-        entity.put(Props.PhotoRef.IS_FAVORITE, true);
-        if (RestogramClient.getInstance().isDebuggable())
-            Log.d("REST-O-GRAM", "adding photo to fav - saving photo ref to DS");
-        entity.saveInBackground(new NetworkCallback<Long>() {
-            // operation has  fully succeded
-            @Override
-            public void onResult(Long... result) {
-                if (RestogramClient.getInstance().isDebuggable())
-                    Log.d("REST-O-GRAM", "adding photo to fav - saving photo ref succeded");
-                photo.set_favorite(true);
-                photo.setId(result[0]);
-                favoritePhotos.add(photo.getInstagram_id());
-                observer.onFinished(new AddFavoritePhotoResult(true, photo.getInstagram_id()));
-                client.cachePhoto(photo.getInstagram_id(), photo.getOriginVenueId(), internalObserver);
-            }
+//    @Override
+//    public void addPhotoToFavorites(final RestogramPhoto photo, final IDataFavoritesOperationsObserver observer) {
+//        final TaskObserverImpl internalObserver = new TaskObserverImpl();
+//        final LeanEntity entity = Converters.photoRefToLeanEntity(photo);
+//        entity.put(Props.PhotoRef.IS_FAVORITE, true);
+//        if (RestogramClient.getInstance().isDebuggable())
+//            Log.d("REST-O-GRAM", "adding photo to fav - saving photo ref to DS");
+//        entity.saveInBackground(new NetworkCallback<Long>() {
+//            // operation has  fully succeded
+//            @Override
+//            public void onResult(Long... result) {
+//                if (RestogramClient.getInstance().isDebuggable())
+//                    Log.d("REST-O-GRAM", "adding photo to fav - saving photo ref succeded");
+//                photo.set_favorite(true);
+//                photo.setId(result[0]);
+//                favoritePhotos.add(photo.getInstagram_id());
+//                observer.onFinished(new AddPhotoToFavoritesResult(true, photo.getInstagram_id()));
+//                client.cachePhoto(photo.getInstagram_id(), photo.getOriginVenueId(), internalObserver);
+//            }
+//
+//            // photo ref update has failed
+//            @Override
+//            public void onFailure(LeanError error) {
+//                if (RestogramClient.getInstance().isDebuggable() && error != null)
+//                    Log.d("REST-O-GRAM", "adding photo to fav - saving photo ref failed: " + error.getErrorMessage()+
+//                            ", error_code:" + error.getErrorCode() + ", error_type:" + error.getErrorType());
+//                observer.onFinished(new AddPhotoToFavoritesResult(false, null));
+//            }
+//        });
+//    }
 
-            // photo ref update has failed
-            @Override
-            public void onFailure(LeanError error) {
-                if (RestogramClient.getInstance().isDebuggable() && error != null)
-                    Log.d("REST-O-GRAM", "adding photo to fav - saving photo ref failed: " + error.getErrorMessage()+
-                            ", error_code:" + error.getErrorCode() + ", error_type:" + error.getErrorType());
-                observer.onFinished(new AddFavoritePhotoResult(false, null));
-            }
-        });
+    @Override
+    public void addPhotoToFavorites(String photoId, final ITaskObserver observer) {
+
+        RestogramClient.getInstance().addPhotoToFavorites(photoId, observer);
     }
 
     @Override
-    public void removeFavoritePhoto(final RestogramPhoto photo, final IDataFavoritesOperationsObserver observer) {
-        final LeanEntity entity = Converters.photoRefToLeanEntity(photo);
-        entity.put(Props.PhotoRef.IS_FAVORITE, false);
-        if (RestogramClient.getInstance().isDebuggable())
-            Log.d("REST-O-GRAM", "removing photo from fav - updating DS");
-        entity.saveInBackground(new NetworkCallback<Long>() {
-            @Override
-            public void onResult(Long... result) {
-                if (RestogramClient.getInstance().isDebuggable())
-                    Log.d("REST-O-GRAM", "removing photo from fav - updating DS succeded");
-                photo.set_favorite(false);
-                favoritePhotos.remove(photo.getInstagram_id());
-                observer.onFinished(new RemoveFavoritePhotoResult(true, photo.getInstagram_id()));
-            }
+    public void removePhotoFromFavorites(String photoId, final ITaskObserver observer) {
 
-            @Override
-            public void onFailure(LeanError error) {
-                if (RestogramClient.getInstance().isDebuggable())
-                    Log.d("REST-O-GRAM", "removing photo from fav - updating DS failed");
-                observer.onFinished(new RemoveFavoritePhotoResult(false, null));
-            }
-        });
+        RestogramClient.getInstance().removePhotoFromFavorites(photoId, observer);
     }
+
+//    @Override
+//    public void removeFavoritePhoto(final RestogramPhoto photo, final IDataFavoritesOperationsObserver observer) {
+//        final LeanEntity entity = Converters.photoRefToLeanEntity(photo);
+//        entity.put(Props.PhotoRef.IS_FAVORITE, false);
+//        if (RestogramClient.getInstance().isDebuggable())
+//            Log.d("REST-O-GRAM", "removing photo from fav - updating DS");
+//        entity.saveInBackground(new NetworkCallback<Long>() {
+//            @Override
+//            public void onResult(Long... result) {
+//                if (RestogramClient.getInstance().isDebuggable())
+//                    Log.d("REST-O-GRAM", "removing photo from fav - updating DS succeded");
+//                photo.set_favorite(false);
+//                favoritePhotos.remove(photo.getInstagram_id());
+//                observer.onFinished(new RemovePhotoFromFavoritesResult(true, photo.getInstagram_id()));
+//            }
+//
+//            @Override
+//            public void onFailure(LeanError error) {
+//                if (RestogramClient.getInstance().isDebuggable())
+//                    Log.d("REST-O-GRAM", "removing photo from fav - updating DS failed");
+//                observer.onFinished(new RemovePhotoFromFavoritesResult(false, null));
+//            }
+//        });
+//    }
 
     @Override
     public void getFavoritePhotos(final IDataFavoritesOperationsObserver observer) {
@@ -177,7 +189,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                 venue.setfavorite(true);
                 venue.setId(result[0]);
                 favoriteVenues.add(venue.getFoursquare_id());
-                observer.onFinished(new AddFavoriteVenueResult(true, venue.getFoursquare_id()));
+                observer.onFinished(new AddVenueToFavoritesResult(true, venue.getFoursquare_id()));
                 // TODO - consider removing as now the server caches every venue in getInfo
                 client.cacheVenue(venue.getFoursquare_id(), internalObserver);
             }
@@ -188,7 +200,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "adding venue to fav - saving venue ref failed:" + error.getErrorMessage() +
                             ", error_code:" + error.getErrorCode() + ", error_type:" + error.getErrorType());
-                observer.onFinished(new AddFavoriteVenueResult(false, null));
+                observer.onFinished(new AddVenueToFavoritesResult(false, null));
             }
         });
     }
@@ -206,14 +218,14 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                     Log.d("REST-O-GRAM", "removing venue from fav - updating DS succeded");
                 venue.setfavorite(false);
                 favoriteVenues.remove(venue.getFoursquare_id());
-                observer.onFinished(new RemoveFavoriteVenueResult(true, venue.getFoursquare_id()));
+                observer.onFinished(new RemoveVenueFromFavoritesResult(true, venue.getFoursquare_id()));
             }
 
             @Override
             public void onFailure(LeanError error) {
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "removing venue from fav - updating DS failed");
-                observer.onFinished(new RemoveFavoriteVenueResult(false, null));
+                observer.onFinished(new RemoveVenueFromFavoritesResult(false, null));
             }
         });
     }
@@ -347,6 +359,12 @@ public class DataFavoritesManager implements IDataFavoritesManager {
 
         @Override
         public void onFinished(GetProfilePhotoUrlResult result) { }
+
+        @Override
+        public void onFinished(AddPhotoToFavoritesResult result) { }
+
+        @Override
+        public void onFinished(RemovePhotoFromFavoritesResult result) { }
 
         @Override
         public void onCanceled() {

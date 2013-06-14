@@ -88,6 +88,16 @@ public interface IRestogramClient {
     IRestogramCommand downloadImage(String url, String id, ImageView imageView, boolean force, IRestogramCommandObserver observer);
 
     /**
+     * Executes add photo to favorites request
+     */
+    void addPhotoToFavorites(String photoId, ITaskObserver observer);
+
+    /**
+     * Executes remove photo from favorites request
+     */
+    void removePhotoFromFavorites(String photoId, ITaskObserver observer);
+
+    /**
      * Executes cache photo request
      * Returns command object
      */

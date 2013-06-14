@@ -8,6 +8,8 @@ import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
+import rest.o.gram.data_favorites.results.AddPhotoToFavoritesResult;
+import rest.o.gram.data_favorites.results.RemovePhotoFromFavoritesResult;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
@@ -131,6 +133,16 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
 
     @Override
     public void onFinished(GetProfilePhotoUrlResult result) {
+        // Empty
+    }
+
+    @Override
+    public void onFinished(AddPhotoToFavoritesResult result) {
+        // Empty
+    }
+
+    @Override
+    public void onFinished(RemovePhotoFromFavoritesResult result) {
         // Empty
     }
 
