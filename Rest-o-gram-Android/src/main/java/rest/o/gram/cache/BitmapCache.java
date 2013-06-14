@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import rest.o.gram.common.Defs;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -83,7 +84,7 @@ public class BitmapCache implements IBitmapCache {
         String state = Environment.getExternalStorageState();
 
         if(Environment.MEDIA_MOUNTED.equals(state)) {  // Can write
-            File file = new File(context.getExternalCacheDir(), id);
+            File file = new File(context.getExternalCacheDir(), Defs.Data.BITMAP_CACHE_PREFIX + id);
             return saveBitmap(bitmap, file);
         }
         else { // Cannot write
@@ -109,7 +110,7 @@ public class BitmapCache implements IBitmapCache {
 
         if(Environment.MEDIA_MOUNTED.equals(state) ||
            Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) { // Can read
-            File file = new File(context.getExternalCacheDir(), id);
+            File file = new File(context.getExternalCacheDir(), Defs.Data.BITMAP_CACHE_PREFIX + id);
             return loadBitmap(file);
         }
         else { // Cannot read
@@ -133,7 +134,8 @@ public class BitmapCache implements IBitmapCache {
         String state = Environment.getExternalStorageState();
 
         if(Environment.MEDIA_MOUNTED.equals(state)) {  // Can write
-            clearDirectory(context.getExternalCacheDir());
+            File file = new File(context.getExternalCacheDir(), Defs.Data.BITMAP_CACHE_PREFIX);
+            clearDirectory(file);
         }
     }
 
@@ -150,6 +152,9 @@ public class BitmapCache implements IBitmapCache {
      */
     private boolean saveBitmap(Bitmap bitmap, File file) {
         try {
+            if(!file.exists())
+                file.mkdirs();
+
             FileOutputStream out = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
             out.close();
