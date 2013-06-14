@@ -27,9 +27,8 @@ public class AuthenticationProvider implements IAuthenticationProvider {
 
     @Override
     public boolean logout() {
-
         boolean result = false;
-
+        account = null;
         try {
             result = LeanAccount.logout();
         } catch (LeanException e) {
@@ -40,18 +39,18 @@ public class AuthenticationProvider implements IAuthenticationProvider {
 
     @Override
     public void logoutInBackground(NetworkCallback<Boolean> callback) {
+        account = null;
         LeanAccount.logoutInBackground(callback);
     }
 
     @Override
     public LeanAccount getAccountData() {
-
-        LeanAccount account = null;
-
-        try {
-            account = LeanAccount.getAccountData();
-        } catch (LeanException e) {
-            // TODO
+        if(account == null) {
+            try {
+                account = LeanAccount.getAccountData();
+            } catch (LeanException e) {
+                // Empty
+            }
         }
 
         return account;
@@ -61,4 +60,6 @@ public class AuthenticationProvider implements IAuthenticationProvider {
     public String getAuthToken() {
         return LeanEngine.getAuthToken();
     }
+
+    private LeanAccount account = null;
 }
