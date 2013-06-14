@@ -55,14 +55,14 @@ public class FilterRulesServlet extends HttpServlet {
             final String[] headerBody = payLoad.split(";");
             if (headerBody.length != 2)
                 return;
-            final String venueId  = headerBody[0];
+            final String venueId  = headerBody[0]; // TODO: currently not needed since all photos are cached on first sight..
             final String[] idRulePairs = headerBody[1].split(",");
             final Map<String,Boolean> photoIdToRuleMapping  = new HashMap<>(idRulePairs.length/2);
             for (int i = 0; i < idRulePairs.length - 1; i+=2)
                 photoIdToRuleMapping.put(idRulePairs[i],Boolean.parseBoolean(idRulePairs[i+1]));
 
             // update DS
-            DataManager.savePhotoToRuleMapping(venueId, photoIdToRuleMapping);
+            DataManager.savePhotoToRuleMapping(photoIdToRuleMapping);
 
             // done - removes from queue
             TasksManager.dismissFilterResult(currTask.getName());

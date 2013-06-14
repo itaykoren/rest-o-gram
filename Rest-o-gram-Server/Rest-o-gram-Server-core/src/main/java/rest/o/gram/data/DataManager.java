@@ -4,6 +4,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Transaction;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
+import com.leanengine.server.appengine.datastore.PutBatchOperation;
+import com.leanengine.server.appengine.datastore.PutUpdateStrategy;
 import org.omg.IOP.TransactionService;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
@@ -31,43 +33,15 @@ public class DataManager {
         return result;
     }
 
-    // TODO: must refactor DS put access...
-    public static boolean savePhotoToRuleMapping(final String venueId, final Map<String,Boolean> photoIdToRuleMapping) {
-        Collection<Entity> exisitngEntites = null;
-        final String[] keys = new String[photoIdToRuleMapping.size()];
-        photoIdToRuleMapping.keySet().toArray(keys);
-        try
+    public static boolean savePhotoToRuleMapping(final Map<String,Boolean> photoIdToRuleMapping) {
+        final PutBatchOperation putOp = DatastoreUtils.startPutBatch();
+        for (final Map.Entry<String,Boolean> currEntry :  photoIdToRuleMapping.entrySet())
         {
-            exisitngEntites = DatastoreUtils.getPublicEntities(Kinds.PHOTO, keys);
-        } catch (LeanException e) {
-            e.printStackTrace();
-            return false;
+            final String currName = currEntry.getKey();
+            putOp.addEntity(Kinds.PHOTO, currName);
+            putOp.addEntityProperty(currName, Props.Photo.APPROVED, currEntry.getValue());
         }
-
-        Set<String> existingKeys = new HashSet<>();
-        for (final Entity currEntity : exisitngEntites)
-        {
-            final String currName = currEntity.getKey().getName();
-            existingKeys.add(currName);
-            currEntity.setProperty(Props.Photo.APPROVED, photoIdToRuleMapping.get(currName));
-        }
-
-        final List<Entity> updatedEntities = new ArrayList<>(photoIdToRuleMapping.size());
-        updatedEntities.addAll(exisitngEntites);
-        for (final Map.Entry<String, Boolean> currEntry : photoIdToRuleMapping.entrySet())
-        {
-            final String currKey = currEntry.getKey();
-            if  (!existingKeys.contains(currKey))
-            {
-                final Entity newEntity = new Entity(Kinds.PHOTO, currKey);
-                newEntity.setProperty(Props.Photo.ORIGIN_VENUE_ID, venueId);
-                newEntity.setProperty(Props.Photo.APPROVED, currEntry.getValue());
-                updatedEntities.add(newEntity);
-            }
-        }
-
-        DatastoreUtils.putPublicEntities(updatedEntities);
-        return true;
+        return putOp.execute(new PutUpdateStrategy());
     }
 
     public static boolean updatePhotoReference(String photoId, boolean isFav) {

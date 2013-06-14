@@ -28,7 +28,9 @@ public final class Props {
     }
 
     public static  class VenueRef {
+        // TODO: remove this property after MS3 as it is no longer needed(update the join-query accordingly)
         public final static String FOURSQUARE_ID = "foursquare_id";
+
         public final static String IS_FAVORITE = "is_fav";
     }
 
@@ -55,7 +57,9 @@ public final class Props {
     }
 
     public static  class PhotoRef {
+        // TODO: remove this property after MS3 as it is no longer needed(update the join-query accordingly)
         public final static String INSTAGRAM_ID = "instagram_id";
+
         public final static String IS_FAVORITE = "is_fav";
     }
 
