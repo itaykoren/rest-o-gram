@@ -596,7 +596,7 @@ public class RestogramServiceImpl implements RestogramService {
         return new RestogramPhoto(caption, media.getCreatedTime(), media.getId(),
                 media.getImageFilter(), thumbnail, standardResolution,
                 media.getLikes().getCount(), media.getLink(),
-                media.getType(), user, originVenueId).encodeStrings();
+                media.getType(), user, originVenueId, 0).encodeStrings();
     }
 
     /**

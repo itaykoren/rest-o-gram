@@ -181,8 +181,7 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         command = RestogramClient.getInstance().downloadImage(photo.getStandardResolution(), photoId, iv, true, this);
 
         // init yummies count
-        // TODO - change from getLikes to getYummies (currently there's no such field in restogramphoto)
-        long yummies = photo.getLikes();
+        long yummies = photo.getYummies();
         if (yummies > 0)
             Utils.updateTextView((TextView) findViewById(R.id.tvPhotoYummies), String.format(String.format("%d yummies", yummies)));
 

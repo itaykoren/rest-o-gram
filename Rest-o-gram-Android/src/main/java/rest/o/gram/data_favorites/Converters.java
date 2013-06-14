@@ -119,6 +119,7 @@ final class Converters {
         photo.setType(entity.getString(Props.Photo.TYPE));
         photo.setUser(entity.getString(Props.Photo.USER));
         photo.setOriginVenueId(entity.getString(Props.Photo.ORIGIN_VENUE_ID));
+        photo.setYummies(entity.getLong(Props.Photo.YUMMIES));
 
         if (RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn())
             photo.set_favorite(entity.getBoolean(Props.PhotoRef.IS_FAVORITE));
