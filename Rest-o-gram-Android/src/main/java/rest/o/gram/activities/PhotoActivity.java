@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import rest.o.gram.R;
+import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.commands.IRestogramCommand;
@@ -116,6 +117,11 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
             return;
 
         initialize(result.getVenue());
+    }
+
+    @Override
+    public void accept(IActivityVisitor visitor) {
+        visitor.visit(this);
     }
 
     public void onNavigationClicked(View view) {

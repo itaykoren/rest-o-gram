@@ -4,6 +4,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import rest.o.gram.activities.helpers.FavoriteHelper;
 import rest.o.gram.activities.helpers.LoginHelper;
+import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
@@ -136,6 +137,13 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
     @Override
     public void onCanceled() {
         // Empty
+    }
+
+    /**
+     * Accepts given visitor
+     */
+    public void accept(IActivityVisitor visitor) {
+        visitor.visit(this);
     }
 
     protected LoginHelper loginHelper; // Login helper

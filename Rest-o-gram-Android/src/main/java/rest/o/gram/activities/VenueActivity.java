@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import rest.o.gram.R;
+import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.cache.RestogramPhotos;
 import rest.o.gram.client.RestogramClient;
@@ -120,6 +121,11 @@ public class VenueActivity extends RestogramActionBarActivity {
         if(venue.getImageUrl() != null && !venue.getImageUrl().isEmpty()) {
             setVenuePhoto(venue.getImageUrl());
         }
+    }
+
+    @Override
+    public void accept(IActivityVisitor visitor) {
+        visitor.visit(this);
     }
 
     public void onNavigationClicked(View view) {

@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import rest.o.gram.R;
+import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
@@ -111,6 +112,11 @@ public class MapActivity extends RestogramActionBarActivity {
     public void onCanceled() {
         // Set is request pending flag to false
         isRequestPending = false;
+    }
+
+    @Override
+    public void accept(IActivityVisitor visitor) {
+        visitor.visit(this);
     }
 
     /**

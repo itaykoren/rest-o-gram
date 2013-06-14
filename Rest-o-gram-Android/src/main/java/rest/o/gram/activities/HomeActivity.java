@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import rest.o.gram.R;
+import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
@@ -133,6 +134,11 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
         }
 
         start();
+    }
+
+    @Override
+    public void accept(IActivityVisitor visitor) {
+        visitor.visit(this);
     }
 
     public void onOkClicked(View view) {

@@ -4,12 +4,12 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-    <item
-            android:id="@+id/action_nearby"
-            android:icon="@drawable/ic_nearby"
-            android:title="Nearby"
-            android:showAsAction="always"
-            android:visible="false"/>
+    <!--<item-->
+            <!--android:id="@+id/action_nearby"-->
+            <!--android:icon="@drawable/ic_nearby"-->
+            <!--android:title="Nearby"-->
+            <!--android:showAsAction="always"-->
+            <!--android:visible="false"/>-->
     <item
             android:id="@+id/action_explore"
             android:icon="@drawable/ic_explore"

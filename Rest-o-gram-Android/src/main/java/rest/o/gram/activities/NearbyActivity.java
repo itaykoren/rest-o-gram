@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
 import rest.o.gram.R;
+import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.IRestogramListener;
@@ -87,6 +88,11 @@ public class NearbyActivity extends RestogramActionBarActivity implements IResto
         Intent intent = new Intent(this, VenueActivity.class);
         intent.putExtra("venue", venue.getFoursquare_id());
         Utils.changeActivity(this, intent, Defs.RequestCodes.RC_VENUE, false);
+    }
+
+    @Override
+    public void accept(IActivityVisitor visitor) {
+        visitor.visit(this);
     }
 
     private void addVenues(RestogramVenue[] venues) {

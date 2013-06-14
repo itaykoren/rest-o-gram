@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.*;
 import com.leanengine.LeanAccount;
 import rest.o.gram.R;
+import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
@@ -130,6 +131,11 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     @Override
     public void onFinished(RemoveFavoriteVenueResult result) {
         // Empty
+    }
+
+    @Override
+    public void accept(IActivityVisitor visitor) {
+        visitor.visit(this);
     }
 
     public void onHistoryClicked(View view) {

@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.*;
 import rest.o.gram.R;
+import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.cache.RestogramPhotos;
 import rest.o.gram.client.RestogramClient;
@@ -129,6 +130,11 @@ public class ExploreActivity extends RestogramActionBarActivity {
         final String venueId = venues[currVenueIndex].venueId;
         final String token = result.getToken();
         updateToken(venueId, token);
+    }
+
+    @Override
+    public void accept(IActivityVisitor visitor) {
+        visitor.visit(this);
     }
 
     private void initialize(RestogramVenue[] venues) {

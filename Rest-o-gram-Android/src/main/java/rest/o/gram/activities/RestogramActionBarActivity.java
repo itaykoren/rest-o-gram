@@ -6,6 +6,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import rest.o.gram.R;
+import rest.o.gram.activities.visitors.ActionBarIconVisitor;
+import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
@@ -35,6 +37,9 @@ public class RestogramActionBarActivity extends RestogramActivity {
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.layout.menu, menu);
+        this.menu = menu;
+
+        accept(new ActionBarIconVisitor());
         return true;
     }
 
@@ -43,15 +48,15 @@ public class RestogramActionBarActivity extends RestogramActivity {
         super.onOptionsItemSelected(item);
 
         switch(item.getItemId()) {
-            case R.id.action_nearby: {
-                if(super.getClass() == NearbyActivity.class)
-                    break;
-
-                // Switch to "NearbyActivity" with no parameters
-                Intent intent = new Intent(this, NearbyActivity.class);
-                Utils.changeActivity(this, intent, Defs.RequestCodes.RC_NEARBY, false);
-                break;
-            }
+//            case R.id.action_nearby: {
+//                if(super.getClass() == NearbyActivity.class)
+//                    break;
+//
+//                // Switch to "NearbyActivity" with no parameters
+//                Intent intent = new Intent(this, NearbyActivity.class);
+//                Utils.changeActivity(this, intent, Defs.RequestCodes.RC_NEARBY, false);
+//                break;
+//            }
             case R.id.action_explore: {
                 if(super.getClass() == ExploreActivity.class)
                     break;
@@ -98,4 +103,18 @@ public class RestogramActionBarActivity extends RestogramActivity {
 
         return true;
     }
+
+    @Override
+    public void accept(IActivityVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    /**
+     * Returns the menu of this activity
+     */
+    public Menu getMenu() {
+        return menu;
+    }
+
+    private Menu menu;
 }
