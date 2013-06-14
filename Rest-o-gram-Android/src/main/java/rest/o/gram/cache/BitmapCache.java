@@ -84,8 +84,8 @@ public class BitmapCache implements IBitmapCache {
         String state = Environment.getExternalStorageState();
 
         if(Environment.MEDIA_MOUNTED.equals(state)) {  // Can write
-            File file = new File(context.getExternalCacheDir(), Defs.Data.BITMAP_CACHE_PREFIX + id);
-            return saveBitmap(bitmap, file);
+            String path = context.getExternalCacheDir().getAbsolutePath() + Defs.Data.BITMAP_CACHE_PREFIX + id;
+            return saveBitmap(bitmap, new File(path));
         }
         else { // Cannot write
             return false;
@@ -97,8 +97,8 @@ public class BitmapCache implements IBitmapCache {
      * Returns true if successful, false otherwise
      */
     boolean saveInternal(String id, Bitmap bitmap) {
-        // TODO
-        return false;
+        String path = context.getFilesDir().getAbsolutePath() + Defs.Data.BITMAP_CACHE_PREFIX + id;
+        return saveBitmap(bitmap, new File(path));
     }
 
     /**
@@ -110,8 +110,8 @@ public class BitmapCache implements IBitmapCache {
 
         if(Environment.MEDIA_MOUNTED.equals(state) ||
            Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) { // Can read
-            File file = new File(context.getExternalCacheDir(), Defs.Data.BITMAP_CACHE_PREFIX + id);
-            return loadBitmap(file);
+            String path = context.getExternalCacheDir().getAbsolutePath() + Defs.Data.BITMAP_CACHE_PREFIX + id;
+            return loadBitmap(new File(path));
         }
         else { // Cannot read
             return null;
@@ -123,8 +123,8 @@ public class BitmapCache implements IBitmapCache {
      * Returns bitmap if successful, null otherwise
      */
     private Bitmap loadInternal(String id) {
-        // TODO
-        return null;
+        String path = context.getFilesDir().getAbsolutePath() + Defs.Data.BITMAP_CACHE_PREFIX + id;
+        return loadBitmap(new File(path));
     }
 
     /**
@@ -134,8 +134,8 @@ public class BitmapCache implements IBitmapCache {
         String state = Environment.getExternalStorageState();
 
         if(Environment.MEDIA_MOUNTED.equals(state)) {  // Can write
-            File file = new File(context.getExternalCacheDir(), Defs.Data.BITMAP_CACHE_PREFIX);
-            clearDirectory(file);
+            String path = context.getExternalCacheDir().getAbsolutePath() + Defs.Data.BITMAP_CACHE_PREFIX;
+            clearDirectory(new File(path));
         }
     }
 
@@ -143,7 +143,8 @@ public class BitmapCache implements IBitmapCache {
      * Clears all internal data
      */
     private void clearInternal() {
-        // TODO
+        String path = context.getFilesDir().getAbsolutePath() + Defs.Data.BITMAP_CACHE_PREFIX;
+        clearDirectory(new File(path));
     }
 
     /**
@@ -156,6 +157,19 @@ public class BitmapCache implements IBitmapCache {
                 file.mkdirs();
 
             FileOutputStream out = new FileOutputStream(file);
+            return saveBitmap(bitmap, out);
+        }
+        catch(Exception | Error e) {
+            return false;
+        }
+    }
+
+    /**
+     * Attempts to save bitmap to file output stream
+     * Returns true if successful, false otherwise
+     */
+    private boolean saveBitmap(Bitmap bitmap, FileOutputStream out) {
+        try {
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
             out.close();
             return true;
@@ -172,6 +186,19 @@ public class BitmapCache implements IBitmapCache {
     private Bitmap loadBitmap(File file) {
         try {
             FileInputStream in = new FileInputStream(file);
+            return loadBitmap(in);
+        }
+        catch(Exception | Error e) {
+            return null;
+        }
+    }
+
+    /**
+     * Attempts to load bitmap from file input stream
+     * Returns bitmap if successful, null otherwise
+     */
+    private Bitmap loadBitmap(FileInputStream in) {
+        try {
             Bitmap bitmap = BitmapFactory.decodeStream(in);
             in.close();
             return bitmap;
