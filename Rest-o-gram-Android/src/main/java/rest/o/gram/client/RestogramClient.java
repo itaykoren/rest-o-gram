@@ -190,7 +190,7 @@ public class RestogramClient implements IRestogramClient {
     @Override
     public IRestogramCommand downloadImage(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter,
                               boolean force, IRestogramCommandObserver observer) {
-        IRestogramCommand command = new DownloadImageCommand(context, url, url, viewAdapter);
+        IRestogramCommand command = new DownloadImageCommand(context, url, photo.getInstagram_id(), viewAdapter);
 
         if(observer != null)
             command.addObserver(observer);
