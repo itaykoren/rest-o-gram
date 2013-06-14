@@ -60,7 +60,7 @@ public class LocationTracker implements ILocationTracker {
             return;
 
         timer = new Timer();
-        final TimerTask task = new TrackingTimeoutTimerTask();
+        final TimerTask task = new TrackingTimeoutTimerTask(observer);
         timer.schedule(task, Defs.Location.TRACKING_TIMEOUT, Defs.Location.TRACKING_TIMEOUT);
 
 
@@ -135,23 +135,6 @@ public class LocationTracker implements ILocationTracker {
                 LocationTracker.this.informObserver();
         }
     };
-
-    /**
-     * Tracking timeout timer task
-     */
-    private class TrackingTimeoutTimerTask extends TimerTask {
-        @Override
-        public void run() {
-            handler.post(new Runnable() {
-                public void run() {
-                    observer.onTrackingTimedOut();
-                    timer.cancel();
-                }
-            });
-        }
-
-        private Handler handler = new Handler(Looper.getMainLooper());
-    }
 
     private boolean isTracking = false;
     private Context context;

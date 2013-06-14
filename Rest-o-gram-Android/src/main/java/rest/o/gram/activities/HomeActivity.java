@@ -68,8 +68,17 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
             return;
         gotLocation = true;
 
-        if(tracker != null)
+        if(tracker != null) {
             tracker.stop();
+
+            if(RestogramClient.getInstance().isDebuggable()) {
+                Log.d("REST-O-GRAM", "Location tracking finished!");
+                Log.d("REST-O-GRAM", "Tracker = " + tracker.getClass() +
+                                     " Latitude = " + latitude +
+                                     " Longitude = " + longitude +
+                                     " Accuracy = " + accuracy);
+            }
+        }
 
         final INetworkStateProvider netStateProvider =
                 RestogramClient.getInstance().getNetworkStateProvider();
