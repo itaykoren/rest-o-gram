@@ -84,7 +84,8 @@ public class BitmapCache implements IBitmapCache {
         String state = Environment.getExternalStorageState();
 
         if(Environment.MEDIA_MOUNTED.equals(state)) {  // Can write
-            String path = context.getExternalCacheDir().getAbsolutePath() + Defs.Data.BITMAP_CACHE_PREFIX + id;
+            String path = context.getExternalCacheDir().getAbsolutePath() +
+                          Defs.Data.BITMAP_CACHE_PREFIX + id + ".png";
             return saveBitmap(bitmap, new File(path));
         }
         else { // Cannot write
@@ -97,7 +98,8 @@ public class BitmapCache implements IBitmapCache {
      * Returns true if successful, false otherwise
      */
     boolean saveInternal(String id, Bitmap bitmap) {
-        String path = context.getFilesDir().getAbsolutePath() + Defs.Data.BITMAP_CACHE_PREFIX + id;
+        String path = context.getFilesDir().getAbsolutePath() +
+                      Defs.Data.BITMAP_CACHE_PREFIX + id  + ".png";
         return saveBitmap(bitmap, new File(path));
     }
 
@@ -110,7 +112,8 @@ public class BitmapCache implements IBitmapCache {
 
         if(Environment.MEDIA_MOUNTED.equals(state) ||
            Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) { // Can read
-            String path = context.getExternalCacheDir().getAbsolutePath() + Defs.Data.BITMAP_CACHE_PREFIX + id;
+            String path = context.getExternalCacheDir().getAbsolutePath() +
+                          Defs.Data.BITMAP_CACHE_PREFIX + id  + ".png";
             return loadBitmap(new File(path));
         }
         else { // Cannot read
@@ -123,7 +126,8 @@ public class BitmapCache implements IBitmapCache {
      * Returns bitmap if successful, null otherwise
      */
     private Bitmap loadInternal(String id) {
-        String path = context.getFilesDir().getAbsolutePath() + Defs.Data.BITMAP_CACHE_PREFIX + id;
+        String path = context.getFilesDir().getAbsolutePath() +
+                      Defs.Data.BITMAP_CACHE_PREFIX + id  + ".png";
         return loadBitmap(new File(path));
     }
 
