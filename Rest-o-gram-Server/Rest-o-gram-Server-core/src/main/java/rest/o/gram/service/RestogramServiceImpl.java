@@ -178,6 +178,16 @@ public class RestogramServiceImpl implements RestogramService {
     }
 
     @Override
+    public void addPhotoToFavorites(String photoId) {
+        return;
+    }
+
+    @Override
+    public void removePhotoFromFavorites(String photoId) {
+        return;
+    }
+
+    @Override
     public boolean cachePhoto(String id, String originVenueId) {
         // TODO: check if photo is already in cache
         long lid;
