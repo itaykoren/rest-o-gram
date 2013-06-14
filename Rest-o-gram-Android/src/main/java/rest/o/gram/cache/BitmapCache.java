@@ -85,8 +85,8 @@ public class BitmapCache implements IBitmapCache {
 
         if(Environment.MEDIA_MOUNTED.equals(state)) {  // Can write
             String path = context.getExternalCacheDir().getAbsolutePath() +
-                          Defs.Data.BITMAP_CACHE_PREFIX + id + ".png";
-            return saveBitmap(bitmap, new File(path));
+                          Defs.Data.BITMAP_CACHE_PREFIX;
+            return saveBitmap(bitmap, new File(path), id + ".png");
         }
         else { // Cannot write
             return false;
@@ -99,8 +99,8 @@ public class BitmapCache implements IBitmapCache {
      */
     boolean saveInternal(String id, Bitmap bitmap) {
         String path = context.getFilesDir().getAbsolutePath() +
-                      Defs.Data.BITMAP_CACHE_PREFIX + id  + ".png";
-        return saveBitmap(bitmap, new File(path));
+                      Defs.Data.BITMAP_CACHE_PREFIX;
+        return saveBitmap(bitmap, new File(path), id + ".png");
     }
 
     /**
@@ -155,11 +155,12 @@ public class BitmapCache implements IBitmapCache {
      * Attempts to save bitmap to file
      * Returns true if successful, false otherwise
      */
-    private boolean saveBitmap(Bitmap bitmap, File file) {
+    private boolean saveBitmap(Bitmap bitmap, File directory, String filename) {
         try {
-            if(!file.exists())
-                file.mkdirs();
+            if(!directory.exists())
+                directory.mkdirs();
 
+            File file = new File(directory, filename);
             FileOutputStream out = new FileOutputStream(file);
             return saveBitmap(bitmap, out);
         }
@@ -175,6 +176,7 @@ public class BitmapCache implements IBitmapCache {
     private boolean saveBitmap(Bitmap bitmap, FileOutputStream out) {
         try {
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
             out.close();
             return true;
         }
