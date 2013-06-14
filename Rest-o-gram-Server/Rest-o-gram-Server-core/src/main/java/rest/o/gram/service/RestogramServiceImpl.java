@@ -178,13 +178,13 @@ public class RestogramServiceImpl implements RestogramService {
     }
 
     @Override
-    public void addPhotoToFavorites(String photoId) {
-        return;
+    public boolean addPhotoToFavorites(String photoId) {
+        return false;
     }
 
     @Override
-    public void removePhotoFromFavorites(String photoId) {
-        return;
+    public boolean removePhotoFromFavorites(String photoId) {
+        return false;
     }
 
     @Override

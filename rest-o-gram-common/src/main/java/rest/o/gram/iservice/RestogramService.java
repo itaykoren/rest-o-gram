@@ -57,12 +57,12 @@ public interface RestogramService {
     /**
      * adds requested photo to user favorites, increments global yummies count
      */
-    void addPhotoToFavorites(String photoId);
+    boolean addPhotoToFavorites(String photoId);
 
     /**
      * removes requested photo from user favorites, decrements global yummies count
      */
-    void removePhotoFromFavorites(String photoId);
+    boolean removePhotoFromFavorites(String photoId);
 
 
     /**
