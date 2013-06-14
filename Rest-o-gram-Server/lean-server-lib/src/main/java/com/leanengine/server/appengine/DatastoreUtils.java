@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.*;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.datastore.PutBatchOperation;
 import com.leanengine.server.appengine.datastore.PutBatchOperationImpl;
+import com.leanengine.server.appengine.datastore.PutStrategy;
 import com.leanengine.server.auth.AuthService;
 import com.leanengine.server.auth.LeanAccount;
 import com.leanengine.server.entity.*;
@@ -68,10 +69,6 @@ public class DatastoreUtils {
             throw new LeanException(LeanException.Error.EntityNotFound);
         }
 
-//        if (account.id != (Long) entity.getProperty("_account"))
-//            throw new LeanException(LeanException.Error.NotAuthorized,
-//                    " Account not authorized to access entity '" + entityKind + "'with ID '" + entityId + "'");
-
         datastore.delete(entity.getKey());
     }
 
@@ -122,7 +119,6 @@ public class DatastoreUtils {
 
         final Key accountKey = getCurrentAccountKey();
         Query query = new Query(kind, accountKey);
-        //query.setFilter(new Query.FilterPredicate("_account", Query.FilterOperator.EQUAL, account.id));
         PreparedQuery pq = datastore.prepare(query);
 
         return pq.asList(FetchOptions.Builder.withDefaults());
@@ -168,6 +164,23 @@ public class DatastoreUtils {
         return result.getId();
     }
 
+    public static void putPrivateEntity(String kind, String name,
+                                        Map<String, Object> properties) throws LeanException {
+        if (!pattern.matcher(kind).matches()) {
+            throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
+        }
+
+        final Key accountKey = getCurrentAccountKey();
+        Entity entityEntity = new Entity(kind, name, accountKey);
+
+        if (properties != null) {
+            for (Map.Entry<String, Object> entry : properties.entrySet()) {
+                entityEntity.setProperty(entry.getKey(), entry.getValue());
+            }
+        }
+        datastore.put(entityEntity);
+    }
+
     public static void putPublicEntity(String kind, String name, Map<String, Object> properties)
             throws LeanException {
 
@@ -193,18 +206,20 @@ public class DatastoreUtils {
         return new PutBatchOperationImpl();
     }
 
-    public static boolean endPutBatch(PutBatchOperation operation) {
+    public static boolean endPutBatch(final PutBatchOperation operation, final PutStrategy strategy) {
         if (operation == null ||  operation.getEntities() == null)
             return false;
-        datastore.put(operation.getEntities());
+
+        Map<Key,Entity> existing =
+                datastore.get(entitiesToKeys(operation.getEntities()));
+        List<Entity> merged = strategy.merge(operation, existing);
+        datastore.put(merged);
         return true;
     }
 
     public static QueryResult queryEntityPrivate(LeanQuery leanQuery) throws LeanException {
-        final LeanAccount account = findCurrentAccount();
         final Key accountKey = getCurrentAccountKey();
         final Query query = new Query(leanQuery.getKind(), accountKey);
-        //query.setFilter(new Query.FilterPredicate("_account", Query.FilterOperator.EQUAL, account.id));
 
         return queryEntity(leanQuery, query);
     }
@@ -212,6 +227,23 @@ public class DatastoreUtils {
     public static QueryResult queryEntityPublic(LeanQuery leanQuery) throws LeanException {
         Query query = new Query(leanQuery.getKind());
         return queryEntity(leanQuery, query);
+    }
+
+    public static Transaction buildTransaction() {
+        return buildTransaction(TransactionOptions.Builder.withDefaults());
+    }
+
+    public static Transaction buildTransaction(TransactionOptions options) {
+        return datastore.beginTransaction(options);
+    }
+
+    private static Collection<Key> entitiesToKeys(final Collection<Entity> entities) {
+        final Collection<Key> keys = new ArrayList<>();
+        for (final Entity currEntity : entities)
+        {
+             keys.add(currEntity.getKey());
+        }
+        return keys;
     }
 
     private static QueryResult queryEntity(LeanQuery leanQuery, Query query) throws LeanException {

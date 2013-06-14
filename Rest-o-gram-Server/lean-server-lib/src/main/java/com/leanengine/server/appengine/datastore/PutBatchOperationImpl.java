@@ -3,10 +3,7 @@ package com.leanengine.server.appengine.datastore;
 import com.google.appengine.api.datastore.Entity;
 import com.leanengine.server.appengine.DatastoreUtils;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,13 +30,18 @@ public class PutBatchOperationImpl implements PutBatchOperation {
     }
 
     @Override
-    public Collection<Entity> getEntities() {
-        return idToEntityMapping.values();
+    public List<Entity> getEntities() {
+        return new ArrayList<Entity>(idToEntityMapping.values());
     }
 
     @Override
-    public boolean execute() {
-        return DatastoreUtils.endPutBatch(this);
+    public Entity getEntity(String name) {
+        return idToEntityMapping.get(name);
+    }
+
+    @Override
+    public boolean execute(PutStrategy strategy) {
+        return DatastoreUtils.endPutBatch(this, strategy);
     }
 
     private Map<String,Entity> idToEntityMapping = new HashMap<>();

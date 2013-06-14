@@ -8,9 +8,9 @@ package rest.o.gram.entities;
 public final class Kinds {
     public static final String VENUE = "venue";
     public static final String VENUE_REFERENCE = "venue_ref";
-    public static final String VENUE_META = "venue_meta";
+    //public static final String VENUE_META = "venue_meta";
 
     public static final String PHOTO = "photo";
     public static final String PHOTO_REFERENCE = "photo_ref";
-    public static final String PHOTO_META = "photo_meta";
+    //public static final String PHOTO_META = "photo_meta";
 }

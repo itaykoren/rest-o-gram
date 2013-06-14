@@ -1,5 +1,6 @@
 package rest.o.gram.filters;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 
 import java.util.ArrayList;
@@ -24,7 +25,8 @@ public class RuleSetRestogramFilter implements RestogramFilter {
         final List<MediaFeedData> filtered = new ArrayList<>(filterRules.size());
         for (final MediaFeedData currMediaFeedData : data)
         {
-            if (filterRules.get(currMediaFeedData.getId()))
+            final String id = currMediaFeedData.getId();
+            if (filterRules.containsKey(id) && filterRules.get(id))
                 filtered.add(currMediaFeedData);
         }
         return  filtered;

@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
+import com.leanengine.server.appengine.datastore.PutBatchOperation;
 import com.leanengine.server.auth.AuthService;
 import com.leanengine.server.entity.LeanQuery;
 import com.leanengine.server.entity.QueryFilter;
@@ -179,12 +180,18 @@ public class RestogramServiceImpl implements RestogramService {
 
     @Override
     public boolean addPhotoToFavorites(String photoId) {
-        return false;
+        if (!DataManager.updatePhotoReference(photoId, true))
+            return false;
+
+        return DataManager.changePhotoYummiesCount(photoId, 1);
     }
 
     @Override
     public boolean removePhotoFromFavorites(String photoId) {
-        return false;
+        if (!DataManager.updatePhotoReference(photoId, false))
+            return false;
+
+        return DataManager.changePhotoYummiesCount(photoId, -1);
     }
 
     @Override

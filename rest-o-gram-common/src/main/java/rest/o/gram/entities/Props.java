@@ -23,7 +23,8 @@ public final class Props {
         public final static String IMAGE_URL = "image_url";
 
         //meta-data
-       //public final static String APPROVED = "approved";
+        public final static String YUMMIES = "yummies";
+       public final static String APPROVED = "approved";
     }
 
     public static  class VenueRef {
@@ -31,10 +32,10 @@ public final class Props {
         public final static String IS_FAVORITE = "is_fav";
     }
 
-    public static  class VenueMeta {
-        public final static String FOURSQUARE_ID = "foursquare_id";
-        public final static String APPROVED = "approved";
-    }
+//    public static  class VenueMeta {
+//        public final static String FOURSQUARE_ID = "foursquare_id";
+//        public final static String APPROVED = "approved";
+//    }
 
     public static class Photo {
         public final static String CAPTION = "caption";
@@ -47,8 +48,10 @@ public final class Props {
         public final static String TYPE = "type";
         public final static String USER = "user";
         public final static String ORIGIN_VENUE_ID = "origin_venue_id";
+
+        //meta-data
         public final static String YUMMIES = "yummies";
-        //public final static String APPROVED = "approved";
+        public final static String APPROVED = "approved";
     }
 
     public static  class PhotoRef {
@@ -56,9 +59,9 @@ public final class Props {
         public final static String IS_FAVORITE = "is_fav";
     }
 
-    public static  class PhotoMeta {
-        public final static String INSTAGRAM_ID = "instagram_id";
-        public final static String APPROVED = "approved";
-        public final static String VENUE_ID = "venue_id";
-    }
+//    public static  class PhotoMeta {
+//        public final static String INSTAGRAM_ID = "instagram_id";
+//        public final static String APPROVED = "approved";
+//        public final static String VENUE_ID = "venue_id";
+//    }
 }
