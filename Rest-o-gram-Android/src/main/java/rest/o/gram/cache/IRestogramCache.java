@@ -46,6 +46,16 @@ public interface IRestogramCache {
     RestogramPhotos findPhotos(String venueId);
 
     /**
+     * Returns all venues
+     */
+    Iterable<RestogramVenue> getVenues();
+
+    /**
+     * Returns all photos
+     */
+    Iterable<RestogramPhoto> getPhotos();
+
+    /**
      * Clears all data from cache
      */
     void clear();

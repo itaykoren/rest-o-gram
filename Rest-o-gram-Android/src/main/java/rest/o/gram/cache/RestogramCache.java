@@ -68,6 +68,16 @@ public class RestogramCache implements IRestogramCache {
     }
 
     @Override
+    public Iterable<RestogramVenue> getVenues() {
+        return venues;
+    }
+
+    @Override
+    public Iterable<RestogramPhoto> getPhotos() {
+        return photos;
+    }
+
+    @Override
     public void clear() {
         venues.clear();
         photos.clear();

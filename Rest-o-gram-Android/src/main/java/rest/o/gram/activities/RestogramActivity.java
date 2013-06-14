@@ -41,7 +41,19 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
      * Called after user has logged out
      */
     public void onUserLoggedOut() {
-        // Empty
+        // Clear user data from objects in cache
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        if(cache != null) {
+            // Reset venue favorite data
+            for(final RestogramVenue venue : cache.getVenues()) {
+                venue.setfavorite(false);
+            }
+
+            // Reset photo favorite data
+            for(final RestogramPhoto venue : cache.getPhotos()) {
+                venue.set_favorite(false);
+            }
+        }
     }
 
     @Override
