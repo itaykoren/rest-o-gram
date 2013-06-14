@@ -327,15 +327,15 @@ public class MapActivity extends RestogramActionBarActivity {
 
         // Create canvas with proper width and height
         int width = Math.max(bounds.width(), icon.getWidth()) * 2;
-        int height = bounds.height() * 2 + icon.getHeight();
+        int height = bounds.height() * 3 + icon.getHeight();
         Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bmp);
 
         // Draw text
         paint.setColor(Color.BLUE);
-        paint.setTextSize(bounds.height());
+        paint.setTextSize(bounds.height() * 1.5f);
         paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(text, width >> 1, bounds.height(), paint);
+        canvas.drawText(text, width / 1.7f, bounds.height() * 1.5f, paint);
 
         // Draw icon
         canvas.drawBitmap(icon, width >> 1, bounds.height() * 2, paint);
