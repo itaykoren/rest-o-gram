@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
@@ -12,6 +14,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -162,6 +165,27 @@ public class Utils {
         }
         else {
             return true;
+        }
+    }
+
+    /**
+     * Converts location coordinates to an address
+     * Returns null if no address is found
+     */
+    public static String getAddress(Context context, double latitude, double longitude) {
+        if(!Geocoder.isPresent())
+            return null;
+
+        Geocoder geocoder = new Geocoder(context);
+        try {
+            List<Address> list = geocoder.getFromLocation(latitude, longitude, 1);
+            if(list == null || list.size() == 0)
+                return null;
+
+            return list.get(0).getAddressLine(0);
+        }
+        catch(Exception e) {
+            return null;
         }
     }
 }

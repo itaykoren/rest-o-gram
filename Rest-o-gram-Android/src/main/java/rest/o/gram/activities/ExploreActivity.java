@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.widget.*;
 import rest.o.gram.R;
@@ -141,6 +142,8 @@ public class ExploreActivity extends RestogramActionBarActivity {
         if(venues == null || venues.length == 0)
             return;
 
+        showLocation();
+
         // Init venues array
         this.venues = new VenueData[venues.length];
         for(int i = 0; i < venues.length; i++) {
@@ -264,6 +267,35 @@ public class ExploreActivity extends RestogramActionBarActivity {
                 Utils.setIsShowWelcomeScreen(activity, false);
             }
         }, 1000);
+    }
+
+    private void showLocation() {
+        final Activity activity = this;
+
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                try {
+                    String address = (String)message.obj;
+                    Toast.makeText(activity, "Showing restaurant photos near: " + address, Toast.LENGTH_LONG).show();
+                }
+                catch (Exception e) {
+                    // Empty
+                }
+            }
+        };
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                String address = Utils.getAddress(activity, latitude, longitude);
+                if(address != null) {
+                    Message message = handler.obtainMessage(1, address);
+                    handler.sendMessage(message);
+                }
+            }
+        };
+        thread.start();
     }
 
     private class VenueData {
