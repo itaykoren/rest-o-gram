@@ -73,6 +73,8 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         // Get venue from cache
         IRestogramCache cache = RestogramClient.getInstance().getCache();
         RestogramPhoto photo = cache.findPhoto(photoId);
+        if(photo == null)
+            return;
 
         // Save photo if needed
         IDataHistoryManager dataHistoryManager = RestogramClient.getInstance().getDataHistoryManager();
