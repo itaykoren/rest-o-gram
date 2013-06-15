@@ -46,7 +46,7 @@ public class RemovePhotoFromFavoritesTask extends AsyncTask<String, Void, Remove
         try {
             return new RemovePhotoFromFavoritesResult(service.removePhotoFromFavorites(photoId), photoId);
         } catch (Exception e) {
-            Log.e("REST-O-GRAM", "ADDING PHOTO FROM FAVORITES - FIRST ATTEMPT FAILED");
+            Log.e("REST-O-GRAM", "REMOVING PHOTO FROM FAVORITES - FIRST ATTEMPT FAILED");
             return new RemovePhotoFromFavoritesResult(service.removePhotoFromFavorites(photoId), photoId);
         }
     }
