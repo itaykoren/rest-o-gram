@@ -87,11 +87,13 @@
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
                                  android:src="@drawable/ic_navigate"
+                                 android:layout_marginRight="10dp"
                                  android:onClick="onNavigationClicked"/>
 
                     <ImageButton android:id="@+id/bVenueFavorite"
                                  android:layout_width="wrap_content"
                                  android:layout_height="wrap_content"
+                                 android:visibility="gone"
                                  android:src="@drawable/ic_favorite_off"
                                  android:onClick="onFavoriteClicked"
                                  android:baselineAlignBottom="@+id/bVenueNavigate"/>
