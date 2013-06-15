@@ -25,10 +25,10 @@
     <!-- Venue Title-->
     <TextView
             android:id="@+id/tvName"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#040404"
-            android:typeface="sans"
+            android:typeface="serif"
             android:textSize="15dp"
             android:gravity="left"
             android:textStyle="bold" android:layout_toRightOf="@+id/thumbnail"/>
@@ -36,23 +36,36 @@
     <!-- Venue Address -->
     <TextView
             android:id="@+id/tvAddress"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#343434"
+            android:typeface="serif"
             android:textSize="12dip"
             android:gravity="left"
             android:layout_toRightOf="@+id/thumbnail" android:layout_below="@+id/tvName"/>
+
+    <!--venue city-->
+    <TextView
+            android:id="@+id/tvCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#343434"
+            android:typeface="serif"
+            android:textSize="12dp"
+            android:gravity="left"
+            android:layout_below="@+id/tvAddress"
+            android:layout_toRightOf="@+id/thumbnail"/>
 
 
     <!-- Venue Phone -->
     <TextView
             android:id="@+id/tvPhone"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#343434"
             android:textSize="12dip"
             android:gravity="left"
-            android:layout_below="@+id/tvAddress" android:layout_toRightOf="@+id/thumbnail"/>
+            android:layout_below="@+id/tvCity" android:layout_toRightOf="@+id/thumbnail"/>
 
 
     <!-- Venue Distance -->
