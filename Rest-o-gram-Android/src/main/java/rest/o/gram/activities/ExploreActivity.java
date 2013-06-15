@@ -124,6 +124,9 @@ public class ExploreActivity extends RestogramActionBarActivity {
         final String venueId = venues[currVenueIndex].venueId;
         final String token = result.getToken();
         updateToken(venueId, token);
+
+        if (result.getPhotos().length < Defs.Feed.PHOTOS_PACKET_THRESHOLD)
+            getMorePhotos();
     }
 
     @Override
