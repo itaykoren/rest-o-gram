@@ -67,7 +67,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         return true;
     }
 
-    public Drawable fetchDrawable(String urlString, String photoId) {
+    public Bitmap fetchDrawable(String urlString, String photoId) {
         try {
             IBitmapCache cache = RestogramClient.getInstance().getBitmapCache();
             String filename = generateFilename(urlString, photoId);
@@ -83,7 +83,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                 cache.save(filename, bitmap);
             }
 
-            return new BitmapDrawable(context.getResources(), bitmap);
+            return bitmap;
         }
         catch (OutOfMemoryError e) {
             return null;
@@ -104,8 +104,8 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                         return;
                     }
 
-                    Drawable drawable = (Drawable)message.obj;
-                    imageView.setImageDrawable(drawable);
+                    final Bitmap drawable = (Bitmap)message.obj;
+                    imageView.setImageBitmap(drawable);
 
                     notifyFinished();
                 }
@@ -118,7 +118,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                Drawable drawable = fetchDrawable(urlString, photoId);
+                Bitmap drawable = fetchDrawable(urlString, photoId);
                 Message message = handler.obtainMessage(1, drawable);
                 handler.sendMessage(message);
             }
@@ -137,9 +137,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                         return;
                     }
 
-                    Drawable drawable = (Drawable)message.obj;
-
-                    Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+                    final Bitmap bitmap = (Bitmap)message.obj;
                     final IBitmapFilter filter = RestogramClient.getInstance().getBitmapFilter();
 
                     // Apply filter to bitmap
@@ -163,7 +161,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                Drawable drawable = fetchDrawable(urlString, photoId);
+                Bitmap drawable = fetchDrawable(urlString, photoId);
                 Message message = handler.obtainMessage(1, drawable);
                 handler.sendMessage(message);
             }
