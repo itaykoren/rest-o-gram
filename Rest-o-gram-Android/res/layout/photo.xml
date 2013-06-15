@@ -74,7 +74,7 @@
                 android:textSize="14dp"
                 android:gravity="left"
                 android:typeface="serif"
-                android:layout_below="@+id/tvVenueAddress"
+                android:layout_below="@+id/tvVenueCity"
                 android:layout_toRightOf="@+id/ivVenue"
                 android:autoLink="phone"/>
 
