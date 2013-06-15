@@ -7,8 +7,8 @@
     <string name="restogram_login_title">Oops... You\'re Not Logged In</string>
     <string name="restogram_logout_title">Log out</string>
 
-    <string name="cannot_track_location_err_msg">Could not detect your current location. Please review your location services settings and relaunch the application.</string>
-    <string name="no_connectivity_err_msg">Cannot connect to the internet. Please review your network services settings and relaunch the application.</string>
+    <string name="cannot_track_location_err_msg">Could not detect your current location. Please review your location services settings and re-launch the application.</string>
+    <string name="no_connectivity_err_msg">Cannot connect to the internet. Please review your network services settings and re-launch the application.</string>
     <string name="no_venues_err_msg">Sorry, no restaurants found. You\'re welcome to explore other areas using the map.</string>
     <string name="no_photos_err_msg">Sorry, no photos are available for this restaurant.</string>
     <string name="not_logged_in_err_msg">Please login with your Facebook account to use this feature. Would you like to login now?</string>
@@ -16,15 +16,15 @@
     <string name="logout_msg">Are you sure you want to log out?</string>
 
     <string name="history">History</string>
-    <string name="yumm">Yummies</string>
-    <string name="explore_welcome">Here you can explore photos from restaurants nearby you. Just click on any photo and
+    <string name="yummies">Yummies</string>
+    <string name="explore_welcome">Here you can explore photos from restaurants nearby. Just click on any photo and
         start exploring! Click outside the box to dismiss.
     </string>
     <string name="map_welcome">Clicking on an icon will take you to the restaurant page. You can also press and hold on a
         specific area to explore the restaurants there. Click outside the box to dismiss.
     </string>
     <string name="welcome_what_is_restogram">Rest-o-Gram is an Instagram based restaurant experience which allows you to
-        explore the restaurant through the eyes of others.
+        explore restaurants through the eyes of others.
     </string>
     <string name="welcome_how_restogram_helps_you">Rest-o-Gram helps you decide where to eat by viewing photos taken by
         Instagram users at restaurants nearby your location.
@@ -33,4 +33,5 @@
     <string name="welcome_to_restogram">Welcome to Rest-o-Gram!</string>
     <string name="found_you">Found You!</string>
     <string name="default_yummies_text">No yummies yet</string>
+    <string name="ok">OK</string>
 </resources>
