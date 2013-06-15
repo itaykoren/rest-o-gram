@@ -13,6 +13,7 @@ import com.leanengine.server.entity.QueryResult;
 import com.leanengine.server.entity.QuerySort;
 import org.apache.commons.lang3.StringUtils;
 import rest.o.gram.Converters;
+import rest.o.gram.Defs;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
 import rest.o.gram.entities.RestogramPhoto;
@@ -79,7 +80,7 @@ public class DataManager {
         {
             Cursor.fromWebSafeString(token);
         }
-        catch (IllegalArgumentException e)
+        catch (Exception e)
         {
             return false;
         }
@@ -185,7 +186,9 @@ public class DataManager {
     private static PhotosResult createPhotosResultFromQueryResult(QueryResult queryResult) {
 
         if (queryResult != null && queryResult.getResult() != null) {
-            String token = queryResult.getCursor().toWebSafeString();
+            String token = (queryResult.getCursor() == null) ? null : queryResult.getCursor().toWebSafeString();
+            if (token == null)
+                token = Defs.Tokens.FINISHED_FETCHING_FROM_CACHE;
             final List<Entity> entities = queryResult.getResult();
             RestogramPhoto[] result = new RestogramPhoto[entities.size()];
             int i = 0;
