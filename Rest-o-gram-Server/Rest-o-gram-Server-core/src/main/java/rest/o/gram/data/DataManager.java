@@ -177,6 +177,11 @@ public class DataManager {
         return false;
     }
 
+    public static boolean isPhotoPending(final String photoId) {
+
+        return false;
+    }
+
     private static PhotosResult createPhotosResultFromQueryResult(QueryResult queryResult) {
 
         if (queryResult != null && queryResult.getResult() != null) {
