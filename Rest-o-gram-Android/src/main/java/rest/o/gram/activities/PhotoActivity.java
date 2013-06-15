@@ -220,10 +220,9 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
 
         // Set UI with venue information
         Utils.updateTextView((TextView)findViewById(R.id.tvVenueName), venue.getName());
-        if(venue.getAddress() != null)
-            Utils.updateTextView((TextView)findViewById(R.id.tvVenueAddress), venue.getAddress());
-        if(venue.getPhone() != null)
-            Utils.updateTextView((TextView)findViewById(R.id.tvVenuePhone), venue.getPhone());
+        Utils.updateTextView((TextView)findViewById(R.id.tvVenueAddress), venue.getAddress());
+        Utils.updateTextView((TextView)findViewById(R.id.tvVenueCity), venue.getCity());
+        Utils.updateTextView((TextView)findViewById(R.id.tvVenuePhone), venue.getPhone());
 
         // Set UI with venue image
         String imageUrl = venue.getImageUrl();
