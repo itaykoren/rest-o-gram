@@ -81,11 +81,9 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                 // Save bitmap to cache
                 bitmap = ((BitmapDrawable)drawable).getBitmap();
                 cache.save(filename, bitmap);
-                return drawable;
             }
-            else {
-                return new BitmapDrawable(context.getResources(), bitmap);
-            }
+
+            return new BitmapDrawable(context.getResources(), bitmap);
         }
         catch (OutOfMemoryError e) {
             return null;
