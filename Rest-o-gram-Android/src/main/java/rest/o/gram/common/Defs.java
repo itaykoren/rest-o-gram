@@ -112,5 +112,6 @@ public final class Defs {
      */
     public static class Feed {
         public static final int PHOTOS_PACKET_THRESHOLD = 10;
+        public static final int MAX_PHOTOS_PER_VENUE = 15;
     }
 }

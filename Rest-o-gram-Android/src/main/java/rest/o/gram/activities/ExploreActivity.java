@@ -219,7 +219,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
             int startIndex = lastPhotoIndex + 1;
 
             // Calculate index of last photo to download
-            int endIndex = Math.min(photos.size(), startIndex + maxPhotosPerVenue - 1);
+            int endIndex = Math.min(photos.size(), startIndex + Defs.Feed.MAX_PHOTOS_PER_VENUE - 1);
 
             for(int i = startIndex; i <= endIndex; i++) {
                 try {
@@ -312,5 +312,4 @@ public class ExploreActivity extends RestogramActionBarActivity {
     private boolean isRequestPending = false;
     private VenueData[] venues;
     private int currVenueIndex = -1;
-    private final int maxPhotosPerVenue = 15;
 }
