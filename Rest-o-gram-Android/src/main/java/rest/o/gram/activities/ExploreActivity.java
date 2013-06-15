@@ -110,6 +110,9 @@ public class ExploreActivity extends RestogramActionBarActivity {
             // Update last token of current venue
             venues[currVenueIndex].lastToken = null;
 
+            if(RestogramClient.getInstance().isDebuggable())
+                Log.d("REST-O-GRAM", "Got null response");
+
             // Get photos from next venue (if possible)
             getMorePhotos();
             return;
@@ -123,7 +126,12 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
         final String venueId = venues[currVenueIndex].venueId;
         final String token = result.getToken();
+
+        // Update last token of current venue
+        venues[currVenueIndex].lastToken = token;
         updateToken(venueId, token);
+
+        venues[currVenueIndex].lastPhotoIndex = result.getPhotos().length - 1;
 
         if (result.getPhotos().length < Defs.Feed.PHOTOS_PACKET_THRESHOLD)
             getMorePhotos();
@@ -196,50 +204,60 @@ public class ExploreActivity extends RestogramActionBarActivity {
         final VenueData nextVenue = getNextVenue();
         final String nextVenueId = nextVenue.venueId;
         final String nextToken = nextVenue.lastToken;
-        final int lastPhotoIndex = nextVenue.lastPhotoIndex;
+        // final int lastPhotoIndex = nextVenue.lastPhotoIndex;
 
-        // Try to load previous photos from cache
-        IRestogramCache cache = RestogramClient.getInstance().getCache();
-        RestogramPhotos venuePhotos = cache.findPhotos(nextVenueId);
-        if(venuePhotos == null) { // No photos found
-            isRequestPending = true;
-
-            if(nextToken != null) {
-                RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Complex, nextVenueId, this);
-            }
-            else {
-                RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Complex, this);
-            }
+        isRequestPending = true;
+        if(nextToken != null) {
+            RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Complex, nextVenueId, this);
         }
-        else { // Photos were found
-            // Get all photos of this venue
-            final List<RestogramPhoto> photos = venuePhotos.getPhotos();
-
-            // Calculate index of first photo to download
-            int startIndex = lastPhotoIndex + 1;
-
-            // Calculate index of last photo to download
-            int endIndex = Math.min(photos.size(), startIndex + Defs.Feed.MAX_PHOTOS_PER_VENUE - 1);
-
-            for(int i = startIndex; i <= endIndex; i++) {
-                try {
-                    RestogramPhoto photo = photos.get(i);
-
-                    // Download image
-                    RestogramClient.getInstance().downloadImage(photo.getThumbnail(), photo, viewAdapter, false, null);
-                }
-                catch(Exception e) {
-                    // Empty
-                }
-            }
-            nextVenue.lastPhotoIndex = endIndex;
+        else {
+            RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Complex, this);
         }
+
+//        // Try to load previous photos from cache
+//        IRestogramCache cache = RestogramClient.getInstance().getCache();
+//        RestogramPhotos venuePhotos = cache.findPhotos(nextVenueId);
+//        if(venuePhotos == null) { // No photos found
+//            isRequestPending = true;
+//
+//            if(nextToken != null) {
+//                RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Complex, nextVenueId, this);
+//            }
+//            else {
+//                RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Complex, this);
+//            }
+//        }
+//        else { // Photos were found
+//            // Get all photos of this venue
+//            final List<RestogramPhoto> photos = venuePhotos.getPhotos();
+//
+//            // Calculate index of first photo to download
+//            int startIndex = lastPhotoIndex + 1;
+//
+//            // Calculate index of last photo to download
+//            int endIndex = Math.min(photos.size() - 1, startIndex + Defs.Feed.MAX_PHOTOS_PER_VENUE - 1);
+//            nextVenue.lastPhotoIndex = endIndex;
+//
+//            if(startIndex >= endIndex && nextToken != null) {
+//                RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Complex, nextVenueId, this);
+//                return;
+//            }
+//
+//            for(int i = startIndex; i <= endIndex; i++) {
+//                try {
+//                    RestogramPhoto photo = photos.get(i);
+//
+//                    // Download image
+//                    RestogramClient.getInstance().downloadImage(photo.getThumbnail(), photo, viewAdapter, false, null);
+//                }
+//                catch(Exception e) {
+//                    // Empty
+//                }
+//            }
+//        }
     }
 
     private void updateToken(String venueId, String token) {
-        // Update last token of current venue
-        venues[currVenueIndex].lastToken = token;
-
         // Update last token in cache
         IRestogramCache cache = RestogramClient.getInstance().getCache();
         RestogramPhotos venuePhotos = cache.findPhotos(venueId);
