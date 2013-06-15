@@ -11,6 +11,8 @@
             <!-- can list, get, lease, delete, and update tasks -->
             <user-email>or.noyman@gmail.com</user-email>
             <user-email>1068427818709-9f1h2fvdrtuopk94uvamdlimfjgg4b75@developer.gserviceaccount.com</user-email>
+            <user-email>roichenz7@gmail.com</user-email>
+            <user-email>449239466454@developer.gserviceaccount.com</user-email>
         </acl>
     </queue>
 
@@ -24,6 +26,8 @@
             <!-- can insert tasks -->
             <writer-email>or.noyman@gmail.com</writer-email>
             <writer-email>1068427818709-9f1h2fvdrtuopk94uvamdlimfjgg4b75@developer.gserviceaccount.com</writer-email>
+            <writer-email>roichenz7@gmail.com</writer-email>
+            <writer-email>449239466454@developer.gserviceaccount.com</writer-email>
         </acl>
     </queue>
 </queue-entries>
