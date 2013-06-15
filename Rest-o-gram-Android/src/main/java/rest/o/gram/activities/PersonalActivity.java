@@ -48,6 +48,8 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         initUser();
         initHistory();
         initFavorites();
+
+        isInitialized = true;
     }
 
     @Override
@@ -310,7 +312,8 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
             }
         }
         else {
-            showMessage("No yummies yet");
+            if(isInitialized)
+                showMessage("No yummies yet");
             //dataFavoritesManager.getFavoritePhotos(this);
             //isPhotosRequestPending = true;
         }
@@ -407,4 +410,6 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     private boolean isVenuesRequestPending = false; // Venues request pending flag
     private boolean isPhotosRequestPending = false; // Photos request pending flag
+
+    private boolean isInitialized = false; // Is initialized flag
 }
