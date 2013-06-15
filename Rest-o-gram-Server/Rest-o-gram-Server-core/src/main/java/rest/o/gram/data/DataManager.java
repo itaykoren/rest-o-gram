@@ -72,6 +72,18 @@ public class DataManager {
         return new RestogramPhotosQueryResult(result);
     }
 
+    public static boolean isValidCursor(String token) {
+        try
+        {
+            Cursor.fromWebSafeString(token);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return false;
+        }
+        return true;
+    }
+
     // AUTH
 
     public static boolean updatePhotoReference(final String photoId, final boolean isFav) {
