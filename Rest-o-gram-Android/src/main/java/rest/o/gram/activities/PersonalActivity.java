@@ -97,7 +97,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     @Override
     public void onFinished(GetProfilePhotoUrlResult result) {
-        String profilePhotoUrl = result.getProfilePhotoUrl();
+        profilePhotoUrl = result.getProfilePhotoUrl();
         RestogramClient.getInstance().downloadImage(profilePhotoUrl, profilePhotoUrl, profileImageView, true, null);
     }
 
@@ -144,6 +144,8 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
         if(viewSwitcher.getCurrentView() != historyView) {
             updateHistory();
+
+            toggle();
             viewSwitcher.showPrevious();
         }
     }
@@ -156,6 +158,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
             if(!isPhotosRequestPending && !isVenuesRequestPending)
                 updateFavorites();
 
+            toggle();
             viewSwitcher.showNext();
         }
     }
@@ -249,8 +252,10 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
         // Get saved venues
         RestogramVenue[] venues = dataHistoryManager.loadVenues();
-        if(venues == null)
+        if(venues == null || venues.length == 0) {
+            showMessage("No restaurant history yet");
             return;
+        }
 
         historyVenueViewAdapter.clear();
         for(RestogramVenue venue : venues) {
@@ -285,8 +290,8 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
             favoriteVenueViewAdapter.refresh();
         }
         else {
-            dataFavoritesManager.getFavoriteVenues(this);
-            isVenuesRequestPending = true;
+            //dataFavoritesManager.getFavoriteVenues(this);
+            //isVenuesRequestPending = true;
         }
 
         // Update favorite photos
@@ -305,8 +310,9 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
             }
         }
         else {
-            dataFavoritesManager.getFavoritePhotos(this);
-            isPhotosRequestPending = true;
+            showMessage("No yummies yet");
+            //dataFavoritesManager.getFavoritePhotos(this);
+            //isPhotosRequestPending = true;
         }
     }
 
@@ -338,8 +344,17 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     }
 
     private void updateProfilePhoto(final ImageView imageView, final IAuthenticationProvider provider) {
-
         this.profileImageView = imageView;
+
+        if(profilePhotoUrl != null) {
+            onFinished(new GetProfilePhotoUrlResult() {
+                @Override
+                public String getProfilePhotoUrl() {
+                    return profilePhotoUrl;
+                }
+            });
+            return;
+        }
 
         final Handler handler = new Handler() {
             @Override
@@ -370,12 +385,25 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         RestogramClient.getInstance().getProfilePhotoUrl(facebookId, this);
     }
 
+    private void toggle() {
+        View bHistory = findViewById(R.id.bHistory);
+        View bFavorites = findViewById(R.id.bFavorites);
+        if(bHistory != null && bFavorites != null) {
+            // TODO: set icon/text/...
+        }
+    }
+
+    private void showMessage(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+    }
+
     private VenueViewAdapter historyVenueViewAdapter; // History venue view adapter
 
     private VenueViewAdapter favoriteVenueViewAdapter; // Favorite venue view adapter
     private PhotoViewAdapter favoritePhotoViewAdapter; // Favorite photo View Adapter
 
     private ImageView profileImageView; // profile photo image view
+    private String profilePhotoUrl = null; // Profile photo url
 
     private boolean isVenuesRequestPending = false; // Venues request pending flag
     private boolean isPhotosRequestPending = false; // Photos request pending flag
