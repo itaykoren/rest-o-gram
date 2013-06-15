@@ -111,7 +111,7 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
             RestogramClient.getInstance().addPhotoToFavorites(photo.getInstagram_id(), this);
         }
         else {
-            RestogramClient.getInstance().addPhotoToFavorites(photo.getInstagram_id(), this);
+            RestogramClient.getInstance().removePhotoFromFavorites(photo.getInstagram_id(), this);
         }
         return true;
     }
@@ -163,6 +163,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
         if(!result.hasSucceeded())
             return;
 
+        dataFavoritesManager.addFavoritePhoto(result.getPhotoId());
+
         if(favoritePhotoButton != null)
             favoritePhotoButton.setImageResource(R.drawable.ic_favorite_on);
     }
@@ -171,6 +173,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
     public void onFinished(RemovePhotoFromFavoritesResult result) {
         if(!result.hasSucceeded())
             return;
+
+        dataFavoritesManager.removeFavoritePhoto(result.getPhotoId());
 
         if(favoritePhotoButton != null)
             favoritePhotoButton.setImageResource(R.drawable.ic_favorite_off);

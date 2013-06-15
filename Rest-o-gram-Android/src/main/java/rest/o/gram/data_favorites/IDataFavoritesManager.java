@@ -12,24 +12,28 @@ import java.util.Set;
  * Date: 5/22/13
  */
 public interface IDataFavoritesManager {
-    void addPhotoToFavorites(String photoId, final ITaskObserver observer);
-
-    void removePhotoFromFavorites(String photoId, final ITaskObserver observer);
-
+    // TODO: convert to a command
     void getFavoritePhotos(final IDataFavoritesOperationsObserver observer);
 
+    void addFavoritePhoto(String photoId);
+    boolean removeFavoritePhoto(String photoId);
     Set<String> getFavoritePhotos();
 
+    // TODO: convert to a command
     void getNextFavoritePhotos(final GetFavoritePhotosResult previous, final IDataFavoritesOperationsObserver observer);
 
+    // TODO: convert to a command
     void addFavoriteVenue(final RestogramVenue venue, final IDataFavoritesOperationsObserver observer);
 
+    // TODO: convert to a command
     void removeFavoriteVenue(final RestogramVenue venue, final IDataFavoritesOperationsObserver observer);
 
+    // TODO: convert to a command
     void getFavoriteVenues(final IDataFavoritesOperationsObserver observer);
 
     Set<String> getFavoriteVenues();
 
+    // TODO: convert to a command
     void getNextFavoriteVenues(final GetFavoriteVenuesResult previous, final IDataFavoritesOperationsObserver observer);
 
     void dispose();

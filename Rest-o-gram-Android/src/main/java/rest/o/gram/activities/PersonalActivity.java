@@ -109,7 +109,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     @Override
     public void onFinished(AddPhotoToFavoritesResult result) {
-        // Empty
+
     }
 
     @Override
