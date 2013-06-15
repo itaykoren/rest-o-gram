@@ -273,7 +273,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
             public void handleMessage(Message message) {
                 try {
                     String address = (String)message.obj;
-                    Toast.makeText(activity, "Showing restaurant photos near: " + address, Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity, "Showing restaurant photos near: \n" + address, Toast.LENGTH_LONG).show();
                 }
                 catch (Exception e) {
                     // Empty
