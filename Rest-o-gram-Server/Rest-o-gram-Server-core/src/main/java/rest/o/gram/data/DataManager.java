@@ -35,10 +35,12 @@ public class DataManager {
         final Collection<Entity> photoEntities =
                 DatastoreUtils.getPublicEntities(Kinds.PHOTO, ids);
         final Map<String,Boolean> result = new HashMap<>(photoEntities.size());
-        for (final Entity currPhotoEntity : photoEntities)
-        {
+        for (final Entity currPhotoEntity : photoEntities) {
             final String currPhotoId = currPhotoEntity.getKey().getName();
-            final boolean currApproval = (boolean)currPhotoEntity.getProperty(Props.Photo.APPROVED);
+            if (!currPhotoEntity.hasProperty(Props.Photo.APPROVED)) {
+                continue;
+            }
+            final boolean currApproval = (boolean) currPhotoEntity.getProperty(Props.Photo.APPROVED);
             result.put(currPhotoId, currApproval);
         }
         return result;
