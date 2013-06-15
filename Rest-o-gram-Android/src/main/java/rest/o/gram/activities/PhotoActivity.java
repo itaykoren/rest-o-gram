@@ -193,6 +193,7 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
 
         // Init photo info view
         photoInfoView = new PhotoInfoView(this, photo);
+        Utils.updateTextView((TextView)findViewById(R.id.tvTitle), photo.getCaption());
 
         // Init venue information: attempt to load from cache. if not found - send request to server
         String id = photo.getOriginVenueId();

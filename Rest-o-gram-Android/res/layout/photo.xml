@@ -73,11 +73,12 @@
                       android:layout_below="@+id/tvVenuePhone"
                       android:layout_alignParentRight="true">
 
-        <ImageButton android:id="@+id/bVenueNavigate"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:src="@drawable/ic_navigate"
-                     android:onClick="onNavigationClicked"/>
+            <ImageButton android:id="@+id/bVenueNavigate"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:src="@drawable/ic_navigate"
+                         android:onClick="onNavigationClicked"
+                         android:layout_marginRight="10dp"/>
         </LinearLayout>
 
         <ImageView
@@ -90,69 +91,120 @@
                 android:layout_marginBottom="5dp"/>
     </RelativeLayout>
 
-    <RelativeLayout
-            android:id="@+id/relative_container"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:layout_marginTop="5dp">
-
-        <ImageView
-                android:id="@+id/ivPhoto"
-                android:layout_width="match_parent"
+    <ScrollView android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"/>
+                android:fillViewport="true">
 
-        <ProgressBar
-                android:id="@+id/pbImageLoading"
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="wrap_content"
+
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="visible"/>
+                android:orientation="vertical"
+                android:baselineAligned="false">
 
-        </RelativeLayout>
 
-    <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:id="@+id/photoOptions">
+            <RelativeLayout
+                    android:id="@+id/relative_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:layout_marginTop="5dp">
 
-        <ImageButton
-                android:id="@+id/bPhotoFavorite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_favorite_off"
-                android:layout_alignParentLeft="true"
-                android:onClick="onFavoriteClicked"/>
+                <ImageView
+                        android:id="@+id/ivPhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"/>
 
-    <!--photo yummies-->
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvPhotoYummies"
-                android:textColor="#040404"
-                android:textSize="14dp"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:layout_centerInParent="true"
-                android:text="@string/default_yummies_text"
-                android:typeface="serif"/>
+                <ProgressBar
+                        android:id="@+id/pbImageLoading"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:visibility="visible"/>
 
-            <ImageButton
-                    android:id="@+id/infoButton"
+            </RelativeLayout>
+
+            <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_info"
-                    android:layout_marginRight="10dp"
-                    android:layout_alignParentRight="true"
-                    android:onClick="onInfoClicked"/>
+                    android:layout_marginTop="3dp"
+                    android:id="@+id/photoOptions">
 
-    </RelativeLayout>
+                <ImageButton
+                        android:id="@+id/bPhotoFavorite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/ic_favorite_off"
+                        android:layout_alignParentLeft="true"
+                        android:onClick="onFavoriteClicked"/>
+
+                <!--photo yummies-->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvPhotoYummies"
+                        android:textColor="#040404"
+                        android:textSize="14dp"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:text="@string/default_yummies_text"
+                        android:typeface="serif"
+                        android:layout_toRightOf="@+id/bPhotoFavorite"
+                        android:layout_centerVertical="true"/>
+
+                <!--android:layout_centerInParent="true"-->
 
 
-    </LinearLayout>
+                <ImageButton
+                        android:id="@+id/infoButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_info"
+                        android:layout_marginRight="10dp"
+                        android:layout_alignParentRight="true"
+                        android:onClick="onInfoClicked"/>
+
+            </RelativeLayout>
+
+
+            <!--comments-->
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/comments"
+                    android:layout_marginTop="3dp">
+
+                <ImageView
+                        android:id="@+id/commentIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="18dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_comment"/>
+
+                <TextView
+                        android:id="@+id/tvTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textSize="14dp"
+                        android:typeface="serif"
+                        android:textColor="#000000"
+                        android:ellipsize="marquee"
+                        android:layout_toRightOf="@+id/commentIcon"
+                        android:layout_gravity="left"
+                        android:layout_marginRight="10dp"/>
+
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>
