@@ -9,13 +9,14 @@ import java.util.Map;
  */
 public class RestogramFilterFactory {
 
-    public static RestogramFilter createFilter(RestogramFilterType filterType, Map<String,Boolean> filterRules) {
+    public static RestogramFilter createFilter(RestogramFilterType filterType) {
 
         if (filterType == RestogramFilterType.Simple)
             return new HashtagRestogramFilter();
         else if (filterType == RestogramFilterType.Complex)
-            return new RuleSetRestogramFilter(filterRules);
+            return new HashtagRestogramFilter();
         else
-            throw new IllegalArgumentException("could not find RestogramFilter that matches filterType: " + filterType);
+
+        return null;
     }
 }
