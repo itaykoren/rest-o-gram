@@ -54,16 +54,6 @@ public interface RestogramService {
      */
     PhotosResult getNextPhotos(String token, RestogramFilterType filterType, String originVenueId);
 
-    /**
-     * adds requested photo to user favorites, increments global yummies count
-     */
-    boolean addPhotoToFavorites(String photoId);
-
-    /**
-     * removes requested photo from user favorites, decrements global yummies count
-     */
-    boolean removePhotoFromFavorites(String photoId);
-
 
     /**
      * Make sure the photo represented by the given id is in cache

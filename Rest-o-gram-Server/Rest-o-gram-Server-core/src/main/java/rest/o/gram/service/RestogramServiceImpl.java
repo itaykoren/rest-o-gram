@@ -178,22 +178,6 @@ public class RestogramServiceImpl implements RestogramService {
         return doGetPhotos(pag, filterType, originVenueId);
     }
 
-    @Override
-    public boolean addPhotoToFavorites(String photoId) {
-        if (!DataManager.updatePhotoReference(photoId, true))
-            return false;
-
-        return DataManager.changePhotoYummiesCount(photoId, 1);
-    }
-
-    @Override
-    public boolean removePhotoFromFavorites(String photoId) {
-        if (!DataManager.updatePhotoReference(photoId, false))
-            return false;
-
-        return DataManager.changePhotoYummiesCount(photoId, -1);
-    }
-
 //    @Override
 //    public boolean cachePhoto(String id, String originVenueId) {
 //        // TODO: check if photo is already in cache

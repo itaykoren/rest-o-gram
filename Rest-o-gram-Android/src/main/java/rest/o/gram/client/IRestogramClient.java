@@ -88,6 +88,15 @@ public interface IRestogramClient {
     IRestogramCommand downloadImage(String url, String id, ImageView imageView, boolean force, IRestogramCommandObserver observer);
 
     /**
+     * Executes cache venue request
+     * Returns command object
+     */
+    void cacheVenue(String id, ITaskObserver observer);
+
+
+    /* AUTH SERVICES */
+
+    /**
      * Executes add photo to favorites request
      */
     void addPhotoToFavorites(String photoId, ITaskObserver observer);
@@ -96,15 +105,6 @@ public interface IRestogramClient {
      * Executes remove photo from favorites request
      */
     void removePhotoFromFavorites(String photoId, ITaskObserver observer);
-
-    /**
-     * Executes cache venue request
-     * Returns command object
-     */
-    void cacheVenue(String id, ITaskObserver observer);
-
-
-    /* AUTH SERVICES */
 
     /* PROVIDERS */
 

@@ -6,6 +6,7 @@ import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.data_favorites.results.AddPhotoToFavoritesResult;
+import rest.o.gram.iservice.RestogramAuthService;
 import rest.o.gram.iservice.RestogramService;
 
 /**
@@ -26,7 +27,7 @@ public class AddPhotoToFavoritesTask extends AsyncTask<String, Void, AddPhotoToF
         String photoId = params[0];
 
         JsonRpcInvoker invoker = new JsonRpcInvoker();
-        RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
+        RestogramAuthService service = invoker.get(transport, "restogram", RestogramAuthService.class);
 
         if (RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "adding photo to favorites");
@@ -41,7 +42,7 @@ public class AddPhotoToFavoritesTask extends AsyncTask<String, Void, AddPhotoToF
         observer.onFinished(result);
     }
 
-    private AddPhotoToFavoritesResult safeAddPhotoToFavorites(RestogramService service, String photoId) {
+    private AddPhotoToFavoritesResult safeAddPhotoToFavorites(RestogramAuthService service, String photoId) {
         try {
             return new AddPhotoToFavoritesResult(service.addPhotoToFavorites(photoId), photoId);
         } catch (Exception e) {

@@ -28,14 +28,6 @@
     </servlet-mapping>
 
     <!--Login pages-->
-    <!--<servlet>-->
-        <!--<servlet-name>OpenIdLogin</servlet-name>-->
-        <!--<servlet-class>com.leanengine.server.auth.OpenIdLoginServlet</servlet-class>-->
-    <!--</servlet>-->
-    <!--<servlet-mapping>-->
-        <!--<servlet-name>OpenIdLogin</servlet-name>-->
-        <!--<url-pattern>/openid</url-pattern>-->
-    <!--</servlet-mapping>-->
     <servlet>
         <servlet-name>FacebookLogin</servlet-name>
         <servlet-class>com.leanengine.server.auth.FacebookLoginServlet</servlet-class>
