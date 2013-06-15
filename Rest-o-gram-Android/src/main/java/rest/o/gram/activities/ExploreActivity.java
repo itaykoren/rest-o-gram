@@ -50,26 +50,19 @@ public class ExploreActivity extends RestogramActionBarActivity {
                     latitude = tracker.getLatitude();
                     longitude = tracker.getLongitude();
                 }
-
-                // Load venues from cache
-                IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
-                if(cache != null) {
-                    RestogramVenue[] venues = cache.loadVenues();
-                    if(venues != null && venues.length > 0) {
-                        initialize(venues);
-                        return;
-                    }
-                }
-
-                // No venues are available - send get nearby request
-                RestogramClient.getInstance().getNearby(latitude, longitude, Defs.Location.DEFAULT_NEARBY_RADIUS, this);
             }
             else {
                 latitude = intent.getDoubleExtra("latitude", 0.0);
                 longitude = intent.getDoubleExtra("longitude", 0.0);
+            }
 
-                // Send get nearby request
-                RestogramClient.getInstance().getNearby(latitude, longitude, Defs.Location.DEFAULT_NEARBY_RADIUS, this);
+            // Load venues from cache
+            IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
+            if(cache != null) {
+                RestogramVenue[] venues = cache.loadVenues();
+                if(venues != null && venues.length > 0) {
+                    initialize(venues);
+                }
             }
         } catch (Exception e) {
             // TODO: implementation

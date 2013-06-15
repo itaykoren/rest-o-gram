@@ -6,10 +6,12 @@ import android.graphics.*;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.MenuItem;
 import android.widget.Toast;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -22,7 +24,7 @@ import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.location.ILocationTracker;
-import rest.o.gram.tasks.results.*;
+import rest.o.gram.tasks.results.GetNearbyResult;
 import rest.o.gram.view.GenericPopupView;
 import rest.o.gram.view.IPopupView;
 
@@ -86,6 +88,22 @@ public class MapActivity extends RestogramActionBarActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_explore) {
+            // Switch to "ExploreActivity" with last location
+            Intent intent = new Intent(this, ExploreActivity.class);
+            if(lastLocation != null) {
+                intent.putExtra("latitude", lastLocation.latitude);
+                intent.putExtra("longitude", lastLocation.longitude);
+            }
+            Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, false);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onFinished(GetNearbyResult result) {
         super.onFinished(result);
 
@@ -104,8 +122,12 @@ public class MapActivity extends RestogramActionBarActivity {
         addVenues(result.getVenues());
 
         // Update current marker
-        if(currentMarkerOptions != null)
+        if(currentMarkerOptions != null) {
             currentMarker = map.addMarker(currentMarkerOptions);
+
+            // Set last location
+            lastLocation = currentMarkerOptions.getPosition();
+        }
     }
 
     @Override
@@ -221,6 +243,9 @@ public class MapActivity extends RestogramActionBarActivity {
                 // Send get nearby request
                 RestogramClient.getInstance().getNearby(latitude, longitude, Defs.Location.DEFAULT_NEARBY_RADIUS, this);
             }
+
+            // Set last location
+            lastLocation = new LatLng(latitude, longitude);
         }
         catch(Exception e) {
             // TODO: implementation
@@ -373,6 +398,7 @@ public class MapActivity extends RestogramActionBarActivity {
 
     private double latitude; // Latitude
     private double longitude; // Longitude
+    private LatLng lastLocation; // Last location
     private GoogleMap map; // Map object
     private Map<String, String> venues = new HashMap<>(); // Venues map
     private Marker currentMarker; // Current marker
