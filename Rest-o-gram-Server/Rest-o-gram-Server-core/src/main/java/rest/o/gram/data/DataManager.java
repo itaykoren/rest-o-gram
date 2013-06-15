@@ -12,10 +12,11 @@ import com.leanengine.server.entity.QueryFilter;
 import com.leanengine.server.entity.QueryResult;
 import com.leanengine.server.entity.QuerySort;
 import org.apache.commons.lang3.StringUtils;
-import rest.o.gram.data.results.RestogramPhotosQueryResult;
-import rest.o.gram.data.results.RestogramQueryResult;
+import rest.o.gram.Converters;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
+import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.results.PhotosResult;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -53,7 +54,7 @@ public class DataManager {
         return putOp.execute(new PutUpdateStrategy());
     }
 
-    public static RestogramQueryResult fetchPhotosFromCache(final String venueId, final String token) {
+    public static PhotosResult fetchPhotosFromCache(final String venueId, final String token) {
         final LeanQuery query = new LeanQuery(Kinds.PHOTO);
         query.addFilter(Props.Photo.ORIGIN_VENUE_ID, QueryFilter.FilterOperator.EQUAL, venueId);
         query.addFilter(Props.Photo.APPROVED, QueryFilter.FilterOperator.EQUAL, true);
@@ -69,7 +70,8 @@ public class DataManager {
             e.printStackTrace();
             log.severe("fetching photos from cache has failed. venue: " + venueId);
         }
-        return new RestogramPhotosQueryResult(result);
+
+        return createPhotosResultFromQueryResult(result);
     }
 
     public static boolean isValidCursor(String token) {
@@ -168,6 +170,28 @@ public class DataManager {
         if (result == null || result.getResult().isEmpty())
             return false;
         return true;
+    }
+
+    public static boolean isPhotoInCache(final String photoId) {
+
+        return false;
+    }
+
+    private static PhotosResult createPhotosResultFromQueryResult(QueryResult queryResult) {
+
+        if (queryResult != null && queryResult.getResult() != null) {
+            String token = queryResult.getCursor().toWebSafeString();
+            final List<Entity> entities = queryResult.getResult();
+            RestogramPhoto[] result = new RestogramPhoto[entities.size()];
+            int i = 0;
+            for (final Entity currEntity : entities)
+                result[i++] = (Converters.entityToPhoto(currEntity));
+
+            return new PhotosResult(result, token);
+        }
+
+        return null;
+
     }
 
     private static final Logger log = Logger.getLogger(DataManager.class.getName());
