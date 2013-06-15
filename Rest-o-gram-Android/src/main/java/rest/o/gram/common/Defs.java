@@ -25,7 +25,7 @@ public final class Defs {
      * Transport constants
      */
     public static class Transport {
-        public static final String BASE_HOST_NAME = "http://rest-o-debug3.appspot.com";
+        public static final String BASE_HOST_NAME = "http://restogramapp.appspot.com";
     }
 
     /**
@@ -49,7 +49,7 @@ public final class Defs {
             TrackerTypeGoogle
         }
 
-        public static final TrackerType PRIMARY_TRACKER_TYPE = TrackerType.TrackerTypeDummy;
+        public static final TrackerType PRIMARY_TRACKER_TYPE = TrackerType.TrackerTypeGoogle;
         public static final TrackerType SECONDARY_TRACKER_TYPE = TrackerType.TrackerTypeFluffy;
 
         public static final double DEFAULT_NEARBY_RADIUS = 500;
