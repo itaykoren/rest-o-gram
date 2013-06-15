@@ -65,6 +65,7 @@ public class VenueViewAdapter extends BaseAdapter {
         // Set UI with venue information
         Utils.updateTextView((TextView)v.findViewById(R.id.tvName), venue.getName());
         Utils.updateTextView((TextView)v.findViewById(R.id.tvAddress), venue.getAddress());
+        Utils.updateTextView((TextView)v.findViewById(R.id.tvCity), venue.getCity());
         Utils.updateTextView((TextView)v.findViewById(R.id.tvPhone), venue.getPhone());
 
         if(showDistance) {
