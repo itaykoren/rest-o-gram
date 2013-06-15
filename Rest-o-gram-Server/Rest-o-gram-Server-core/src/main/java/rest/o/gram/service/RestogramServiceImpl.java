@@ -408,8 +408,8 @@ public class RestogramServiceImpl implements RestogramService {
             cachedPhotosResult = DataManager.fetchPhotosFromCache(venueId, token);
         }
 
-        // update token if needed
-        token = updateTokenIfNeeded(token, cachedPhotosResult);
+        // reset token if needed
+        token = resetTokenIfNeeded(token, cachedPhotosResult);
 
         // if no results found, go to Instagram
         if (cachedPhotosResult == null ||
@@ -430,15 +430,16 @@ public class RestogramServiceImpl implements RestogramService {
         }
     }
 
-    private String updateTokenIfNeeded(String token, PhotosResult result) {
+    private String resetTokenIfNeeded(String token, PhotosResult result) {
 
-        if (result != null && result.getToken() != null &&
-                result.getToken().equals(Defs.Tokens.FINISHED_FETCHING_FROM_CACHE)) {
+        if ((result != null &&
+                result.getToken() != null &&
+                result.getToken().equals(Defs.Tokens.FINISHED_FETCHING_FROM_CACHE)) ||
+                (token != null && token.equals(Defs.Tokens.FINISHED_FETCHING_FROM_CACHE))) {
             // finished fetching from cache, reset token
             return null;
-        } else {
-            return token;
         }
+        return token;
     }
 
     private PhotosResult mergeResults(PhotosResult cachedPhotosResult, PhotosResult instagramPhotosResult) {
