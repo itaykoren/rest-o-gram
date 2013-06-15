@@ -93,22 +93,22 @@ final class Converters {
 //        return entity;
 //    }
 
-    public static LeanEntity photoRefToLeanEntity(final RestogramPhoto photo) {
-        LeanEntity entity;
-        if (photo.getId() == Long.MIN_VALUE)
-            entity = LeanEntity.initPrivateEntity(Kinds.PHOTO_REFERENCE);
-        else
-            entity = LeanEntity.initPrivateEntity(Kinds.PHOTO_REFERENCE, photo.getId());
-        entity.put(Props.PhotoRef.INSTAGRAM_ID, photo.getInstagram_id());
-        entity.put(Props.PhotoRef.IS_FAVORITE, photo.is_favorite());
-        return entity;
-    }
+//    public static LeanEntity photoRefToLeanEntity(final RestogramPhoto photo) {
+//        LeanEntity entity;
+//        if (photo.getId() == Long.MIN_VALUE)
+//            entity = LeanEntity.initPrivateEntity(Kinds.PHOTO_REFERENCE);
+//        else
+//            entity = LeanEntity.initPrivateEntity(Kinds.PHOTO_REFERENCE, photo.getId());
+//        entity.put(Props.PhotoRef.INSTAGRAM_ID, photo.getInstagram_id());
+//        entity.put(Props.PhotoRef.IS_FAVORITE, photo.is_favorite());
+//        return entity;
+//    }
 
     public static RestogramPhoto leanEntityToPhoto(final LeanEntity entity) {
         RestogramPhoto photo = new RestogramPhoto();
         photo.setInstagram_id(entity.getUniqueName());
-        if (entity.hasId())
-            photo.setId(entity.getId());
+//        if (entity.hasId())
+//            photo.setId(entity.getId());
         photo.setCaption(entity.getString(Props.Photo.CAPTION));
         photo.setCreatedTime(entity.getString(Props.Photo.CREATED_TIME));
         photo.setImageFilter(entity.getString(Props.Photo.IMAGE_FILTER));

@@ -98,28 +98,10 @@ public interface IRestogramClient {
     void removePhotoFromFavorites(String photoId, ITaskObserver observer);
 
     /**
-     * Executes cache photo request
-     * Returns command object
-     */
-    void cachePhoto(String id, String originVenueId, ITaskObserver observer);
-
-    /**
-     * Executes fetch photos from cache request
-     * Returns command object
-     */
-    void fetchPhotosFromCache(ITaskObserver observer, String... ids);
-
-    /**
      * Executes cache venue request
      * Returns command object
      */
     void cacheVenue(String id, ITaskObserver observer);
-
-    /**
-     * Executes fetch venues from cache request
-     * Returns command object
-     */
-    void fetchVenuesFromCache(ITaskObserver observer, String... ids);
 
 
     /* AUTH SERVICES */

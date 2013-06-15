@@ -234,30 +234,9 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public void cachePhoto(String id, String originVenueId, ITaskObserver observer) {
-        setJsonAuthToken(transport);
-        IRestogramCommand command = new CachePhotoCommand(transport, observer, id, originVenueId);
-        commandQueue.pushForce(command);
-    }
-
-    @Override
-    public void fetchPhotosFromCache(ITaskObserver observer, String... ids) {
-        setJsonAuthToken(transport);
-        IRestogramCommand command = new FetchPhotosFromCacheCommand(transport, observer, ids);
-        commandQueue.pushForce(command);
-    }
-
-    @Override
     public void cacheVenue(String id, ITaskObserver observer) {
         setJsonAuthToken(transport);
         IRestogramCommand command = new CacheVenueCommand(transport, observer, id);
-        commandQueue.pushForce(command);
-    }
-
-    @Override
-    public void fetchVenuesFromCache(ITaskObserver observer, String... ids) {
-        setJsonAuthToken(transport);
-        IRestogramCommand command = new FetchVenuesFromCacheCommand(transport, observer, ids);
         commandQueue.pushForce(command);
     }
 

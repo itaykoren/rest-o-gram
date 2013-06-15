@@ -95,7 +95,10 @@ public class DataManager {
             catch (ConcurrentModificationException e)
             {
                 if (retries == 0)
+                {
+                    log.severe("exceeded the number of allowed retries for yummies count update transaction");
                     return false;
+                }
 
                 --retries;
             } finally

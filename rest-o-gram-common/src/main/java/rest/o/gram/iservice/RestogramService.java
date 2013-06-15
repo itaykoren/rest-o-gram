@@ -71,14 +71,14 @@ public interface RestogramService {
      * @param originVenueId the identifier of the venue in which the photo was taken
      * @return has operation executed successfully
      */
-    boolean cachePhoto(String id, String originVenueId);
+    //boolean cachePhoto(String id, String originVenueId);
 
     /**
      * Fetch photos represented by the given ids from cache
      * @param ids the identifiers of the photos
      * @return the requested photos
      */
-    RestogramPhoto[] fetchPhotosFromCache(String[] ids);
+    //RestogramPhoto[] fetchPhotosFromCache(String[] ids);
 
     /**
      *  Make sure the venue represented by the given id is in cache
