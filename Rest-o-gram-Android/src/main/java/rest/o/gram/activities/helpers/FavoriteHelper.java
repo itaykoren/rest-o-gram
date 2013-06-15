@@ -36,7 +36,7 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
         if(dataFavoritesManager != null) {
             if(RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
                 // Get updated favorites
-                dataFavoritesManager.getFavoriteVenues(this);
+                //dataFavoritesManager.getFavoriteVenues(this);
                 dataFavoritesManager.getFavoritePhotos(this);
             }
         }
