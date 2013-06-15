@@ -49,23 +49,38 @@ public class LocationTrackerGoogle implements ILocationTracker,
 
     @Override
     public void start() {
-        isStarted = true;
+        try {
+            isStarted = true;
 
-        if(!client.isConnected()) {
-            return;
+            if(!client.isConnected() && !client.isConnecting()) {
+                client.connect();
+                return;
+            }
+
+            run();
         }
-
-        run();
+        catch(Exception e) {
+            // Empty
+        }
     }
 
     @Override
     public void stop() {
-        isStarted = false;
-        client.removeLocationUpdates(this);
+        if(!isStarted)
+            return;
 
-        if(timer != null) {
-            timer.cancel();
-            timer.purge();
+        try {
+            isStarted = false;
+            client.removeLocationUpdates(this);
+            client.disconnect();
+
+            if(timer != null) {
+                timer.cancel();
+                timer.purge();
+            }
+        }
+        catch(Exception e) {
+            // Empty
         }
     }
 
