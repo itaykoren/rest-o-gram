@@ -1,12 +1,19 @@
 package rest.o.gram.data;
 
+import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Transaction;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
 import com.leanengine.server.appengine.datastore.PutBatchOperation;
 import com.leanengine.server.appengine.datastore.PutUpdateStrategy;
-import org.omg.IOP.TransactionService;
+import com.leanengine.server.entity.LeanQuery;
+import com.leanengine.server.entity.QueryFilter;
+import com.leanengine.server.entity.QueryResult;
+import com.leanengine.server.entity.QuerySort;
+import org.apache.commons.lang3.StringUtils;
+import rest.o.gram.data.results.RestogramPhotosQueryResult;
+import rest.o.gram.data.results.RestogramQueryResult;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
 
@@ -19,6 +26,8 @@ import java.util.logging.Logger;
  * Date: 6/10/13
  */
 public class DataManager {
+
+    // NON-AUTH
 
     public static Map<String,Boolean> getPhotoToRuleMapping(final String... ids) throws LeanException {
         final Collection<Entity> photoMetas =
@@ -44,7 +53,28 @@ public class DataManager {
         return putOp.execute(new PutUpdateStrategy());
     }
 
-    public static boolean updatePhotoReference(String photoId, boolean isFav) {
+    public static RestogramQueryResult fetchPhotosFromCache(final String venueId, final String token) {
+        final LeanQuery query = new LeanQuery(Kinds.PHOTO);
+        query.addFilter(Props.Photo.ORIGIN_VENUE_ID, QueryFilter.FilterOperator.EQUAL, venueId);
+        query.addFilter(Props.Photo.APPROVED, QueryFilter.FilterOperator.EQUAL, true);
+        query.addSort(Props.Photo.YUMMIES, QuerySort.SortDirection.DESCENDING);
+        if (StringUtils.isNotBlank(token))
+            query.setCursor(Cursor.fromWebSafeString(token));
+        QueryResult result = null;
+        try
+        {
+            result = DatastoreUtils.queryEntityPublic(query);
+        } catch (LeanException e)
+        {
+            e.printStackTrace();
+            log.severe("fetching photos from cache has failed. venue: " + venueId);
+        }
+        return new RestogramPhotosQueryResult(result);
+    }
+
+    // AUTH
+
+    public static boolean updatePhotoReference(final String photoId, final boolean isFav) {
         final Map<String, Object> props = new HashMap<>();
         props.put(Props.PhotoRef.INSTAGRAM_ID, photoId);
         props.put(Props.PhotoRef.IS_FAVORITE, isFav);
@@ -58,7 +88,7 @@ public class DataManager {
         return true;
     }
 
-    public static boolean changePhotoYummiesCount(String photoId, int delta) {
+    public static boolean changePhotoYummiesCount(final String photoId, final int delta) {
         int retries = 2;
         while (true)
         {
@@ -107,6 +137,25 @@ public class DataManager {
                     transaction.rollback();
             }
         }
+    }
+
+    public static boolean isPhotoFavorite(final String photoId) {
+        final LeanQuery lquery = new LeanQuery(Kinds.PHOTO_REFERENCE);
+        lquery.addFilter(Props.PhotoRef.INSTAGRAM_ID, QueryFilter.FilterOperator.EQUAL, photoId);
+        lquery.addFilter(Props.PhotoRef.IS_FAVORITE,  QueryFilter.FilterOperator.EQUAL, true);
+        QueryResult result = null;
+        try
+        {
+            result = DatastoreUtils.queryEntityPrivate(lquery);
+        } catch (LeanException e)
+        {
+            log.severe("error while getting private photo info from DS");
+            e.printStackTrace();
+            return false;
+        }
+        if (result == null || result.getResult().isEmpty())
+            return false;
+        return true;
     }
 
     private static final Logger log = Logger.getLogger(DataManager.class.getName());

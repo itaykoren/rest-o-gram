@@ -560,21 +560,8 @@ public class RestogramServiceImpl implements RestogramService {
         i = 0;
         for (MediaFeedData media : data) {
             photos[i] = convert(media, originVenueId);
-            if (AuthService.isUserLoggedIn()) {
-                final LeanQuery lquery = new LeanQuery(Kinds.PHOTO_REFERENCE);
-                lquery.addFilter(Props.PhotoRef.INSTAGRAM_ID, QueryFilter.FilterOperator.EQUAL,
-                        photos[i].getInstagram_id());
-                lquery.addFilter(Props.PhotoRef.IS_FAVORITE,  QueryFilter.FilterOperator.EQUAL, true);
-                QueryResult result = null;
-                try {
-                    result = DatastoreUtils.queryEntityPrivate(lquery);
-                } catch (LeanException e) {
-                    log.severe("error while getting private photo info from DS");
-                    e.printStackTrace();
-                }
-                if (result != null && !result.getResult().isEmpty())
-                    photos[i].set_favorite(true);
-            }
+            if (AuthService.isUserLoggedIn() && DataManager.isPhotoFavorite(photos[i].getInstagram_id()))
+                photos[i].set_favorite(true);
             ++i;
         }
 
