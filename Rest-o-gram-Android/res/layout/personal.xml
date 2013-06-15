@@ -63,7 +63,7 @@
                      android:textColor="#656565"
                      android:typeface="serif"
                      android:drawableTop="@drawable/ic_history"
-                     android:background="@drawable/custom_button"/>
+                     android:background="@drawable/custom_button_on"/>
 
 
          <Button

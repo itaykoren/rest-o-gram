@@ -147,7 +147,13 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         if(viewSwitcher.getCurrentView() != historyView) {
             updateHistory();
 
-            toggle();
+            Button bHistory = (Button)findViewById(R.id.bHistory);
+            Button bFavorites = (Button)findViewById(R.id.bFavorites);
+            if(bHistory != null && bFavorites != null) {
+                bHistory.setBackgroundResource(R.drawable.custom_button_on);
+                bFavorites.setBackgroundResource(R.drawable.custom_button);
+            }
+
             viewSwitcher.showPrevious();
         }
     }
@@ -160,7 +166,13 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
             if(!isPhotosRequestPending && !isVenuesRequestPending)
                 updateFavorites();
 
-            toggle();
+            Button bHistory = (Button)findViewById(R.id.bHistory);
+            Button bFavorites = (Button)findViewById(R.id.bFavorites);
+            if(bHistory != null && bFavorites != null) {
+                bHistory.setBackgroundResource(R.drawable.custom_button);
+                bFavorites.setBackgroundResource(R.drawable.custom_button_on);
+            }
+
             viewSwitcher.showNext();
         }
     }
@@ -386,14 +398,6 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     private void getProfilePhotoUrl(String facebookId) {
         RestogramClient.getInstance().getProfilePhotoUrl(facebookId, this);
-    }
-
-    private void toggle() {
-        View bHistory = findViewById(R.id.bHistory);
-        View bFavorites = findViewById(R.id.bFavorites);
-        if(bHistory != null && bFavorites != null) {
-            // TODO: set icon/text/...
-        }
     }
 
     private void showMessage(String text) {
