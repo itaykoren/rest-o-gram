@@ -20,6 +20,7 @@ public class LeanQuery {
     private Integer offset;
     private Integer limit;
     private QueryReference reference;
+    private boolean keysOnly;
 
     public LeanQuery(String kind) {
         this.kind = kind;
@@ -219,5 +220,13 @@ public class LeanQuery {
 
     public void setReference(QueryReference reference) {
         this.reference = reference;
+    }
+
+    public boolean isKeysOnly() {
+        return keysOnly;
+    }
+
+    public void setKeysOnly() {
+        this.keysOnly = true;
     }
 }

@@ -32,13 +32,13 @@ public class DataManager {
     // NON-AUTH
 
     public static Map<String,Boolean> getPhotoToRuleMapping(final String... ids) throws LeanException {
-        final Collection<Entity> photoMetas =
+        final Collection<Entity> photoEntities =
                 DatastoreUtils.getPublicEntities(Kinds.PHOTO, ids);
-        final Map<String,Boolean> result = new HashMap<>(photoMetas.size());
-        for (final Entity currPhotoMeta : photoMetas)
+        final Map<String,Boolean> result = new HashMap<>(photoEntities.size());
+        for (final Entity currPhotoEntity : photoEntities)
         {
-            final String currPhotoId = currPhotoMeta.getKey().getName();
-            final boolean currApproval = (boolean)currPhotoMeta.getProperty(Props.Photo.APPROVED);
+            final String currPhotoId = currPhotoEntity.getKey().getName();
+            final boolean currApproval = (boolean)currPhotoEntity.getProperty(Props.Photo.APPROVED);
             result.put(currPhotoId, currApproval);
         }
         return result;
@@ -174,7 +174,8 @@ public class DataManager {
     }
 
     public static boolean isPhotoInCache(final String photoId) {
-
+        LeanQuery query = new LeanQuery("kind");
+        //query.addFilter();
         return false;
     }
 
@@ -186,11 +187,14 @@ public class DataManager {
     private static PhotosResult createPhotosResultFromQueryResult(QueryResult queryResult) {
 
         if (queryResult != null && queryResult.getResult() != null) {
-            String token = (queryResult.getCursor() == null) ? null : queryResult.getCursor().toWebSafeString();
-            if (token == null)
+            final Cursor cursor = queryResult.getCursor();
+            String token = null;
+            if (cursor == null) // no more results
                 token = Defs.Tokens.FINISHED_FETCHING_FROM_CACHE;
+            else // has more results
+                token = cursor.toWebSafeString();
             final List<Entity> entities = queryResult.getResult();
-            RestogramPhoto[] result = new RestogramPhoto[entities.size()];
+            final RestogramPhoto[] result = new RestogramPhoto[entities.size()];
             int i = 0;
             for (final Entity currEntity : entities)
                 result[i++] = (Converters.entityToPhoto(currEntity));
@@ -198,8 +202,8 @@ public class DataManager {
             return new PhotosResult(result, token);
         }
 
-        return null;
-
+        log.severe("cannot init photos query result");
+        return null; // error
     }
 
     private static final Logger log = Logger.getLogger(DataManager.class.getName());

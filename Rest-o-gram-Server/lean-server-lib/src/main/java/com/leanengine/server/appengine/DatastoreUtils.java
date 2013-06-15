@@ -34,10 +34,6 @@ public class DatastoreUtils {
             throw new LeanException(LeanException.Error.EntityNotFound);
         }
 
-//        if (account.id != (Long) entity.getProperty("_account"))
-//                  throw new LeanException(LeanException.Error.NotAuthorized,
-//                          " Account not authorized to access entity '" + kind + "'with ID '" + entityId + "'");
-
         return entity;
     }
 
@@ -264,6 +260,8 @@ public class DatastoreUtils {
                 query.setFilter(Query.CompositeFilterOperator.and(subFilters));
             }
         }
+        if (leanQuery.isKeysOnly())
+            query.setKeysOnly();
 
         for (QuerySort querySort : leanQuery.getSorts()) {
             query.addSort(querySort.getProperty(), querySort.getDirection().getSortDirection());
