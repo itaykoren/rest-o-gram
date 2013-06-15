@@ -64,6 +64,18 @@
                         android:layout_below="@+id/tvVenueName"
                         android:layout_toRightOf="@+id/ivVenue"/>
 
+                <!--venue city-->
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvVenueCity"
+                        android:textColor="#040404"
+                        android:textSize="14dp"
+                        android:gravity="left"
+                        android:typeface="serif"
+                        android:layout_below="@+id/tvVenueAddress"
+                        android:layout_toRightOf="@+id/ivVenue"/>
+
                 <!--venue phone-->
                 <TextView
                         android:layout_width="wrap_content"
