@@ -614,18 +614,31 @@ public class RestogramServiceImpl implements RestogramService {
         }
 
 //     enqueue filtering task for unknown photos
-        final Map<String, String> photoIdToUrl = new HashMap<>();
-        for (final MediaFeedData currMediaFeedData : data) {
+        //final Map<String, String> photoIdToUrl = new HashMap<>();
+        //final Map<MediaFeedData, String> rawPhotoToUrl = new HashMap<>();
+        List<MediaFeedData> mediaFeedDatas = new ArrayList<>();
+        for (final MediaFeedData currMediaFeedData : data)
+        {
             final String currId = currMediaFeedData.getId();
-            if (!photoToRule.containsKey(currId) && !DataManager.isPhotoPending(currId)) {
+            if (!photoToRule.containsKey(currId) && !DataManager.isPhotoPending(currId))
+            {
                 final Images currImages = currMediaFeedData.getImages();
                 if (currImages != null && currImages.getStandardResolution() != null)
-                    photoIdToUrl.put(currId, currImages.getStandardResolution().getImageUrl());
+                    //photoIdToUrl.put(currId, currImages.getStandardResolution().getImageUrl());
+                    //rawPhotoToUrl.put(currMediaFeedData, currImages.getStandardResolution().getImageUrl());
+                    mediaFeedDatas.add(currMediaFeedData);
             }
         }
 
-        if (!photoIdToUrl.isEmpty())
-            TasksManager.enqueueFilterTask(originVenueId, photoIdToUrl);
+        // enquing as a task to queue
+        //if (!rawPhotoToUrl.isEmpty())
+        if (!mediaFeedDatas.isEmpty())
+            TasksManager.enqueueFilterTask(originVenueId, mediaFeedDatas);
+
+        // setting as pending photos
+        for (final MediaFeedData currMediaFeedData : data)
+            DataManager.addPendingPhoto(ApisConverters.convertToRestogramPhoto(currMediaFeedData,
+                                        originVenueId));
     }
 
     private List<MediaFeedData> removeCachedPhotos(List<MediaFeedData> data) {

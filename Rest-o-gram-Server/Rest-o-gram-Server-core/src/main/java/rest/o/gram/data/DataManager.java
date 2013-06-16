@@ -13,6 +13,8 @@ import com.leanengine.server.entity.QueryFilter;
 import com.leanengine.server.entity.QueryResult;
 import com.leanengine.server.entity.QuerySort;
 import org.apache.commons.lang3.StringUtils;
+import org.jinstagram.entity.users.feed.MediaFeedData;
+import rest.o.gram.ApisConverters;
 import rest.o.gram.DataStoreConverters;
 import rest.o.gram.Defs;
 import rest.o.gram.entities.Kinds;
@@ -48,13 +50,26 @@ public final class DataManager {
         return result;
     }
 
-    public static boolean savePhotoToRuleMapping(final Map<String,Boolean> photoIdToRuleMapping) {
+    public static boolean savePhotoToRuleMapping(final Map<RestogramPhoto,Boolean> photoToRuleMapping) {
         final PutBatchOperation putOp = DatastoreUtils.startPutBatch();
-        for (final Map.Entry<String,Boolean> currEntry :  photoIdToRuleMapping.entrySet())
+        for (final Map.Entry<RestogramPhoto,Boolean> currEntry :  photoToRuleMapping.entrySet())
         {
-            final String currName = currEntry.getKey();
+            final RestogramPhoto currPhoto = currEntry.getKey();
+            final String currName = currPhoto.getInstagram_id();
             putOp.addEntity(Kinds.PHOTO, currName);
             putOp.addEntityProperty(currName, Props.Photo.APPROVED, currEntry.getValue());
+
+            // TODO: refactor
+            putOp.addEntityProperty(currName, Props.Photo.ORIGIN_VENUE_ID, currPhoto.getOriginVenueId());
+            putOp.addEntityProperty(currName, Props.Photo.CAPTION, currPhoto.getCaption());
+            putOp.addEntityProperty(currName, Props.Photo.CREATED_TIME, currPhoto.getCreatedTime());
+            putOp.addEntityProperty(currName, Props.Photo.IMAGE_FILTER, currPhoto.getImageFilter());
+            putOp.addEntityProperty(currName, Props.Photo.LIKES, currPhoto.getLikes());
+            putOp.addEntityProperty(currName, Props.Photo.STANDARD_RESOLUTION, currPhoto.getStandardResolution());
+            putOp.addEntityProperty(currName, Props.Photo.LINK, currPhoto.getLink());
+            putOp.addEntityProperty(currName, Props.Photo.THUMBNAIL, currPhoto.getThumbnail());
+            putOp.addEntityProperty(currName, Props.Photo.TYPE, currPhoto.getType());
+            putOp.addEntityProperty(currName, Props.Photo.USER, currPhoto.getUser());
         }
         return putOp.execute(new PutUpdateStrategy());
     }
@@ -161,19 +176,6 @@ public final class DataManager {
         }
         return true;
     }
-
-//    public static boolean isPhotoFavorite(final String photoId) {
-//        Entity photoEntity = null;
-//        try
-//        {
-//            DatastoreUtils.getPrivateEntity(Kinds.PHOTO_REFERENCE, photoId);
-//        } catch (LeanException e)
-//        {
-//            return false;  // no  entity-ref so it's not a favorite
-//        }
-//
-//        return (boolean)photoEntity.getProperty(Props.PhotoRef.IS_FAVORITE);
-//    }
 
     public static Set<String> fetchFavoritePhotoIds() {
         final LeanQuery query = new LeanQuery(Kinds.PHOTO_REFERENCE);
@@ -294,10 +296,10 @@ public final class DataManager {
     // mem-cache
 
     public static boolean isPhotoPending(final String photoId) {
-        return getPendingPhoto(photoId) !=  null;
+        return getMemcacheService().get(photoId) !=  null;
     }
 
-    public static RestogramPhoto getPendingPhoto(final String photoId) {
+    public static RestogramPhoto getPendingPhoto(final String photoId, String originVenueId) {
         return (RestogramPhoto)getMemcacheService().get(photoId);
     }
 
@@ -306,8 +308,16 @@ public final class DataManager {
         getMemcacheService().put(pendingPhoto.getInstagram_id(), pendingPhoto);
     }
 
+//    public static void addPendingPhotos(final Map<String,MediaFeedData> pendingPhotos) {
+//        getMemcacheService().putAll(pendingPhotos);
+//    }
+
     public static void removePendingPhoto(final String photoId) {
         getMemcacheService().delete(photoId);
+    }
+
+    public static void removePendingPhoto(final Collection<String> photoIds) {
+        getMemcacheService().deleteAll(photoIds);
     }
 
     private static MemcacheService getMemcacheService() {

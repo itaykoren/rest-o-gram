@@ -13,6 +13,8 @@
             <user-email>1068427818709-9f1h2fvdrtuopk94uvamdlimfjgg4b75@developer.gserviceaccount.com</user-email>
             <user-email>roichenz7@gmail.com</user-email>
             <user-email>449239466454@developer.gserviceaccount.com</user-email>
+            <user-email>itaykore@gmail.com</user-email>
+            <user-email>313444126549@developer.gserviceaccount.com</user-email>
         </acl>
     </queue>
 
@@ -28,6 +30,8 @@
             <writer-email>1068427818709-9f1h2fvdrtuopk94uvamdlimfjgg4b75@developer.gserviceaccount.com</writer-email>
             <writer-email>roichenz7@gmail.com</writer-email>
             <writer-email>449239466454@developer.gserviceaccount.com</writer-email>
+            <writer-email>itaykore@gmail.com</writer-email>
+            <writer-email>313444126549@developer.gserviceaccount.com</writer-email>
         </acl>
     </queue>
 </queue-entries>

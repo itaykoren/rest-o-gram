@@ -1,8 +1,10 @@
 package rest.o.gram.service.backend;
 
 import com.google.appengine.api.taskqueue.TaskHandle;
+import rest.o.gram.ApisAccessManager;
 import rest.o.gram.TasksManager.TasksManager;
 import rest.o.gram.data.DataManager;
+import rest.o.gram.entities.RestogramPhoto;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -47,7 +49,7 @@ public class FilterRulesServlet extends HttpServlet {
     }
 
     private static void processFilterResults() {
-        List<TaskHandle> tasks = TasksManager.leaseFilterResults(5, 30);
+        List<TaskHandle> tasks = TasksManager.leaseFilterResults(6, 30);
         for (final TaskHandle currTask :  tasks)
         {
             // extract rules results
@@ -57,15 +59,30 @@ public class FilterRulesServlet extends HttpServlet {
                 return;
             final String venueId  = headerBody[0];
             final String[] idRulePairs = headerBody[1].split(",");
-            final Map<String,Boolean> photoIdToRuleMapping  = new HashMap<>(idRulePairs.length/2);
+            final Map<RestogramPhoto,Boolean> photoToRuleMapping  = new HashMap<>(idRulePairs.length/2);
             for (int i = 0; i < idRulePairs.length - 1; i+=2)
-                photoIdToRuleMapping.put(idRulePairs[i],Boolean.parseBoolean(idRulePairs[i+1]));
+            {
+                final String currPhotoId = idRulePairs[i];
+                RestogramPhoto currPhoto = null;
+                if (!Boolean.parseBoolean(idRulePairs[i+1]))
+                {
+                    currPhoto = new RestogramPhoto();
+                    currPhoto.setInstagram_id(currPhotoId);
+                }
+                else if (DataManager.isPhotoPending(currPhotoId)) // restore from pending
+                    currPhoto = DataManager.getPendingPhoto(currPhotoId, venueId);
+                else // get from instagram
+                    currPhoto = ApisAccessManager.getPhoto(currPhotoId, venueId);
+
+                photoToRuleMapping.put(currPhoto,Boolean.parseBoolean(idRulePairs[i+1]));
+            }
 
             // update DS
-            DataManager.savePhotoToRuleMapping(photoIdToRuleMapping);
+            DataManager.savePhotoToRuleMapping(photoToRuleMapping);
 
             //  photo is no longer pending
-            //DataManager.removePendingPhoto();
+            for (int i = 0; i < idRulePairs.length - 1; i+=2)
+                DataManager.removePendingPhoto(idRulePairs[i]);
 
             // done - removes from queue
             TasksManager.dismissFilterResult(currTask.getName());

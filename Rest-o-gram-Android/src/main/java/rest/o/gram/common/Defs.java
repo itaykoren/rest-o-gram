@@ -25,7 +25,7 @@ public final class Defs {
      * Transport constants
      */
     public static class Transport {
-        public static final String BASE_HOST_NAME = "http://rest-o-gram.appspot.com";
+        public static final String BASE_HOST_NAME = "http://rest-o-debug.appspot.com";
     }
 
     /**

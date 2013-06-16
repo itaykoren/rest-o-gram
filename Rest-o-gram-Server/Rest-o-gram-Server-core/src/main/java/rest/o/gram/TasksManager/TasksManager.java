@@ -2,6 +2,9 @@ package rest.o.gram.TasksManager;
 
 import com.google.appengine.api.taskqueue.*;
 import com.google.appengine.repackaged.com.google.common.io.BaseEncoding;
+import org.apache.commons.lang3.StringUtils;
+import org.jinstagram.entity.users.feed.MediaFeedData;
+import rest.o.gram.data.DataManager;
 
 import java.util.List;
 import java.util.Map;
@@ -15,15 +18,20 @@ import java.util.logging.Logger;
  */
 public class TasksManager {
 
-    public static TaskHandle enqueueFilterTask(final String venueId, final Map<String,String> photoIdToUrl) {
+    public static TaskHandle enqueueFilterTask(final String venueId, final List<MediaFeedData> rawPhotos) {
         final StringBuilder payloadBuilder = new StringBuilder();
         payloadBuilder.append(venueId);
         payloadBuilder.append(";");
-        for (final Map.Entry<String,String> currEntry : photoIdToUrl.entrySet())
+        for (final MediaFeedData currMedia : rawPhotos)
         {
-            payloadBuilder.append(currEntry.getKey());
+            if (currMedia == null || currMedia.getImages() == null ||
+                currMedia.getImages().getStandardResolution() == null ||
+                StringUtils.isBlank(currMedia.getImages().getStandardResolution().getImageUrl()))
+                        continue;
+
+            payloadBuilder.append(currMedia.getId());
             payloadBuilder.append(",");
-            payloadBuilder.append(currEntry.getValue());
+            payloadBuilder.append(currMedia.getImages().getStandardResolution().getImageUrl());
             payloadBuilder.append(",");
         }
         payloadBuilder.substring(0, payloadBuilder.length()-1);
