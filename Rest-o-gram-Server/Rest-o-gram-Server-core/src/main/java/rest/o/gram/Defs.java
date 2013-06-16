@@ -11,7 +11,7 @@ public final class Defs {
      * Request constants
      */
     public static class Request {
-        public static final int MIN_PHOTOS_PER_REQUEST = 8;
+        public static final int MIN_PHOTOS_PER_REQUEST = 6;
     }
 
     /**
