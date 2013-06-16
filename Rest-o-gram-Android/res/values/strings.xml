@@ -17,12 +17,15 @@
 
     <string name="history">History</string>
     <string name="yummies">Yummies</string>
-    <string name="explore_welcome">Here you can explore photos from restaurants nearby. Just click on any photo and
-        start exploring! Click outside the box to dismiss.
-    </string>
-    <string name="map_welcome">Clicking on an icon will take you to the restaurant page. You can also press and hold on a
-        specific area to explore the restaurants there. Click outside the box to dismiss.
-    </string>
+
+    <string name="explore_welcome">Here you can explore photos from restaurants nearby.</string>
+    <string name="explore_welcome_2">Just click on any photo and start exploring!</string>
+    <string name="explore_welcome_3">Click outside the box to dismiss.</string>
+
+    <string name="map_welcome">Clicking on an icon will take you to the restaurant page.</string>
+    <string name="map_welcome_2">You can also press and hold on a specific area to explore the restaurants there.</string>
+    <string name="map_welcome_3">Click outside the box to dismiss.</string>
+
     <string name="welcome_what_is_restogram">Rest-o-Gram is an Instagram based restaurant experience which allows you to
         explore restaurants through the eyes of others.
     </string>
