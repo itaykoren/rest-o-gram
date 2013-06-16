@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  * User: Or
  * Date: 6/16/13
  */
-public final class ApisCoonverters {
+public final class ApisConverters {
     public static RestogramPhoto convertToRestogramPhoto(final MediaFeedData media, String originVenueId) {
         String caption = "";
         if (media.getCaption() != null)
@@ -111,5 +111,5 @@ public final class ApisCoonverters {
         return result.encodeStrings();
     }
 
-    private static final Logger log = Logger.getLogger(ApisCoonverters.class.getName());
+    private static final Logger log = Logger.getLogger(ApisConverters.class.getName());
 }

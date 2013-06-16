@@ -52,7 +52,7 @@ public final class ApisAccessManager {
             }
         }
 
-        return ApisCoonverters.convertToRestogramPhoto(mediaInfo.getData(), originVenueId);
+        return ApisConverters.convertToRestogramPhoto(mediaInfo.getData(), originVenueId);
     }
 
     private static final Logger log = Logger.getLogger(ApisAccessManager.class.getName());
