@@ -409,7 +409,7 @@ public class RestogramServiceImpl implements RestogramService {
             // fetch cached photos of given venue
             cachedPhotosResult = DataManager.fetchPhotosFromCache(venueId, token);
             log.severe(String.format("checking cache took [%d] millis", (new DateTime().getMillis() - start)));
-
+            start = new DateTime().getMillis();
             // sets private data for entities
             if (AuthService.isUserLoggedIn() && cachedPhotosResult != null &&
                 cachedPhotosResult.getPhotos() != null)
@@ -423,7 +423,7 @@ public class RestogramServiceImpl implements RestogramService {
             }
 
             log.severe(String.format("setting private data for entities took [%d] millis", (new DateTime().getMillis() - start)));
-
+            start = new DateTime().getMillis();
         }
 
         // reset token if needed
@@ -436,8 +436,10 @@ public class RestogramServiceImpl implements RestogramService {
 
             PhotosResult instagramPhotos = doGetInstagramPhotos(venueId, filterType, token);
             log.severe(String.format("no photos in cache. first fetch from instagram took [%d] millis", (new DateTime().getMillis() - start)));
+            start = new DateTime().getMillis();
             instagramPhotos = getMoreResultsIfNeeded(instagramPhotos, venueId, filterType);
             log.severe(String.format("no photos in cache. second fetch from instagram took [%d] millis", (new DateTime().getMillis() - start)));
+            log.severe(String.format("sending [%d] photos to client", instagramPhotos.getPhotos().length));
             return instagramPhotos;
         }
 
@@ -449,8 +451,10 @@ public class RestogramServiceImpl implements RestogramService {
         else {
             PhotosResult photosFromInstagram = doGetInstagramPhotos(venueId, filterType, token);
             log.severe(String.format("some photos were found in cache. first fetch from instagram took [%d] millis", (new DateTime().getMillis() - start)));
+            start = new DateTime().getMillis();
             PhotosResult mergedResults = mergeResults(cachedPhotosResult, photosFromInstagram);
             log.severe(String.format("adding up cache and instagram photos took [%d] millis", (new DateTime().getMillis() - start)));
+            start = new DateTime().getMillis();
             mergedResults = getMoreResultsIfNeeded(mergedResults, venueId, filterType);
             log.severe(String.format("still not enough photos were found. second fetch from instagram took [%d] millis", (new DateTime().getMillis() - start)));
             return mergedResults;
@@ -463,8 +467,10 @@ public class RestogramServiceImpl implements RestogramService {
                 currentPhotos.getPhotos() != null &&
                 currentPhotos.getToken() != null &&
                 currentPhotos.getPhotos().length < Defs.Request.MIN_PHOTOS_PER_REQUEST) {
-
+            log.severe(String.format("got [%d] photos, asking for more", currentPhotos.getPhotos().length));
             PhotosResult nextPhotos = doGetInstagramPhotos(venueId, filterType, currentPhotos.getToken());
+            log.severe(String.format("got [%d] more photos, merging", nextPhotos.getPhotos().length));
+
             return mergeResults(currentPhotos, nextPhotos);
         }
         return currentPhotos;
@@ -521,7 +527,7 @@ public class RestogramServiceImpl implements RestogramService {
 
         addPhotosToQueue(data, venueId);
 
-        data = filterPhotosIfNeeded(data, filterType);
+//        data = filterPhotosIfNeeded(data, filterType);
 
         RestogramPhoto[] photos = convertMediaFeedDataToRestogramPhotos(data, venueId);
 
