@@ -416,7 +416,9 @@ public class RestogramServiceImpl implements RestogramService {
                 cachedPhotosResult.getPhotos() == null ||
                 cachedPhotosResult.getPhotos().length == 0) {
 
-            return doGetInstagramPhotos(venueId, filterType, token);
+            PhotosResult instagramPhotos = doGetInstagramPhotos(venueId, filterType, token);
+            instagramPhotos = getMoreResultsIfNeeded(instagramPhotos, venueId, filterType);
+            return instagramPhotos;
         }
 
         // if enough results were found, return results
@@ -426,8 +428,23 @@ public class RestogramServiceImpl implements RestogramService {
         // otherwise, not enough results were found, add more from Instagram
         else {
             PhotosResult photosFromInstagram = doGetInstagramPhotos(venueId, filterType, token);
-            return mergeResults(cachedPhotosResult, photosFromInstagram);
+            PhotosResult mergedResults = mergeResults(cachedPhotosResult, photosFromInstagram);
+            mergedResults = getMoreResultsIfNeeded(mergedResults, venueId, filterType);
+            return mergedResults;
         }
+    }
+
+    private PhotosResult getMoreResultsIfNeeded(PhotosResult currentPhotos, String venueId, RestogramFilterType filterType) {
+
+        if (currentPhotos != null &&
+                currentPhotos.getPhotos() != null &&
+                currentPhotos.getToken() != null &&
+                currentPhotos.getPhotos().length < Defs.Request.MIN_PHOTOS_PER_REQUEST) {
+
+            PhotosResult nextPhotos = doGetInstagramPhotos(venueId, filterType, currentPhotos.getToken());
+            return mergeResults(currentPhotos, nextPhotos);
+        }
+        return currentPhotos;
     }
 
     private String resetTokenIfNeeded(String token, PhotosResult result) {
@@ -442,28 +459,28 @@ public class RestogramServiceImpl implements RestogramService {
         return token;
     }
 
-    private PhotosResult mergeResults(PhotosResult cachedPhotosResult, PhotosResult instagramPhotosResult) {
+    private PhotosResult mergeResults(PhotosResult first, PhotosResult second) {
 
-        if (cachedPhotosResult == null || cachedPhotosResult.getPhotos() == null)
-            return instagramPhotosResult;
+        if (first == null || first.getPhotos() == null)
+            return second;
 
-        if (instagramPhotosResult == null || instagramPhotosResult.getPhotos() == null)
-            return cachedPhotosResult;
+        if (second == null || second.getPhotos() == null)
+            return first;
 
-        RestogramPhoto[] cachedPhotos = cachedPhotosResult.getPhotos();
-        RestogramPhoto[] instagramPhotos = instagramPhotosResult.getPhotos();
-        int cachedPhotosLength = cachedPhotos.length;
-        int instagramPhotosLength = instagramPhotos.length;
+        RestogramPhoto[] firstPhotos = first.getPhotos();
+        RestogramPhoto[] secondPhotos = second.getPhotos();
+        int firstPhotosLength = firstPhotos.length;
+        int secondPhotosLength = secondPhotos.length;
 
-        RestogramPhoto[] mergedPhotos = new RestogramPhoto[cachedPhotosLength + instagramPhotosLength];
+        RestogramPhoto[] mergedPhotos = new RestogramPhoto[firstPhotosLength + secondPhotosLength];
 
         // add photos from cache to results
-        System.arraycopy(cachedPhotos, 0, mergedPhotos, 0, cachedPhotosLength);
+        System.arraycopy(firstPhotos, 0, mergedPhotos, 0, firstPhotosLength);
 
         // add photos from Instagram to results
-        System.arraycopy(instagramPhotos, 0, mergedPhotos, cachedPhotosLength, instagramPhotosLength);
+        System.arraycopy(secondPhotos, 0, mergedPhotos, firstPhotosLength, secondPhotosLength);
 
-        return new PhotosResult(mergedPhotos, instagramPhotosResult.getToken());
+        return new PhotosResult(mergedPhotos, second.getToken());
     }
 
     private PhotosResult doGetInstagramPhotos(String venueId, RestogramFilterType filterType, String token) {
