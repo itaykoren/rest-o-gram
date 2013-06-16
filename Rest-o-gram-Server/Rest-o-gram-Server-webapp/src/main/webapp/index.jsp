@@ -12,7 +12,7 @@
 
   <h2>Installation</h2>
   <p>Rest-o-Gram is an Android app, so if you have an Android device just click on the link below and download the app.</p>
-  <a href="">Download Rest-o-Gram</a>
+  <a href="https://rest-o-gram.googlecode.com/files/Rest-o-Gram-MS3.apk">Download Rest-o-Gram</a>
 
 
   <h2>Requirements</h2>
@@ -20,7 +20,7 @@
 
 
   <h2>Usage Instructions</h2>
-  <p>After you install the app, check out <a href="https://code.google.com/p/rest-o-gram/downloads/detail?name=MS3-Demo.mp4&can=2&q=">this</a> tutorial video to learn how to use Rest-o-Gram</p>
+  <p>After you install the app, check out <a href="https://rest-o-gram.googlecode.com/files/MS3-Demo.mp4">this</a> tutorial video to learn how to use Rest-o-Gram</p>
 
 
   <h4>Copyright © 2013, by Rest-o-Gram</h4>
