@@ -523,7 +523,7 @@ public class RestogramServiceImpl implements RestogramService {
 
         data = filterPhotosIfNeeded(data, filterType);
 
-        RestogramPhoto[] photos = convertMediaFeedDataToRestogramPhoto(data, venueId);
+        RestogramPhoto[] photos = convertMediaFeedDataToRestogramPhotos(data, venueId);
 
         log.info("GOT " + photos.length + " PHOTOS");
         final Pagination pagination = recentMediaByLocation.getPagination();
@@ -565,13 +565,15 @@ public class RestogramServiceImpl implements RestogramService {
         return locationList.get(0).getId(); // TODO: what if we get multiple locations?
     }
 
-    private RestogramPhoto[] convertMediaFeedDataToRestogramPhoto(List<MediaFeedData> data, String venueId) {
+    private RestogramPhoto[] convertMediaFeedDataToRestogramPhotos(List<MediaFeedData> data, String venueId) {
 
         RestogramPhoto[] photos = new RestogramPhoto[data.size()];
 
         int i = 0;
-        for (final MediaFeedData media : data)
+        for (final MediaFeedData media : data) {
             photos[i] = ApisCoonverters.convertToRestogramPhoto(media, venueId);
+            ++i;
+        }
         return photos;
     }
 
