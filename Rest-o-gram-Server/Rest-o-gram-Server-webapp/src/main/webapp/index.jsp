@@ -16,7 +16,7 @@
 
 
   <h2>Requirements</h2>
-  <p></p>
+  <p>Android device running ICS (4.0x) and up</p>
 
 
   <h2>Usage Instructions</h2>
