@@ -22,7 +22,7 @@ import org.jinstagram.entity.locations.LocationSearchFeed;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.exceptions.InstagramException;
-import rest.o.gram.ApisCoonverters;
+import rest.o.gram.ApisConverters;
 import rest.o.gram.DataStoreConverters;
 import rest.o.gram.Defs;
 import rest.o.gram.TasksManager.TasksManager;
@@ -131,7 +131,7 @@ public class RestogramServiceImpl implements RestogramService {
             return null;
         }
 
-        final RestogramVenue venue = ApisCoonverters.convertToRestogramVenue(v);
+        final RestogramVenue venue = ApisConverters.convertToRestogramVenue(v);
 
         cacheVenue(venue);
 
@@ -270,7 +270,7 @@ public class RestogramServiceImpl implements RestogramService {
             }
         }
 
-        return cacheVenue(ApisCoonverters.convertToRestogramVenue(compVenue));
+        return cacheVenue(ApisConverters.convertToRestogramVenue(compVenue));
     }
 
     private boolean cacheVenue(final RestogramVenue venue) {
@@ -353,7 +353,7 @@ public class RestogramServiceImpl implements RestogramService {
         RestogramVenue[] venues = new RestogramVenue[length];
 
         for (int i = 0; i < length; i++) {
-            venues[i] = ApisCoonverters.convertToRestogramVenue(arr[i]);
+            venues[i] = ApisConverters.convertToRestogramVenue(arr[i]);
             venueIds[i] = arr[i].getId();
             if (AuthService.isUserLoggedIn()) {
                 final LeanQuery lquery = new LeanQuery(Kinds.VENUE_REFERENCE);
@@ -460,7 +460,7 @@ public class RestogramServiceImpl implements RestogramService {
 
         if (currentPhotos != null &&
                 currentPhotos.getPhotos() != null &&
-                currentPhotos.getToken() != null &&
+                StringUtils.isNotBlank(currentPhotos.getToken()) &&
                 currentPhotos.getPhotos().length < Defs.Request.MIN_PHOTOS_PER_REQUEST) {
             log.severe(String.format("got [%d] photos, asking for more", currentPhotos.getPhotos().length));
             PhotosResult nextPhotos = doGetInstagramPhotos(venueId, filterType, currentPhotos.getToken());
@@ -526,7 +526,7 @@ public class RestogramServiceImpl implements RestogramService {
 
         addPhotosToQueue(data, venueId);
         log.severe(String.format("sending [%d] photos for filtering. current timestamp is [%d]", data.size(), new DateTime().getMillis()));
-        data = filterPhotosIfNeeded(data, filterType);
+//        data = filterPhotosIfNeeded(data, filterType);
         log.severe(String.format("received [%d] photos after filtering. current timestamp is [%d]", data.size(), new DateTime().getMillis()));
         log.severe(String.format("converting [%d] instagram photos to restogramphotos", data.size()));
 
@@ -578,7 +578,7 @@ public class RestogramServiceImpl implements RestogramService {
 
         int i = 0;
         for (final MediaFeedData media : data) {
-            photos[i] = ApisCoonverters.convertToRestogramPhoto(media, venueId);
+            photos[i] = ApisConverters.convertToRestogramPhoto(media, venueId);
             ++i;
         }
         return photos;
