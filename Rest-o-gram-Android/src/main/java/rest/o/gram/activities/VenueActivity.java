@@ -114,10 +114,10 @@ public class VenueActivity extends RestogramActionBarActivity {
     public void onFinished(GetInfoResult result) {
         super.onFinished(result);
 
-        final RestogramVenue venue = result.getVenue();
-        if(result == null || venue == null)
+        if(result == null || result.getVenue() == null)
             return;
 
+        final RestogramVenue venue = result.getVenue();
         if(venue.getImageUrl() != null && !venue.getImageUrl().isEmpty()) {
             setVenuePhoto(venue.getImageUrl());
         }
