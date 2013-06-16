@@ -98,7 +98,7 @@ public final class DataManager {
         props.put(Props.PhotoRef.INSTAGRAM_ID, photoId);
         props.put(Props.PhotoRef.IS_FAVORITE, isFav);
         try {
-            DatastoreUtils.putPublicEntity(Kinds.PHOTO_REFERENCE, photoId, props);
+            DatastoreUtils.putPrivateEntity(Kinds.PHOTO_REFERENCE, photoId, props);
         } catch (LeanException e) {
             e.printStackTrace();
             log.severe("cannot add a photo to favorites");
