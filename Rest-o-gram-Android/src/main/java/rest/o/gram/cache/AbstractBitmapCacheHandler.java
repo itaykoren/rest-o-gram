@@ -10,11 +10,11 @@ import android.graphics.Bitmap;
 public abstract class AbstractBitmapCacheHandler implements IBitmapCacheHandler {
     @Override
     public boolean save(String id, Bitmap bitmap) {
-        boolean res = doSave(id, bitmap);
+        doSave(id, bitmap);
         if(next != null)
-            res = next.save(id, bitmap) || res;
+            next.save(id, bitmap);
 
-        return res;
+        return true;
     }
 
     @Override
@@ -31,11 +31,11 @@ public abstract class AbstractBitmapCacheHandler implements IBitmapCacheHandler 
 
     @Override
     public boolean clear() {
-        boolean res = doClear();
+        doClear();
         if(next != null)
-            res = next.clear() || res;
+            next.clear();
 
-        return res;
+        return true;
     }
 
     @Override
