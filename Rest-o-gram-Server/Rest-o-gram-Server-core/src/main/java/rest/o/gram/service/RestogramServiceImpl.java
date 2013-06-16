@@ -436,7 +436,8 @@ public class RestogramServiceImpl implements RestogramService {
             log.severe(String.format("no photos in cache. first fetch from instagram took [%d] millis", (new DateTime().getMillis() - start)));
             instagramPhotos = getMoreResultsIfNeeded(instagramPhotos, venueId, filterType);
             log.severe(String.format("no photos in cache. second fetch from instagram took [%d] millis", (new DateTime().getMillis() - start)));
-            log.severe(String.format("sending [%d] photos to client", instagramPhotos.getPhotos().length));
+            if (instagramPhotos != null && instagramPhotos.getPhotos() != null)
+                log.severe(String.format("sending [%d] photos to client", instagramPhotos.getPhotos().length));
             return instagramPhotos;
         }
 
