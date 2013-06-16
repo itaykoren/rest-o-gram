@@ -84,7 +84,8 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
 
         // Initialize favorite helper
         favoriteHelper.setPhotoId(photo.getInstagram_id());
-        favoriteHelper.setFavoritePhotoButton((ImageButton)findViewById(R.id.bPhotoFavorite));
+        favoriteHelper.setFavoritePhotoButton((ImageButton)findViewById(R.id.bPhotoFavorite),
+                                              (TextView)findViewById(R.id.tvPhotoYummies));
         //favoriteHelper.refresh();
 
         final ImageButton favoritePhotoButton =

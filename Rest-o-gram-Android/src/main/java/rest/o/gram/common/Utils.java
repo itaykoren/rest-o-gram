@@ -34,6 +34,16 @@ public class Utils {
     }
 
     /**
+     * Updates given text view with given text resource
+     */
+    public static void updateTextView(TextView tv, int textResource) {
+        if(tv == null)
+            return;
+
+        tv.setText(textResource);
+    }
+
+    /**
      * Converts given unix timestamp to formatted date
      */
     public static String convertDate(String timestamp) {

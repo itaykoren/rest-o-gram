@@ -1,9 +1,11 @@
 package rest.o.gram.activities.helpers;
 
 import android.widget.ImageButton;
+import android.widget.TextView;
 import rest.o.gram.R;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
+import rest.o.gram.common.Utils;
 import rest.o.gram.data_favorites.GetFavoritePhotosResult;
 import rest.o.gram.data_favorites.GetFavoriteVenuesResult;
 import rest.o.gram.data_favorites.IDataFavoritesManager;
@@ -66,8 +68,9 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
     /**
      * Sets favorite photo button
      */
-    public void setFavoritePhotoButton(ImageButton button) {
+    public void setFavoritePhotoButton(ImageButton button, TextView textView) {
         favoritePhotoButton = button;
+        photoYummiesTextView = textView;
     }
 
     /**
@@ -130,6 +133,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
                 favoritePhotoButton.setImageResource(R.drawable.ic_favorite_on);
             else
                 favoritePhotoButton.setImageResource(R.drawable.ic_favorite_off);
+
+            updateYummiesCount(photoYummiesTextView, photoId);
         }
 
         // TODO: handle pagination - if(result.hasMore())...
@@ -222,6 +227,19 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
             favoriteVenueButton.setImageResource(R.drawable.ic_favorite_off);
     }
 
+    private void updateYummiesCount(TextView textView, String photoId) {
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        RestogramPhoto photo = cache.findPhoto(photoId);
+        if(photo == null)
+            return;
+
+        long yummies = photo.getYummies();
+        if(yummies > 0)
+            Utils.updateTextView(textView, String.format(String.format("%d yummies", yummies)));
+        else
+            Utils.updateTextView(textView, R.string.default_yummies_text);
+    }
+
     private IDataFavoritesManager dataFavoritesManager;
 
     private String venueId;
@@ -229,4 +247,5 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
 
     private ImageButton favoriteVenueButton;
     private ImageButton favoritePhotoButton;
+    private TextView photoYummiesTextView;
 }
