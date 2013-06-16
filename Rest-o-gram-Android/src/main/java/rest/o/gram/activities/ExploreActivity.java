@@ -133,7 +133,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
         venues[currVenueIndex].lastPhotoIndex = result.getPhotos().length - 1;
 
-        if (result.getPhotos().length < Defs.Feed.PHOTOS_PACKET_THRESHOLD)
+        if (result.getPhotos().length != 0 && result.getPhotos().length < Defs.Feed.PHOTOS_PACKET_THRESHOLD)
             getMorePhotos();
     }
 
