@@ -548,10 +548,14 @@ public class RestogramServiceImpl implements RestogramService {
         RestogramPhoto[] photos = new RestogramPhoto[data.size()];
 
         int i = 0;
-        for (MediaFeedData media : data) {
+        for (final MediaFeedData media : data)
+        {
             photos[i] = ApisCoonverters.convertToRestogramPhoto(media, venueId);
-            if (AuthService.isUserLoggedIn() && DataManager.isPhotoFavorite(photos[i].getInstagram_id())) {
-                photos[i].set_favorite(true);
+            final String currPhotoId = photos[i].getInstagram_id();
+            if (AuthService.isUserLoggedIn())
+            {
+                photos[i].set_favorite(DataManager.isPhotoFavorite(currPhotoId));
+                photos[i].setYummies(DataManager.getPhotoYummiesCount(currPhotoId));
             }
             ++i;
         }

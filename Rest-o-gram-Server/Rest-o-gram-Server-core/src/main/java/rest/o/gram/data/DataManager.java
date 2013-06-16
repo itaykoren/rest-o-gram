@@ -13,7 +13,6 @@ import com.leanengine.server.entity.QueryFilter;
 import com.leanengine.server.entity.QueryResult;
 import com.leanengine.server.entity.QuerySort;
 import org.apache.commons.lang3.StringUtils;
-import rest.o.gram.ApisAccessManager;
 import rest.o.gram.DataStoreConverters;
 import rest.o.gram.Defs;
 import rest.o.gram.entities.Kinds;
@@ -174,6 +173,22 @@ public final class DataManager {
         }
 
         return (boolean)photoEntity.getProperty(Props.PhotoRef.IS_FAVORITE);
+    }
+
+    public static long getPhotoYummiesCount(final String photoId) {
+        Entity photoEntity = null;
+        try
+        {
+            DatastoreUtils.getPrivateEntity(Kinds.PHOTO, photoId);
+        } catch (LeanException e)
+        {
+            return 0;  // default yummies count is 0
+        }
+
+        if (!photoEntity.hasProperty(Props.Photo.YUMMIES))
+            return 0;
+
+        return (long)photoEntity.getProperty(Props.Photo.YUMMIES);
     }
 
     public static boolean cachePhoto(RestogramPhoto photo) {

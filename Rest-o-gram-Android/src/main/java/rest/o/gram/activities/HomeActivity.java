@@ -152,6 +152,8 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
             diagManager.showNoVenuesAlert(this, true);
         }
         else {
+            if(RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn())
+                onUserLoggedIn();
             // Switch to "ExploreActivity" with no parameters
             Intent intent = new Intent(this, ExploreActivity.class);
             Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, true);
