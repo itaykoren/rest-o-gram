@@ -518,11 +518,16 @@ public class RestogramServiceImpl implements RestogramService {
 
         List<MediaFeedData> data = recentMediaByLocation.getData();
 
+        log.severe(String.format("got [%d] photos from instagram", data.size()));
+
         data = removeCachedPhotos(data);
+
+        log.severe(String.format("kept [%d] photos after checking cache", data.size()));
 
         addPhotosToQueue(data, venueId);
 
 //        data = filterPhotosIfNeeded(data, filterType);
+        log.severe(String.format("converting [%d] instagram photos to restogramphotos", data.size()));
 
         RestogramPhoto[] photos = convertMediaFeedDataToRestogramPhotos(data, venueId);
 
