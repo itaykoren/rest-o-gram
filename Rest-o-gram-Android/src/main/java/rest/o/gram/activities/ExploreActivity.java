@@ -89,6 +89,14 @@ public class ExploreActivity extends RestogramActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if(RestogramClient.getInstance().activityAmount() == 1)
+            dialogManager.showExitAlert(this);
+        else
+            finish();
+    }
+
+    @Override
     public void onFinished(GetNearbyResult result) {
         super.onFinished(result);
 

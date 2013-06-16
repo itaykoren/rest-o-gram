@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.ImageView;
+import rest.o.gram.application.RestogramApplication;
 import rest.o.gram.authentication.AuthenticationProvider;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
@@ -44,9 +45,10 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public void initialize(Context context) {
+    public void initialize(Context context, RestogramApplication application) {
         try
         {
+            this.application = application;
             this.context = context;
 
             // sets debuggable flag
@@ -295,6 +297,11 @@ public class RestogramClient implements IRestogramClient {
         return debuggable;
     }
 
+    @Override
+    public int activityAmount() {
+        return application.activityAmount();
+    }
+
     private void setJsonEncoding(HttpJsonRpcClientTransport transport) {
         transport.setHeader("charset", "UTF-8");
     }
@@ -312,6 +319,7 @@ public class RestogramClient implements IRestogramClient {
 
     private static IRestogramClient instance; // Singleton instance
     private Context context; // Context
+    private RestogramApplication application; // Application
     private final String jsonServiceHostName = Defs.Transport.BASE_HOST_NAME + "/service"; // json rpc non-auth URL
     private final String jsonAuthServiceHostName = Defs.Transport.BASE_HOST_NAME + "/auth-service"; // json rpc non-auth URL
     private IAuthenticationProvider authProvider;

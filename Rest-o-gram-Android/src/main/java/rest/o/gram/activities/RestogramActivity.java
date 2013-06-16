@@ -31,6 +31,17 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
 
         // Initialize favorite helper
         favoriteHelper = new FavoriteHelper();
+
+        // Initialize dialog manager
+        dialogManager = new DialogManager();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(dialogManager != null)
+            dialogManager.clear();
     }
 
     /**
@@ -168,4 +179,5 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
 
     protected LoginHelper loginHelper; // Login helper
     protected FavoriteHelper favoriteHelper; // Favorite helper
+    protected DialogManager dialogManager; // Dialog manager
 }

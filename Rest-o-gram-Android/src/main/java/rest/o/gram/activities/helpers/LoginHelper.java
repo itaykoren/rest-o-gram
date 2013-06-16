@@ -66,7 +66,7 @@ public class LoginHelper {
     private void switchToPersonalActivity() {
         // Switch to "PersonalActivity" with no parameters
         Intent intent = new Intent(activity, PersonalActivity.class);
-        Utils.changeActivity(activity, intent, Defs.RequestCodes.RC_PERSONAL, false);
+        Utils.changeActivity(activity, intent, Defs.RequestCodes.RC_PERSONAL, true);
     }
 
     private void showLoginScreen() {

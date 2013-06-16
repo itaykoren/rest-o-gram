@@ -33,8 +33,6 @@ public class VenueActivity extends RestogramActionBarActivity {
 
         setContentView(R.layout.venue);
 
-        dialogManager = new DialogManager();
-
         // Get venue parameter
         try {
             Intent intent = getIntent();
@@ -250,5 +248,4 @@ public class VenueActivity extends RestogramActionBarActivity {
     private PhotoViewAdapter viewAdapter; // View adapter
     private String lastToken = null; // Last token
     private boolean isRequestPending = false; // Request pending flag
-    private DialogManager dialogManager; // Dialog manager
 }

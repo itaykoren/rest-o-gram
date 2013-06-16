@@ -29,13 +29,11 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
 
         setContentView(R.layout.home);
 
-        diagManager = new DialogManager();
-
         // Get location tracker
         tracker = RestogramClient.getInstance().getLocationTracker();
         if (tracker != null) {
             if (!tracker.canDetectLocation())
-                diagManager.showLocationTrackingAlert(this);
+                dialogManager.showLocationTrackingAlert(this);
             else {
                 tracker.setObserver(this);
                 tracker.start();
@@ -59,8 +57,6 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
 
         if(tracker != null)
             tracker.stop();
-
-        diagManager.clear();
     }
 
     @Override
@@ -87,7 +83,7 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
         {
             if (!netStateProvider.isOnline())
             {
-                diagManager.showNetworkStateAlert(this);
+                dialogManager.showNetworkStateAlert(this);
                 return;
             }
         }
@@ -104,7 +100,7 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
     public void onTrackingTimedOut() {
         if(tracker != null)
             tracker.stop();
-        diagManager.showLocationTrackingAlert(this);
+        dialogManager.showLocationTrackingAlert(this);
     }
 
     @Override
@@ -149,7 +145,7 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
     private void start() {
         if(!isFoundVenues) {
             // Show error dialog and switch to map after "ok"
-            diagManager.showNoVenuesAlert(this, true);
+            dialogManager.showNoVenuesAlert(this, true);
         }
         else {
             if(RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn())
@@ -171,6 +167,5 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
 
     private ILocationTracker tracker; // Location tracker
     private boolean gotLocation;
-    private DialogManager diagManager;
     private boolean isFoundVenues = false;
 }

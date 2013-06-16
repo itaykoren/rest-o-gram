@@ -63,7 +63,7 @@ public class RestogramActionBarActivity extends RestogramActivity {
 
                 // Switch to "ExploreActivity" with no parameters
                 Intent intent = new Intent(this, ExploreActivity.class);
-                Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, false);
+                Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, true);
                 break;
             }
             case R.id.action_map: {
@@ -72,7 +72,7 @@ public class RestogramActionBarActivity extends RestogramActivity {
 
                 // Switch to "MapActivity" with no parameters
                 Intent intent = new Intent(this, MapActivity.class);
-                Utils.changeActivity(this, intent, Defs.RequestCodes.RC_MAP, false);
+                Utils.changeActivity(this, intent, Defs.RequestCodes.RC_MAP, true);
                 break;
             }
             case R.id.action_personal: {
@@ -85,7 +85,7 @@ public class RestogramActionBarActivity extends RestogramActivity {
                 else {
                     // Switch to "PersonalActivity" with no parameters
                     Intent intent = new Intent(this, PersonalActivity.class);
-                    Utils.changeActivity(this, intent, Defs.RequestCodes.RC_PERSONAL, false);
+                    Utils.changeActivity(this, intent, Defs.RequestCodes.RC_PERSONAL, true);
                 }
                 break;
             }

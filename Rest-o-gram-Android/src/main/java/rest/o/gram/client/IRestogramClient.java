@@ -2,6 +2,7 @@ package rest.o.gram.client;
 
 import android.content.Context;
 import android.widget.ImageView;
+import rest.o.gram.application.RestogramApplication;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.cache.IBitmapCache;
 import rest.o.gram.cache.IRestogramCache;
@@ -27,7 +28,7 @@ public interface IRestogramClient {
     /**
      * Initializes this client
      */
-    void initialize(Context context);
+    void initialize(Context context, RestogramApplication application);
 
     /**
      * Disposes this client
@@ -157,4 +158,9 @@ public interface IRestogramClient {
      * @return is the application in debug mode?
      */
     boolean isDebuggable();
+
+    /**
+     * Returns activity amount
+     */
+    int activityAmount();
 }

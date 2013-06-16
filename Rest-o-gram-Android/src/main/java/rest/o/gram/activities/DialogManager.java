@@ -75,6 +75,43 @@ public final class DialogManager {
         fbDialog.show();
     }
 
+    public void showExitAlert(final Activity activity) {
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+
+                // Setting Dialog Title
+                alertDialog.setTitle(R.string.restogram_title);
+
+                // Setting Dialog Message
+                alertDialog.setMessage(R.string.exit_msg);
+
+                // On pressing Settings button
+                alertDialog.setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                dialogs.remove(dialog);
+                                activity.finish();
+                            }
+                        });
+
+                // On pressing cancel button
+                alertDialog.setNegativeButton("No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                dialogs.remove(dialog);
+                            }
+                        });
+
+                dialogs.add(alertDialog.show());
+            }
+        }, 500);
+    }
+
     public void clear() {
         for (DialogInterface diag : dialogs)
             diag.cancel();

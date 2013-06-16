@@ -27,7 +27,7 @@ public class RestogramApplication extends Application implements Application.Act
         activities = new HashSet<>();
 
         // Initialize client
-        RestogramClient.getInstance().initialize(getApplicationContext());
+        RestogramClient.getInstance().initialize(getApplicationContext(), this);
 
         // Register callbacks
         registerActivityLifecycleCallbacks(this);
@@ -117,6 +117,13 @@ public class RestogramApplication extends Application implements Application.Act
         IRestogramCache cache = RestogramClient.getInstance().getCache();
         if(cache != null)
             cache.clear();
+    }
+
+    /**
+     * Returns activity amount
+     */
+    public int activityAmount() {
+        return activities.size();
     }
 
     private Set<Activity> activities;
