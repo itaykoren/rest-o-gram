@@ -20,8 +20,7 @@
 
 
   <h2>Usage Instructions</h2>
-  <p>After you install the app, check out this tutorial video to learn how to use Rest-o-Gram</p>
-  <a href="https://code.google.com/p/rest-o-gram/downloads/detail?name=MS3-Demo.mp4&can=2&q=" />
+  <p>After you install the app, check out <a href="https://code.google.com/p/rest-o-gram/downloads/detail?name=MS3-Demo.mp4&can=2&q=">this</a> tutorial video to learn how to use Rest-o-Gram</p>
 
 
   <h4>Copyright © 2013, by Rest-o-Gram</h4>
