@@ -55,7 +55,7 @@ public class FilterRulesServlet extends HttpServlet {
             final String[] headerBody = payLoad.split(";");
             if (headerBody.length != 2)
                 return;
-            final String venueId  = headerBody[0]; // TODO: currently not needed since all photos are cached on first sight..
+            final String venueId  = headerBody[0];
             final String[] idRulePairs = headerBody[1].split(",");
             final Map<String,Boolean> photoIdToRuleMapping  = new HashMap<>(idRulePairs.length/2);
             for (int i = 0; i < idRulePairs.length - 1; i+=2)
@@ -63,6 +63,9 @@ public class FilterRulesServlet extends HttpServlet {
 
             // update DS
             DataManager.savePhotoToRuleMapping(photoIdToRuleMapping);
+
+            //  photo is no longer pending
+            //DataManager.removePendingPhoto();
 
             // done - removes from queue
             TasksManager.dismissFilterResult(currTask.getName());

@@ -37,6 +37,23 @@ public class DatastoreUtils {
         return entity;
     }
 
+    public static Entity getPrivateEntity(String kind, String entityName) throws LeanException {
+        LeanAccount account = findCurrentAccount();
+
+        if (entityName == null || kind == null) throw new LeanException(LeanException.Error.EntityNotFound,
+                " Entity 'kind' and 'name' must NOT be null.");
+
+        Entity entity;
+        try {
+            final Key accountKey = AccountUtils.getAccountKey(account.id);
+            entity = datastore.get(KeyFactory.createKey(accountKey, kind, entityName));
+        } catch (EntityNotFoundException e) {
+            throw new LeanException(LeanException.Error.EntityNotFound);
+        }
+
+        return entity;
+    }
+
     public static Entity getPublicEntity(String kind, String entityName) throws LeanException {
         if (entityName == null || kind == null) throw new LeanException(LeanException.Error.EntityNotFound,
                 " Entity 'kind' and 'name' must NOT be null.");

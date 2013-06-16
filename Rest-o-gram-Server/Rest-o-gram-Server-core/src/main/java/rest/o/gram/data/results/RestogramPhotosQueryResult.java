@@ -2,7 +2,7 @@ package rest.o.gram.data.results;
 
 import com.google.appengine.api.datastore.Entity;
 import com.leanengine.server.entity.QueryResult;
-import rest.o.gram.Converters;
+import rest.o.gram.DataStoreConverters;
 import rest.o.gram.entities.RestogramPhoto;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class RestogramPhotosQueryResult implements RestogramQueryResult<Restogra
             final List<Entity> entities = queryResult.getResult();
             result = new ArrayList<>(entities.size());
             for (final Entity currEntity : entities)
-                result.add(Converters.entityToPhoto(currEntity));
+                result.add(DataStoreConverters.entityToPhoto(currEntity));
         }
     }
 

@@ -9,7 +9,7 @@ public interface RestogramAuthService {
     /**
      * adds requested photo to user favorites, increments global yummies count
      */
-    boolean addPhotoToFavorites(String photoId);
+    boolean addPhotoToFavorites(String photoId, String originVenueId);
 
     /**
      * removes requested photo from user favorites, decrements global yummies count

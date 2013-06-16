@@ -36,11 +36,35 @@ public class DataFavoritesManager implements IDataFavoritesManager {
     @Override
     public void addFavoritePhoto(String photoId) {
         favoritePhotos.add(photoId);
+        final IRestogramCache cache =  RestogramClient.getInstance().getCache();
+        if (cache != null)
+        {
+            final RestogramPhoto photo = cache.findPhoto(photoId);
+            if (photo != null)
+            {
+                photo.set_favorite(true);
+                photo.setYummies(photo.getYummies() + 1);
+            }
+        }
     }
 
     @Override
     public boolean removeFavoritePhoto(String photoId) {
-        return favoritePhotos.remove(photoId);
+        if (!favoritePhotos.remove(photoId))
+            return false;
+
+        final IRestogramCache cache =  RestogramClient.getInstance().getCache();
+        if (cache != null)
+        {
+            final RestogramPhoto photo = cache.findPhoto(photoId);
+            if (photo != null)
+            {
+                photo.set_favorite(false);
+                photo.setYummies(photo.getYummies() - 1);
+                return true;
+            }
+        }
+        return  false;
     }
 
     @Override

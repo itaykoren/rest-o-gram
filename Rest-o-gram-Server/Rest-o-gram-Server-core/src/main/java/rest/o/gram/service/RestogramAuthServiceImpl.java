@@ -1,6 +1,12 @@
 package rest.o.gram.service;
 
+import com.leanengine.server.LeanException;
+import com.leanengine.server.appengine.DatastoreUtils;
+import rest.o.gram.ApisAccessManager;
+import rest.o.gram.DataStoreConverters;
 import rest.o.gram.data.DataManager;
+import rest.o.gram.entities.Kinds;
+import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.iservice.RestogramAuthService;
 import java.util.logging.Logger;
 
@@ -12,14 +18,44 @@ import java.util.logging.Logger;
 public class RestogramAuthServiceImpl implements RestogramAuthService {
 
     @Override
-    public boolean addPhotoToFavorites(String photoId) {
+    public boolean addPhotoToFavorites(String photoId, String originVenueId) {
         if (!DataManager.updatePhotoReference(photoId, true))
         {
             log.severe("cannot update photo reference");
             return false;
         }
 
-        return DataManager.changePhotoYummiesCount(photoId, 1);
+        if (DataManager.isPhotoInCache(photoId)) // in DS already
+        {
+            log.info("YUMMIES: already in DS");
+            return DataManager.changePhotoYummiesCount(photoId, 1);
+        }
+        else if (DataManager.isPhotoPending(photoId)) //  pending photo
+        {
+            log.info("YUMMIES: photo is pending");
+            final RestogramPhoto pendingPhoto = DataManager.getPendingPhoto(photoId);
+            pendingPhoto.setYummies(1); // TODO: handle consistency if we care enough..
+            try
+            {
+                DatastoreUtils.putPublicEntity(Kinds.PHOTO, pendingPhoto.getInstagram_id(),
+                                                DataStoreConverters.photoToProps(pendingPhoto));
+            } catch (LeanException e)
+            {
+                e.printStackTrace();
+                log.severe("cannot write an updated photo(yummies counter) to cache");
+                return false;
+            }
+        }
+        else //  get from instagram
+        {
+            log.info("YUMMIES: getting from insta");
+            final RestogramPhoto photo = ApisAccessManager.getPhoto(photoId, originVenueId);
+            if (photo  == null)
+                return false;
+            photo.setYummies(1);
+            return DataManager.cachePhoto(photo);
+        }
+        return true;
     }
 
     @Override

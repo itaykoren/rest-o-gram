@@ -21,7 +21,8 @@ import org.jinstagram.entity.locations.LocationSearchFeed;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.exceptions.InstagramException;
-import rest.o.gram.Converters;
+import rest.o.gram.ApisCoonverters;
+import rest.o.gram.DataStoreConverters;
 import rest.o.gram.Defs;
 import rest.o.gram.TasksManager.TasksManager;
 import rest.o.gram.credentials.*;
@@ -129,7 +130,7 @@ public class RestogramServiceImpl implements RestogramService {
             return null;
         }
 
-        final RestogramVenue venue = convert(v);
+        final RestogramVenue venue = ApisCoonverters.convertToRestogramVenue(v);
 
         cacheVenue(venue);
 
@@ -206,10 +207,10 @@ public class RestogramServiceImpl implements RestogramService {
 //            }
 //        }
 //
-//        final RestogramPhoto photo = convert(mediaInfo.getData(), originVenueId);
+//        final RestogramPhoto photo = convertToRestogramPhoto(mediaInfo.getData(), originVenueId);
 //        try {
 //            DatastoreUtils.putPublicEntity(Kinds.PHOTO,
-//                    photo.getInstagram_id(), Converters.photoToProps(photo));
+//                    photo.getInstagram_id(), DataStoreConverters.photoToProps(photo));
 //        }
 //        catch (LeanException e) {
 //            log.severe("caching the photo in DS has failed");
@@ -233,7 +234,7 @@ public class RestogramServiceImpl implements RestogramService {
 //        RestogramPhoto[] photos = new RestogramPhoto[entities.size()];
 //        int i = 0;
 //        for (final Entity currEntity : entities)
-//            photos[i++] = Converters.entityToPhoto(currEntity).encodeStrings();
+//            photos[i++] = DataStoreConverters.entityToPhoto(currEntity).encodeStrings();
 //
 //        Arrays.sort(photos, new Comparator<RestogramPhoto>() {
 //            @Override
@@ -268,13 +269,13 @@ public class RestogramServiceImpl implements RestogramService {
             }
         }
 
-        return cacheVenue(convert(compVenue));
+        return cacheVenue(ApisCoonverters.convertToRestogramVenue(compVenue));
     }
 
     private boolean cacheVenue(final RestogramVenue venue) {
 
         try {
-            DatastoreUtils.putPublicEntity(Kinds.VENUE, venue.getFoursquare_id(), Converters.venueToProps(venue));
+            DatastoreUtils.putPublicEntity(Kinds.VENUE, venue.getFoursquare_id(), DataStoreConverters.venueToProps(venue));
         } catch (LeanException e) {
             log.severe("caching the venue in DS has failed");
             e.printStackTrace();
@@ -296,7 +297,7 @@ public class RestogramServiceImpl implements RestogramService {
         RestogramVenue[] venues = new RestogramVenue[entities.size()];
         int i = 0;
         for (final Entity currEntity : entities)
-            venues[i++] = Converters.entityToVenue(currEntity).encodeStrings();
+            venues[i++] = DataStoreConverters.entityToVenue(currEntity).encodeStrings();
 
         Arrays.sort(venues, new Comparator<RestogramVenue>() {
             @Override
@@ -351,7 +352,7 @@ public class RestogramServiceImpl implements RestogramService {
         RestogramVenue[] venues = new RestogramVenue[length];
 
         for (int i = 0; i < length; i++) {
-            venues[i] = convert(arr[i]);
+            venues[i] = ApisCoonverters.convertToRestogramVenue(arr[i]);
             venueIds[i] = arr[i].getId();
             if (AuthService.isUserLoggedIn()) {
                 final LeanQuery lquery = new LeanQuery(Kinds.VENUE_REFERENCE);
@@ -548,7 +549,7 @@ public class RestogramServiceImpl implements RestogramService {
 
         int i = 0;
         for (MediaFeedData media : data) {
-            photos[i] = convert(media, venueId);
+            photos[i] = ApisCoonverters.convertToRestogramPhoto(media, venueId);
             if (AuthService.isUserLoggedIn() && DataManager.isPhotoFavorite(photos[i].getInstagram_id())) {
                 photos[i].set_favorite(true);
             }
@@ -606,7 +607,7 @@ public class RestogramServiceImpl implements RestogramService {
         List<MediaFeedData> dataNotInCache = new ArrayList<>();
 
         for (MediaFeedData currItem : data) {
-            if (!DataManager.isPhotoInCache(currItem.getId()))
+            if (!DataManager.isPhotoApproved(currItem.getId()))
                 dataNotInCache.add(currItem);
         }
         return dataNotInCache;
@@ -646,103 +647,6 @@ public class RestogramServiceImpl implements RestogramService {
             }
         }
         return recentMediaByLocation;
-    }
-
-    private RestogramPhoto convert(final MediaFeedData media, String originVenueId) {
-        String caption = "";
-        if (media.getCaption() != null)
-            caption = media.getCaption().getText();
-
-        String user = "";
-        if (media.getUser() != null)
-            user = media.getUser().getUserName();
-        final Images images = media.getImages();
-        final String thumbnail = images.getThumbnail().getImageUrl();
-        final String standardResolution = images.getStandardResolution().getImageUrl();
-        return new RestogramPhoto(caption, media.getCreatedTime(), media.getId(),
-                media.getImageFilter(), thumbnail, standardResolution,
-                media.getLikes().getCount(), media.getLink(),
-                media.getType(), user, originVenueId, 0).encodeStrings();
-    }
-
-    /**
-     * Converts compact venue foursquare object to restogram venue
-     */
-    private RestogramVenue convert(CompactVenue venue) {
-        fi.foyt.foursquare.api.entities.Location location = venue.getLocation();
-
-        Contact contact = venue.getContact();
-        String phone = "";
-        if (contact != null)
-            phone = contact.getPhone();
-
-        // TODO: calculate distance using LocationUtils
-
-        return new RestogramVenue(venue.getId(),
-                venue.getName(),
-                location.getAddress(),
-                location.getCity(),
-                location.getState(),
-                location.getPostalCode(),
-                location.getCountry(),
-                location.getLat(),
-                location.getLng(),
-                location.getDistance(),
-                venue.getUrl(),
-                phone).encodeStrings();
-    }
-
-    /**
-     * Converts complete venue foursquare object to restogram venue
-     */
-    private RestogramVenue convert(CompleteVenue venue) {
-        RestogramVenue result = null;
-        String photoUrl;
-
-        try {
-            fi.foyt.foursquare.api.entities.Location location = venue.getLocation();
-
-            Contact contact = venue.getContact();
-            String phone = "";
-            if (contact != null)
-                phone = contact.getPhone();
-
-            result = new RestogramVenue(venue.getId(),
-                    venue.getName(),
-                    location.getAddress(),
-                    location.getCity(),
-                    location.getState(),
-                    location.getPostalCode(),
-                    location.getCountry(),
-                    location.getLat(),
-                    location.getLng(),
-                    0.0, // Cannot use location.getDistance()
-                    venue.getUrl(),
-                    phone);
-
-            Photos photos = venue.getPhotos();
-            if (photos == null)
-                return result;
-
-            PhotoGroup[] groups = photos.getGroups();
-            if (groups == null || groups.length < 2)
-                return result;
-
-            PhotoGroup group = groups[1];
-            Photo[] items = group.getItems();
-            if (items == null || items.length == 0)
-                return result;
-
-            photoUrl = items[0].getUrl();
-
-            result.setDescription(venue.getDescription());
-            result.setImageUrl(photoUrl);
-        } catch (Exception e) {
-            log.severe("venue object conversion failed");
-            return result;
-        }
-
-        return result.encodeStrings();
     }
 
     private static final Logger log = Logger.getLogger(RestogramServiceImpl.class.getName());

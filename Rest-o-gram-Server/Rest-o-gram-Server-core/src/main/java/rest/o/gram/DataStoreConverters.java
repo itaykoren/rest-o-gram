@@ -14,7 +14,7 @@ import java.util.Map;
  * User: Or
  * Date: 5/24/13
  */
-public final class Converters {
+public final class DataStoreConverters {
     public static Entity venueToEntity(final RestogramVenue venue) {
         Entity entity = new Entity(Kinds.VENUE, venue.getFoursquare_id());
         entity.setUnindexedProperty(Props.Venue.NAME, venue.getName());
@@ -90,7 +90,7 @@ public final class Converters {
     }
 
     public static Map<String, Object> photoToProps(final RestogramPhoto photo){
-        Map<String,Object> props = new HashMap<>(10);
+        Map<String,Object> props = new HashMap<>(12);
         props.put(Props.Photo.CAPTION, photo.getCaption());
         props.put(Props.Photo.CREATED_TIME, photo.getCreatedTime());
         props.put(Props.Photo.IMAGE_FILTER, photo.getImageFilter());
@@ -125,4 +125,6 @@ public final class Converters {
         photo.setYummies((long)entity.getProperty(Props.Photo.YUMMIES));
         return photo;
     }
+
+
 }

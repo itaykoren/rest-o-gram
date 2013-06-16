@@ -99,7 +99,7 @@ public interface IRestogramClient {
     /**
      * Executes add photo to favorites request
      */
-    void addPhotoToFavorites(String photoId, ITaskObserver observer);
+    void addPhotoToFavorites(String photoId, String originVenueId, ITaskObserver observer);
 
     /**
      * Executes remove photo from favorites request

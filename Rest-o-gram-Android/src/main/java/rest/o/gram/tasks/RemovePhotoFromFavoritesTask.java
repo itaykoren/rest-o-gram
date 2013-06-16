@@ -31,7 +31,6 @@ public class RemovePhotoFromFavoritesTask extends AsyncTask<String, Void, Remove
 
         if (RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "removing photo from favorites");
-        service.addPhotoToFavorites(photoId);
 
         return safeRemovePhotoFromFavorites(service, photoId);
 
@@ -43,9 +42,11 @@ public class RemovePhotoFromFavoritesTask extends AsyncTask<String, Void, Remove
     }
 
     private RemovePhotoFromFavoritesResult safeRemovePhotoFromFavorites(RestogramAuthService service, String photoId) {
-        try {
+        try
+        {
             return new RemovePhotoFromFavoritesResult(service.removePhotoFromFavorites(photoId), photoId);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             Log.e("REST-O-GRAM", "REMOVING PHOTO FROM FAVORITES - FIRST ATTEMPT FAILED");
             return new RemovePhotoFromFavoritesResult(service.removePhotoFromFavorites(photoId), photoId);
         }

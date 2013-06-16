@@ -24,16 +24,16 @@ public class AddPhotoToFavoritesTask extends AsyncTask<String, Void, AddPhotoToF
     @Override
     protected AddPhotoToFavoritesResult doInBackground(String... params) {
 
-        String photoId = params[0];
+        final String photoId = params[0];
+        final  String originVenueId =  params[1];
 
         JsonRpcInvoker invoker = new JsonRpcInvoker();
         RestogramAuthService service = invoker.get(transport, "restogram", RestogramAuthService.class);
 
         if (RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "adding photo to favorites");
-        service.addPhotoToFavorites(photoId);
 
-        return safeAddPhotoToFavorites(service, photoId);
+        return safeAddPhotoToFavorites(service, photoId, originVenueId);
 
     }
 
@@ -42,12 +42,13 @@ public class AddPhotoToFavoritesTask extends AsyncTask<String, Void, AddPhotoToF
         observer.onFinished(result);
     }
 
-    private AddPhotoToFavoritesResult safeAddPhotoToFavorites(RestogramAuthService service, String photoId) {
+    private AddPhotoToFavoritesResult safeAddPhotoToFavorites(RestogramAuthService service, String photoId,
+                                                              String originVenueId) {
         try {
-            return new AddPhotoToFavoritesResult(service.addPhotoToFavorites(photoId), photoId);
+            return new AddPhotoToFavoritesResult(service.addPhotoToFavorites(photoId, originVenueId), photoId);
         } catch (Exception e) {
             Log.e("REST-O-GRAM", "ADDING PHOTO TO FAVORITES - FIRST ATTEMPT FAILED");
-            return new AddPhotoToFavoritesResult(service.addPhotoToFavorites(photoId), photoId);
+            return new AddPhotoToFavoritesResult(service.addPhotoToFavorites(photoId, originVenueId), photoId);
         }
     }
 

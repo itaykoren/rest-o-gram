@@ -108,7 +108,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
         RestogramPhoto photo = cache.findPhoto(photoId);
 
         if (!photo.is_favorite()) {
-            RestogramClient.getInstance().addPhotoToFavorites(photo.getInstagram_id(), this);
+            RestogramClient.getInstance().addPhotoToFavorites(photo.getInstagram_id(),
+                                                              photo.getOriginVenueId(), this);
         }
         else {
             RestogramClient.getInstance().removePhotoFromFavorites(photo.getInstagram_id(), this);

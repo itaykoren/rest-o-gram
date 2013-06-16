@@ -1,8 +1,9 @@
 package rest.o.gram.data;
 
-import com.google.appengine.api.datastore.Cursor;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.memcache.ErrorHandlers;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
 import com.leanengine.server.appengine.datastore.PutBatchOperation;
@@ -12,7 +13,8 @@ import com.leanengine.server.entity.QueryFilter;
 import com.leanengine.server.entity.QueryResult;
 import com.leanengine.server.entity.QuerySort;
 import org.apache.commons.lang3.StringUtils;
-import rest.o.gram.Converters;
+import rest.o.gram.ApisAccessManager;
+import rest.o.gram.DataStoreConverters;
 import rest.o.gram.Defs;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
@@ -20,6 +22,7 @@ import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.results.PhotosResult;
 
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -27,7 +30,7 @@ import java.util.logging.Logger;
  * User: Or
  * Date: 6/10/13
  */
-public class DataManager {
+public final class DataManager {
 
     // NON-AUTH
 
@@ -119,12 +122,14 @@ public class DataManager {
                 } catch (LeanException e)
                 {
                     e.printStackTrace();
-                    log.severe("cannot get photo from DS");
+                    log.warning("cannot get photo from DS");
                     transaction.rollback();
                     return false;
                 }
 
-                long yummies = (Long)photo.getProperty(Props.Photo.YUMMIES);
+                long yummies = 0;
+                if (photo.hasProperty(Props.Photo.YUMMIES))
+                    yummies = (Long)photo.getProperty(Props.Photo.YUMMIES);
                 yummies += delta;
                 photo.setProperty(Props.Photo.YUMMIES, yummies);
                 try
@@ -138,6 +143,7 @@ public class DataManager {
                     return false;
                 }
                 transaction.commit();
+                break;
             }
             catch (ConcurrentModificationException e)
             {
@@ -154,34 +160,71 @@ public class DataManager {
                     transaction.rollback();
             }
         }
-    }
-
-    public static boolean isPhotoFavorite(final String photoId) {
-        final LeanQuery lquery = new LeanQuery(Kinds.PHOTO_REFERENCE);
-        lquery.addFilter(Props.PhotoRef.INSTAGRAM_ID, QueryFilter.FilterOperator.EQUAL, photoId);
-        lquery.addFilter(Props.PhotoRef.IS_FAVORITE,  QueryFilter.FilterOperator.EQUAL, true);
-        QueryResult result = null;
-        try
-        {
-            result = DatastoreUtils.queryEntityPrivate(lquery);
-        } catch (LeanException e)
-        {
-            log.severe("error while getting private photo info from DS");
-            e.printStackTrace();
-            return false;
-        }
-        if (result == null || result.getResult().isEmpty())
-            return false;
         return true;
     }
 
-    public static boolean isPhotoInCache(final String photoId) {
-        LeanQuery query = new LeanQuery("kind");
-        //query.addFilter();
-        return false;
+    public static boolean isPhotoFavorite(final String photoId) {
+        Entity photoEntity = null;
+        try
+        {
+            DatastoreUtils.getPrivateEntity(Kinds.PHOTO_REFERENCE, photoId);
+        } catch (LeanException e)
+        {
+            return false;  // no  entity-ref so it's not a favorite
+        }
+
+        return (boolean)photoEntity.getProperty(Props.PhotoRef.IS_FAVORITE);
     }
 
-    public static boolean isPhotoPending(final String photoId) {
+    public static boolean cachePhoto(RestogramPhoto photo) {
+
+    try
+    {
+        DatastoreUtils.putPublicEntity(Kinds.PHOTO,
+                photo.getInstagram_id(), DataStoreConverters.photoToProps(photo));
+    }
+    catch (LeanException e) {
+        log.severe("caching the photo in DS has failed");
+        e.printStackTrace();
+        return false;
+    }
+    return true;
+}
+
+    public static boolean isPhotoInCache(final String photoId) {
+        final LeanQuery query = new LeanQuery("Kind");
+        query.addFilter(Entity.KEY_RESERVED_PROPERTY, QueryFilter.FilterOperator.EQUAL,
+                        KeyFactory.createKey(Kinds.PHOTO, photoId));
+        query.setKeysOnly();
+        QueryResult result = null;
+        try
+        {
+            result = DatastoreUtils.queryEntityPublic(query);
+        } catch (LeanException e)
+        {
+            e.printStackTrace();
+            log.severe("cannot query for entity existence");
+        }
+        return result != null  && result.getResult() != null &&
+               !result.getResult().isEmpty();
+    }
+
+    /**
+     * Has the photo been approved by filters and added to cache.
+     */
+    public static boolean isPhotoApproved(final String photoId) {
+        Entity entity = null;
+        try
+        {
+            entity =  DatastoreUtils.getPublicEntity(Kinds.PHOTO, photoId);
+        } catch (LeanException e)
+        {
+            return false; // entity not in cache
+        }
+
+        // if 'approved' is not yet set - count it out
+        if  (!entity.hasProperty(Props.Photo.APPROVED))
+            return false;
 
         return true;
     }
@@ -199,7 +242,7 @@ public class DataManager {
             final RestogramPhoto[] result = new RestogramPhoto[entities.size()];
             int i = 0;
             for (final Entity currEntity : entities)
-                result[i++] = (Converters.entityToPhoto(currEntity));
+                result[i++] = (DataStoreConverters.entityToPhoto(currEntity));
 
             return new PhotosResult(result, token);
         }
@@ -208,5 +251,34 @@ public class DataManager {
         return null; // error
     }
 
+    // mem-cache
+
+    public static boolean isPhotoPending(final String photoId) {
+        return getPendingPhoto(photoId) !=  null;
+    }
+
+    public static RestogramPhoto getPendingPhoto(final String photoId) {
+        return (RestogramPhoto)getMemcacheService().get(photoId);
+    }
+
+    public static void addPendingPhoto(final RestogramPhoto pendingPhoto)  {
+        // TODO: consider setting expiration...
+        getMemcacheService().put(pendingPhoto.getInstagram_id(), pendingPhoto);
+    }
+
+    public static void removePendingPhoto(final String photoId) {
+        getMemcacheService().delete(photoId);
+    }
+
+    private static MemcacheService getMemcacheService() {
+        if (cache != null)
+            return cache;
+        cache = MemcacheServiceFactory.getMemcacheService();
+        cache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+        return  cache;
+    }
+
     private static final Logger log = Logger.getLogger(DataManager.class.getName());
+    private static MemcacheService cache = null;
+
 }

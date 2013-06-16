@@ -12,9 +12,11 @@ import rest.o.gram.tasks.ITaskObserver;
  */
 public class AddPhotoToFavoritesCommand extends AsyncTaskRestogramCommand {
 
-    public AddPhotoToFavoritesCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer, String photoId) {
+    public AddPhotoToFavoritesCommand(HttpJsonRpcClientTransport transport, ITaskObserver observer,
+                                      String photoId, String originVenueId) {
         super(transport, observer);
         this.photoId = photoId;
+        this.originVenueId = originVenueId;
     }
 
     @Override
@@ -24,7 +26,7 @@ public class AddPhotoToFavoritesCommand extends AsyncTaskRestogramCommand {
 
         AddPhotoToFavoritesTask t = new AddPhotoToFavoritesTask(transport, this);
 
-        t.execute(photoId);
+        t.execute(photoId, originVenueId);
         task = t;
 
         return true;
@@ -32,5 +34,5 @@ public class AddPhotoToFavoritesCommand extends AsyncTaskRestogramCommand {
 
 
     private String photoId;
-
+    private String originVenueId;
 }
