@@ -133,8 +133,6 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
                 favoritePhotoButton.setImageResource(R.drawable.ic_favorite_on);
             else
                 favoritePhotoButton.setImageResource(R.drawable.ic_favorite_off);
-
-            updateYummiesCount(photoYummiesTextView, photoId);
         }
 
         // TODO: handle pagination - if(result.hasMore())...
@@ -173,6 +171,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
 
         if(favoritePhotoButton != null)
             favoritePhotoButton.setImageResource(R.drawable.ic_favorite_on);
+
+        updateYummiesCount(photoYummiesTextView, photoId);
     }
 
     @Override
@@ -184,6 +184,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
 
         if(favoritePhotoButton != null)
             favoritePhotoButton.setImageResource(R.drawable.ic_favorite_off);
+
+        updateYummiesCount(photoYummiesTextView, photoId);
     }
 
     @Override
