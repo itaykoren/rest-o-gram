@@ -25,7 +25,7 @@ public final class Defs {
      * Transport constants
      */
     public static class Transport {
-        public static final String BASE_HOST_NAME = "http://rest-o-debug.appspot.com";
+        public static final String BASE_HOST_NAME = "http://rest-o-gram.appspot.com";
     }
 
     /**
@@ -111,7 +111,6 @@ public final class Defs {
      * Photos constants
      */
     public static class Feed {
-        public static final int PHOTOS_PACKET_THRESHOLD = 10;
-        public static final int MAX_PHOTOS_PER_VENUE = 15;
+        public static final int PHOTOS_PACKET_THRESHOLD = 6;
     }
 }
