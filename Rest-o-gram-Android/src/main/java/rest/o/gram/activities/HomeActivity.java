@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import rest.o.gram.R;
 import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.client.RestogramClient;
@@ -35,6 +36,7 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
             if (!tracker.canDetectLocation())
                 dialogManager.showLocationTrackingAlert(this);
             else {
+                updateStatus(R.string.location_search);
                 tracker.setObserver(this);
                 tracker.start();
             }
@@ -92,6 +94,8 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
             return;
         }
 
+        updateStatus(R.string.venue_search);
+
         // Send get nearby request
         RestogramClient.getInstance().getNearby(latitude, longitude, Defs.Location.DEFAULT_NEARBY_RADIUS, this);
     }
@@ -106,6 +110,8 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
     @Override
     public void onFinished(GetNearbyResult result) {
         super.onFinished(result);
+
+        resetStatus();
 
         final RestogramVenue[] venues = result.getVenues();
         if(venues == null || venues.length == 0) {
@@ -163,6 +169,14 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
 
         ProgressBar pb = (ProgressBar)v;
         pb.setVisibility(View.GONE);
+    }
+
+    private void updateStatus(int status) {
+        Utils.updateTextView((TextView)findViewById(R.id.tvStatus), status);
+    }
+
+    private void resetStatus() {
+        Utils.updateTextView((TextView)findViewById(R.id.tvStatus), "");
     }
 
     private ILocationTracker tracker; // Location tracker

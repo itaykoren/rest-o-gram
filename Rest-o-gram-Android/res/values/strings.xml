@@ -8,6 +8,9 @@
     <string name="restogram_login_title">Oops... You\'re Not Logged In</string>
     <string name="restogram_logout_title">Log out</string>
 
+    <string name="location_search">Determining your location</string>
+    <string name="venue_search">Searching for nearby restaurants</string>
+
     <string name="cannot_track_location_err_msg">Could not detect your current location. Please review your location services settings and re-launch the application.</string>
     <string name="no_connectivity_err_msg">Cannot connect to the internet. Please review your network services settings and re-launch the application.</string>
     <string name="no_venues_err_msg">Sorry, no restaurants found. You\'re welcome to explore other areas using the map.</string>
