@@ -162,18 +162,42 @@ public final class DataManager {
         return true;
     }
 
-    public static boolean isPhotoFavorite(final String photoId) {
-        Entity photoEntity = null;
+//    public static boolean isPhotoFavorite(final String photoId) {
+//        Entity photoEntity = null;
+//        try
+//        {
+//            DatastoreUtils.getPrivateEntity(Kinds.PHOTO_REFERENCE, photoId);
+//        } catch (LeanException e)
+//        {
+//            return false;  // no  entity-ref so it's not a favorite
+//        }
+//
+//        return (boolean)photoEntity.getProperty(Props.PhotoRef.IS_FAVORITE);
+//    }
+
+    public static Set<String> fetchFavoritePhotoIds() {
+        final LeanQuery query = new LeanQuery(Kinds.PHOTO_REFERENCE);
+        query.addFilter(Props.PhotoRef.IS_FAVORITE, QueryFilter.FilterOperator.EQUAL, true);
+        QueryResult result = null;
         try
         {
-            DatastoreUtils.getPrivateEntity(Kinds.PHOTO_REFERENCE, photoId);
+            result = DatastoreUtils.queryEntityPrivate(query);
         } catch (LeanException e)
         {
-            return false;  // no  entity-ref so it's not a favorite
+            e.printStackTrace();
+            log.severe("could not query for fav photos");
+            return null;
         }
 
-        return (boolean)photoEntity.getProperty(Props.PhotoRef.IS_FAVORITE);
+        if (result.getResult() == null)
+            return null;
+        final List<Entity> resultEntities = result.getResult();
+        Set<String> resultIds = new HashSet<>(resultEntities.size());
+        for (final Entity currEntity : resultEntities)
+          resultIds.add(currEntity.getKey().getName());
+        return resultIds;
     }
+
 
     public static long getPhotoYummiesCount(final String photoId) {
         Entity photoEntity = null;

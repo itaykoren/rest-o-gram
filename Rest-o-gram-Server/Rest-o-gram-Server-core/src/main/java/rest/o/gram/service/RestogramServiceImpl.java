@@ -1,6 +1,7 @@
 package rest.o.gram.service;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.repackaged.org.joda.time.DateTime;
 import com.google.gson.Gson;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
@@ -402,19 +403,27 @@ public class RestogramServiceImpl implements RestogramService {
 
     private PhotosResult doGetPhotos(String venueId, RestogramFilterType filterType, String token) {
 
+        long start = new DateTime().getMillis();
         PhotosResult cachedPhotosResult = null;
-
         if (token == null || DataManager.isValidCursor(token)) {
             // fetch cached photos of given venue
             cachedPhotosResult = DataManager.fetchPhotosFromCache(venueId, token);
+            log.severe(String.format("checking cache took [%d] millis", (new DateTime().getMillis() - start)));
 
             // sets private data for entities
             if (AuthService.isUserLoggedIn() && cachedPhotosResult != null &&
                 cachedPhotosResult.getPhotos() != null)
             {
+                final Set<String> favIds = DataManager.fetchFavoritePhotoIds();
                 for (final RestogramPhoto currPhoto : cachedPhotosResult.getPhotos())
-                    currPhoto.set_favorite(DataManager.isPhotoFavorite(currPhoto.getInstagram_id()));
+                {
+                    if (favIds.contains(currPhoto.getInstagram_id()))
+                        currPhoto.set_favorite(true);
+                }
             }
+
+            log.severe(String.format("setting private data for entities took [%d] millis", (new DateTime().getMillis() - start)));
+
         }
 
         // reset token if needed
@@ -426,7 +435,9 @@ public class RestogramServiceImpl implements RestogramService {
                 cachedPhotosResult.getPhotos().length == 0) {
 
             PhotosResult instagramPhotos = doGetInstagramPhotos(venueId, filterType, token);
+            log.severe(String.format("no photos in cache. first fetch from instagram took [%d] millis", (new DateTime().getMillis() - start)));
             instagramPhotos = getMoreResultsIfNeeded(instagramPhotos, venueId, filterType);
+            log.severe(String.format("no photos in cache. second fetch from instagram took [%d] millis", (new DateTime().getMillis() - start)));
             return instagramPhotos;
         }
 
@@ -437,8 +448,11 @@ public class RestogramServiceImpl implements RestogramService {
         // otherwise, not enough results were found, add more from Instagram
         else {
             PhotosResult photosFromInstagram = doGetInstagramPhotos(venueId, filterType, token);
+            log.severe(String.format("some photos were found in cache. first fetch from instagram took [%d] millis", (new DateTime().getMillis() - start)));
             PhotosResult mergedResults = mergeResults(cachedPhotosResult, photosFromInstagram);
+            log.severe(String.format("adding up cache and instagram photos took [%d] millis", (new DateTime().getMillis() - start)));
             mergedResults = getMoreResultsIfNeeded(mergedResults, venueId, filterType);
+            log.severe(String.format("still not enough photos were found. second fetch from instagram took [%d] millis", (new DateTime().getMillis() - start)));
             return mergedResults;
         }
     }
@@ -557,15 +571,7 @@ public class RestogramServiceImpl implements RestogramService {
 
         int i = 0;
         for (final MediaFeedData media : data)
-        {
             photos[i] = ApisCoonverters.convertToRestogramPhoto(media, venueId);
-            final String currPhotoId = photos[i].getInstagram_id();
-            if (AuthService.isUserLoggedIn())
-                photos[i].set_favorite(DataManager.isPhotoFavorite(currPhotoId));
-            photos[i].setYummies(DataManager.getPhotoYummiesCount(currPhotoId));
-            ++i;
-        }
-
         return photos;
     }
 
