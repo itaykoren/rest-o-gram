@@ -7,7 +7,7 @@
   <body>
 
         <h1><b>Welcome to Rest-o-Gram!</b></h1>
-        <img src='/WEB-INF/ic_rog.png' alt='title' />
+        <img src="http://i41.tinypic.com/33lgm78.png" width="200" height="200" alt="" />
   <p>Rest-o-Gram is an Instagram based restaurant experience which helps users decide where to eat by viewing photos from nearby restaurants.</p>
 
   <h2>Installation</h2>
