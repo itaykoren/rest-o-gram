@@ -96,7 +96,7 @@ public class MapActivity extends RestogramActionBarActivity {
                 intent.putExtra("latitude", lastLocation.latitude);
                 intent.putExtra("longitude", lastLocation.longitude);
             }
-            Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, false);
+            Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, true);
             return true;
         }
 
