@@ -407,6 +407,14 @@ public class RestogramServiceImpl implements RestogramService {
         if (token == null || DataManager.isValidCursor(token)) {
             // fetch cached photos of given venue
             cachedPhotosResult = DataManager.fetchPhotosFromCache(venueId, token);
+
+            // sets private data for entities
+            if (AuthService.isUserLoggedIn() && cachedPhotosResult != null &&
+                cachedPhotosResult.getPhotos() != null)
+            {
+                for (final RestogramPhoto currPhoto : cachedPhotosResult.getPhotos())
+                    currPhoto.set_favorite(DataManager.isPhotoFavorite(currPhoto.getInstagram_id()));
+            }
         }
 
         // reset token if needed
@@ -553,10 +561,8 @@ public class RestogramServiceImpl implements RestogramService {
             photos[i] = ApisCoonverters.convertToRestogramPhoto(media, venueId);
             final String currPhotoId = photos[i].getInstagram_id();
             if (AuthService.isUserLoggedIn())
-            {
                 photos[i].set_favorite(DataManager.isPhotoFavorite(currPhotoId));
-                photos[i].setYummies(DataManager.getPhotoYummiesCount(currPhotoId));
-            }
+            photos[i].setYummies(DataManager.getPhotoYummiesCount(currPhotoId));
             ++i;
         }
 
