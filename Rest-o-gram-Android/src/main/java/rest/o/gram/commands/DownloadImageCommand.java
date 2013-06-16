@@ -105,8 +105,12 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                     }
 
                     final Bitmap drawable = (Bitmap)message.obj;
-                    imageView.setImageBitmap(drawable);
+                    if(drawable == null) {
+                        notifyError();
+                        return;
+                    }
 
+                    imageView.setImageBitmap(drawable);
                     notifyFinished();
                 }
                 catch(Exception e) {
