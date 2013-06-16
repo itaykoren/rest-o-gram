@@ -192,7 +192,7 @@ public final class DataManager {
 }
 
     public static boolean isPhotoInCache(final String photoId) {
-        final LeanQuery query = new LeanQuery("Kind");
+        final LeanQuery query = new LeanQuery(Kinds.PHOTO);
         query.addFilter(Entity.KEY_RESERVED_PROPERTY, QueryFilter.FilterOperator.EQUAL,
                         KeyFactory.createKey(Kinds.PHOTO, photoId));
         query.setKeysOnly();
@@ -205,6 +205,7 @@ public final class DataManager {
             e.printStackTrace();
             log.severe("cannot query for entity existence");
         }
+
         return result != null  && result.getResult() != null &&
                !result.getResult().isEmpty();
     }
