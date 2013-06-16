@@ -91,9 +91,17 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
 
         IRestogramCache cache = RestogramClient.getInstance().getCache();
         if(cache != null) {
-            // Reinsert venue to cache
-            cache.removeVenue(result.getVenue().getFoursquare_id());
-            cache.add(result.getVenue());
+            //// Reinsert venue to cache
+            //cache.removeVenue(result.getVenue().getFoursquare_id());
+            //cache.add(result.getVenue());
+
+            // Update image url if needed
+            RestogramVenue newVenue = result.getVenue();
+            RestogramVenue oldVenue = cache.findVenue(newVenue.getFoursquare_id());
+            if(oldVenue == null)
+                cache.add(newVenue);
+            else if(newVenue.getImageUrl() != null && !newVenue.getImageUrl().isEmpty())
+                oldVenue.setImageUrl(newVenue.getImageUrl());
         }
     }
 
