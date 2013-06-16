@@ -181,7 +181,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
     }
 
     private String generateFilename(String urlString, String photoId) {
-        return urlString.replaceAll("/", "_");
+        return urlString.replaceAll("[^A-Za-z0-9]", "_");
     }
 
     private Context context;
