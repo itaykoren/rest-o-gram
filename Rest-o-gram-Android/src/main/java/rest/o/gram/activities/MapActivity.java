@@ -88,22 +88,6 @@ public class MapActivity extends RestogramActionBarActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_explore) {
-            // Switch to "ExploreActivity" with last location
-            Intent intent = new Intent(this, ExploreActivity.class);
-            if(lastLocation != null) {
-                intent.putExtra("latitude", lastLocation.latitude);
-                intent.putExtra("longitude", lastLocation.longitude);
-            }
-            Utils.changeActivity(this, intent, Defs.RequestCodes.RC_EXPLORE, true);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onBackPressed() {
         if(RestogramClient.getInstance().activityAmount() == 1)
             dialogManager.showExitAlert(this);
@@ -132,9 +116,6 @@ public class MapActivity extends RestogramActionBarActivity {
         // Update current marker
         if(currentMarkerOptions != null) {
             currentMarker = map.addMarker(currentMarkerOptions);
-
-            // Set last location
-            lastLocation = currentMarkerOptions.getPosition();
         }
     }
 
@@ -226,34 +207,27 @@ public class MapActivity extends RestogramActionBarActivity {
      * Called after map was loaded
      */
     private void onMapLoaded() {
-        // Get location parameters
         try {
-            Intent intent = getIntent();
+            // Load venues from cache
+            IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
+            if(cache != null) {
+                addVenues(cache.loadVenues());
 
-            if(!intent.hasExtra("latitude") && !intent.hasExtra("longitude")) {
-                // Get last location
-                ILocationTracker tracker = RestogramClient.getInstance().getLocationTracker();
-                if (tracker != null) {
+                // Load location
+                double[] location = cache.loadLocation();
+                if(location == null || location[0] == 0.0 || location[1] == 0.0) {
+                    ILocationTracker tracker = RestogramClient.getInstance().getLocationTracker();
                     latitude = tracker.getLatitude();
                     longitude = tracker.getLongitude();
                 }
-
-                // Load venues from cache
-                IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
-                if(cache != null) {
-                    addVenues(cache.loadVenues());
+                else {
+                    latitude = location[0];
+                    longitude = location[1];
                 }
             }
-            else {
-                latitude = intent.getDoubleExtra("latitude", 0.0);
-                longitude = intent.getDoubleExtra("longitude", 0.0);
 
-                // Send get nearby request
-                RestogramClient.getInstance().getNearby(latitude, longitude, Defs.Location.DEFAULT_NEARBY_RADIUS, this);
-            }
-
-            // Set last location
-            lastLocation = new LatLng(latitude, longitude);
+            currentMarkerOptions = createMarker(latitude, longitude);
+            currentMarker = map.addMarker(currentMarkerOptions);
         }
         catch(Exception e) {
             // TODO: implementation
@@ -406,7 +380,6 @@ public class MapActivity extends RestogramActionBarActivity {
 
     private double latitude; // Latitude
     private double longitude; // Longitude
-    private LatLng lastLocation; // Last location
     private GoogleMap map; // Map object
     private Map<String, String> venues = new HashMap<>(); // Venues map
     private Marker currentMarker; // Current marker

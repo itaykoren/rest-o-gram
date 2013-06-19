@@ -18,6 +18,9 @@ public class DataHistoryManager implements IDataHistoryManager {
         // Init containers
         venues = new Dictionary<>();
         photos = new Dictionary<>();
+
+        // Init location
+        location = new double[2];
     }
 
     @Override
@@ -56,6 +59,12 @@ public class DataHistoryManager implements IDataHistoryManager {
         }
 
         return true;
+    }
+
+    @Override
+    public void save(double latitude, double longitude) {
+        location[0] = latitude;
+        location[1] = longitude;
     }
 
     @Override
@@ -99,6 +108,11 @@ public class DataHistoryManager implements IDataHistoryManager {
     }
 
     @Override
+    public double[] loadLocation() {
+        return location;
+    }
+
+    @Override
     public RestogramVenue findVenue(String id) {
         return venues.find(id);
     }
@@ -119,4 +133,5 @@ public class DataHistoryManager implements IDataHistoryManager {
 
     protected IDictionary<String, RestogramVenue> venues; // Venues dictionary
     protected IDictionary<String, RestogramPhoto> photos; // Photos dictionary
+    protected double[] location; // Location
 }

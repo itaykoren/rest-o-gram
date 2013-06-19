@@ -57,7 +57,7 @@ public class GetNearbyTask extends AsyncTask<Double, Void, GetNearbyResult> {
                         (result.getResult() == null ? 0 : result.getResult().length) + "venues");
 
             venues = (result == null ? null : result.getResult());
-            return new GetNearbyResultImpl(venues);
+            return new GetNearbyResultImpl(venues, params[0], params[1]);
         }
         catch (Exception e)
         {
@@ -73,19 +73,21 @@ public class GetNearbyTask extends AsyncTask<Double, Void, GetNearbyResult> {
             }
 
             venues = (result == null ? null : result.getResult());
-            return new GetNearbyResultImpl(venues);
+            return new GetNearbyResultImpl(venues, params[0], params[1]);
         }
     }
 
     class GetNearbyResultImpl implements GetNearbyResult {
 
-        public GetNearbyResultImpl(RestogramVenue[] venues) {
+        public GetNearbyResultImpl(RestogramVenue[] venues, double latitude, double longitude) {
             if (venues != null)
             {
                 for (int i = 0; i < venues.length; ++i)
                     venues[i].decodeStrings();
             }
             this.venues = venues;
+            this.latitude = latitude;
+            this.longitude = longitude;
         }
 
         @Override
@@ -93,7 +95,19 @@ public class GetNearbyTask extends AsyncTask<Double, Void, GetNearbyResult> {
             return venues;
         }
 
+        @Override
+        public double getLatitude() {
+            return latitude;
+        }
+
+        @Override
+        public double getLongitude() {
+            return longitude;
+        }
+
         private RestogramVenue[] venues;
+        private double latitude;
+        private double longitude;
     }
 
     private HttpJsonRpcClientTransport transport;

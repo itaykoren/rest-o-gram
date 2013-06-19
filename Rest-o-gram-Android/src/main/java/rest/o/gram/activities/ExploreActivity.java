@@ -39,29 +39,27 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
         setContentView(R.layout.explore);
 
-        // Get location parameters
         try {
-            Intent intent = getIntent();
+            // Load venues and location from cache
+            IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
+            if(cache != null) {
+                double[] location = cache.loadLocation();
+                if(location != null) {
+                    latitude = location[0];
+                    longitude = location[1];
+                }
 
-            if (!intent.hasExtra("latitude") && !intent.hasExtra("longitude")) {
+                RestogramVenue[] venues = cache.loadVenues();
+                if(venues != null && venues.length > 0) {
+                    initialize(venues);
+                }
+            }
+            else {
                 // Get last location
                 ILocationTracker tracker = RestogramClient.getInstance().getLocationTracker();
                 if (tracker != null) {
                     latitude = tracker.getLatitude();
                     longitude = tracker.getLongitude();
-                }
-            }
-            else {
-                latitude = intent.getDoubleExtra("latitude", 0.0);
-                longitude = intent.getDoubleExtra("longitude", 0.0);
-            }
-
-            // Load venues from cache
-            IDataHistoryManager cache = RestogramClient.getInstance().getCacheDataHistoryManager();
-            if(cache != null) {
-                RestogramVenue[] venues = cache.loadVenues();
-                if(venues != null && venues.length > 0) {
-                    initialize(venues);
                 }
             }
         } catch (Exception e) {

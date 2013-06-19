@@ -92,6 +92,9 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
             for(final RestogramVenue venue : result.getVenues()) {
                 cacheDataHistoryManager.save(venue, Defs.Data.SortOrder.SortOrderFIFO);
             }
+
+            // Save last location to cache data history
+            cacheDataHistoryManager.save(result.getLatitude(), result.getLongitude());
         }
     }
 

@@ -9,5 +9,18 @@ import rest.o.gram.entities.RestogramVenue;
  */
 public interface GetNearbyResult {
 
+    /**
+     * Returns venues
+     */
     RestogramVenue[] getVenues();
+
+    /**
+     * Returns location latitude
+     */
+    double getLatitude();
+
+    /**
+     * Returns location longitude
+     */
+    double getLongitude();
 }
