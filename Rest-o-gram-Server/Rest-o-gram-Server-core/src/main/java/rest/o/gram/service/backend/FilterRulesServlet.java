@@ -72,7 +72,11 @@ public class FilterRulesServlet extends HttpServlet {
                 else if (DataManager.isPhotoPending(currPhotoId)) // restore from pending
                     currPhoto = DataManager.getPendingPhoto(currPhotoId, venueId);
                 else // get from instagram
+                {
                     currPhoto = ApisAccessManager.getPhoto(currPhotoId, venueId);
+                    if (currPhoto == null)
+                        continue; // TODO: consider allowing more retries...
+                }
 
                 photoToRuleMapping.put(currPhoto,Boolean.parseBoolean(idRulePairs[i+1]));
             }

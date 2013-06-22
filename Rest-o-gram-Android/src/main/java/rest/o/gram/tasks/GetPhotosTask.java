@@ -86,6 +86,11 @@ public class GetPhotosTask extends AsyncTask<String, Void, GetPhotosResult> {
             return token;
         }
 
+        @Override
+        public boolean hasMorePhotos() {
+            return photos != null && token != null && !token.isEmpty();
+        }
+
         private RestogramPhoto[] photos;
         private String token;
     }

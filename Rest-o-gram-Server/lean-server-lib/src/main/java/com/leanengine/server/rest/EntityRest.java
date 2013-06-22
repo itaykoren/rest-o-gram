@@ -44,19 +44,19 @@ public class EntityRest {
         return JsonUtils.entityListToJson(entities);
     }
 
-    @POST
-    @Path("/{entityName}")
-    public String putEntity(@PathParam("entityName") String entityName, JsonNode entityJson) throws LeanException {
-        long entityID = DatastoreUtils.putPrivateEntity(entityName, JsonUtils.entityPropertiesFromJson(entityJson));
-        return "{\"id\":" + entityID + "}";
-    }
+//    @POST
+//    @Path("/{entityName}")
+//    public String putEntity(@PathParam("entityName") String entityName, JsonNode entityJson) throws LeanException {
+//        long entityID = DatastoreUtils.putPrivateEntity(entityName, JsonUtils.entityPropertiesFromJson(entityJson));
+//        return "{\"id\":" + entityID + "}";
+//    }
 
-    @POST
-    @Path("/{entityName}/{entityId}")
-    public String putEntity(@PathParam("entityName") String entityName, @PathParam("entityId") long entityId,
-                            JsonNode entityJson) throws LeanException {
-        long entityID = DatastoreUtils.putPrivateEntity(entityName, entityId,
-                            JsonUtils.entityPropertiesFromJson(entityJson));
-        return "{\"id\":" + entityID + "}";
-    }
+//    @POST
+//    @Path("/{entityName}/{entityId}")
+//    public String putEntity(@PathParam("entityName") String entityName, @PathParam("entityId") long entityId,
+//                            JsonNode entityJson) throws LeanException {
+//        long entityID = DatastoreUtils.putPrivateEntity(entityName, entityId,
+//                            JsonUtils.entityPropertiesFromJson(entityJson));
+//        return "{\"id\":" + entityID + "}";
+//    }
 }

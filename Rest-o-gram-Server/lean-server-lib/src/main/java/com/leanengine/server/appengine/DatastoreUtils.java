@@ -151,11 +151,11 @@ public class DatastoreUtils {
         return result.values();
     }
 
-    public static long putPrivateEntity(String kind, Map<String, Object> properties) throws LeanException {
+    public static long putPrivateEntity(String kind, Map<String, PropertyDescription> properties) throws LeanException {
         return putPrivateEntity(kind, Long.MIN_VALUE, properties);
     }
 
-    public static long putPrivateEntity(String kind, long id, Map<String, Object> properties) throws LeanException {
+    public static long putPrivateEntity(String kind, long id, Map<String, PropertyDescription> properties) throws LeanException {
         if (!pattern.matcher(kind).matches()) {
             throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
         }
@@ -166,11 +166,14 @@ public class DatastoreUtils {
             entityEntity = new Entity(kind, id, accountKey);
         else // creates a new entity
             entityEntity = new Entity(kind, accountKey);
-        //entityEntity.setProperty("_account", AuthService.getCurrentAccount().id);
 
         if (properties != null) {
-            for (Map.Entry<String, Object> entry : properties.entrySet()) {
-                entityEntity.setProperty(entry.getKey(), entry.getValue());
+            for (final Map.Entry<String, PropertyDescription> entry : properties.entrySet())
+            {
+                if (entry.getValue().indexed)
+                    entityEntity.setProperty(entry.getKey(), entry.getValue().value);
+                else
+                    entityEntity.setUnindexedProperty(entry.getKey(), entry.getValue().value);
             }
         }
         Key result = datastore.put(entityEntity);
@@ -178,7 +181,7 @@ public class DatastoreUtils {
     }
 
     public static void putPrivateEntity(String kind, String name,
-                                        Map<String, Object> properties) throws LeanException {
+                                        Map<String, PropertyDescription> properties) throws LeanException {
         if (!pattern.matcher(kind).matches()) {
             throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
         }
@@ -186,15 +189,24 @@ public class DatastoreUtils {
         final Key accountKey = getCurrentAccountKey();
         Entity entityEntity = new Entity(kind, name, accountKey);
 
-        if (properties != null) {
-            for (Map.Entry<String, Object> entry : properties.entrySet()) {
-                entityEntity.setProperty(entry.getKey(), entry.getValue());
+        if (properties != null)
+        {
+            for (final Map.Entry<String, PropertyDescription> entry : properties.entrySet())
+            {
+                if (entry.getValue().indexed)
+                    entityEntity.setProperty(entry.getKey(), entry.getValue().value);
+                else
+                    entityEntity.setUnindexedProperty(entry.getKey(), entry.getValue().value);
             }
         }
         datastore.put(entityEntity);
     }
 
-    public static void putPublicEntity(String kind, String name, Map<String, Object> properties)
+    public static void putPublicEntity(Entity entityEntity) {
+        datastore.put(entityEntity);
+    }
+
+    public static void putPublicEntity(String kind, String name, Map<String, PropertyDescription> properties)
             throws LeanException {
 
         if (!pattern.matcher(kind).matches()) {
@@ -203,9 +215,14 @@ public class DatastoreUtils {
 
         Entity entityEntity = new Entity(kind, name);
 
-        if (properties != null) {
-            for (Map.Entry<String, Object> entry : properties.entrySet()) {
-                entityEntity.setProperty(entry.getKey(), entry.getValue());
+        if (properties != null)
+        {
+            for (final Map.Entry<String, PropertyDescription> entry : properties.entrySet())
+            {
+                if (entry.getValue().indexed)
+                    entityEntity.setProperty(entry.getKey(), entry.getValue().value);
+                else
+                    entityEntity.setUnindexedProperty(entry.getKey(), entry.getValue().value);
             }
         }
         datastore.put(entityEntity);
@@ -248,6 +265,25 @@ public class DatastoreUtils {
 
     public static Transaction buildTransaction(TransactionOptions options) {
         return datastore.beginTransaction(options);
+    }
+
+    public static class PropertyDescription {
+
+        public PropertyDescription(Object value, boolean indexed) {
+            this.value = value;
+            this.indexed = indexed;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public boolean isIndexed() {
+            return indexed;
+        }
+
+        private Object value;
+        private boolean indexed;
     }
 
     private static Collection<Key> entitiesToKeys(final Collection<Entity> entities) {

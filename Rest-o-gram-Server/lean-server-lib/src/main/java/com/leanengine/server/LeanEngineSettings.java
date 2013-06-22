@@ -37,7 +37,7 @@ public class LeanEngineSettings {
         // there is only one instance of LeanEngineSettings so the same ID=1 is always used
         Entity leanEntity = new Entity("_settings", 1);
         for (String propName : newSettings.keySet()) {
-            leanEntity.setProperty(propName, newSettings.get(propName));
+            leanEntity.setUnindexedProperty(propName, newSettings.get(propName));
         }
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         datastore.put(leanEntity);

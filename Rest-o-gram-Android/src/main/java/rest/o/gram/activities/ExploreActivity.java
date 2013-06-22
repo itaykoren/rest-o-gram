@@ -112,7 +112,8 @@ public class ExploreActivity extends RestogramActionBarActivity {
         // Update request pending flag
         isRequestPending = false;
 
-        if(result == null || result.getPhotos() == null) {
+        if(result == null || !result.hasMorePhotos())
+        {
             // Update last token of current venue
             venues[currVenueIndex].lastToken = null;
 
@@ -139,7 +140,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
         venues[currVenueIndex].lastPhotoIndex = result.getPhotos().length - 1;
 
-        if (result.getPhotos().length != 0 && result.getPhotos().length < Defs.Feed.PHOTOS_PACKET_THRESHOLD)
+        if (result.getPhotos().length < Defs.Feed.PHOTOS_PACKET_THRESHOLD && result.hasMorePhotos())
             getMorePhotos();
     }
 

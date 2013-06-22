@@ -22,10 +22,22 @@ public class PutBatchOperationImpl implements PutBatchOperation {
 
     @Override
     public PutBatchOperationImpl addEntityProperty(String name, String prop, Object value) {
+        return addEntityProperty(name, prop, value, true);
+    }
+
+    @Override
+    public PutBatchOperationImpl addEntityUnindexedProperty(String name, String prop, Object value) {
+        return addEntityProperty(name, prop, value, false);
+    }
+
+    private PutBatchOperationImpl addEntityProperty(String name, String prop, Object value, boolean indexed) {
         if (!idToEntityMapping.containsKey(name))
             return null;
 
-        idToEntityMapping.get(name).setProperty(prop, value);
+        if (indexed)
+            idToEntityMapping.get(name).setProperty(prop, value);
+        else
+            idToEntityMapping.get(name).setUnindexedProperty(prop, value);
         return this;
     }
 

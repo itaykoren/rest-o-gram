@@ -13,8 +13,6 @@ import com.leanengine.server.entity.QueryFilter;
 import com.leanengine.server.entity.QueryResult;
 import com.leanengine.server.entity.QuerySort;
 import org.apache.commons.lang3.StringUtils;
-import org.jinstagram.entity.users.feed.MediaFeedData;
-import rest.o.gram.ApisConverters;
 import rest.o.gram.DataStoreConverters;
 import rest.o.gram.Defs;
 import rest.o.gram.entities.Kinds;
@@ -61,15 +59,15 @@ public final class DataManager {
 
             // TODO: refactor
             putOp.addEntityProperty(currName, Props.Photo.ORIGIN_VENUE_ID, currPhoto.getOriginVenueId());
-            putOp.addEntityProperty(currName, Props.Photo.CAPTION, currPhoto.getCaption());
-            putOp.addEntityProperty(currName, Props.Photo.CREATED_TIME, currPhoto.getCreatedTime());
-            putOp.addEntityProperty(currName, Props.Photo.IMAGE_FILTER, currPhoto.getImageFilter());
-            putOp.addEntityProperty(currName, Props.Photo.LIKES, currPhoto.getLikes());
-            putOp.addEntityProperty(currName, Props.Photo.STANDARD_RESOLUTION, currPhoto.getStandardResolution());
-            putOp.addEntityProperty(currName, Props.Photo.LINK, currPhoto.getLink());
-            putOp.addEntityProperty(currName, Props.Photo.THUMBNAIL, currPhoto.getThumbnail());
-            putOp.addEntityProperty(currName, Props.Photo.TYPE, currPhoto.getType());
-            putOp.addEntityProperty(currName, Props.Photo.USER, currPhoto.getUser());
+            putOp.addEntityUnindexedProperty(currName, Props.Photo.CAPTION, currPhoto.getCaption());
+            putOp.addEntityUnindexedProperty(currName, Props.Photo.CREATED_TIME, currPhoto.getCreatedTime());
+            putOp.addEntityUnindexedProperty(currName, Props.Photo.IMAGE_FILTER, currPhoto.getImageFilter());
+            putOp.addEntityUnindexedProperty(currName, Props.Photo.LIKES, currPhoto.getLikes());
+            putOp.addEntityUnindexedProperty(currName, Props.Photo.STANDARD_RESOLUTION, currPhoto.getStandardResolution());
+            putOp.addEntityUnindexedProperty(currName, Props.Photo.LINK, currPhoto.getLink());
+            putOp.addEntityUnindexedProperty(currName, Props.Photo.THUMBNAIL, currPhoto.getThumbnail());
+            putOp.addEntityUnindexedProperty(currName, Props.Photo.TYPE, currPhoto.getType());
+            putOp.addEntityUnindexedProperty(currName, Props.Photo.USER, currPhoto.getUser());
         }
         return putOp.execute(new PutUpdateStrategy());
     }
@@ -109,9 +107,9 @@ public final class DataManager {
     // AUTH
 
     public static boolean updatePhotoReference(final String photoId, final boolean isFav) {
-        final Map<String, Object> props = new HashMap<>();
-        props.put(Props.PhotoRef.INSTAGRAM_ID, photoId);
-        props.put(Props.PhotoRef.IS_FAVORITE, isFav);
+        final Map<String, DatastoreUtils.PropertyDescription> props = new HashMap<>();
+        props.put(Props.PhotoRef.INSTAGRAM_ID, new DatastoreUtils.PropertyDescription(photoId, true));
+        props.put(Props.PhotoRef.IS_FAVORITE, new DatastoreUtils.PropertyDescription(isFav, true));
         try {
             DatastoreUtils.putPrivateEntity(Kinds.PHOTO_REFERENCE, photoId, props);
         } catch (LeanException e) {
@@ -148,8 +146,8 @@ public final class DataManager {
                 photo.setProperty(Props.Photo.YUMMIES, yummies);
                 try
                 {
-                    DatastoreUtils.putPublicEntity(Kinds.PHOTO, photoId, photo.getProperties());
-                } catch (LeanException e)
+                    DatastoreUtils.putPublicEntity(photo);
+                } catch (Exception e)
                 {
                     e.printStackTrace();
                     log.severe("cannot put photo in DS");
@@ -324,11 +322,10 @@ public final class DataManager {
         if (cache != null)
             return cache;
         cache = MemcacheServiceFactory.getMemcacheService();
-        cache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+        cache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.WARNING));
         return  cache;
     }
 
     private static final Logger log = Logger.getLogger(DataManager.class.getName());
     private static MemcacheService cache = null;
-
 }

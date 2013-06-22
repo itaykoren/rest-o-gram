@@ -10,4 +10,5 @@ import rest.o.gram.entities.RestogramPhoto;
 public interface GetPhotosResult {
     RestogramPhoto[] getPhotos();
     String getToken();
+    boolean hasMorePhotos();
 }

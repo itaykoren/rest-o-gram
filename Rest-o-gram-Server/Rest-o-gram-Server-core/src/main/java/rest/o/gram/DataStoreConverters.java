@@ -1,6 +1,7 @@
 package rest.o.gram;
 
 import com.google.appengine.api.datastore.Entity;
+import com.leanengine.server.appengine.DatastoreUtils;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
 import rest.o.gram.entities.RestogramPhoto;
@@ -33,20 +34,20 @@ public final class DataStoreConverters {
         return entity;
     }
 
-    public static Map<String, Object> venueToProps(final RestogramVenue venue)
+    public static Map<String, DatastoreUtils.PropertyDescription> venueToProps(final RestogramVenue venue)
     {
-        Map<String,Object> props = new HashMap<>(11);
-        props.put(Props.Venue.NAME, venue.getName());
-        props.put(Props.Venue.ADDRESS, venue.getAddress());
-        props.put(Props.Venue.CITY, venue.getCity());
-        props.put(Props.Venue.STATE, venue.getState());
-        props.put(Props.Venue.POSTAL_CODE, venue.getPostalCode());
-        props.put(Props.Venue.COUNTRY, venue.getCountry());
-        props.put(Props.Venue.LAT, venue.getLatitude());
-        props.put(Props.Venue.LONG, venue.getLongitude());
-        props.put(Props.Venue.DISTANCE, venue.getDistance());
-        props.put(Props.Venue.URL, venue.getUrl());
-        props.put(Props.Venue.PHONE, venue.getPhone());
+        Map<String,DatastoreUtils.PropertyDescription> props = new HashMap<>(11);
+        props.put(Props.Venue.NAME, new  DatastoreUtils.PropertyDescription(venue.getName(), false));
+        props.put(Props.Venue.ADDRESS, new DatastoreUtils.PropertyDescription(venue.getAddress(), false));
+        props.put(Props.Venue.CITY, new DatastoreUtils.PropertyDescription(venue.getCity(), false));
+        props.put(Props.Venue.STATE, new DatastoreUtils.PropertyDescription(venue.getState(), false));
+        props.put(Props.Venue.POSTAL_CODE, new DatastoreUtils.PropertyDescription(venue.getPostalCode(), false));
+        props.put(Props.Venue.COUNTRY, new DatastoreUtils.PropertyDescription(venue.getCountry(), false));
+        props.put(Props.Venue.LAT, new DatastoreUtils.PropertyDescription(venue.getLatitude(), false));
+        props.put(Props.Venue.LONG, new DatastoreUtils.PropertyDescription(venue.getLongitude(), false));
+        props.put(Props.Venue.DISTANCE, new DatastoreUtils.PropertyDescription(venue.getDistance(), false));
+        props.put(Props.Venue.URL, new DatastoreUtils.PropertyDescription(venue.getUrl(), false));
+        props.put(Props.Venue.PHONE, new DatastoreUtils.PropertyDescription(venue.getPhone(), false));
         return props;
     }
 
@@ -89,20 +90,20 @@ public final class DataStoreConverters {
         return entity;
     }
 
-    public static Map<String, Object> photoToProps(final RestogramPhoto photo){
-        Map<String,Object> props = new HashMap<>(12);
-        props.put(Props.Photo.CAPTION, photo.getCaption());
-        props.put(Props.Photo.CREATED_TIME, photo.getCreatedTime());
-        props.put(Props.Photo.IMAGE_FILTER, photo.getImageFilter());
-        props.put(Props.Photo.THUMBNAIL, photo.getThumbnail());
-        props.put(Props.Photo.STANDARD_RESOLUTION, photo.getStandardResolution());
-        props.put(Props.Photo.IMAGE_FILTER, photo.getImageFilter());
-        props.put(Props.Photo.LIKES, photo.getLikes());
-        props.put(Props.Photo.LINK, photo.getLink());
-        props.put(Props.Photo.TYPE, photo.getType());
-        props.put(Props.Photo.USER, photo.getUser());
-        props.put(Props.Photo.ORIGIN_VENUE_ID, photo.getOriginVenueId());
-        props.put(Props.Photo.YUMMIES, photo.getYummies());
+    public static Map<String, DatastoreUtils.PropertyDescription> photoToProps(final RestogramPhoto photo){
+        Map<String,DatastoreUtils.PropertyDescription> props = new HashMap<>(12);
+        props.put(Props.Photo.CAPTION, new DatastoreUtils.PropertyDescription(photo.getCaption(), false));
+        props.put(Props.Photo.CREATED_TIME, new DatastoreUtils.PropertyDescription(photo.getCreatedTime(), false));
+        props.put(Props.Photo.IMAGE_FILTER,new DatastoreUtils.PropertyDescription(photo.getImageFilter(),  false));
+        props.put(Props.Photo.THUMBNAIL, new DatastoreUtils.PropertyDescription(photo.getThumbnail(), false));
+        props.put(Props.Photo.STANDARD_RESOLUTION, new DatastoreUtils.PropertyDescription(photo.getStandardResolution(), false));
+        props.put(Props.Photo.IMAGE_FILTER, new DatastoreUtils.PropertyDescription(photo.getImageFilter(), false));
+        props.put(Props.Photo.LIKES, new DatastoreUtils.PropertyDescription(photo.getLikes(), false));
+        props.put(Props.Photo.LINK, new DatastoreUtils.PropertyDescription(photo.getLink(), false));
+        props.put(Props.Photo.TYPE, new DatastoreUtils.PropertyDescription(photo.getType(), false));
+        props.put(Props.Photo.USER, new DatastoreUtils.PropertyDescription(photo.getUser(), false));
+        props.put(Props.Photo.ORIGIN_VENUE_ID, new DatastoreUtils.PropertyDescription(photo.getOriginVenueId(), true));
+        props.put(Props.Photo.YUMMIES, new DatastoreUtils.PropertyDescription(photo.getYummies(), true));
         return props;
     }
 

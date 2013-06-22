@@ -1,21 +1,18 @@
 package com.leanengine.server.appengine;
 
 import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.memcache.ErrorHandlers;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.leanengine.server.auth.AuthToken;
 import com.leanengine.server.auth.LeanAccount;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AccountUtils {
-    private static final Logger log = Logger.getLogger(AccountUtils.class.getName());
-
-    private static final String authTokenKind = "_auth_tokens";
-    private static final String accountsKind = "_accounts";
-
-    private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
     public static Key getAccountKey(long accountID) {
         if (accountID <= 0) return null;
          return KeyFactory.createKey(accountsKind, accountID);
@@ -46,8 +43,6 @@ public class AccountUtils {
         final Query.Filter filter =
                 Query.CompositeFilterOperator.and(providerIdFilter, providerFilter);
         query.setFilter(filter);
-        //query.setFilter(new Query.FilterPredicate("_provider_id", Query.FilterOperator.EQUAL, providerID));
-        //query.setFilter(new Query.FilterPredicate("_provider", Query.FilterOperator.EQUAL, provider));
         PreparedQuery pq = datastore.prepare(query);
 
         Entity accountEntity = pq.asSingleEntity();
@@ -68,8 +63,6 @@ public class AccountUtils {
         final Query.Filter filter =
                 Query.CompositeFilterOperator.and(mailFilter, providerFilter);
         query.setFilter(filter);
-        //query.setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
-        //query.setFilter(new Query.FilterPredicate("_provider", Query.FilterOperator.EQUAL, provider));
         PreparedQuery pq = datastore.prepare(query);
 
         Entity accountEntity = pq.asSingleEntity();
@@ -78,14 +71,22 @@ public class AccountUtils {
     }
 
     public static AuthToken getAuthToken(String token) {
-        //todo use MemCache
-        Entity tokenEntity;
-        try {
+        Entity tokenEntity = (Entity)getMemcacheService().get(token);
+        if (tokenEntity != null)
+            return createAuthToken(token, tokenEntity);
+
+        try
+        {
             tokenEntity = datastore.get(KeyFactory.createKey(authTokenKind, token));
-        } catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException e)
+        {
             return null;
         }
 
+        return createAuthToken(token, tokenEntity);
+    }
+
+    private static AuthToken createAuthToken(String token, Entity tokenEntity) {
         return new AuthToken(
                 token,
                 (Long) tokenEntity.getProperty("account"),
@@ -94,32 +95,26 @@ public class AccountUtils {
     }
 
     public static void saveAuthToken(AuthToken authToken) {
-        //todo use MemCache
-
         Entity tokenEntity = new Entity(authTokenKind, authToken.token);
-
-        tokenEntity.setProperty("account", authToken.accountID);
-        tokenEntity.setProperty("time", authToken.timeCreated);
+        tokenEntity.setUnindexedProperty("account", authToken.accountID);
+        tokenEntity.setUnindexedProperty("time", authToken.timeCreated);
         datastore.put(tokenEntity);
+        getMemcacheService().put(authToken.token, tokenEntity);
     }
 
     public static void removeAuthToken(String token) {
-        //todo use MemCache
+        getMemcacheService().delete(token);
         datastore.delete(KeyFactory.createKey(authTokenKind, token));
     }
 
     public static void saveAccount(LeanAccount leanAccount) {
-        log.severe("SAVING LEAN ACCOUNT");
-
         Entity accountEntity;
 
         // Is it a new LeanAccount? They do not have 'id' yet.
         if (leanAccount.id <= 0) {
-            log.severe("CREATING LEAN ACCOUNT");
             // create account
             accountEntity = new Entity(accountsKind);
         } else {
-            log.severe("UPDATING LEAN ACCOUNT");
             // update account
             accountEntity = new Entity(accountsKind, leanAccount.id);
         }
@@ -131,7 +126,6 @@ public class AccountUtils {
             // properties must not start with underscore - this is reserved for system properties
             accountEntity.setProperty(property.getKey(), property.getValue());
         }
-        log.severe("SAVING LEAN ACCOUNT - COMMIT");
         Key accountKey = datastore.put(accountEntity);
         leanAccount.id = accountKey.getId();
     }
@@ -152,4 +146,19 @@ public class AccountUtils {
                 props
         );
     }
+
+    private static MemcacheService getMemcacheService() {
+        if (cache != null)
+            return cache;
+        cache = MemcacheServiceFactory.getMemcacheService();
+        cache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.WARNING));
+        return  cache;
+    }
+
+    private static MemcacheService cache = null;
+    private static final Logger log = Logger.getLogger(AccountUtils.class.getName());
+    private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    private static final String authTokenKind = "_auth_tokens";
+    private static final String accountsKind = "_accounts";
 }
