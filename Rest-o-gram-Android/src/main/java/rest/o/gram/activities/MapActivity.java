@@ -43,6 +43,9 @@ public class MapActivity extends RestogramActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Restart application (if needed)
+        Utils.restartIfNeeded(this);
+
         // Initialize map
         if(!initializeMap())
             return;
@@ -89,7 +92,7 @@ public class MapActivity extends RestogramActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if(RestogramClient.getInstance().activityAmount() == 1)
+        if(RestogramClient.getInstance().getApplication().activityAmount() == 1)
             dialogManager.showExitAlert(this);
         else
             finish();

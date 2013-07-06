@@ -2,14 +2,14 @@ package rest.o.gram.client;
 
 import android.content.Context;
 import android.widget.ImageView;
-import rest.o.gram.application.RestogramApplication;
+import rest.o.gram.application.IRestogramApplication;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.cache.IBitmapCache;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.commands.IRestogramCommandObserver;
-import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.data_favorites.IDataFavoritesManager;
+import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.filters.RestogramFilterType;
@@ -28,7 +28,7 @@ public interface IRestogramClient {
     /**
      * Initializes this client
      */
-    void initialize(Context context, RestogramApplication application);
+    void initialize(Context context, IRestogramApplication application);
 
     /**
      * Disposes this client
@@ -160,7 +160,12 @@ public interface IRestogramClient {
     boolean isDebuggable();
 
     /**
-     * Returns activity amount
+     * Returns true whether this client is initialized, false otherwise
      */
-    int activityAmount();
+    boolean isInitialized();
+
+    /**
+     * Returns the restogram application
+     */
+    IRestogramApplication getApplication();
 }

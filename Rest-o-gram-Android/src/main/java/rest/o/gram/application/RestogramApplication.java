@@ -17,7 +17,7 @@ import java.util.Set;
  * User: Itay
  * Date: 20/04/13
  */
-public class RestogramApplication extends Application implements Application.ActivityLifecycleCallbacks {
+public class RestogramApplication extends Application implements IRestogramApplication, Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onCreate() {
@@ -119,11 +119,15 @@ public class RestogramApplication extends Application implements Application.Act
             cache.clear();
     }
 
-    /**
-     * Returns activity amount
-     */
+    @Override
     public int activityAmount() {
         return activities.size();
+    }
+
+    @Override
+    public void restart() {
+        // Initialize client
+        RestogramClient.getInstance().initialize(getApplicationContext(), this);
     }
 
     private Set<Activity> activities;

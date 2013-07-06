@@ -43,6 +43,9 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Restart application (if needed)
+        Utils.restartIfNeeded(this);
+
         setContentView(R.layout.personal);
 
         initUser();
@@ -82,7 +85,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     @Override
     public void onBackPressed() {
-        if(RestogramClient.getInstance().activityAmount() == 1)
+        if(RestogramClient.getInstance().getApplication().activityAmount() == 1)
             dialogManager.showExitAlert(this);
         else
             finish();

@@ -10,6 +10,9 @@ import android.net.Uri;
 import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import rest.o.gram.activities.HomeActivity;
+import rest.o.gram.client.IRestogramClient;
+import rest.o.gram.client.RestogramClient;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -196,6 +199,21 @@ public class Utils {
         }
         catch(Exception e) {
             return null;
+        }
+    }
+
+    /**
+     * Restarts the application if needed
+     */
+    public static void restartIfNeeded(Activity activity) {
+        IRestogramClient client = RestogramClient.getInstance();
+        if(!client.isInitialized()) {
+            // Restart the application
+            client.getApplication().restart();
+
+            // Switch to "HomeActivity", finish current activity
+            Intent intent = new Intent(activity, HomeActivity.class);
+            Utils.changeActivity(activity, intent, Defs.RequestCodes.RC_HOME, true);
         }
     }
 }
