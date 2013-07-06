@@ -28,6 +28,9 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Restart application (if needed)
+        Utils.restartIfNeeded(this);
+
         setContentView(R.layout.home);
 
         // Get location tracker
