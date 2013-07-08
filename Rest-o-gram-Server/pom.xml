@@ -19,7 +19,7 @@
   </modules>
 
     <properties>
-        <gae.version>1.7.6</gae.version>
+        <gae.version>1.8.1.1</gae.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
   
