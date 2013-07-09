@@ -10,5 +10,6 @@
     </system-properties>
     <admin-console>
         <page name="LeanEngine Settings" url="/admin/settings.jsp"/>
+        <page name="Appstats" url="/appstats/" />
     </admin-console>
 </appengine-web-app>
