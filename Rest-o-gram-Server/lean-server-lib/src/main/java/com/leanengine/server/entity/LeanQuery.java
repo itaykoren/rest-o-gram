@@ -17,8 +17,8 @@ public class LeanQuery {
     private List<QueryFilter> filters = new ArrayList<>();
     private List<QuerySort> sorts = new ArrayList<>();
     private Cursor cursor;
-    private Integer offset;
-    private Integer limit;
+    private Integer offset = 0;
+    private Integer limit = 40;
     private QueryReference reference;
     private boolean keysOnly;
 
