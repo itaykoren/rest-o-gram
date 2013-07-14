@@ -329,7 +329,6 @@ public class RestogramServiceImpl implements RestogramService {
 
     private PhotosResult doGetPhotos(String venueId, RestogramFilterType filterType, String token) {
 
-        long start = new DateTime().getMillis();
         PhotosResult cachedPhotosResult = null;
         if (token == null || DataManager.isValidCursor(token)) {
             // fetch cached photos of given venue
@@ -359,19 +358,24 @@ public class RestogramServiceImpl implements RestogramService {
             PhotosResult instagramPhotos = doGetInstagramPhotos(venueId, filterType, token);
             instagramPhotos = getMoreResultsIfNeeded(instagramPhotos, venueId, filterType);
             if (instagramPhotos != null && instagramPhotos.getPhotos() != null)
-                log.severe(String.format("sending [%d] photos to client", instagramPhotos.getPhotos().length));
+                log.info(String.format("sending [%d] photos to client", instagramPhotos.getPhotos().length));
             return instagramPhotos;
         }
 
         // if enough results were found, return results
         if (cachedPhotosResult.getPhotos().length > Defs.Request.MIN_PHOTOS_PER_REQUEST) {
+            log.info("got enough photos from cache");
+            log.info(String.format("sending [%d] photos to client", cachedPhotosResult.getPhotos().length));
             return cachedPhotosResult;
         }
         // otherwise, not enough results were found, add more from Instagram
         else {
+            log.info("not enough photos from cache, fetch from instagram");
             PhotosResult photosFromInstagram = doGetInstagramPhotos(venueId, filterType, token);
             PhotosResult mergedResults = mergeResults(cachedPhotosResult, photosFromInstagram);
             mergedResults = getMoreResultsIfNeeded(mergedResults, venueId, filterType);
+            if (mergedResults != null && mergedResults.getPhotos() != null)
+                log.info(String.format("sending [%d] photos to client", mergedResults.getPhotos().length));
             return mergedResults;
         }
     }
@@ -382,9 +386,9 @@ public class RestogramServiceImpl implements RestogramService {
                 currentPhotos.getPhotos() != null &&
                 StringUtils.isNotBlank(currentPhotos.getToken()) &&
                 currentPhotos.getPhotos().length < Defs.Request.MIN_PHOTOS_PER_REQUEST) {
-            log.severe(String.format("got [%d] photos, asking for more", currentPhotos.getPhotos().length));
+            log.info(String.format("got [%d] photos, asking for more", currentPhotos.getPhotos().length));
             PhotosResult nextPhotos = doGetInstagramPhotos(venueId, filterType, currentPhotos.getToken());
-            log.severe(String.format("got [%d] more photos, merging", nextPhotos.getPhotos().length));
+            log.info(String.format("got [%d] more photos, merging", nextPhotos.getPhotos().length));
 
             return mergeResults(currentPhotos, nextPhotos);
         }
@@ -438,17 +442,17 @@ public class RestogramServiceImpl implements RestogramService {
 
         List<MediaFeedData> data = recentMediaByLocation.getData();
 
-        log.severe(String.format("got [%d] photos from instagram", data.size()));
+        log.info(String.format("got [%d] photos from instagram", data.size()));
 
         data = removeCachedPhotos(data);
 
-        log.severe(String.format("kept [%d] photos after checking cache", data.size()));
+        log.info(String.format("kept [%d] photos after checking cache", data.size()));
 
         addPhotosToQueue(data, venueId);
-        log.severe(String.format("sending [%d] photos for filtering. current timestamp is [%d]", data.size(), new DateTime().getMillis()));
+        log.info(String.format("sending [%d] photos for filtering. current timestamp is [%d]", data.size(), new DateTime().getMillis()));
 //        data = filterPhotosIfNeeded(data, filterType);
-        log.severe(String.format("received [%d] photos after filtering. current timestamp is [%d]", data.size(), new DateTime().getMillis()));
-        log.severe(String.format("converting [%d] instagram photos to restogramphotos", data.size()));
+        log.info(String.format("received [%d] photos after filtering. current timestamp is [%d]", data.size(), new DateTime().getMillis()));
+        log.info(String.format("converting [%d] instagram photos to restogramphotos", data.size()));
 
         RestogramPhoto[] photos = convertMediaFeedDataToRestogramPhotos(data, venueId);
 
@@ -471,7 +475,8 @@ public class RestogramServiceImpl implements RestogramService {
             locationSearchFeed = instagram.searchFoursquareVenue(venueID);
         } catch (InstagramException e) {
             log.warning("first search for venue: " + venueID + " has failed, retry");
-            e.printStackTrace();
+            log.throwing("RestogramServiceImpl", "getInstagramLocationId", e);
+
             try {
                 Credentials credentials = m_factory.createInstagramCredentials();
                 log.info("instagram credentials type = " + credentials.getType());
@@ -575,9 +580,8 @@ public class RestogramServiceImpl implements RestogramService {
 
         Pagination pagination = null;
 
-        if (token != null) {
+        if (token != null)
             pagination = new Gson().fromJson(token, Pagination.class);
-        }
 
         MediaFeed recentMediaByLocation;
         try {

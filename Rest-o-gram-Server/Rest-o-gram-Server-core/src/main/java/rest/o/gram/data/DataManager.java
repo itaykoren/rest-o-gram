@@ -277,7 +277,7 @@ public final class DataManager {
         if (queryResult != null && queryResult.getResult() != null) {
             final Cursor cursor = queryResult.getCursor();
             String token = null;
-            if (cursor == null) // no more results
+            if (cursor == null || queryResult.getResult().isEmpty()) // no more results
                 token = Defs.Tokens.FINISHED_FETCHING_FROM_CACHE;
             else // has more results
                 token = cursor.toWebSafeString();
