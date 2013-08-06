@@ -19,9 +19,9 @@ import java.util.logging.Logger;
 public final class ApisAccessManager {
 
     public static RestogramPhoto getPhoto(final String id, final String originVenueId)  {
-        long lid;
+        String mediaId;
         try {
-            lid = InstagramUtils.extractMediaId(id);
+            mediaId = InstagramUtils.extractMediaId(id);
         }
         catch (Exception e) {
             log.severe("cannot extract media id from media feed string id");
@@ -34,7 +34,7 @@ public final class ApisAccessManager {
             Credentials credentials = credentialsFactory.createInstagramCredentials();
             log.info("instagram credentials type = " + credentials.getType());
             Instagram instagram = new Instagram(credentials.getClientId());
-            mediaInfo = instagram.getMediaInfo(lid);
+            mediaInfo = instagram.getMediaInfo(mediaId);
         }
         catch (InstagramException e) {
             log.warning("first get photo has failed, retry");
@@ -43,7 +43,7 @@ public final class ApisAccessManager {
                 Credentials credentials = credentialsFactory.createInstagramCredentials();
                 log.info("instagram credentials type = " + credentials.getType());
                 Instagram instagram = new Instagram(credentials.getClientId());
-                mediaInfo = instagram.getMediaInfo(lid);
+                mediaInfo = instagram.getMediaInfo(mediaId);
             }
             catch (InstagramException e2) {
                 log.severe("second get photo has failed");
