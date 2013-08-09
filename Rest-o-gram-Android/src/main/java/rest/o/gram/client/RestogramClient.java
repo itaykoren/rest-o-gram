@@ -12,6 +12,7 @@ import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.cache.*;
 import rest.o.gram.commands.*;
 import rest.o.gram.common.Defs;
+import rest.o.gram.common.Utils;
 import rest.o.gram.data_favorites.DataFavoritesManager;
 import rest.o.gram.data_favorites.IDataFavoritesManager;
 import rest.o.gram.data_history.DataHistoryManager;
@@ -201,7 +202,9 @@ public class RestogramClient implements IRestogramClient {
     @Override
     public IRestogramCommand downloadImage(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter,
                               boolean force, IRestogramCommandObserver observer) {
-        IRestogramCommand command = new DownloadImageCommand(context, url, photo.getInstagram_id(), viewAdapter);
+        int size = Utils.getScreenWidth(context) / 6;
+        IRestogramCommand command = new DownloadImageCommand(context, url, photo.getInstagram_id(),
+                                                             viewAdapter, size, size);
 
         if(observer != null)
             command.addObserver(observer);
@@ -217,7 +220,9 @@ public class RestogramClient implements IRestogramClient {
     @Override
     public IRestogramCommand downloadImage(String url, String id, ImageView imageView,
                               boolean force, IRestogramCommandObserver observer) {
-        IRestogramCommand command = new DownloadImageCommand(context, url, id, imageView);
+        int size = Utils.getScreenWidth(context) / 2;
+        IRestogramCommand command = new DownloadImageCommand(context, url, id,
+                                                             imageView, size, size);
 
         if(observer != null)
             command.addObserver(observer);

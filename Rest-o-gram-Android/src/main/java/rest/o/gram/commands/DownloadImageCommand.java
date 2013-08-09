@@ -2,8 +2,7 @@ package rest.o.gram.commands;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.ImageView;
@@ -25,17 +24,25 @@ import java.io.InputStream;
  */
 public class DownloadImageCommand extends AbstractRestogramCommand {
 
-    public DownloadImageCommand(Context context, String url, String photoId, IPhotoViewAdapter viewAdapter) {
+    public DownloadImageCommand(Context context, String url,
+                                String photoId, IPhotoViewAdapter viewAdapter,
+                                int width, int height) {
         this.context = context;
         this.url = url;
         this.photoId = photoId;
+        this.width = width;
+        this.height = height;
         this.viewAdapter = viewAdapter;
     }
 
-    public DownloadImageCommand(Context context, String url, String photoId, ImageView imageView) {
+    public DownloadImageCommand(Context context, String url,
+                                String photoId, ImageView imageView,
+                                int width, int height) {
         this.context = context;
         this.url = url;
         this.photoId = photoId;
+        this.width = width;
+        this.height = height;
         this.imageView = imageView;
     }
 
@@ -67,7 +74,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         return true;
     }
 
-    public Bitmap fetchDrawable(String urlString, String photoId) {
+    private Bitmap fetchDrawable(String urlString, String photoId, int reqWidth, int reqHeight) {
         try {
             IBitmapCache cache = RestogramClient.getInstance().getBitmapCache();
             String filename = generateFilename(urlString, photoId);
@@ -75,11 +82,9 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
 
             if(bitmap == null) {
                 // Download image
-                InputStream is = fetch(urlString);
-                Drawable drawable = Drawable.createFromStream(is, "src");
+                bitmap = decodeSampledBitmap(urlString, reqWidth, reqHeight);
 
                 // Save bitmap to cache
-                bitmap = ((BitmapDrawable)drawable).getBitmap();
                 cache.save(filename, bitmap);
             }
 
@@ -93,7 +98,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         }
     }
 
-    public void fetchDrawableOnThread(final String urlString, final String photoId, final ImageView imageView) {
+    private void fetchDrawableOnThread(final String urlString, final String photoId, final ImageView imageView) {
 
         final Handler handler = new Handler() {
             @Override
@@ -122,7 +127,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                Bitmap drawable = fetchDrawable(urlString, photoId);
+                Bitmap drawable = fetchDrawable(urlString, photoId, width, height);
                 Message message = handler.obtainMessage(1, drawable);
                 handler.sendMessage(message);
             }
@@ -130,7 +135,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         thread.start();
     }
 
-    public void fetchDrawableOnThread(final String urlString, final String photoId, final IPhotoViewAdapter viewAdapter) {
+    private void fetchDrawableOnThread(final String urlString, final String photoId, final IPhotoViewAdapter viewAdapter) {
 
         final Handler handler = new Handler() {
             @Override
@@ -165,7 +170,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                Bitmap drawable = fetchDrawable(urlString, photoId);
+                Bitmap drawable = fetchDrawable(urlString, photoId, width, height);
                 Message message = handler.obtainMessage(1, drawable);
                 handler.sendMessage(message);
             }
@@ -184,10 +189,48 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         return urlString.replaceAll("[^A-Za-z0-9]", "_");
     }
 
+    public Bitmap decodeSampledBitmap(String urlString, int reqWidth, int reqHeight) throws IOException {
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        InputStream is = fetch(urlString);
+        BitmapFactory.decodeStream(is, null, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap (new stream) with inSampleSize set
+        options.inJustDecodeBounds = false;
+        is = fetch(urlString);
+        return BitmapFactory.decodeStream(is, null, options);
+    }
+
+    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if(height > reqHeight || width > reqWidth) {
+            // Calculate ratios of height and width to requested height and width
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+
+            // Choose the smallest ratio as inSampleSize value, this will guarantee
+            // a final image with both dimensions larger than or equal to the
+            // requested height and width.
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+
+        return inSampleSize;
+    }
+
     private Context context;
     private String url;
     private ImageView imageView;
     private String photoId;
+    private int width;
+    private int height;
     private IPhotoViewAdapter viewAdapter;
     private boolean isCanceled = false;
 }

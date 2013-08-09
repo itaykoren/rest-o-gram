@@ -7,6 +7,9 @@ import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.WindowManager;
 import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -216,4 +219,20 @@ public class Utils {
             Utils.changeActivity(activity, intent, Defs.RequestCodes.RC_HOME, true);
         }
     }
+
+    /**
+     * Returns screen width
+     */
+    public static int getScreenWidth(Context context) {
+        if(screenWidth == 0) {
+            WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            DisplayMetrics metrics = new DisplayMetrics();
+            display.getMetrics(metrics);
+            screenWidth = metrics.widthPixels;
+        }
+        return screenWidth;
+    }
+
+    private static int screenWidth = 0; // Screen width
 }
