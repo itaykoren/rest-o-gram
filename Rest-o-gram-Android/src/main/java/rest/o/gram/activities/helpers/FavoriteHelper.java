@@ -136,7 +136,10 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
                 favoritePhotoButton.setImageResource(R.drawable.ic_favorite_off);
         }
 
-        // TODO: handle pagination - if(result.hasMore())...
+        // Handle pagination
+        if(result.hasMore()) {
+            dataFavoritesManager.getNextFavoritePhotos(result, this);
+        }
     }
 
     @Override
