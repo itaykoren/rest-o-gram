@@ -54,13 +54,15 @@ public interface IRestogramClient {
 
     /**
      * Executes get photos request
+     * Returns command object
      */
-    void getPhotos(String venueID, ITaskObserver observer);
+    IRestogramCommand getPhotos(String venueID, ITaskObserver observer);
 
     /**
      * Executes get photos request with a filter
+     * Returns command object
      */
-    void getPhotos(String venueID, RestogramFilterType filterType, ITaskObserver observer);
+    IRestogramCommand getPhotos(String venueID, RestogramFilterType filterType, ITaskObserver observer);
 
     /**
      * Executes get next photos request

@@ -10,6 +10,7 @@ import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.cache.RestogramPhotos;
 import rest.o.gram.client.RestogramClient;
+import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
@@ -72,6 +73,10 @@ public class VenueActivity extends RestogramActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        if(pendingCommand != null) {
+            pendingCommand.cancel();
+        }
 
         if (viewAdapter != null)
             viewAdapter.clear();
@@ -203,7 +208,7 @@ public class VenueActivity extends RestogramActionBarActivity {
             isRequestPending = true;
 
             // Send get photos request
-            RestogramClient.getInstance().getPhotos(venue.getFoursquare_id(), RestogramFilterType.Complex, this);
+            pendingCommand = RestogramClient.getInstance().getPhotos(venue.getFoursquare_id(), RestogramFilterType.Complex, this);
         }
         else { // Photos were found
             // Save last token
@@ -248,4 +253,5 @@ public class VenueActivity extends RestogramActionBarActivity {
     private PhotoViewAdapter viewAdapter; // View adapter
     private String lastToken = null; // Last token
     private boolean isRequestPending = false; // Request pending flag
+    private IRestogramCommand pendingCommand = null; // Pending get photos command
 }
