@@ -141,17 +141,12 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
 
     public void onFavoriteClicked(View view) {
 
-        ImageButton favoriteButton = (ImageButton) findViewById(R.id.bPhotoFavorite);
-        favoriteButton.setEnabled(false);
-
-        if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
+        if (!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
             loginHelper.login(false);
-        }
-        else {
+        } else {
             // Add\Remove favorite
             favoriteHelper.toggleFavoritePhoto(photoId);
         }
-        favoriteButton.setEnabled(true);
     }
 
     public void onInfoClicked(View view) {

@@ -100,6 +100,7 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
      * Toggles favorite state of given photo according to current user
      */
     public boolean toggleFavoritePhoto(String photoId) {
+        disableFavoritePhotoButton();
         if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn())
             return false;
 
@@ -164,26 +165,34 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
 
     @Override
     public void onFinished(AddPhotoToFavoritesResult result) {
-        if(!result.hasSucceeded())
+        if (!result.hasSucceeded()) {
+            enableFavoritePhotoButton();
             return;
+        }
 
         dataFavoritesManager.addFavoritePhoto(result.getPhotoId());
 
-        if(favoritePhotoButton != null)
+        if (favoritePhotoButton != null)
             favoritePhotoButton.setImageResource(R.drawable.ic_favorite_on);
+
+        enableFavoritePhotoButton();
 
         updateYummiesCount(photoYummiesTextView, photoId);
     }
 
     @Override
     public void onFinished(RemovePhotoFromFavoritesResult result) {
-        if(!result.hasSucceeded())
+        if (!result.hasSucceeded()) {
+            enableFavoritePhotoButton();
             return;
+        }
 
         dataFavoritesManager.removeFavoritePhoto(result.getPhotoId());
 
-        if(favoritePhotoButton != null)
+        if (favoritePhotoButton != null)
             favoritePhotoButton.setImageResource(R.drawable.ic_favorite_off);
+
+        enableFavoritePhotoButton();
 
         updateYummiesCount(photoYummiesTextView, photoId);
     }
@@ -240,6 +249,19 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
             Utils.updateTextView(textView, String.format(String.format("%d yummies", yummies)));
         else
             Utils.updateTextView(textView, R.string.default_yummies_text);
+    }
+
+    private void setFavoritePhotoButton(boolean isEnabled) {
+        if (favoritePhotoButton != null)
+            favoritePhotoButton.setEnabled(isEnabled);
+    }
+
+    private void enableFavoritePhotoButton() {
+        setFavoritePhotoButton(true);
+    }
+
+    private void disableFavoritePhotoButton() {
+        setFavoritePhotoButton(false);
     }
 
     private IDataFavoritesManager dataFavoritesManager;
