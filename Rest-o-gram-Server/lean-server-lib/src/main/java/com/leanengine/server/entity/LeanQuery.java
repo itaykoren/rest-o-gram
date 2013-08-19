@@ -2,6 +2,7 @@ package com.leanengine.server.entity;
 
 import com.google.appengine.api.datastore.Cursor;
 import com.leanengine.server.JsonUtils;
+import com.leanengine.server.LeanDefs;
 import com.leanengine.server.LeanException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -18,7 +19,7 @@ public class LeanQuery {
     private List<QuerySort> sorts = new ArrayList<>();
     private Cursor cursor;
     private Integer offset = 0;
-    private Integer limit = 40;
+    private Integer limit = LeanDefs.DataStore.RESULTS_LIMIT;
     private QueryReference reference;
     private boolean keysOnly;
 

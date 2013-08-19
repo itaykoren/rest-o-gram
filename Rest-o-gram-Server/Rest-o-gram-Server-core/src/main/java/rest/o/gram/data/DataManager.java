@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.memcache.ErrorHandlers;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.leanengine.server.LeanDefs;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
 import com.leanengine.server.appengine.datastore.PutBatchOperation;
@@ -274,10 +275,11 @@ public final class DataManager {
 
     private static PhotosResult createPhotosResultFromQueryResult(QueryResult queryResult) {
 
-        if (queryResult != null && queryResult.getResult() != null) {
+        if (queryResult != null && queryResult.getResult() != null)
+        {
             final Cursor cursor = queryResult.getCursor();
             String token = null;
-            if (cursor == null || queryResult.getResult().isEmpty()) // no more results
+            if (!hasMoreResults(queryResult)) // no more results
                 token = Defs.Tokens.FINISHED_FETCHING_FROM_CACHE;
             else // has more results
                 token = cursor.toWebSafeString();
@@ -292,6 +294,11 @@ public final class DataManager {
 
         log.severe("cannot init photos query result");
         return null; // error
+    }
+
+    private static boolean hasMoreResults(QueryResult queryResult) {
+        return queryResult.getCursor() != null &&
+               queryResult.getResult().size() == LeanDefs.DataStore.RESULTS_LIMIT;
     }
 
     // mem-cache
