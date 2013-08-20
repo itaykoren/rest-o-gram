@@ -1,6 +1,7 @@
 package rest.o.gram.service;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.urlfetch.*;
 import com.google.gson.Gson;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
@@ -37,7 +38,10 @@ import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.iservice.RestogramService;
 import rest.o.gram.results.*;
 
+import java.net.URL;
 import java.util.*;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 /**
@@ -407,7 +411,7 @@ public class RestogramServiceImpl implements RestogramService {
 
         if (recentMediaByLocation == null || recentMediaByLocation.getData() == null)
         {
-            log.severe("next media search returned no media");
+            log.severe("media search returned no media");
             return null;
         }
 
@@ -434,24 +438,61 @@ public class RestogramServiceImpl implements RestogramService {
     private long getInstagramLocationId(String venueID) {
 
         LocationSearchFeed locationSearchFeed = null;
-        try {
-            Credentials credentials = m_factory.createInstagramCredentials();
-            log.info("instagram credentials type = " + credentials.getType());
-            Instagram instagram = new Instagram(credentials.getClientId());
-            locationSearchFeed = instagram.searchFoursquareVenue(venueID);
-        } catch (InstagramException e) {
-            log.warning("first search for venue: " + venueID + " has failed, retry");
-            log.throwing("RestogramServiceImpl", "getInstagramLocationId", e);
+        final URLFetchService fetcher = URLFetchServiceFactory.getURLFetchService();
+        try
+        {
+            final URL url = new URL(Defs.Transport.BASE_HOST_NAME + "/get-location");
+            final HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST, FetchOptions.Builder.withDeadline(6));
+            req.setPayload(venueID.getBytes());
+            log.info("get-location first fetch");
+            final Future<HTTPResponse> firstRequest = fetcher.fetchAsync(req);
+            log.info("get-location second fetch");
+            final Future<HTTPResponse> secondRequest = fetcher.fetchAsync(req);
 
-            try {
-                Credentials credentials = m_factory.createInstagramCredentials();
-                log.info("instagram credentials type = " + credentials.getType());
-                Instagram instagram = new Instagram(credentials.getClientId());
-                locationSearchFeed = instagram.searchFoursquareVenue(venueID);
-            } catch (InstagramException e2) {
-                log.severe("second search for venue: " + venueID + "has failed");
-                e.printStackTrace();
+            while (!firstRequest.isDone() && !secondRequest.isDone()) { }
+            log.info("one of the fetch operations is done!");
+            Future<HTTPResponse> done = null;
+            Future<HTTPResponse> other = null;
+            if (firstRequest.isDone())
+            {
+                log.info("first operation is done");
+                done = firstRequest;
+                other = secondRequest;
             }
+            else // if (secondRequest.isDone())
+            {
+                log.info("second operation is done");
+                done = secondRequest;
+                other = firstRequest;
+            }
+
+            HTTPResponse resp = null;
+            if (done.isCancelled())
+            {
+                log.info("fetch operation has been cacncelled");
+                resp = other.get(30, TimeUnit.SECONDS);
+            }
+            else
+            {
+                log.info("fetch operation has been successful");
+                //other.cancel(true);
+                resp = done.get(30, TimeUnit.SECONDS);
+                log.info("got response");
+            }
+            if (resp.getResponseCode() != 200)
+            {
+                log.warning("error while getting location from instagram  : " + resp.getResponseCode());
+                return 0;
+            }
+
+            log.info("getting venue data");
+            locationSearchFeed =  new Gson().fromJson(new String(resp.getContent()), LocationSearchFeed.class);
+            log.info("got response - location-id: " + locationSearchFeed.getLocationList().get(0).getId());
+        }
+        catch (Exception e)
+        {
+            log.severe(String.format("get instagram location for venue: [%s] has failed - [%s]", venueID, e.toString()));
+            return 0;
         }
 
         List<Location> locationList = locationSearchFeed.getLocationList();
@@ -552,12 +593,10 @@ public class RestogramServiceImpl implements RestogramService {
             Credentials credentials = m_factory.createInstagramCredentials();
             log.info("instagram credentials type = " + credentials.getType());
             Instagram instagram = new Instagram(credentials.getClientId());
-            recentMediaByLocation = !isValidPaginationToken(token) ?
-                                    instagram.getRecentMediaByLocation(getInstagramLocationId(venueId)) :
-                                    instagram.getRecentMediaNextPage(pagination);
+            recentMediaByLocation = getRecentMedia(venueId, pagination, instagram);
         } catch (InstagramException e)
         {
-            log.warning("first next media search has failed, retry");
+            log.warning("first media search has failed, retry");
             e.printStackTrace();
 
             try
@@ -565,17 +604,30 @@ public class RestogramServiceImpl implements RestogramService {
                 Credentials credentials = m_factory.createInstagramCredentials();
                 log.info("instagram credentials type = " + credentials.getType());
                 Instagram instagram = new Instagram(credentials.getClientId());
-                recentMediaByLocation = isValidPaginationToken(token) ?
-                                        instagram.getRecentMediaByLocation(getInstagramLocationId(venueId)) :
-                                        instagram.getRecentMediaNextPage(pagination);
+                recentMediaByLocation = getRecentMedia(venueId, pagination, instagram);
             } catch (InstagramException e2)
             {
-                log.severe("second next media search has failed");
+                log.severe("second media search has failed");
                 e2.printStackTrace();
                 return null;
             }
         }
         return recentMediaByLocation;
+    }
+
+    private MediaFeed getRecentMedia(String venueId, Pagination pagination, Instagram instagram) throws InstagramException {
+        if (pagination != null)
+            return instagram.getRecentMediaNextPage(pagination);
+        else
+        {
+            long locationID = getInstagramLocationId(venueId);
+            if (locationID == 0)
+            {
+                log.severe("cannot find location for venue: " + venueId);
+                return null;
+            }
+            return instagram.getRecentMediaByLocation(locationID);
+        }
     }
 
     private static boolean isValidPaginationToken(final String token) {

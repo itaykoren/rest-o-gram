@@ -27,6 +27,17 @@
         <url-pattern>/auth-service</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <description>get instagram location</description>
+        <display-name>GET-INSTAGRAM-LOCATION</display-name>
+        <servlet-name>GetInstagramLocationServlet</servlet-name>
+        <servlet-class>rest.o.gram.service.GetInstagramLocationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetInstagramLocationServlet</servlet-name>
+        <url-pattern>/get-location</url-pattern>
+    </servlet-mapping>
+
     <!--Login pages-->
     <servlet>
         <servlet-name>FacebookLogin</servlet-name>

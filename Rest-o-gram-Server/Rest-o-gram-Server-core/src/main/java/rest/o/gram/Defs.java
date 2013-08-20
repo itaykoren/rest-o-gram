@@ -18,8 +18,14 @@ public final class Defs {
      * Tokens constants
      */
     public static class Tokens {
-        public static final String FINISHED_FETCHING_FROM_CACHE = "FINISHED_FETCHING_FROM_CACHE";        ;
+        public static final String FINISHED_FETCHING_FROM_CACHE = "FINISHED_FETCHING_FROM_CACHE";
     }
 
+    /**
+     * Tokens constants
+     */
+    public static class Transport {
+        public static final String BASE_HOST_NAME = "http://rest-o-gram.appspot.com";
+    }
 }
 
