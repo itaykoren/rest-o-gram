@@ -246,7 +246,7 @@ public class VenueActivity extends RestogramActionBarActivity {
 
     private void setVenuePhoto(String url) {
         ImageView iv = (ImageView)findViewById(R.id.ivVenue);
-        RestogramClient.getInstance().downloadImage(url, venueId, iv, true, null);
+        RestogramClient.getInstance().downloadImage(url, venueId, iv, true, null, 0.5f);
     }
 
     private String venueId; // Venue object

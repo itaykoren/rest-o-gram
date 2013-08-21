@@ -305,9 +305,8 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
         // Update favorite venues
         Set<String> venues = dataFavoritesManager.getFavoriteVenues();
+        favoriteVenueViewAdapter.clear();
         if(venues != null && !venues.isEmpty()) {
-            favoriteVenueViewAdapter.clear();
-
             for(String id : venues) {
                 favoriteVenueViewAdapter.addVenue(id);
             }
@@ -321,8 +320,8 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
         // Update favorite photos
         Set<String> photos = dataFavoritesManager.getFavoritePhotos();
+        favoritePhotoViewAdapter.clear();
         if(photos != null && !photos.isEmpty()) {
-            favoritePhotoViewAdapter.clear();
             for(String id : photos) {
                 // Get photo from cache
                 IRestogramCache cache = RestogramClient.getInstance().getCache();

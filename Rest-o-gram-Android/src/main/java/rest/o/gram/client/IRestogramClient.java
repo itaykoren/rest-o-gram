@@ -91,6 +91,12 @@ public interface IRestogramClient {
     IRestogramCommand downloadImage(String url, String id, ImageView imageView, boolean force, IRestogramCommandObserver observer);
 
     /**
+     * Executes download image request
+     * Returns command object
+     */
+    IRestogramCommand downloadImage(String url, String id, ImageView imageView, boolean force, IRestogramCommandObserver observer, float sizeRatio);
+
+    /**
      * Executes cache venue request
      * Returns command object
      */

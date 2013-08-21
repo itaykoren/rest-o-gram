@@ -204,7 +204,7 @@ public class RestogramClient implements IRestogramClient {
     @Override
     public IRestogramCommand downloadImage(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter,
                               boolean force, IRestogramCommandObserver observer) {
-        int size = Utils.getScreenWidth(context) / 6;
+        int size = (int)(Utils.getScreenWidth(context) / 6.0);
         IRestogramCommand command = new DownloadImageCommand(context, url, photo.getInstagram_id(),
                                                              viewAdapter, size, size);
 
@@ -222,9 +222,14 @@ public class RestogramClient implements IRestogramClient {
     @Override
     public IRestogramCommand downloadImage(String url, String id, ImageView imageView,
                               boolean force, IRestogramCommandObserver observer) {
-        int size = Utils.getScreenWidth(context) / 2;
-        IRestogramCommand command = new DownloadImageCommand(context, url, id,
-                                                             imageView, size, size);
+        return downloadImage(url, id, imageView, force, observer, 1);
+    }
+
+    @Override
+    public IRestogramCommand downloadImage(String url, String id, ImageView imageView,
+                              boolean force, IRestogramCommandObserver observer, float sizeRatio) {
+        int size = (int)(Utils.getScreenWidth(context) * sizeRatio);
+        IRestogramCommand command = new DownloadImageCommand(context, url, id, imageView, size, size);
 
         if(observer != null)
             command.addObserver(observer);

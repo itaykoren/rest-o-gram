@@ -229,7 +229,7 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         String imageUrl = venue.getImageUrl();
         if (imageUrl != null && !imageUrl.isEmpty()) {
             ImageView iv = (ImageView) findViewById(R.id.ivVenue);
-            RestogramClient.getInstance().downloadImage(imageUrl, venueId, iv, true, null);
+            RestogramClient.getInstance().downloadImage(imageUrl, venueId, iv, true, null, 0.5f);
         } else {
             // Send get info request
             RestogramClient.getInstance().getInfo(venueId, this);
