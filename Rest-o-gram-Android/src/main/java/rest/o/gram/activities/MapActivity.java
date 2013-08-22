@@ -92,7 +92,7 @@ public class MapActivity extends RestogramActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if(RestogramClient.getInstance().getApplication().activityAmount() == 1)
+        if(Utils.isAboutToExit())
             dialogManager.showExitAlert(this);
         else
             finish();

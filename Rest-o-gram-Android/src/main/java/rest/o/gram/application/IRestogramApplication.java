@@ -12,6 +12,11 @@ public interface IRestogramApplication {
     int activityAmount();
 
     /**
+     * Returns true whether some activity is finishing
+     */
+    boolean isActivityFinishing();
+
+    /**
      * Restarts the application
      */
     void restart();

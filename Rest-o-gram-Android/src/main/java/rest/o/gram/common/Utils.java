@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import rest.o.gram.activities.HomeActivity;
+import rest.o.gram.application.IRestogramApplication;
 import rest.o.gram.client.IRestogramClient;
 import rest.o.gram.client.RestogramClient;
 
@@ -142,6 +143,15 @@ public class Utils {
      */
     public static boolean isActivityValid(final Activity activity) {
         return activity != null && !activity.isFinishing();
+    }
+
+    /**
+     * Returns true whether this application is about to exit
+     */
+    public static boolean isAboutToExit() {
+        final IRestogramApplication application = RestogramClient.getInstance().getApplication();
+        final int amount = application.activityAmount();
+        return (amount == 1) || (amount == 2 && application.isActivityFinishing());
     }
 
     /**

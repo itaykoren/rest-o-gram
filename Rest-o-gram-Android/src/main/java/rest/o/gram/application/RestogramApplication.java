@@ -125,6 +125,16 @@ public class RestogramApplication extends Application implements IRestogramAppli
     }
 
     @Override
+    public boolean isActivityFinishing() {
+        for(Activity activity : activities) {
+            if(activity.isFinishing())
+                return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public void restart() {
         // Initialize client
         RestogramClient.getInstance().initialize(getApplicationContext(), this);
