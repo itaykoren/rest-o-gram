@@ -138,6 +138,13 @@ public class Utils {
     }
 
     /**
+     * Returns true whether given activity is valid
+     */
+    public static boolean isActivityValid(final Activity activity) {
+        return activity != null && !activity.isFinishing();
+    }
+
+    /**
      * Starts navigation to given destination
      */
     public static void startNavigation(Activity activity, double latitude, double longitude) {

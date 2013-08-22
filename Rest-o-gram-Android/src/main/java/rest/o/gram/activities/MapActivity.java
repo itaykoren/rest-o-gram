@@ -374,6 +374,9 @@ public class MapActivity extends RestogramActionBarActivity {
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
+                if(!Utils.isActivityValid(activity))
+                    return;
+
                 IPopupView popupView = new GenericPopupView(activity, R.layout.map_welcome, R.id.popup_map, 400, 350);
                 popupView.open();
                 Utils.setIsShowWelcomeScreen(activity, false);

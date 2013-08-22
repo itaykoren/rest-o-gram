@@ -66,6 +66,9 @@ public final class DialogManager {
     }
 
     public void showLoginDialog(final Activity activity, LoginListener loginListener) {
+        if(!Utils.isActivityValid(activity))
+            return;
+
         Uri loginUri = RestogramClient.getInstance().getAuthenticationProvider().getFacebookLoginUri();
 
         final LoginDialog fbDialog =
@@ -80,6 +83,12 @@ public final class DialogManager {
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
+                if(!Utils.isActivityValid(activity))
+                    return;
+
+                if(isExitDialogShown)
+                    return;
+
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
 
                 // Setting Dialog Title
@@ -92,6 +101,7 @@ public final class DialogManager {
                 alertDialog.setPositiveButton("Yes",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                isExitDialogShown = false;
                                 dialog.cancel();
                                 dialogs.remove(dialog);
                                 activity.finish();
@@ -102,23 +112,38 @@ public final class DialogManager {
                 alertDialog.setNegativeButton("No",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                isExitDialogShown = false;
                                 dialog.cancel();
                                 dialogs.remove(dialog);
                             }
                         });
 
+                // On dismiss
+                alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        isExitDialogShown = false;
+                    }
+                });
+
                 dialogs.add(alertDialog.show());
+                isExitDialogShown = true;
             }
-        }, 500);
+        }, 100);
     }
 
     public void clear() {
         for (DialogInterface diag : dialogs)
             diag.cancel();
         dialogs.clear();
+
+        isExitDialogShown = false;
     }
 
     private void showErrorAlert(final Activity activity, final int message, final String action) {
+        if(!Utils.isActivityValid(activity))
+            return;
+
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
 
         // Setting Dialog Title
@@ -150,6 +175,9 @@ public final class DialogManager {
     }
 
     private void showErrorAlert(final Activity activity, final int message, final boolean switchToMap) {
+        if(!Utils.isActivityValid(activity))
+            return;
+
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
 
         // Setting Dialog Title
@@ -177,4 +205,5 @@ public final class DialogManager {
     }
 
     private final List<DialogInterface> dialogs = new ArrayList<>();
+    private boolean isExitDialogShown = false;
 }
