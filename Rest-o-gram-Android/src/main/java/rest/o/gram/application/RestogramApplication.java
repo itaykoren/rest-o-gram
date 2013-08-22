@@ -120,15 +120,16 @@ public class RestogramApplication extends Application implements IRestogramAppli
     }
 
     @Override
-    public int activityAmount() {
-        return activities.size();
-    }
+    public boolean isInLastActivity() {
+        if(activities.size() == 1)
+            return true;
 
-    @Override
-    public boolean isActivityFinishing() {
-        for(Activity activity : activities) {
-            if(activity.isFinishing())
-                return true;
+        if(activities.size() == 2)
+        {
+            for(Activity activity : activities) {
+                if(activity.isFinishing())
+                    return true;
+            }
         }
 
         return false;

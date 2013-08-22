@@ -7,14 +7,9 @@ package rest.o.gram.application;
  */
 public interface IRestogramApplication {
     /**
-     * Returns activity amount
+     * Returns true whether the application is in last activity
      */
-    int activityAmount();
-
-    /**
-     * Returns true whether some activity is finishing
-     */
-    boolean isActivityFinishing();
+    public boolean isInLastActivity();
 
     /**
      * Restarts the application

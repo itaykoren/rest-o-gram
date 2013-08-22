@@ -146,15 +146,6 @@ public class Utils {
     }
 
     /**
-     * Returns true whether this application is about to exit
-     */
-    public static boolean isAboutToExit() {
-        final IRestogramApplication application = RestogramClient.getInstance().getApplication();
-        final int amount = application.activityAmount();
-        return (amount == 1) || (amount == 2 && application.isActivityFinishing());
-    }
-
-    /**
      * Starts navigation to given destination
      */
     public static void startNavigation(Activity activity, double latitude, double longitude) {

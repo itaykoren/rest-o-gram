@@ -85,7 +85,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     @Override
     public void onBackPressed() {
-        if(Utils.isAboutToExit())
+        if(RestogramClient.getInstance().getApplication().isInLastActivity())
             dialogManager.showExitAlert(this);
         else
             finish();
