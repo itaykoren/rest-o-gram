@@ -1,20 +1,18 @@
 package rest.o.gram.view;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import rest.o.gram.activities.PhotoActivity;
+import rest.o.gram.cache.IBitmapCache;
+import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
-import rest.o.gram.entities.RestogramPhoto;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -63,14 +61,17 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
 
         if (view == null) { // View is not recycled
             imageView = new SquareImageView(context);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         }
         else { // View is recycled
             imageView = (ImageView)view;
         }
 
-        final Pair<String, Bitmap> item = photoList.get(i);
-        imageView.setImageBitmap(item.second);
+        final Pair<String, String> item = photoList.get(i);
+        final IBitmapCache cache = RestogramClient.getInstance().getBitmapCache();
+        final Bitmap bitmap = cache.load(item.second);
+
+        imageView.setImageBitmap(bitmap);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,9 +83,8 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
     }
 
     @Override
-    public void addPhoto(String photoId, Bitmap bitmap) {
-        Pair<String, Bitmap> pair = new Pair<>(photoId, bitmap);
-        photoList.add(pair);
+    public void addPhoto(String photoId, String bitmapId) {
+        photoList.add(new Pair<>(photoId, bitmapId));
     }
 
     @Override
@@ -97,14 +97,14 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
         photoList.clear();
     }
 
-    private void onPhotoClicked(String photoId, Bitmap bitmap) {
+    private void onPhotoClicked(String photoId, String bitmapId) {
         // Switch to "PhotoActivity" with parameters "photo" & "thumbnail_bitmap"
         Intent intent = new Intent(context, PhotoActivity.class);
         intent.putExtra("photo", photoId);
-        intent.putExtra("thumbnail_bitmap", bitmap);
+        intent.putExtra("thumbnail_bitmap", bitmapId);
         Utils.changeActivity(context, intent, Defs.RequestCodes.RC_PHOTO, false);
     }
 
     private Activity context; // Context
-    private List<Pair<String,Bitmap>> photoList; // Photos list
+    private List<Pair<String,String>> photoList; // Photos list
 }

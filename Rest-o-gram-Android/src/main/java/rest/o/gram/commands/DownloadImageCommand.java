@@ -169,8 +169,11 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                         return;
                     }
 
+                    // Get bitmapId
+                    String bitmapId = generateFilename(urlString, photoId);
+
                     // Add photo to view adapter
-                    viewAdapter.addPhoto(photoId, bitmap);
+                    viewAdapter.addPhoto(photoId, bitmapId);
                     viewAdapter.refresh();
 
                     notifyFinished();

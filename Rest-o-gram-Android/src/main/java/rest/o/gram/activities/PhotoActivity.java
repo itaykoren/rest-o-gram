@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import rest.o.gram.R;
 import rest.o.gram.activities.visitors.IActivityVisitor;
+import rest.o.gram.cache.IBitmapCache;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.commands.IRestogramCommand;
@@ -59,12 +60,12 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
 
         setContentView(R.layout.photo);
 
-        // Get photo parameter
-        Bitmap bitmap;
+        // Get photoId & bitmapId parameters
+        String bitmapId;
         try {
             Intent intent = getIntent();
             photoId = intent.getStringExtra("photo");
-            bitmap = (Bitmap)intent.getParcelableExtra("thumbnail_bitmap");
+            bitmapId = intent.getStringExtra("thumbnail_bitmap");
         }
         catch(Exception | OutOfMemoryError e) {
             // TODO: implementation
@@ -95,7 +96,11 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         else
             favoritePhotoButton.setImageResource(R.drawable.ic_favorite_off);
 
-        // Initialize using photo parameter
+        // Get thumbnail bitmap from cache
+        final IBitmapCache bitmapCache = RestogramClient.getInstance().getBitmapCache();
+        final Bitmap bitmap = bitmapCache.load(bitmapId);
+
+        // Initialize using photo & bitmap parameters
         initialize(photo, bitmap);
     }
 
