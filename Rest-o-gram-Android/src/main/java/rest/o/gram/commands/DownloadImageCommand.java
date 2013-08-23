@@ -74,17 +74,34 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         return true;
     }
 
-    private Bitmap fetchDrawable(String urlString, String photoId, int reqWidth, int reqHeight) {
+    private Bitmap fetchDrawable(String urlString, String photoId, int reqWidth, int reqHeight, boolean filter) {
         try {
             IBitmapCache cache = RestogramClient.getInstance().getBitmapCache();
             String filename = generateFilename(urlString, photoId);
             Bitmap bitmap = cache.load(filename);
 
             if(bitmap == null) {
-                // Download image
-                bitmap = decodeSampledBitmap(urlString, reqWidth, reqHeight);
+                if(filter) {
+                    // Download full scale bitmap
+                    bitmap = decodeBitmap(urlString);
 
-                // Save bitmap to cache
+                    // Get bitmap filter
+                    final IBitmapFilter bitmapFilter = RestogramClient.getInstance().getBitmapFilter();
+
+                    // Apply filter to bitmap
+                    if(!bitmapFilter.accept(bitmap)) {
+                        return null;
+                    }
+
+                    // Download scaled bitmap
+                    bitmap = decodeBitmap(urlString, bitmap, reqWidth, reqHeight);
+                }
+                else {
+                    // Download scaled bitmap
+                    bitmap = decodeBitmap(urlString, reqWidth, reqHeight);
+                }
+
+                // Save scaled bitmap to cache
                 cache.save(filename, bitmap);
             }
 
@@ -109,13 +126,13 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                         return;
                     }
 
-                    final Bitmap drawable = (Bitmap)message.obj;
-                    if(drawable == null) {
+                    final Bitmap bitmap = (Bitmap)message.obj;
+                    if(bitmap == null) {
                         notifyError();
                         return;
                     }
 
-                    imageView.setImageBitmap(drawable);
+                    imageView.setImageBitmap(bitmap);
                     notifyFinished();
                 }
                 catch(Exception e) {
@@ -127,8 +144,8 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                Bitmap drawable = fetchDrawable(urlString, photoId, width, height);
-                Message message = handler.obtainMessage(1, drawable);
+                Bitmap bitmap = fetchDrawable(urlString, photoId, width, height, false);
+                Message message = handler.obtainMessage(1, bitmap);
                 handler.sendMessage(message);
             }
         };
@@ -147,11 +164,8 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                     }
 
                     final Bitmap bitmap = (Bitmap)message.obj;
-                    final IBitmapFilter filter = RestogramClient.getInstance().getBitmapFilter();
-
-                    // Apply filter to bitmap
-                    if(!filter.accept(bitmap)) {
-                        notifyFinished();
+                    if(bitmap == null) {
+                        notifyError();
                         return;
                     }
 
@@ -170,8 +184,8 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                Bitmap drawable = fetchDrawable(urlString, photoId, width, height);
-                Message message = handler.obtainMessage(1, drawable);
+                Bitmap bitmap = fetchDrawable(urlString, photoId, width, height, true);
+                Message message = handler.obtainMessage(1, bitmap);
                 handler.sendMessage(message);
             }
         };
@@ -189,7 +203,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         return urlString.replaceAll("[^A-Za-z0-9]", "_");
     }
 
-    public Bitmap decodeSampledBitmap(String urlString, int reqWidth, int reqHeight) throws IOException {
+    private Bitmap decodeBitmap(String urlString, int reqWidth, int reqHeight) throws IOException {
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -203,6 +217,25 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         options.inJustDecodeBounds = false;
         is = fetch(urlString);
         return BitmapFactory.decodeStream(is, null, options);
+    }
+
+    private Bitmap decodeBitmap(String urlString, final Bitmap source, int reqWidth, int reqHeight) throws IOException {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.outHeight = source.getHeight();
+        options.outWidth = source.getWidth();
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap (new stream) with inSampleSize set
+        options.inJustDecodeBounds = false;
+        InputStream is = fetch(urlString);
+        return BitmapFactory.decodeStream(is, null, options);
+    }
+
+    private Bitmap decodeBitmap(String urlString) throws IOException {
+        InputStream is = fetch(urlString);
+        return BitmapFactory.decodeStream(is);
     }
 
     private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
