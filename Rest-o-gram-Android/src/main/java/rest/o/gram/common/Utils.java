@@ -215,8 +215,9 @@ public class Utils {
 
     /**
      * Restarts the application if needed
+     * Returns true whether restart is needed
      */
-    public static void restartIfNeeded(Activity activity) {
+    public static boolean restartIfNeeded(Activity activity) {
         IRestogramClient client = RestogramClient.getInstance();
         if(!client.isInitialized()) {
             // Restart the application
@@ -225,7 +226,11 @@ public class Utils {
             // Switch to "HomeActivity", finish current activity
             Intent intent = new Intent(activity, HomeActivity.class);
             Utils.changeActivity(activity, intent, Defs.RequestCodes.RC_HOME, true);
+
+            return true;
         }
+
+        return false;
     }
 
     /**

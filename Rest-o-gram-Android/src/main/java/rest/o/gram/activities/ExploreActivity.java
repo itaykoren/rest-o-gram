@@ -38,7 +38,8 @@ public class ExploreActivity extends RestogramActionBarActivity {
         super.onCreate(savedInstanceState);
 
         // Restart application (if needed)
-        Utils.restartIfNeeded(this);
+        if(Utils.restartIfNeeded(this))
+            return;
 
         setContentView(R.layout.explore);
 

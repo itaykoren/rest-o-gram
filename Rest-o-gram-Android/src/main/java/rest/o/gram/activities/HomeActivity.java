@@ -29,7 +29,8 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
         super.onCreate(savedInstanceState);
 
         // Restart application (if needed)
-        Utils.restartIfNeeded(this);
+        if(Utils.restartIfNeeded(this))
+            return;
 
         setContentView(R.layout.home);
 

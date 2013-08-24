@@ -44,7 +44,8 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         super.onCreate(savedInstanceState);
 
         // Restart application (if needed)
-        Utils.restartIfNeeded(this);
+        if(Utils.restartIfNeeded(this))
+            return;
 
         setContentView(R.layout.personal);
 

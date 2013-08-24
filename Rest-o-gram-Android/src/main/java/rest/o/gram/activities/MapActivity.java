@@ -44,7 +44,8 @@ public class MapActivity extends RestogramActionBarActivity {
         super.onCreate(savedInstanceState);
 
         // Restart application (if needed)
-        Utils.restartIfNeeded(this);
+        if(Utils.restartIfNeeded(this))
+            return;
 
         // Initialize map
         if(!initializeMap())
