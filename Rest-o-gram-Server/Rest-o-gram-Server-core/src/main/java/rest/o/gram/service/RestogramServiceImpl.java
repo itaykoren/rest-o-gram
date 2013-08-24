@@ -421,10 +421,10 @@ public class RestogramServiceImpl implements RestogramService {
         log.info(String.format("kept [%d] photos after checking cache", data.size()));
         addPhotosToQueue(data, venueId);
         log.info(String.format("sending [%d] photos for filtering", data.size()));
-        //data = filterPhotosIfNeeded(data, filterType);
+        final List<MediaFeedData> whiteList = filterPhotosIfNeeded(data, filterType);
         log.info(String.format("received [%d] photos after filtering", data.size()));
 
-        RestogramPhoto[] photos = convertMediaFeedDataToRestogramPhotos(data, venueId);
+        final RestogramPhoto[] photos = convertMediaFeedDataToRestogramPhotos(data, whiteList, venueId);
 
         log.info(String.format("GOT [%d] PHOTOS", photos.length));
         final Pagination pagination = recentMediaByLocation.getPagination();
@@ -504,15 +504,22 @@ public class RestogramServiceImpl implements RestogramService {
         return locationList.get(0).getId(); // TODO: what if we get multiple locations?
     }
 
-    private RestogramPhoto[] convertMediaFeedDataToRestogramPhotos(List<MediaFeedData> data, String venueId) {
+    private RestogramPhoto[] convertMediaFeedDataToRestogramPhotos(List<MediaFeedData> data, List<MediaFeedData> whiteList, String venueId) {
+
+        final Hashtable<String,MediaFeedData> idToWhiteListMapping = new Hashtable<>();
+        for (final MediaFeedData currMedia : whiteList)
+            idToWhiteListMapping.put(currMedia.getId(), currMedia);
 
         RestogramPhoto[] photos = new RestogramPhoto[data.size()];
 
         int i = 0;
         for (final MediaFeedData media : data) {
             photos[i] = ApisConverters.convertToRestogramPhoto(media, venueId);
+            if (idToWhiteListMapping.containsKey(media.getId()))
+                photos[i].setApproved(true);
             ++i;
         }
+
         return photos;
     }
 

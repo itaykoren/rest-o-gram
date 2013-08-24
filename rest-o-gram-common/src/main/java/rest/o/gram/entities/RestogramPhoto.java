@@ -142,6 +142,14 @@ public class RestogramPhoto implements Serializable {
         this.yummies = yummies;
     }
 
+    public boolean isApproved() {
+        return isApproved;
+    }
+
+    public void setApproved(boolean approved) {
+        isApproved = approved;
+    }
+
     /** account related props **/
 
 //    public long getId() {
@@ -206,4 +214,7 @@ public class RestogramPhoto implements Serializable {
 
     @SerializedName("is_favorite")
     private boolean is_favorite;
+
+    @SerializedName("is_approved")
+    private boolean isApproved;
 }

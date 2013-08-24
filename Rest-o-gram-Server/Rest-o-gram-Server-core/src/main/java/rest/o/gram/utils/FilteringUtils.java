@@ -11,9 +11,9 @@ public class FilteringUtils {
 
     public static boolean disjointSets(Set first, Set second) {
 
-        // currently returning false for empty or null sets, as otherwise too many photos will be filtered out
+        // returns true - empty sets are filtered  out
         if (first == null || first.size() == 0 || second == null || second.size() == 0)
-            return false;
+            return true;
 
         if (first.size() <= second.size())
             return disjoint(first, second);

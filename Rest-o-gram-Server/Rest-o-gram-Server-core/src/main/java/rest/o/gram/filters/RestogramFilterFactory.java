@@ -1,7 +1,5 @@
 package rest.o.gram.filters;
 
-import java.util.Map;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Itay
