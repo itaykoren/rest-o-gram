@@ -24,6 +24,7 @@
                 android:typeface="serif"
                 android:textAlignment="center"
                 android:layout_marginTop="10dp"
+                android:enabled="false"
                 android:layout_gravity="left|center_vertical"/>
 
 
@@ -37,19 +38,21 @@
                 android:typeface="serif"
                 android:textAlignment="center"
                 android:layout_marginTop="10dp"
+                android:enabled="false"
                 android:layout_gravity="left|center_vertical"/>
 
         <EditText
-            android:id="@+id/editText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/welcome_how_restogram_helps_you"
-            android:textColor="#727272"
-            android:textSize="18dp"
-            android:typeface="serif"
-            android:textAlignment="center"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="left|center_vertical"/>
+                android:id="@+id/editText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/welcome_how_restogram_helps_you"
+                android:textColor="#727272"
+                android:textSize="18dp"
+                android:typeface="serif"
+                android:textAlignment="center"
+                android:layout_marginTop="10dp"
+                android:enabled="false"
+                android:layout_gravity="left|center_vertical"/>
 
         <EditText
                 android:id="@+id/editText"
@@ -61,6 +64,7 @@
                 android:typeface="serif"
                 android:textAlignment="center"
                 android:layout_marginTop="10dp"
+                android:enabled="false"
                 android:layout_gravity="left|center_vertical"/>
         <Button
                 android:layout_width="wrap_content"
