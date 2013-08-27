@@ -113,10 +113,9 @@ public class RestogramApplication extends Application implements IRestogramAppli
     public void onLowMemory() {
         super.onLowMemory();
 
-        // Clear cache
-        IRestogramCache cache = RestogramClient.getInstance().getCache();
-        if(cache != null)
-            cache.clear();
+        if(RestogramClient.getInstance().isDebuggable()) {
+            Log.d("REST-O-GRAM", "Low memory");
+        }
     }
 
     @Override
