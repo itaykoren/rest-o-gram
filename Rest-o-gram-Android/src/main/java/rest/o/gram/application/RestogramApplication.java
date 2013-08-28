@@ -3,10 +3,10 @@ package rest.o.gram.application;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.Log;
 import rest.o.gram.activities.PersonalActivity;
 import rest.o.gram.authentication.IAuthenticationProvider;
-import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
 
 import java.util.HashSet;
@@ -26,11 +26,11 @@ public class RestogramApplication extends Application implements IRestogramAppli
         // Initialize activities set
         activities = new HashSet<>();
 
-        // Initialize client
-        RestogramClient.getInstance().initialize(getApplicationContext(), this);
-
         // Register callbacks
         registerActivityLifecycleCallbacks(this);
+
+        // Initialize
+        initialize();
     }
 
     @Override
@@ -136,6 +136,14 @@ public class RestogramApplication extends Application implements IRestogramAppli
 
     @Override
     public void restart() {
+        // Initialize
+        initialize();
+    }
+
+    /**
+     * Initializes client
+     */
+    private void initialize() {
         // Initialize client
         RestogramClient.getInstance().initialize(getApplicationContext(), this);
     }
