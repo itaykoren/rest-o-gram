@@ -87,11 +87,11 @@ public final class Defs {
             public static final String CASCADE_CLASSIFIERS_DIRECTORY_NAME = "cascade";
             public static final String CASCADE_CLASSIFIER_FILE_NAME =  "lbpcascade_frontalface.xml";
             public static final int CASCADE_CLASSIFIER_ID = R.raw.lbpcascade_frontalface;
-            public static final double MIN_FACE_SIZE = 23;
+            public static final double MIN_FACE_SIZE = 24;
             public static final double MAX_FACE_SIZE_FACTOR = 1;
 
             /**
-             * Bitmap flter type enumeration
+             * OpenCV library distribution type enumeration
              */
             public enum OpenCVDistributionMethod {
                 Dynamic,

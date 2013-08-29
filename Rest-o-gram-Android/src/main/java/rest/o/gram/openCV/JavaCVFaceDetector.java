@@ -3,7 +3,6 @@ package rest.o.gram.openCV;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
-import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Size;
@@ -12,9 +11,6 @@ import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created with IntelliJ IDEA.
@@ -47,17 +43,6 @@ public class JavaCVFaceDetector extends FaceDetectorBase {
             if (RestogramClient.getInstance().isDebuggable())
                 Log.d("REST-O-GRAM", "is bitmap approved? " + objects.empty());
 
-            // TODO: remove
-            if (objects.empty())
-                ++inCount;
-            else
-                ++outCount;
-            if (RestogramClient.getInstance().isDebuggable())
-            {
-                Log.d("REST-O-GRAM", "bitmap processed: " + (objects.empty() ? "in" : "out"));
-                Log.d("REST-O-GRAM", "total - in:" + inCount + " out:" + outCount);
-            }
-
             return !objects.empty();
         }
         catch(Exception e)
@@ -80,6 +65,4 @@ public class JavaCVFaceDetector extends FaceDetectorBase {
     }
 
     private CascadeClassifier classifier;
-    private int inCount = 0;
-    private  int outCount = 0;
 }

@@ -39,16 +39,6 @@ public class OpenCVFaceDetector extends FaceDetectorBase {
         if (RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "is bitmap approved? " + !hasFaces);
 
-        // TODO: remove
-        if (!hasFaces)
-            ++inCount;
-        else
-            ++outCount;
-        if (RestogramClient.getInstance().isDebuggable())
-        {
-            Log.d("REST-O-GRAM", "bitmap processed: " + (!hasFaces ? "in" : "out"));
-            Log.d("REST-O-GRAM", "total - in:" + inCount + " out:" + outCount);
-        }
         faces.release();
         return hasFaces;
     }
@@ -65,9 +55,6 @@ public class OpenCVFaceDetector extends FaceDetectorBase {
         nativeLoadClassifier(classifierPath, (long)Defs.Filtering.OpenCVDetector.MIN_FACE_SIZE,
                              RestogramClient.getInstance().isDebuggable());
     }
-
-    private int inCount = 0;
-    private  int outCount = 0;
 
     private static native void nativeLoadClassifier(String cascadeName, long minFaceSize, boolean debug);
     private static native void nativeDetectFaces(long inputImage, long faces, long minSize, long maxSize, boolean debug);
