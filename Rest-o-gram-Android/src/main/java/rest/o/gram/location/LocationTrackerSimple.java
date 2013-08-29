@@ -132,6 +132,11 @@ public class LocationTrackerSimple extends Service implements ILocationTracker, 
     }
 
     @Override
+    public void dispose() {
+        timer = null;
+    }
+
+    @Override
     public void onLocationChanged(Location location) {
         updateLocation(location);
     }

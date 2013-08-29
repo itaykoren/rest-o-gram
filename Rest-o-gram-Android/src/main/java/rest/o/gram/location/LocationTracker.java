@@ -85,8 +85,11 @@ public class LocationTracker implements ILocationTracker {
         isTracking = false;
         context.unregisterReceiver(locationBroadcastReceiver);
         observer = null;
-        timer.cancel();
-        timer.purge();
+        if (timer != null)
+        {
+            timer.cancel();
+            timer.purge();
+        }
     }
 
     @Override
@@ -113,6 +116,12 @@ public class LocationTracker implements ILocationTracker {
             return location.lastLong;
 
         return 0.0;
+    }
+
+    @Override
+    public void dispose() {
+        LocationLibrary.stopAlarmAndListener(context);
+        timer = null;
     }
 
     private void informObserver() {

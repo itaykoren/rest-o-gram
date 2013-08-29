@@ -56,6 +56,14 @@ public class RestogramClient implements IRestogramClient {
 
     @Override
     public void initialize(final Context context, final IRestogramApplication application) {
+
+        if (isInitialized)
+        {
+            if (isDebuggable())
+                Log.d("REST-O-GRAM", "CLIENT ALREAY INITIALIZED");
+            return;
+        }
+
         try
         {
             this.application = application;
@@ -123,6 +131,9 @@ public class RestogramClient implements IRestogramClient {
      */
     @Override
     public void initializeFilter(Context context) {
+        if (bitmapFilter != null)
+            return;
+
         // load openCV manager - if has to
         if (Utils.usesOpenCVBasedBitmapFilter() && Utils.canApplyBitmapFilter())
         {
@@ -193,6 +204,12 @@ public class RestogramClient implements IRestogramClient {
 
         if (bitmapFilter != null)
             bitmapFilter.dispose();
+
+        if (tracker != null)
+        {
+            tracker.stop();
+            tracker.dispose();
+        }
     }
 
     /* NON-AUTH SERVICES */

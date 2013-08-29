@@ -105,6 +105,11 @@ public class LocationTrackerGoogle implements ILocationTracker,
     }
 
     @Override
+    public void dispose() {
+        client = null;
+    }
+
+    @Override
     public void onConnected(Bundle bundle) {
         canDetectLocation = true;
 

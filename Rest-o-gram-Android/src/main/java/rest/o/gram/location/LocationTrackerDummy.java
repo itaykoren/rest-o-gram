@@ -34,7 +34,12 @@ public class LocationTrackerDummy implements ILocationTracker {
         if(!isTracking)
             return;
 
-        timer.cancel();
+        if (timer != null)
+        {
+            timer.cancel();
+            timer.purge();
+        }
+        observer = null;
         isTracking = false;
     }
 
@@ -56,6 +61,11 @@ public class LocationTrackerDummy implements ILocationTracker {
     @Override
     public double getLongitude() {
         return location[1];
+    }
+
+    @Override
+    public void dispose() {
+        timer = null;
     }
 
     class GetLocationTimerTask extends TimerTask {

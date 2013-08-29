@@ -40,4 +40,9 @@ public interface ILocationTracker {
      * Returns last known longitude
      */
     double getLongitude();
+
+    /**
+     * Disposes used resources
+     */
+    void dispose();
 }
