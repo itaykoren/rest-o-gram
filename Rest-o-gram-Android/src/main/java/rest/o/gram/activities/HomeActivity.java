@@ -33,21 +33,35 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
             return;
 
         setContentView(R.layout.home);
+    }
 
-        // Get location tracker
-        tracker = RestogramClient.getInstance().getLocationTracker();
-        if (tracker != null) {
-            if (!tracker.canDetectLocation())
-                dialogManager.showLocationTrackingAlert(this);
-            else {
-                updateStatus(R.string.location_search);
-                tracker.setObserver(this);
-                tracker.start();
-            }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!isFilterInit)
+        {
+            RestogramClient.getInstance().initializeFilter(this);
+            isFilterInit = true;
         }
-        else {
-            // TODO: implementation
-            return;
+
+        if (!hasTrackedLocation)
+        {
+            // Get location tracker
+            tracker = RestogramClient.getInstance().getLocationTracker();
+            if (tracker == null)
+                Log.e("REST-O-GRAM", "no location tracker has been loaded");
+            else
+            {
+                if (!tracker.canDetectLocation())
+                    dialogManager.showLocationTrackingAlert(this);
+                else {
+                    updateStatus(R.string.location_search);
+                    tracker.setObserver(this);
+                    tracker.start();
+                }
+            }
+            hasTrackedLocation = true;
         }
     }
 
@@ -186,4 +200,6 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
     private ILocationTracker tracker; // Location tracker
     private boolean gotLocation;
     private boolean isFoundVenues = false;
+    private boolean isFilterInit;
+    private boolean  hasTrackedLocation;
 }

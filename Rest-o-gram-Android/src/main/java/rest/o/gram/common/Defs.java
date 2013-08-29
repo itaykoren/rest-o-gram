@@ -1,5 +1,7 @@
 package rest.o.gram.common;
 
+import rest.o.gram.R;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Roi
@@ -49,7 +51,7 @@ public final class Defs {
             TrackerTypeGoogle
         }
 
-        public static final TrackerType PRIMARY_TRACKER_TYPE = TrackerType.TrackerTypeGoogle;
+        public static final TrackerType PRIMARY_TRACKER_TYPE = TrackerType.TrackerTypeDummy;
         public static final TrackerType SECONDARY_TRACKER_TYPE = TrackerType.TrackerTypeFluffy;
 
         public static final double DEFAULT_NEARBY_RADIUS = 500;
@@ -73,8 +75,46 @@ public final class Defs {
      * Filtering constants
      */
     public static class Filtering {
-        public static final boolean FACE_FILTERING_ENABLED = false;
-        public static final int MAX_FACES_TO_DETECT = 5;
+        public static final BitmapFilterType BITMAP_FILTER_TYPE = BitmapFilterType.OpenCVFaceBitmapFilter;
+        public static final int MIN_CPU_CORES_FOR_FILTERING = 1;
+
+        /**
+         * OpenCV face detector constants
+         */
+        public static class OpenCVDetector {
+            public static final OpenCVDistributionMethod OPEN_CV_DISTRIBUTION_METHOD = OpenCVDistributionMethod.Static;
+            public static final String OPENCV_VERSION = org.opencv.android.OpenCVLoader.OPENCV_VERSION_2_4_6;
+            public static final String CASCADE_CLASSIFIERS_DIRECTORY_NAME = "cascade";
+            public static final String CASCADE_CLASSIFIER_FILE_NAME =  "lbpcascade_frontalface.xml";
+            public static final int CASCADE_CLASSIFIER_ID = R.raw.lbpcascade_frontalface;
+            public static final double MIN_FACE_SIZE = 23;
+            public static final double MAX_FACE_SIZE_FACTOR = 1;
+
+            /**
+             * Bitmap flter type enumeration
+             */
+            public enum OpenCVDistributionMethod {
+                Dynamic,
+                Static
+            }
+        }
+
+        /**
+         *  Android native face detector constants
+         */
+        public static class AndroidDetector {
+            public static final int MAX_FACES_TO_DETECT = 1;
+        }
+
+        /**
+         * Bitmap flter type enumeration
+         */
+        public enum BitmapFilterType {
+            DoNothingBitmapFilter,
+            AndroidFaceBitmapFilter,
+            JavaCVFaceBitmapFilter,
+            OpenCVFaceBitmapFilter
+        }
     }
 
     /**

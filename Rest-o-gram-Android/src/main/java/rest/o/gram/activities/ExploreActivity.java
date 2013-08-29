@@ -219,10 +219,10 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
         isRequestPending = true;
         if(nextToken != null) {
-            RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Complex, nextVenueId, this);
+            RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
         }
         else {
-            RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Complex, this);
+            RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Simple, this);
         }
 
 //        // Try to load previous photos from cache
@@ -232,10 +232,10 @@ public class ExploreActivity extends RestogramActionBarActivity {
 //            isRequestPending = true;
 //
 //            if(nextToken != null) {
-//                RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Complex, nextVenueId, this);
+//                RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
 //            }
 //            else {
-//                RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Complex, this);
+//                RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Simple, this);
 //            }
 //        }
 //        else { // Photos were found

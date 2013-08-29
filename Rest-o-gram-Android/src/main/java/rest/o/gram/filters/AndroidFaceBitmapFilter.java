@@ -4,18 +4,20 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.media.FaceDetector;
+import android.util.Log;
+import rest.o.gram.client.RestogramClient;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Roi
  * Date: 5/21/13
  */
-public class FaceBitmapFilter implements IBitmapFilter {
+public class AndroidFaceBitmapFilter implements IBitmapFilter {
 
     /**
      * Ctor
      */
-    public FaceBitmapFilter(int maxFaces) {
+    public AndroidFaceBitmapFilter(int maxFaces) {
         // Set max faces
         this.maxFaces = maxFaces;
     }
@@ -30,6 +32,15 @@ public class FaceBitmapFilter implements IBitmapFilter {
             final FaceDetector detector = new FaceDetector(b.getWidth(), b.getHeight(), maxFaces);
             int amount = detector.findFaces(b, faces);
             b.recycle();
+            if (amount == 0)
+                ++inCount;
+            else
+                ++outCount;
+            if (RestogramClient.getInstance().isDebuggable())
+            {
+                Log.d("REST-O-GRAM", "bitmap processed: " + (amount == 0 ? "in" : "out"));
+                Log.d("REST-O-GRAM", "total - in:" + inCount + " out:" + outCount);
+            }
             return amount == 0;
         }
         catch(Exception e) {
@@ -39,6 +50,9 @@ public class FaceBitmapFilter implements IBitmapFilter {
         return true;
     }
 
+    @Override
+    public void dispose() { } // nothing to dispose
+
     /**
      * Creates a new 565 RGB bitmap from given source bitmap
      */
@@ -47,4 +61,6 @@ public class FaceBitmapFilter implements IBitmapFilter {
     }
 
     private int maxFaces;
+    private static int inCount = 0;
+    private static  int outCount = 0;
 }

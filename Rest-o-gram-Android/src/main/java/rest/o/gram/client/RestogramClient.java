@@ -6,6 +6,9 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.ImageView;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
 import rest.o.gram.application.IRestogramApplication;
 import rest.o.gram.authentication.AuthenticationProvider;
 import rest.o.gram.authentication.IAuthenticationProvider;
@@ -19,10 +22,11 @@ import rest.o.gram.data_history.DataHistoryManager;
 import rest.o.gram.data_history.FileDataHistoryManager;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.filters.DefaultBitmapFilter;
-import rest.o.gram.filters.FaceBitmapFilter;
-import rest.o.gram.filters.IBitmapFilter;
-import rest.o.gram.filters.RestogramFilterType;
+import rest.o.gram.filters.*;
+import rest.o.gram.openCV.FaceDetector;
+import rest.o.gram.openCV.JavaCVFaceDetector;
+import rest.o.gram.openCV.OpenCVFaceDetector;
+import rest.o.gram.openCV.RestogramBaseLoaderCallback;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.location.ILocationTrackerFactory;
 import rest.o.gram.location.LocationTrackerFactory;
@@ -51,7 +55,7 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public void initialize(Context context, IRestogramApplication application) {
+    public void initialize(final Context context, final IRestogramApplication application) {
         try
         {
             this.application = application;
@@ -70,7 +74,7 @@ public class RestogramClient implements IRestogramClient {
             }
 
             if (RestogramClient.getInstance().isDebuggable())
-                Log.d("REST-O-GRAM", "CLIENT UP");
+                Log.d("REST-O-GRAM", "CLIENT LOADING");
 
             authProvider = new AuthenticationProvider(context, Defs.Transport.BASE_HOST_NAME);
             dataFavoritesManager = new DataFavoritesManager(this);
@@ -79,10 +83,10 @@ public class RestogramClient implements IRestogramClient {
             authTransport = new HttpJsonRpcClientTransport(new URL(jsonAuthServiceHostName));
             setJsonEncoding(authTransport);
 
-            ILocationTrackerFactory factory = new LocationTrackerFactory(context);
-            tracker = factory.create(Defs.Location.PRIMARY_TRACKER_TYPE);
+            ILocationTrackerFactory locationTrackerFactory = new LocationTrackerFactory(context);
+            tracker = locationTrackerFactory.create(Defs.Location.PRIMARY_TRACKER_TYPE);
             if(!tracker.canDetectLocation())
-                tracker = factory.create(Defs.Location.SECONDARY_TRACKER_TYPE);
+                tracker = locationTrackerFactory.create(Defs.Location.SECONDARY_TRACKER_TYPE);
 
             networkStateProvider = new NetworkStateProvider(context);
             commandQueue = new RestogramCommandQueue();
@@ -100,15 +104,63 @@ public class RestogramClient implements IRestogramClient {
             if(Defs.Data.CACHE_DATA_HISTORY_ENABLED)
                 cacheDataHistoryManager = new DataHistoryManager();
 
-            if(Defs.Filtering.FACE_FILTERING_ENABLED)
-                bitmapFilter = new FaceBitmapFilter(Defs.Filtering.MAX_FACES_TO_DETECT);
-            else
-                bitmapFilter = new DefaultBitmapFilter();
+            initBitmapFilter();
 
             isInitialized = true;
+
+            if (RestogramClient.getInstance().isDebuggable())
+                Log.d("REST-O-GRAM", "CLIENT UP");
         }
-        catch(Exception e) {
-            System.out.println("Error in RestogramClient: " + e.getMessage());
+        catch(Exception e)
+        {
+            Log.e("REST-O-GRAM", "Error in RestogramClient: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Initializes the
+     * @param context main activity context
+     */
+    @Override
+    public void initializeFilter(Context context) {
+        // load openCV manager - if has to
+        if (Utils.usesOpenCVBasedBitmapFilter() && Utils.canApplyBitmapFilter())
+        {
+            final BaseLoaderCallback loaderCallback =
+                    new RestogramBaseLoaderCallback(context) {
+                        @Override
+                        public void onManagerConnected(int status) {
+                            switch (status)
+                            {
+                                case LoaderCallbackInterface.SUCCESS:
+                                {
+                                    if (RestogramClient.getInstance().isDebuggable())
+                                        Log.i("REST-O-GRAM", "OpenCV loaded successfully");
+
+                                    initFaceDetector(mAppContext);
+                                    initBitmapFilter();
+                                } break;
+                                default:
+                                {
+                                    Log.e("REST-O-GRAM", "OpenCV could not be loaded");
+                                    super.onManagerConnected(status);
+                                } break;
+                            }
+                        }
+                    };
+
+            if (Defs.Filtering.OpenCVDetector.OPEN_CV_DISTRIBUTION_METHOD == Defs.Filtering.OpenCVDetector.OpenCVDistributionMethod.Dynamic)
+                OpenCVLoader.initAsync(Defs.Filtering.OpenCVDetector.OPENCV_VERSION, context, loaderCallback);
+            else if (Defs.Filtering.OpenCVDetector.OPEN_CV_DISTRIBUTION_METHOD == Defs.Filtering.OpenCVDetector.OpenCVDistributionMethod.Static)
+            {
+                if (!OpenCVLoader.initDebug()) // the static init method...
+                    Log.e("REST-O-GRAM", "error while loading openCV");
+                else
+                {
+                    initFaceDetector(context);
+                    initBitmapFilter();
+                }
+            }
         }
     }
 
@@ -139,6 +191,8 @@ public class RestogramClient implements IRestogramClient {
         if(dataFavoritesManager != null)
             dataFavoritesManager.dispose();
 
+        if (bitmapFilter != null)
+            bitmapFilter.dispose();
     }
 
     /* NON-AUTH SERVICES */
@@ -205,7 +259,7 @@ public class RestogramClient implements IRestogramClient {
     public IRestogramCommand downloadImage(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter,
                               boolean force, IRestogramCommandObserver observer) {
         int size = (int)(Utils.getScreenWidth(context) / 6.0);
-        IRestogramCommand command = new DownloadImageCommand(context, url, photo.getInstagram_id(),
+        IRestogramCommand command = new DownloadImageCommand(url, photo,
                                                              viewAdapter, size, size);
 
         if(observer != null)
@@ -220,16 +274,16 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public IRestogramCommand downloadImage(String url, String id, ImageView imageView,
+    public IRestogramCommand downloadImage(String url, String venueId, ImageView imageView,
                               boolean force, IRestogramCommandObserver observer) {
-        return downloadImage(url, id, imageView, force, observer, 1);
+        return downloadImage(url, venueId, imageView, force, observer, 1);
     }
 
     @Override
-    public IRestogramCommand downloadImage(String url, String id, ImageView imageView,
+    public IRestogramCommand downloadImage(String url, String venueId, ImageView imageView,
                               boolean force, IRestogramCommandObserver observer, float sizeRatio) {
         int size = (int)(Utils.getScreenWidth(context) * sizeRatio);
-        IRestogramCommand command = new DownloadImageCommand(context, url, id, imageView, size, size);
+        IRestogramCommand command = new DownloadImageCommand(context, url, venueId, imageView, size, size);
 
         if(observer != null)
             command.addObserver(observer);
@@ -264,6 +318,30 @@ public class RestogramClient implements IRestogramClient {
         setJsonAuthToken(authTransport);
         IRestogramCommand command = new RemovePhotoFromFavoritesCommand(authTransport, observer, photoId);
         commandQueue.pushForce(command);
+    }
+
+    /* AUX SERVICES */
+
+    /**
+     * Inits a FaceDetector according to the definitions.
+     * @param context application context
+     */
+    private void initFaceDetector(Context context) {
+       if (Defs.Filtering.BITMAP_FILTER_TYPE == Defs.Filtering.BitmapFilterType.OpenCVFaceBitmapFilter)
+       {
+           System.loadLibrary("face_detector"); //  loads native access library
+           faceDetector = new OpenCVFaceDetector(context);
+       }
+       else if (Defs.Filtering.BITMAP_FILTER_TYPE == Defs.Filtering.BitmapFilterType.JavaCVFaceBitmapFilter)
+           faceDetector = new JavaCVFaceDetector(context);
+    }
+
+    /**
+     * Initializes the bitmap filter according to the definitions.
+     */
+    private void initBitmapFilter() {
+        final IBitmapFilterFactory bitmapFilterFactory = new BitmapFilterFactory();
+        bitmapFilter = bitmapFilterFactory.create(Defs.Filtering.BITMAP_FILTER_TYPE, faceDetector);
     }
 
     /* PROVIDERS */
@@ -340,8 +418,7 @@ public class RestogramClient implements IRestogramClient {
     /**
      * Ctor
      */
-    private RestogramClient() {
-    }
+    private RestogramClient() {}
 
     private static IRestogramClient instance; // Singleton instance
     private Context context; // Context
@@ -360,6 +437,7 @@ public class RestogramClient implements IRestogramClient {
     private IRestogramCommandQueue commandQueue; // Command queue
     private IRestogramCache cache; // Cache object
     private IBitmapCache bitmapCache; // Bitmap cache object
+    private FaceDetector faceDetector;
     private boolean debuggable = false; // debuggable flag
     private boolean isInitialized = false; // Is initialized flag
 }

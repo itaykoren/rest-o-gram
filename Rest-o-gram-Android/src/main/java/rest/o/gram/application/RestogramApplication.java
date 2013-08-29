@@ -5,6 +5,7 @@ import android.app.Application;
 import android.os.Bundle;
 import android.os.Debug;
 import android.util.Log;
+import rest.o.gram.R;
 import rest.o.gram.activities.PersonalActivity;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.client.RestogramClient;

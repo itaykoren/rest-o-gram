@@ -13,4 +13,7 @@ public class DefaultBitmapFilter implements IBitmapFilter {
         // Accept all bitmaps
         return true;
     }
+
+    @Override
+    public void dispose() { } //  nothing to dispose
 }

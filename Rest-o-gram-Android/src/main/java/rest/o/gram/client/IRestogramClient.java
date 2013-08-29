@@ -2,6 +2,7 @@ package rest.o.gram.client;
 
 import android.content.Context;
 import android.widget.ImageView;
+import org.opencv.objdetect.CascadeClassifier;
 import rest.o.gram.application.IRestogramApplication;
 import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.cache.IBitmapCache;
@@ -29,6 +30,12 @@ public interface IRestogramClient {
      * Initializes this client
      */
     void initialize(Context context, IRestogramApplication application);
+
+    /**
+     * Initializes the
+     * @param context main activity context
+     */
+    void initializeFilter(Context context);
 
     /**
      * Disposes this client
@@ -88,13 +95,13 @@ public interface IRestogramClient {
      * Executes download image request
      * Returns command object
      */
-    IRestogramCommand downloadImage(String url, String id, ImageView imageView, boolean force, IRestogramCommandObserver observer);
+    IRestogramCommand downloadImage(String url, String venueId, ImageView imageView, boolean force, IRestogramCommandObserver observer);
 
     /**
      * Executes download image request
      * Returns command object
      */
-    IRestogramCommand downloadImage(String url, String id, ImageView imageView, boolean force, IRestogramCommandObserver observer, float sizeRatio);
+    IRestogramCommand downloadImage(String url, String venueId, ImageView imageView, boolean force, IRestogramCommandObserver observer, float sizeRatio);
 
     /**
      * Executes cache venue request

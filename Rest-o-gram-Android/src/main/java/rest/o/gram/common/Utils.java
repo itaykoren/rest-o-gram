@@ -247,5 +247,20 @@ public class Utils {
         return screenWidth;
     }
 
+    /**
+     * @return Is the hardware of the current virtual machine capable of applying image-processing based bitmap filter?
+     */
+    public static boolean canApplyBitmapFilter() {
+        return Runtime.getRuntime().availableProcessors() >= Defs.Filtering.MIN_CPU_CORES_FOR_FILTERING;
+    }
+
+    /**
+     * @return Is an openCV based bitmap filter being used?
+     */
+    public static boolean usesOpenCVBasedBitmapFilter () {
+        return Defs.Filtering.BITMAP_FILTER_TYPE == Defs.Filtering.BitmapFilterType.JavaCVFaceBitmapFilter ||
+               Defs.Filtering.BITMAP_FILTER_TYPE == Defs.Filtering.BitmapFilterType.OpenCVFaceBitmapFilter;
+    }
+
     private static int screenWidth = 0; // Screen width
 }

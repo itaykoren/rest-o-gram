@@ -5,12 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.ImageView;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import rest.o.gram.cache.IBitmapCache;
 import rest.o.gram.client.RestogramClient;
+import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.view.IPhotoViewAdapter;
 
@@ -24,23 +26,21 @@ import java.io.InputStream;
  */
 public class DownloadImageCommand extends AbstractRestogramCommand {
 
-    public DownloadImageCommand(Context context, String url,
-                                String photoId, IPhotoViewAdapter viewAdapter,
+    public DownloadImageCommand(String url,
+                                RestogramPhoto photo, IPhotoViewAdapter viewAdapter,
                                 int width, int height) {
-        this.context = context;
         this.url = url;
-        this.photoId = photoId;
+        this.photo = photo;
         this.width = width;
         this.height = height;
         this.viewAdapter = viewAdapter;
     }
 
     public DownloadImageCommand(Context context, String url,
-                                String photoId, ImageView imageView,
+                                String venueId, ImageView imageView,
                                 int width, int height) {
-        this.context = context;
         this.url = url;
-        this.photoId = photoId;
+        this.venueId = venueId;
         this.width = width;
         this.height = height;
         this.imageView = imageView;
@@ -52,12 +52,12 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
             return false;
 
         if(imageView != null) {
-            fetchDrawableOnThread(url, photoId, imageView);
+            fetchDrawableOnThread(url, photo, imageView);
             return true;
         }
 
         if(viewAdapter != null) {
-            fetchDrawableOnThread(url, photoId, viewAdapter);
+            fetchDrawableOnThread(url, photo.getInstagram_id(), viewAdapter);
             return true;
         }
 
@@ -74,14 +74,15 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         return true;
     }
 
-    private Bitmap fetchDrawable(String urlString, String photoId, int reqWidth, int reqHeight, boolean filter) {
+    private Bitmap fetchDrawable(String urlString, RestogramPhoto photo, int reqWidth, int reqHeight, boolean filter) {
         try {
             IBitmapCache cache = RestogramClient.getInstance().getBitmapCache();
-            String filename = generateFilename(urlString, photoId);
+            String filename = generateFilename(urlString, photo.getInstagram_id());
             Bitmap bitmap = cache.load(filename);
 
             if(bitmap == null) {
-                if(filter) {
+                // if a filter is defined and photo is not yet approved - applies filter
+                if(filter && !photo.isApproved()) {
                     // Download full scale bitmap
                     bitmap = decodeBitmap(urlString);
 
@@ -97,6 +98,9 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                     bitmap = decodeBitmap(urlString, bitmap, reqWidth, reqHeight);
                 }
                 else {
+                    if (filter && photo.isApproved())
+                        Log.d("REST-O-GRAM", "photo is already approved!");
+
                     // Download scaled bitmap
                     bitmap = decodeBitmap(urlString, reqWidth, reqHeight);
                 }
@@ -115,7 +119,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         }
     }
 
-    private void fetchDrawableOnThread(final String urlString, final String photoId, final ImageView imageView) {
+    private void fetchDrawableOnThread(final String urlString, final RestogramPhoto photo, final ImageView imageView) {
 
         final Handler handler = new Handler() {
             @Override
@@ -144,7 +148,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                Bitmap bitmap = fetchDrawable(urlString, photoId, width, height, false);
+                Bitmap bitmap = fetchDrawable(urlString, photo, width, height, false);
                 Message message = handler.obtainMessage(1, bitmap);
                 handler.sendMessage(message);
             }
@@ -187,7 +191,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                Bitmap bitmap = fetchDrawable(urlString, photoId, width, height, true);
+                Bitmap bitmap = fetchDrawable(urlString, photo, width, height, true);
                 Message message = handler.obtainMessage(1, bitmap);
                 handler.sendMessage(message);
             }
@@ -261,10 +265,10 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         return inSampleSize;
     }
 
-    private Context context;
     private String url;
     private ImageView imageView;
-    private String photoId;
+    private RestogramPhoto photo;
+    private String venueId;
     private int width;
     private int height;
     private IPhotoViewAdapter viewAdapter;
