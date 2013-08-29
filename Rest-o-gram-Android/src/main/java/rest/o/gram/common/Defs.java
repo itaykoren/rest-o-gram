@@ -75,7 +75,17 @@ public final class Defs {
      * Filtering constants
      */
     public static class Filtering {
-        public static final BitmapFilterType BITMAP_FILTER_TYPE = BitmapFilterType.DoNothingBitmapFilter;
+        /**
+         * Bitmap flter type enumeration
+         */
+        public enum BitmapFilterType {
+            DoNothingBitmapFilter,
+            AndroidFaceBitmapFilter,
+            JavaCVFaceBitmapFilter,
+            OpenCVFaceBitmapFilter
+        }
+
+        public static final BitmapFilterType BITMAP_FILTER_TYPE = BitmapFilterType.OpenCVFaceBitmapFilter;
         public static final int MIN_CPU_CORES_FOR_FILTERING = 1;
 
         /**
@@ -104,16 +114,6 @@ public final class Defs {
          */
         public static class AndroidDetector {
             public static final int MAX_FACES_TO_DETECT = 1;
-        }
-
-        /**
-         * Bitmap flter type enumeration
-         */
-        public enum BitmapFilterType {
-            DoNothingBitmapFilter,
-            AndroidFaceBitmapFilter,
-            JavaCVFaceBitmapFilter,
-            OpenCVFaceBitmapFilter
         }
     }
 
