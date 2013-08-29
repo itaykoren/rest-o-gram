@@ -124,6 +124,7 @@ public final class DataStoreConverters {
         photo.setUser((String)entity.getProperty(Props.Photo.USER));
         photo.setOriginVenueId((String)entity.getProperty(Props.Photo.ORIGIN_VENUE_ID));
         photo.setYummies((long)entity.getProperty(Props.Photo.YUMMIES));
+        photo.setApproved(true);
         return photo;
     }
 
