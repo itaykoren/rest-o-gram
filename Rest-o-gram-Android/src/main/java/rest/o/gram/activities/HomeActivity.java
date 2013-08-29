@@ -33,11 +33,6 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
             return;
 
         setContentView(R.layout.home);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
 
         RestogramClient.getInstance().initializeFilter(this);
 
@@ -50,7 +45,6 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
             if (!tracker.canDetectLocation())
                 dialogManager.showLocationTrackingAlert(this);
             else {
-                tracker.stop();
                 updateStatus(R.string.location_search);
                 tracker.setObserver(this);
                 tracker.start();

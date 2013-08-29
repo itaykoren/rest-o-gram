@@ -59,7 +59,7 @@ public class RestogramClient implements IRestogramClient {
         if (isInitialized)
         {
             if (isDebuggable())
-                Log.d("REST-O-GRAM", "CLIENT ALREAY INITIALIZED");
+                Log.d("REST-O-GRAM", "CLIENT ALREADY INITIALIZED");
             return;
         }
 

@@ -75,7 +75,7 @@ public final class Defs {
      * Filtering constants
      */
     public static class Filtering {
-        public static final BitmapFilterType BITMAP_FILTER_TYPE = BitmapFilterType.OpenCVFaceBitmapFilter;
+        public static final BitmapFilterType BITMAP_FILTER_TYPE = BitmapFilterType.DoNothingBitmapFilter;
         public static final int MIN_CPU_CORES_FOR_FILTERING = 1;
 
         /**
