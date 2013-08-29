@@ -1,7 +1,6 @@
 package rest.o.gram.filters;
 
 import android.graphics.Bitmap;
-import rest.o.gram.openCV.FaceDetector;
 
 /**
  * Created with IntelliJ IDEA.

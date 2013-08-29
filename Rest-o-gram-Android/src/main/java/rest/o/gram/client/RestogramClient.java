@@ -23,15 +23,14 @@ import rest.o.gram.data_history.FileDataHistoryManager;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.*;
-import rest.o.gram.openCV.FaceDetector;
-import rest.o.gram.openCV.JavaCVFaceDetector;
-import rest.o.gram.openCV.OpenCVFaceDetector;
-import rest.o.gram.openCV.RestogramBaseLoaderCallback;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.location.ILocationTrackerFactory;
 import rest.o.gram.location.LocationTrackerFactory;
 import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.network.NetworkStateProvider;
+import rest.o.gram.openCV.JavaCVFaceDetector;
+import rest.o.gram.openCV.OpenCVFaceDetector;
+import rest.o.gram.openCV.RestogramBaseLoaderCallback;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.view.IPhotoViewAdapter;
 
@@ -291,16 +290,16 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public IRestogramCommand downloadImage(String url, String venueId, ImageView imageView,
+    public IRestogramCommand downloadImage(String url, String photoId, ImageView imageView,
                               boolean force, IRestogramCommandObserver observer) {
-        return downloadImage(url, venueId, imageView, force, observer, 1);
+        return downloadImage(url, photoId, imageView, force, observer, 1);
     }
 
     @Override
-    public IRestogramCommand downloadImage(String url, String venueId, ImageView imageView,
+    public IRestogramCommand downloadImage(String url, String photoId, ImageView imageView,
                               boolean force, IRestogramCommandObserver observer, float sizeRatio) {
         int size = (int)(Utils.getScreenWidth(context) * sizeRatio);
-        IRestogramCommand command = new DownloadImageCommand(context, url, venueId, imageView, size, size);
+        IRestogramCommand command = new DownloadImageCommand(url, photoId, imageView, size, size);
 
         if(observer != null)
             command.addObserver(observer);

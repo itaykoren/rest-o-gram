@@ -26,21 +26,20 @@ import java.io.InputStream;
  */
 public class DownloadImageCommand extends AbstractRestogramCommand {
 
-    public DownloadImageCommand(String url,
-                                RestogramPhoto photo, IPhotoViewAdapter viewAdapter,
+    public DownloadImageCommand(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter,
                                 int width, int height) {
         this.url = url;
         this.photo = photo;
+        this.photoId = photo.getInstagram_id();
         this.width = width;
         this.height = height;
         this.viewAdapter = viewAdapter;
     }
 
-    public DownloadImageCommand(Context context, String url,
-                                String venueId, ImageView imageView,
+    public DownloadImageCommand(String url, String photoId, ImageView imageView,
                                 int width, int height) {
         this.url = url;
-        this.venueId = venueId;
+        this.photoId = photoId;
         this.width = width;
         this.height = height;
         this.imageView = imageView;
@@ -52,12 +51,12 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
             return false;
 
         if(imageView != null) {
-            fetchDrawableOnThread(url, photo, imageView);
+            fetchDrawableOnThread(url, photoId, imageView);
             return true;
         }
 
         if(viewAdapter != null) {
-            fetchDrawableOnThread(url, photo.getInstagram_id(), viewAdapter);
+            fetchDrawableOnThread(url, photoId, viewAdapter);
             return true;
         }
 
@@ -74,15 +73,14 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         return true;
     }
 
-    private Bitmap fetchDrawable(String urlString, RestogramPhoto photo, int reqWidth, int reqHeight, boolean filter) {
+    private Bitmap fetchDrawable(final String urlString, final String photoId, int reqWidth, int reqHeight, boolean filter) {
         try {
             IBitmapCache cache = RestogramClient.getInstance().getBitmapCache();
-            String filename = generateFilename(urlString, photo.getInstagram_id());
+            String filename = generateFilename(urlString, photoId);
             Bitmap bitmap = cache.load(filename);
 
             if(bitmap == null) {
-                // if a filter is defined and photo is not yet approved - applies filter
-                if(filter && !photo.isApproved()) {
+                if(filter) {
                     // Download full scale bitmap
                     bitmap = decodeBitmap(urlString);
 
@@ -98,9 +96,6 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                     bitmap = decodeBitmap(urlString, bitmap, reqWidth, reqHeight);
                 }
                 else {
-                    if (filter && photo.isApproved())
-                        Log.d("REST-O-GRAM", "photo is already approved!");
-
                     // Download scaled bitmap
                     bitmap = decodeBitmap(urlString, reqWidth, reqHeight);
                 }
@@ -119,7 +114,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         }
     }
 
-    private void fetchDrawableOnThread(final String urlString, final RestogramPhoto photo, final ImageView imageView) {
+    private void fetchDrawableOnThread(final String urlString, final String photoId, final ImageView imageView) {
 
         final Handler handler = new Handler() {
             @Override
@@ -148,7 +143,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                Bitmap bitmap = fetchDrawable(urlString, photo, width, height, false);
+                Bitmap bitmap = fetchDrawable(urlString, photoId, width, height, false);
                 Message message = handler.obtainMessage(1, bitmap);
                 handler.sendMessage(message);
             }
@@ -191,7 +186,13 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                Bitmap bitmap = fetchDrawable(urlString, photo, width, height, true);
+                boolean filter = true;
+                if(photo != null && photo.isApproved()) {
+                    filter = false;
+                    Log.d("REST-O-GRAM", "photo is already approved!");
+                }
+
+                Bitmap bitmap = fetchDrawable(urlString, photoId, width, height, filter);
                 Message message = handler.obtainMessage(1, bitmap);
                 handler.sendMessage(message);
             }
@@ -268,7 +269,7 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
     private String url;
     private ImageView imageView;
     private RestogramPhoto photo;
-    private String venueId;
+    private String photoId;
     private int width;
     private int height;
     private IPhotoViewAdapter viewAdapter;

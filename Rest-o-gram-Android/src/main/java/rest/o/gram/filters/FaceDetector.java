@@ -1,4 +1,4 @@
-package rest.o.gram.openCV;
+package rest.o.gram.filters;
 
 import android.graphics.Bitmap;
 

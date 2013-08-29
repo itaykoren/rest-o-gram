@@ -5,8 +5,8 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
-import org.opencv.objdetect.CascadeClassifier;
 import rest.o.gram.common.Defs;
+import rest.o.gram.filters.FaceDetector;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="rest.o.gram"
           android:versionCode="12"
-          android:versionName="12.7">
+          android:versionName="12.8">
 
     <permission
             android:name="rest.o.gram.permission.MAPS_RECEIVE"

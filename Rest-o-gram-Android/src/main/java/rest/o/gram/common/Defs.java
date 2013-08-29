@@ -27,7 +27,7 @@ public final class Defs {
      * Transport constants
      */
     public static class Transport {
-        public static final String BASE_HOST_NAME = "http://rest-o-debug.appspot.com";
+        public static final String BASE_HOST_NAME = "http://rest-o-gram.appspot.com";
     }
 
     /**
@@ -85,7 +85,7 @@ public final class Defs {
             public static final OpenCVDistributionMethod OPEN_CV_DISTRIBUTION_METHOD = OpenCVDistributionMethod.Static;
             public static final String OPENCV_VERSION = org.opencv.android.OpenCVLoader.OPENCV_VERSION_2_4_6;
             public static final String CASCADE_CLASSIFIERS_DIRECTORY_NAME = "cascade";
-            public static final String CASCADE_CLASSIFIER_FILE_NAME =  "lbpcascade_frontalface.xml";
+            public static final String CASCADE_CLASSIFIER_FILE_NAME = "lbpcascade_frontalface.xml";
             public static final int CASCADE_CLASSIFIER_ID = R.raw.lbpcascade_frontalface;
             public static final double MIN_FACE_SIZE = 24;
             public static final double MAX_FACE_SIZE_FACTOR = 1;

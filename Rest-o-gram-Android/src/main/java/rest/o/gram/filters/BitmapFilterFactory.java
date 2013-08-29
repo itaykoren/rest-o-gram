@@ -3,7 +3,6 @@ package rest.o.gram.filters;
 import android.util.Log;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
-import rest.o.gram.openCV.FaceDetector;
 
 /**
  * Created with IntelliJ IDEA.
