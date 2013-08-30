@@ -17,7 +17,6 @@ public class DataHistoryManager implements IDataHistoryManager {
     public DataHistoryManager() {
         // Init containers
         venues = new Dictionary<>();
-        photos = new Dictionary<>();
 
         // Init location
         location = new double[2];
@@ -34,25 +33,6 @@ public class DataHistoryManager implements IDataHistoryManager {
                 venues.putLast(venue.getFoursquare_id(), venue);
             else // if(order == Defs.Data.SortOrder.SortOrderLIFO)
                 venues.putFirst(venue.getFoursquare_id(), venue);
-        }
-        catch(Exception e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean save(RestogramPhoto photo, Defs.Data.SortOrder order) {
-        try {
-            if(photos.contains(photo.getInstagram_id())) {
-                photos.remove(photo.getInstagram_id());
-            }
-
-            if(order == Defs.Data.SortOrder.SortOrderFIFO)
-                photos.putLast(photo.getInstagram_id(), photo);
-            else // if(order == Defs.Data.SortOrder.SortOrderLIFO)
-                photos.putFirst(photo.getInstagram_id(), photo);
         }
         catch(Exception e) {
             return false;
@@ -88,42 +68,14 @@ public class DataHistoryManager implements IDataHistoryManager {
     }
 
     @Override
-    public RestogramPhoto[] loadPhotos() {
-        RestogramPhoto[] photos;
-        try {
-            if(this.photos.isEmpty())
-                return null;
-
-            int i = 0;
-            photos = new RestogramPhoto[this.photos.size()];
-            for(RestogramPhoto photo : this.photos) {
-                photos[i++] = photo;
-            }
-        }
-        catch(Exception e) {
-            return null;
-        }
-
-        return photos;
-    }
-
-    @Override
     public double[] loadLocation() {
         return location;
-    }
-
-    @Override
-    public RestogramVenue findVenue(String id) {
-        return venues.find(id);
     }
 
     @Override
     public void clear() {
         if(venues != null)
             venues.clear();
-
-        if(photos != null)
-            photos.clear();
     }
 
     @Override
@@ -132,6 +84,5 @@ public class DataHistoryManager implements IDataHistoryManager {
     }
 
     protected IDictionary<String, RestogramVenue> venues; // Venues dictionary
-    protected IDictionary<String, RestogramPhoto> photos; // Photos dictionary
     protected double[] location; // Location
 }

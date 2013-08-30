@@ -89,6 +89,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
         if(pendingCommand != null) {
             pendingCommand.cancel();
+            pendingCommand = null;
         }
 
         if (viewAdapter != null)

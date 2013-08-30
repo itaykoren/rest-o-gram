@@ -57,17 +57,16 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
-        // TODO
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        // TODO
+        if(historyVenueViewAdapter != null)
+            historyVenueViewAdapter.clear();
+
+        if(favoritePhotoViewAdapter != null)
+            favoritePhotoViewAdapter.clear();
+
+        isInitialized = false;
     }
 
     @Override
@@ -123,7 +122,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     @Override
     public void onFinished(AddPhotoToFavoritesResult result) {
-
+        // Empty
     }
 
     @Override
@@ -133,8 +132,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     @Override
     public void onFinished(GetFavoriteVenuesResult result) {
-        isVenuesRequestPending = false;
-        setFavoriteVenues(result.getElements());
+        // Empty
     }
 
     @Override
@@ -175,7 +173,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         View favoritesView = findViewById(R.id.favoritesView);
 
         if(viewSwitcher.getCurrentView() != favoritesView) {
-            if(!isPhotosRequestPending && !isVenuesRequestPending)
+            if(!isPhotosRequestPending)
                 updateFavorites();
 
             Button bHistory = (Button)findViewById(R.id.bHistory);
@@ -219,35 +217,12 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
      * Initializes favorites related data
      */
     private void initFavorites() {
-        // Init favorite venue list view
-        ListView lvFavVenues = (ListView)findViewById(R.id.lvFavVenues);
-        favoriteVenueViewAdapter = new VenueViewAdapter(this, this);
-        lvFavVenues.setAdapter(favoriteVenueViewAdapter);
-
         // Init favorite photo grid view
         GridView gvFavPhotos = (GridView)findViewById(R.id.gvFavPhotos);
         favoritePhotoViewAdapter = new PhotoViewAdapter(this);
         gvFavPhotos.setAdapter(favoritePhotoViewAdapter);
 
         updateFavorites();
-    }
-
-    /**
-     * Sets favorite venues
-     */
-    private void setFavoriteVenues(List<RestogramVenue> venues) {
-        if(venues == null || venues.size() == 0)
-            return;
-
-        for(RestogramVenue venue : venues) {
-            favoriteVenueViewAdapter.addVenue(venue.getFoursquare_id());
-
-            // Add venue to cache (if needed)
-            IRestogramCache cache = RestogramClient.getInstance().getCache();
-            cache.add(venue);
-        }
-
-        favoriteVenueViewAdapter.refresh();
     }
 
     /**
@@ -304,21 +279,6 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         if(dataFavoritesManager == null)
             return;
 
-        // Update favorite venues
-        Set<String> venues = dataFavoritesManager.getFavoriteVenues();
-        favoriteVenueViewAdapter.clear();
-        if(venues != null && !venues.isEmpty()) {
-            for(String id : venues) {
-                favoriteVenueViewAdapter.addVenue(id);
-            }
-
-            favoriteVenueViewAdapter.refresh();
-        }
-        else {
-            //dataFavoritesManager.getFavoriteVenues(this);
-            //isVenuesRequestPending = true;
-        }
-
         // Update favorite photos
         Set<String> photos = dataFavoritesManager.getFavoritePhotos();
         favoritePhotoViewAdapter.clear();
@@ -337,8 +297,6 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         else {
             if(isInitialized)
                 showMessage("No yummies yet");
-            //dataFavoritesManager.getFavoritePhotos(this);
-            //isPhotosRequestPending = true;
         }
     }
 
@@ -417,13 +375,11 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     private VenueViewAdapter historyVenueViewAdapter; // History venue view adapter
 
-    private VenueViewAdapter favoriteVenueViewAdapter; // Favorite venue view adapter
-    private PhotoViewAdapter favoritePhotoViewAdapter; // Favorite photo View Adapter
+    private PhotoViewAdapter favoritePhotoViewAdapter; // Favorite photo view Adapter
 
     private ImageView profileImageView; // profile photo image view
     private String profilePhotoUrl = null; // Profile photo url
 
-    private boolean isVenuesRequestPending = false; // Venues request pending flag
     private boolean isPhotosRequestPending = false; // Photos request pending flag
 
     private boolean isInitialized = false; // Is initialized flag

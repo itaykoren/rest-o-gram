@@ -45,19 +45,6 @@ public class FileDataHistoryManager extends DataHistoryManager {
     }
 
     @Override
-    public boolean save(RestogramPhoto photo, Defs.Data.SortOrder order) {
-        if(!super.save(photo, order))
-            return false;
-
-        isUpToDate = false;
-
-        if(Defs.Data.FORCE_FLUSH)
-            flushOnThread();
-
-        return true;
-    }
-
-    @Override
     public void clear() {
         super.clear();
 
@@ -92,7 +79,6 @@ public class FileDataHistoryManager extends DataHistoryManager {
         // Save data to files
         try {
             Utils.serialize(venues, context.openFileOutput(Defs.Data.DATA_VENUES_FILENAME, Context.MODE_PRIVATE));
-            Utils.serialize(photos, context.openFileOutput(Defs.Data.DATA_PHOTOS_FILENAME, Context.MODE_PRIVATE));
         }
         catch(Exception e) {
             // TODO: report error
@@ -108,7 +94,6 @@ public class FileDataHistoryManager extends DataHistoryManager {
         // Load data from files
         try {
             venues = (IDictionary<String, RestogramVenue>)Utils.deserialize(context.openFileInput(Defs.Data.DATA_VENUES_FILENAME));
-            photos = (IDictionary<String, RestogramPhoto>)Utils.deserialize(context.openFileInput(Defs.Data.DATA_PHOTOS_FILENAME));
         }
         catch(Exception e) {
             // TODO: report error
@@ -116,9 +101,6 @@ public class FileDataHistoryManager extends DataHistoryManager {
 
         if(venues == null)
             venues = new Dictionary<>();
-
-        if(photos == null)
-            photos = new Dictionary<>();
 
         isUpToDate = true;
     }

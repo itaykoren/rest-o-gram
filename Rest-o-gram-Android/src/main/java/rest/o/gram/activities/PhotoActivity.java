@@ -78,10 +78,7 @@ public class PhotoActivity extends RestogramActionBarActivity implements IRestog
         if(photo == null)
             return;
 
-        // Save photo if needed
-        IDataHistoryManager dataHistoryManager = RestogramClient.getInstance().getDataHistoryManager();
-        if(dataHistoryManager != null)
-            dataHistoryManager.save(photo, Defs.Data.SortOrder.SortOrderLIFO);
+
 
         // Initialize favorite helper
         favoriteHelper.setPhotoId(photo.getInstagram_id());

@@ -16,11 +16,6 @@ public interface IDataHistoryManager {
     boolean save(RestogramVenue venue, Defs.Data.SortOrder order);
 
     /**
-     * Attempts to save given photo
-     */
-    boolean save(RestogramPhoto photo, Defs.Data.SortOrder order);
-
-    /**
      * Saves last location
      */
     void save(double latitude, double longitude);
@@ -31,20 +26,9 @@ public interface IDataHistoryManager {
     RestogramVenue[] loadVenues();
 
     /**
-     * Attempts to load photos
-     */
-    RestogramPhoto[] loadPhotos();
-
-    /**
      * Loads last location
      */
     double[] loadLocation();
-
-    /**
-     * Attempts to find venue according to given id
-     * Returns venue if successful, null otherwise
-     */
-    RestogramVenue findVenue(String id);
 
     /**
      * Clears all data

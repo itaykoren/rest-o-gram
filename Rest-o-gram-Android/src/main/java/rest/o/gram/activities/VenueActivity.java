@@ -76,6 +76,7 @@ public class VenueActivity extends RestogramActionBarActivity {
 
         if(pendingCommand != null) {
             pendingCommand.cancel();
+            pendingCommand = null;
         }
 
         if (viewAdapter != null)
@@ -90,6 +91,9 @@ public class VenueActivity extends RestogramActionBarActivity {
 
         // Update request pending flag
         isRequestPending = false;
+
+        // Set pending command to null
+        pendingCommand = null;
 
         if(result == null || result.getPhotos() == null) {
             // Show error dialog
@@ -240,7 +244,7 @@ public class VenueActivity extends RestogramActionBarActivity {
             if(RestogramClient.getInstance().isDebuggable())
                 Log.d("REST-O-GRAM", "Requesting more photos");
 
-            RestogramClient.getInstance().getNextPhotos(lastToken, RestogramFilterType.Simple, venueId, this);
+            pendingCommand = RestogramClient.getInstance().getNextPhotos(lastToken, RestogramFilterType.Simple, venueId, this);
         }
     }
 
