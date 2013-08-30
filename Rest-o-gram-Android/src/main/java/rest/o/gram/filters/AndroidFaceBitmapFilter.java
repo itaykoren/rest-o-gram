@@ -51,7 +51,14 @@ public class AndroidFaceBitmapFilter implements IBitmapFilter {
     }
 
     @Override
-    public void dispose() { } // nothing to dispose
+    public void dispose() {
+        // Empty
+    }
+
+    @Override
+    public void setFaceDetector(rest.o.gram.filters.FaceDetector faceDetector) {
+        // Empty
+    }
 
     /**
      * Creates a new 565 RGB bitmap from given source bitmap

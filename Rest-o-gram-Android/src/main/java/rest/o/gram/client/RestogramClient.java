@@ -111,7 +111,8 @@ public class RestogramClient implements IRestogramClient {
             if(Defs.Data.CACHE_DATA_HISTORY_ENABLED)
                 cacheDataHistoryManager = new DataHistoryManager();
 
-            initBitmapFilter();
+            final IBitmapFilterFactory bitmapFilterFactory = new BitmapFilterFactory();
+            bitmapFilter = bitmapFilterFactory.create(Defs.Filtering.BITMAP_FILTER_TYPE);
 
             isInitialized = true;
 
@@ -124,15 +125,8 @@ public class RestogramClient implements IRestogramClient {
         }
     }
 
-    /**
-     * Initializes the
-     * @param context main activity context
-     */
     @Override
     public void initializeFilter(Context context) {
-        if (bitmapFilter != null)
-            return;
-
         // load openCV manager - if has to
         if (Utils.usesOpenCVBasedBitmapFilter() && Utils.canApplyBitmapFilter())
         {
@@ -148,7 +142,6 @@ public class RestogramClient implements IRestogramClient {
                                         Log.i("REST-O-GRAM", "OpenCV loaded successfully");
 
                                     initFaceDetector(mAppContext);
-                                    initBitmapFilter();
                                 } break;
                                 default:
                                 {
@@ -166,10 +159,7 @@ public class RestogramClient implements IRestogramClient {
                 if (!OpenCVLoader.initDebug()) // the static init method...
                     Log.e("REST-O-GRAM", "error while loading openCV");
                 else
-                {
                     initFaceDetector(context);
-                    initBitmapFilter();
-                }
             }
         }
     }
@@ -343,21 +333,15 @@ public class RestogramClient implements IRestogramClient {
      * @param context application context
      */
     private void initFaceDetector(Context context) {
-       if (Defs.Filtering.BITMAP_FILTER_TYPE == Defs.Filtering.BitmapFilterType.OpenCVFaceBitmapFilter)
-       {
+       if (Defs.Filtering.BITMAP_FILTER_TYPE == Defs.Filtering.BitmapFilterType.OpenCVFaceBitmapFilter) {
            System.loadLibrary("face_detector"); //  loads native access library
            faceDetector = new OpenCVFaceDetector(context);
        }
        else if (Defs.Filtering.BITMAP_FILTER_TYPE == Defs.Filtering.BitmapFilterType.JavaCVFaceBitmapFilter)
            faceDetector = new JavaCVFaceDetector(context);
-    }
 
-    /**
-     * Initializes the bitmap filter according to the definitions.
-     */
-    private void initBitmapFilter() {
-        final IBitmapFilterFactory bitmapFilterFactory = new BitmapFilterFactory();
-        bitmapFilter = bitmapFilterFactory.create(Defs.Filtering.BITMAP_FILTER_TYPE, faceDetector);
+       if(bitmapFilter != null)
+           bitmapFilter.setFaceDetector(faceDetector);
     }
 
     /* PROVIDERS */

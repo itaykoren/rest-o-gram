@@ -90,9 +90,9 @@ public class LocationTrackerDummy implements ILocationTracker {
 
     //private double[] location = {32.063553, 34.773078}; // Tel Aviv
     //private double[] location = {40.758891, -73.98515}; // New York
-    //private double[] location = {48.853015, 2.368884}; // Paris
+    private double[] location = {48.853015, 2.368884}; // Paris
     //private double[] location = {41.891344, 12.468629}; // Rome
     //private double[] location = {43.325178, -37.880859}; // Atlantic Ocean
-    private double[] location = {32.10732,34.834299}; // Frame
+    //private double[] location = {32.10732,34.834299}; // Frame
     //private double[] location = {32.068511,34.795111}; // Google
 }

@@ -15,5 +15,12 @@ public class DefaultBitmapFilter implements IBitmapFilter {
     }
 
     @Override
-    public void dispose() { } //  nothing to dispose
+    public void dispose() {
+        // Empty
+    }
+
+    @Override
+    public void setFaceDetector(FaceDetector faceDetector) {
+        // Empty
+    }
 }

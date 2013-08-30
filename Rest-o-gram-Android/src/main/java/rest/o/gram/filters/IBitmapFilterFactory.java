@@ -11,5 +11,5 @@ public interface IBitmapFilterFactory {
     /**
      * Returns bitmap filter according to given type
      */
-    IBitmapFilter create(Defs.Filtering.BitmapFilterType type, FaceDetector faceDetector);
+    IBitmapFilter create(Defs.Filtering.BitmapFilterType type);
 }

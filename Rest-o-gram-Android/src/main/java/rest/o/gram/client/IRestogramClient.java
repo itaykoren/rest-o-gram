@@ -31,7 +31,7 @@ public interface IRestogramClient {
     void initialize(Context context, IRestogramApplication application);
 
     /**
-     * Initializes the
+     * Initializes filter
      * @param context main activity context
      */
     void initializeFilter(Context context);

@@ -17,4 +17,9 @@ public interface IBitmapFilter {
      * Disposes all resources
      */
     void dispose();
+
+    /**
+     * Sets face detector
+     */
+    void setFaceDetector(FaceDetector faceDetector);
 }
