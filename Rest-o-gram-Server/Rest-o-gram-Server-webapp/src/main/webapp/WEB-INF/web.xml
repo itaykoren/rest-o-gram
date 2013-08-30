@@ -10,6 +10,7 @@
         <display-name>Rest-o-Gram</display-name>
         <servlet-name>JsonRpcServlet</servlet-name>
         <servlet-class>rest.o.gram.transport.JsonRpcServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>JsonRpcServlet</servlet-name>
@@ -21,6 +22,7 @@
         <display-name>Rest-o-Gram-Auth</display-name>
         <servlet-name>JsonRpcAuthServlet</servlet-name>
         <servlet-class>rest.o.gram.transport.JsonRpcAuthServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>JsonRpcAuthServlet</servlet-name>
@@ -32,6 +34,7 @@
         <display-name>GET-INSTAGRAM-LOCATION</display-name>
         <servlet-name>GetInstagramLocationServlet</servlet-name>
         <servlet-class>rest.o.gram.service.GetInstagramLocationServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>GetInstagramLocationServlet</servlet-name>
@@ -99,6 +102,43 @@
         <servlet-name>filter-rules-update</servlet-name>
         <url-pattern>/filter-rules-update</url-pattern>
     </servlet-mapping>
+
+
+    <servlet>
+        <description>Wakes-up the servlets</description>
+        <display-name>Wakes-up the servlets</display-name>
+        <servlet-name>rooster</servlet-name>
+        <servlet-class>rest.o.gram.service.backend.RoosterServlet</servlet-class>
+    </servlet>
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>rooster</servlet-name>-->
+    <!--<url-pattern>/_ah/start</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <servlet-mapping>
+        <servlet-name>rooster</servlet-name>
+        <url-pattern>/rooster</url-pattern>
+    </servlet-mapping>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>rooster</web-resource-name>
+            <url-pattern>/rooster/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!--Crons-->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>cron</web-resource-name>
+            <url-pattern>/cron/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
 
     <!--Resteasy-->
     <context-param>

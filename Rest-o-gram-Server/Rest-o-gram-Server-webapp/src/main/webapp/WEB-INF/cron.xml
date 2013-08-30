@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+    <cron>
+        <url>/rooster</url>
+        <description>Wakes-up the servlets</description>
+        <schedule>every 30 minutes</schedule>
+        <target>rooster</target>
+    </cron>
+</cronentries>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <backends>
-    <!--<backend name="filter-rules-update">-->
-        <!--<class>B2</class>-->
-        <!--<options>-->
-            <!--<dynamic>true</dynamic>-->
-            <!--<public>true</public>-->
-        <!--</options>-->
-    <!--</backend>-->
+    <backend name="rooster">
+        <class>B2</class>
+        <options>
+            <dynamic>true</dynamic>
+            <public>true</public>
+        </options>
+    </backend>
 </backends>

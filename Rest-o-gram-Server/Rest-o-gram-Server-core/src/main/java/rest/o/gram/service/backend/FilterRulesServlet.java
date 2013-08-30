@@ -40,11 +40,19 @@ public class FilterRulesServlet extends HttpServlet {
         {
             //TODO: make it a backend servlet....
             processFilterResults();
-            resp.sendError(200, "OK");
-        } catch (IOException e)
+            resp.setStatus(HttpServletResponse.SC_OK);
+        } catch (Exception e)
         {
             e.printStackTrace();
-            log.severe("backend cannot reply");
+            log.severe("backend cannot reply. error: " + e.getMessage());
+            try
+            {
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error while processing");
+            }
+            catch (IOException e2)
+            {
+                log.warning("error while trying  to report error to client: " + e2.getMessage());
+            }
         }
     }
 
