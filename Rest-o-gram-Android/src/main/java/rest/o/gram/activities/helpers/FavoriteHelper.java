@@ -27,8 +27,6 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
      */
     public FavoriteHelper() {
         dataFavoritesManager = RestogramClient.getInstance().getDataFavoritesManager();
-
-        // TODO: handle pagination
     }
 
     /**
