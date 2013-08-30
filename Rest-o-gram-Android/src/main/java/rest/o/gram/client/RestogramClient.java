@@ -241,17 +241,19 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
-    public void getNextPhotos(String token, String originVenueId, ITaskObserver observer) {
+    public IRestogramCommand getNextPhotos(String token, String originVenueId, ITaskObserver observer) {
         setJsonAuthToken(transport);
         IRestogramCommand command = new GetNextPhotosCommand(transport, observer, token, originVenueId);
         commandQueue.pushForce(command);
+        return command;
     }
 
     @Override
-    public void getNextPhotos(String token, RestogramFilterType filterType, String originVenueId, ITaskObserver observer) {
+    public IRestogramCommand getNextPhotos(String token, RestogramFilterType filterType, String originVenueId, ITaskObserver observer) {
         setJsonAuthToken(transport);
         IRestogramCommand command = new GetNextPhotosCommand(transport, observer, token, filterType, originVenueId);
         commandQueue.pushForce(command);
+        return command;
     }
 
     @Override

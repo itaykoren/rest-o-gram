@@ -72,13 +72,15 @@ public interface IRestogramClient {
 
     /**
      * Executes get next photos request
+     * Returns command object
      */
-    void getNextPhotos(String token, String originVenueId, ITaskObserver observer);
+    IRestogramCommand getNextPhotos(String token, String originVenueId, ITaskObserver observer);
 
     /**
      * Executes get next photos request with filter
+     * Returns command object
      */
-    void getNextPhotos(String token, RestogramFilterType filterType, String originVenueId, ITaskObserver observer);
+    IRestogramCommand getNextPhotos(String token, RestogramFilterType filterType, String originVenueId, ITaskObserver observer);
 
     /**
      * Executes get get profile photo url request

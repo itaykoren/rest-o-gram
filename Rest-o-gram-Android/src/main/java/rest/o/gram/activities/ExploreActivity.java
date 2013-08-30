@@ -1,17 +1,19 @@
 package rest.o.gram.activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.*;
+import android.widget.AbsListView;
+import android.widget.GridView;
+import android.widget.Toast;
 import rest.o.gram.R;
 import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.cache.RestogramPhotos;
 import rest.o.gram.client.RestogramClient;
+import rest.o.gram.commands.IRestogramCommand;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
@@ -19,12 +21,11 @@ import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
-import rest.o.gram.tasks.results.*;
+import rest.o.gram.tasks.results.GetNearbyResult;
+import rest.o.gram.tasks.results.GetPhotosResult;
 import rest.o.gram.view.GenericPopupView;
 import rest.o.gram.view.IPopupView;
 import rest.o.gram.view.PhotoViewAdapter;
-
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -86,6 +87,10 @@ public class ExploreActivity extends RestogramActionBarActivity {
     protected void onDestroy() { // Activity exiting
         super.onDestroy();
 
+        if(pendingCommand != null) {
+            pendingCommand.cancel();
+        }
+
         if (viewAdapter != null)
             viewAdapter.clear();
     }
@@ -115,6 +120,9 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
         // Update request pending flag
         isRequestPending = false;
+
+        // Set pending command to null
+        pendingCommand = null;
 
         if(result == null || !result.hasMorePhotos())
         {
@@ -209,63 +217,21 @@ public class ExploreActivity extends RestogramActionBarActivity {
         if(isRequestPending)
             return;
 
+        isRequestPending = true;
+
         if (RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "Requesting photos for next venue");
 
         final VenueData nextVenue = getNextVenue();
         final String nextVenueId = nextVenue.venueId;
         final String nextToken = nextVenue.lastToken;
-        // final int lastPhotoIndex = nextVenue.lastPhotoIndex;
 
-        isRequestPending = true;
         if(nextToken != null) {
-            RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
+            pendingCommand = RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
         }
         else {
-            RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Simple, this);
+            pendingCommand = RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Simple, this);
         }
-
-//        // Try to load previous photos from cache
-//        IRestogramCache cache = RestogramClient.getInstance().getCache();
-//        RestogramPhotos venuePhotos = cache.findPhotos(nextVenueId);
-//        if(venuePhotos == null) { // No photos found
-//            isRequestPending = true;
-//
-//            if(nextToken != null) {
-//                RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
-//            }
-//            else {
-//                RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Simple, this);
-//            }
-//        }
-//        else { // Photos were found
-//            // Get all photos of this venue
-//            final List<RestogramPhoto> photos = venuePhotos.getPhotos();
-//
-//            // Calculate index of first photo to download
-//            int startIndex = lastPhotoIndex + 1;
-//
-//            // Calculate index of last photo to download
-//            int endIndex = Math.min(photos.size() - 1, startIndex + Defs.Feed.MAX_PHOTOS_PER_VENUE - 1);
-//            nextVenue.lastPhotoIndex = endIndex;
-//
-//            if(startIndex >= endIndex && nextToken != null) {
-//                RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Complex, nextVenueId, this);
-//                return;
-//            }
-//
-//            for(int i = startIndex; i <= endIndex; i++) {
-//                try {
-//                    RestogramPhoto photo = photos.get(i);
-//
-//                    // Download image
-//                    RestogramClient.getInstance().downloadImage(photo.getThumbnail(), photo, viewAdapter, false, null);
-//                }
-//                catch(Exception e) {
-//                    // Empty
-//                }
-//            }
-//        }
     }
 
     private void updateToken(String venueId, String token) {
@@ -342,6 +308,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
     private double longitude; // Longitude
     private PhotoViewAdapter viewAdapter; // View adapter
     private boolean isRequestPending = false;
+    private IRestogramCommand pendingCommand;
     private VenueData[] venues;
     private int currVenueIndex = -1;
 }
