@@ -55,33 +55,28 @@ public class RestogramClient implements IRestogramClient {
 
     @Override
     public void initialize(final Context context, final IRestogramApplication application) {
-
-        if (isInitialized)
-        {
-            if (isDebuggable())
-                Log.d("REST-O-GRAM", "CLIENT ALREADY INITIALIZED");
-            return;
-        }
-
-        try
-        {
+        try {
             this.application = application;
             this.context = context;
 
             // sets debuggable flag
             PackageManager pm = context.getPackageManager();
-            try
-            {
+            try {
                 ApplicationInfo appinfo = pm.getApplicationInfo(context.getPackageName(), 0);
                 debuggable = (0 != (appinfo.flags &= ApplicationInfo.FLAG_DEBUGGABLE));
             }
-            catch(PackageManager.NameNotFoundException e)
-            {
+            catch(PackageManager.NameNotFoundException e) {
                 // debuggable variable will remain false
             }
 
-            if (RestogramClient.getInstance().isDebuggable())
-                Log.d("REST-O-GRAM", "CLIENT LOADING");
+            if(isInitialized) {
+                if(debuggable)
+                    Log.d("REST-O-GRAM", "Client already initialized");
+                return;
+            }
+
+            if(debuggable)
+                Log.d("REST-O-GRAM", "Client loading");
 
             authProvider = new AuthenticationProvider(context, Defs.Transport.BASE_HOST_NAME);
             dataFavoritesManager = new DataFavoritesManager(this);
@@ -116,11 +111,10 @@ public class RestogramClient implements IRestogramClient {
 
             isInitialized = true;
 
-            if (RestogramClient.getInstance().isDebuggable())
-                Log.d("REST-O-GRAM", "CLIENT UP");
+            if(debuggable)
+                Log.d("REST-O-GRAM", "Client up");
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
             Log.e("REST-O-GRAM", "Error in RestogramClient: " + e.getMessage());
         }
     }
@@ -138,7 +132,7 @@ public class RestogramClient implements IRestogramClient {
                             {
                                 case LoaderCallbackInterface.SUCCESS:
                                 {
-                                    if (RestogramClient.getInstance().isDebuggable())
+                                    if (debuggable)
                                         Log.i("REST-O-GRAM", "OpenCV loaded successfully");
 
                                     initFaceDetector(mAppContext);
@@ -166,6 +160,9 @@ public class RestogramClient implements IRestogramClient {
 
     @Override
     public void dispose() {
+        if(debuggable)
+            Log.d("REST-O-GRAM", "Client disposing");
+
         isInitialized = false;
 
         // Cancel all commands
@@ -188,17 +185,22 @@ public class RestogramClient implements IRestogramClient {
         if(bitmapCache != null)
             bitmapCache.clear();
 
+        // Dispose data favorites manager
         if(dataFavoritesManager != null)
             dataFavoritesManager.dispose();
 
-        if (bitmapFilter != null)
+        // Dispose bitmap filter
+        if(bitmapFilter != null)
             bitmapFilter.dispose();
 
-        if (tracker != null)
-        {
+        // Stop and dispose location tracker
+        if(tracker != null) {
             tracker.stop();
             tracker.dispose();
         }
+
+        if(debuggable)
+            Log.d("REST-O-GRAM", "Client disposed");
     }
 
     /* NON-AUTH SERVICES */

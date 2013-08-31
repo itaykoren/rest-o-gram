@@ -42,7 +42,8 @@ public abstract class AbstractRestogramCommand implements IRestogramCommand {
     @Override
     public boolean cancel() {
         if(state != State.CS_Executing &&
-           state != State.CS_Pending)
+           state != State.CS_Pending &&
+           state != State.CS_TimedOut)
             return false;
 
         state = State.CS_Canceling;
@@ -73,9 +74,6 @@ public abstract class AbstractRestogramCommand implements IRestogramCommand {
      * Notifies observers on canceled event
      */
     protected void notifyCanceled() {
-        if(state == State.CS_TimedOut)
-            return;
-
         state = State.CS_Canceled;
         stopTimer();
 
@@ -124,13 +122,20 @@ public abstract class AbstractRestogramCommand implements IRestogramCommand {
             return;
 
         timer = new Timer();
+
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 handler.post(new Runnable() {
                     public void run() {
-                        notifyTimeout();
+                        // Cancel time task
                         cancel();
+
+                        // Notify on timeout
+                        notifyTimeout();
+
+                        // Cancel command
+                        AbstractRestogramCommand.this.cancel();
                     }
                 });
             }
