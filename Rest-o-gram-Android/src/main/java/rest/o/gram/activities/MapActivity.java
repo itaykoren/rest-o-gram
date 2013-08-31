@@ -47,9 +47,13 @@ public class MapActivity extends RestogramActionBarActivity {
         if(Utils.restartIfNeeded(this))
             return;
 
-        // Initialize map
-        if(!initializeMap())
+        // Check google play services
+        isAvailable = Utils.isPlayServicesAvailable(this);
+        if(!isAvailable) {
+            Toast.makeText(this, "Error: failed to load map", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Google play services is unavailable", Toast.LENGTH_LONG).show();
             return;
+        }
 
         setContentView(R.layout.map);
     }
@@ -57,6 +61,10 @@ public class MapActivity extends RestogramActionBarActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        // Check google play services
+        if(!isAvailable)
+            return;
 
         if(Defs.Flow.WELCOME_SCREENS_ENABLED) {
             if(Utils.isShowWelcomeScreen(this)) {
@@ -66,20 +74,24 @@ public class MapActivity extends RestogramActionBarActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Check google play services
+        if(!isAvailable)
+            return;
+
+        // Initialize map if needed
+        if(!isMapReady())
+            initializeMap();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
 
         // Set is request pending flag to false
         isRequestPending = false;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Initialize map if needed
-        if(!isMapReady())
-            initializeMap();
     }
 
     @Override
@@ -177,12 +189,6 @@ public class MapActivity extends RestogramActionBarActivity {
      * Returns true if successful, false otherwise
      */
     private boolean initializeMap() {
-        // Check google play services
-        if(!Utils.isPlayServicesAvailable(this)) {
-            Toast.makeText(this, "Error: google play services", Toast.LENGTH_LONG).show();
-            return false;
-        }
-
         // Load map
         MapLoader loader = new MapLoader();
         loader.loadMap();
@@ -388,6 +394,7 @@ public class MapActivity extends RestogramActionBarActivity {
     private double latitude; // Latitude
     private double longitude; // Longitude
     private GoogleMap map; // Map object
+    private boolean isAvailable = false; // Is available flag
     private Map<String, String> venues = new HashMap<>(); // Venues map
     private Marker currentMarker; // Current marker
     private MarkerOptions currentMarkerOptions; // Current marker options
