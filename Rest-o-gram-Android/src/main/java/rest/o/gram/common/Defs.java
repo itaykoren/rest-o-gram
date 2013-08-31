@@ -67,8 +67,8 @@ public final class Defs {
      */
     public static class Commands {
         public static final int MAX_EXECUTING_COMMANDS = 10;
-        public static final long DEFAULT_SHORT_TIMEOUT = 7000; // 7 seconds
-        public static final long DEFAULT_LONG_TIMEOUT = 15000; // 15 seconds
+        public static final long DEFAULT_SHORT_TIMEOUT = 10000; // 10 seconds
+        public static final long DEFAULT_LONG_TIMEOUT = 30000; // 30 seconds
     }
 
     /**
