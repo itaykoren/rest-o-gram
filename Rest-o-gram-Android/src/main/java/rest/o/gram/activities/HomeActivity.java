@@ -146,6 +146,17 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
     }
 
     @Override
+    public void onCanceled() {
+        super.onCanceled();
+
+        if(tracker == null)
+            return;
+
+        // Retry - send get nearby request
+        RestogramClient.getInstance().getNearby(tracker.getLatitude(), tracker.getLongitude(), Defs.Location.DEFAULT_NEARBY_RADIUS, this);
+    }
+
+    @Override
     public void accept(IActivityVisitor visitor) {
         visitor.visit(this);
     }
