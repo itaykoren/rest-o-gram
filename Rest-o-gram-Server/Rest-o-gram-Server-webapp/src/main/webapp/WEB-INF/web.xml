@@ -5,6 +5,7 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
            version="2.5">
 
+    <!--Non-Auth-->
     <servlet>
         <description>Rest-o-Gram</description>
         <display-name>Rest-o-Gram</display-name>
@@ -17,6 +18,7 @@
         <url-pattern>/service</url-pattern>
     </servlet-mapping>
 
+    <!--Auth-->
     <servlet>
         <description>Rest-o-Gram-Auth</description>
         <display-name>Rest-o-Gram-Auth</display-name>
@@ -29,16 +31,29 @@
         <url-pattern>/auth-service</url-pattern>
     </servlet-mapping>
 
+    <!---->
     <servlet>
         <description>get instagram location</description>
-        <display-name>GET-INSTAGRAM-LOCATION</display-name>
+        <display-name>get instagram location</display-name>
         <servlet-name>GetInstagramLocationServlet</servlet-name>
-        <servlet-class>rest.o.gram.service.GetInstagramLocationServlet</servlet-class>
+        <servlet-class>rest.o.gram.service.InstagramServices.GetLocationServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>GetInstagramLocationServlet</servlet-name>
         <url-pattern>/get-location</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <description>get instagram recent media feed by location</description>
+        <display-name>get instagram recent media feed by location</display-name>
+        <servlet-name>GetRecentMediaByLocationServlet</servlet-name>
+        <servlet-class>rest.o.gram.service.InstagramServices.GetRecentMediaByLocationServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetRecentMediaByLocationServlet</servlet-name>
+        <url-pattern>/get-media-by-location</url-pattern>
     </servlet-mapping>
 
     <!--Login pages-->

@@ -1,5 +1,7 @@
 package rest.o.gram.credentials;
 
+import rest.o.gram.Defs;
+
 import java.util.Random;
 
 /**
@@ -21,7 +23,7 @@ public class RandomCredentialsFactory implements ICredentialsFactory {
     }
 
     private int getRandomIndex() {
-        return random.nextInt(CREDENTIALS_AMOUNT);
+        return random.nextInt(Defs.Credentials.CREDENTIALS_AMOUNT);
     }
 
     /**
@@ -42,6 +44,5 @@ public class RandomCredentialsFactory implements ICredentialsFactory {
              {"dd646f1d74714ddb96f15171e7c8a194","f2faf4ab9c6e4f019e7f8718d6363d6c"},
              {"047af1e563004a9f9597446a101b1e26","5eb7c5dd916049b99db2f8611ef56bf1"}};
 
-    private final int CREDENTIALS_AMOUNT = 4;
     private Random random = new Random();
 }

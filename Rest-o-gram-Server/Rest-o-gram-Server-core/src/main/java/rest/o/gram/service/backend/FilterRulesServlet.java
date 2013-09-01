@@ -2,7 +2,7 @@ package rest.o.gram.service.backend;
 
 import com.google.appengine.api.taskqueue.TaskHandle;
 import rest.o.gram.ApisAccessManager;
-import rest.o.gram.TasksManager.TasksManager;
+import rest.o.gram.tasks.TasksManager;
 import rest.o.gram.data.DataManager;
 import rest.o.gram.entities.RestogramPhoto;
 

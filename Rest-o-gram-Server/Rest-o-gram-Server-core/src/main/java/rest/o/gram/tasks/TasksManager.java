@@ -1,13 +1,10 @@
-package rest.o.gram.TasksManager;
+package rest.o.gram.tasks;
 
 import com.google.appengine.api.taskqueue.*;
-import com.google.appengine.repackaged.com.google.common.io.BaseEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.jinstagram.entity.users.feed.MediaFeedData;
-import rest.o.gram.data.DataManager;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
