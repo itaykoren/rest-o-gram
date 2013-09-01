@@ -86,7 +86,7 @@ public final class Defs {
         }
 
         public static final BitmapFilterType BITMAP_FILTER_TYPE = BitmapFilterType.OpenCVFaceBitmapFilter;
-        public static final int MIN_CPU_CORES_FOR_FILTERING = 1;
+        public static final int MIN_CPU_CORES_FOR_FILTERING = 2;
 
         /**
          * OpenCV face detector constants
