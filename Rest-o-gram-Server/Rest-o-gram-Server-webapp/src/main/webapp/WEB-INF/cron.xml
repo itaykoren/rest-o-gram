@@ -3,7 +3,7 @@
     <cron>
         <url>/rooster</url>
         <description>Wakes-up the servlets</description>
-        <schedule>every 30 minutes</schedule>
+        <schedule>every 20 minutes</schedule>
         <target>rooster</target>
     </cron>
 </cronentries>

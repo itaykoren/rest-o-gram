@@ -14,6 +14,7 @@ import rest.o.gram.credentials.RandomCredentialsFactory;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.service.InstagramServices.IInstagramRequestFactory;
 import rest.o.gram.service.InstagramServices.InstagramCentralRequestFactory;
+import rest.o.gram.service.InstagramServices.InstagramDistributedRequestFactory;
 import rest.o.gram.utils.InstagramUtils;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,34 +28,40 @@ import java.util.logging.Logger;
  * User: Or
  * Date: 6/16/13
  */
-public final class ApisAccessManager {
+public final class InstagramAccessManager {
 
     public static RestogramPhoto getPhoto(final String id, final String originVenueId)  {
         String mediaId;
-        try {
+        try
+        {
             mediaId = InstagramUtils.extractMediaId(id);
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             log.severe("cannot extract media id from media feed string id");
             return null;
         }
 
         MediaInfoFeed mediaInfo = null;
-        try {
+        try
+        {
             Credentials credentials = credentialsFactory.createInstagramCredentials();
             log.info("instagram credentials type = " + credentials.getType());
             Instagram instagram = new Instagram(credentials.getClientId());
             mediaInfo = instagram.getMediaInfo(mediaId);
         }
-        catch (InstagramException e) {
+        catch (InstagramException e)
+        {
             log.warning("first get photo has failed, retry");
-            try {
+            try
+            {
                 Credentials credentials = credentialsFactory.createInstagramCredentials();
                 log.info("instagram credentials type = " + credentials.getType());
                 Instagram instagram = new Instagram(credentials.getClientId());
                 mediaInfo = instagram.getMediaInfo(mediaId);
             }
-            catch (InstagramException e2) {
+            catch (InstagramException e2)
+            {
                 log.severe("second get photo has failed");
                 return null;
             }
@@ -66,14 +73,11 @@ public final class ApisAccessManager {
     public static <T> T parallelInstagramRequest(final Defs.Instagram.RequestType requestType,
                                                  final PrepareRequest prepareRequest,
                                                  final java.lang.Class<T> resultType) {
-        final URLFetchService fetcher = URLFetchServiceFactory.getURLFetchService();
-        final HTTPRequest req =
-                requestFactory.createInstagramRequest(requestType);
-        req.setPayload(prepareRequest.getPayload());
-        log.info("instagram first request");
-        final Future<HTTPResponse> firstRequest = fetcher.fetchAsync(req);
-        log.info("instagram second request");
-        final Future<HTTPResponse> secondRequest = fetcher.fetchAsync(req);
+        final Future<HTTPResponse> firstRequest = sendRequest(requestType, prepareRequest);
+        log.info("instagram first request sent");
+
+        final Future<HTTPResponse> secondRequest = sendRequest(requestType, prepareRequest);
+        log.info("instagram second request sent");
 
         while (!firstRequest.isDone() && !secondRequest.isDone()) { }
         log.info("one of the requests is done!");
@@ -127,7 +131,15 @@ public final class ApisAccessManager {
         public abstract byte[] getPayload();
     }
 
-    private static final Logger log = Logger.getLogger(ApisAccessManager.class.getName());
+    private static Future<HTTPResponse> sendRequest(final Defs.Instagram.RequestType requestType,
+                                                    final PrepareRequest prepareRequest) {
+        final HTTPRequest req = requestFactory.createInstagramRequest(requestType);
+        req.setPayload(prepareRequest.getPayload());
+        return fetchService.fetchAsync(req);
+    }
+
+    private static final Logger log = Logger.getLogger(InstagramAccessManager.class.getName());
     private static final ICredentialsFactory credentialsFactory = new RandomCredentialsFactory();
-    private static final IInstagramRequestFactory requestFactory = new InstagramCentralRequestFactory();
+    private static final IInstagramRequestFactory requestFactory = new InstagramDistributedRequestFactory();
+    private static final URLFetchService fetchService = URLFetchServiceFactory.getURLFetchService();
 }

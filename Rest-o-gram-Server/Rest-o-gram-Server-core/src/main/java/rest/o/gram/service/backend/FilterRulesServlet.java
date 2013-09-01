@@ -1,7 +1,7 @@
 package rest.o.gram.service.backend;
 
 import com.google.appengine.api.taskqueue.TaskHandle;
-import rest.o.gram.ApisAccessManager;
+import rest.o.gram.InstagramAccessManager;
 import rest.o.gram.tasks.TasksManager;
 import rest.o.gram.data.DataManager;
 import rest.o.gram.entities.RestogramPhoto;
@@ -81,7 +81,7 @@ public class FilterRulesServlet extends HttpServlet {
                     currPhoto = DataManager.getPendingPhoto(currPhotoId, venueId);
                 else // get from instagram
                 {
-                    currPhoto = ApisAccessManager.getPhoto(currPhotoId, venueId);
+                    currPhoto = InstagramAccessManager.getPhoto(currPhotoId, venueId);
                     if (currPhoto == null)
                         continue; // TODO: consider allowing more retries...
                 }

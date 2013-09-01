@@ -42,9 +42,9 @@ public final class Defs {
      * Instagram constants
      */
     public static class Instagram {
-        public static final int REQUESTS_TIMEOUT = 20;
+        public static final int REQUESTS_TIMEOUT = 8;
         public static final TimeUnit REQUESTS_TIMEOUT_UNIT = TimeUnit.SECONDS;
-        public static final int ACCESS_SERVICES_AMOUNT = 2;
+        public static final int ACCESS_SERVICES_AMOUNT = 5;
 
         public static enum RequestType
         {

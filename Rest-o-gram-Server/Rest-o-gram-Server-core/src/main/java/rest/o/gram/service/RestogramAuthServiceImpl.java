@@ -2,7 +2,7 @@ package rest.o.gram.service;
 
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
-import rest.o.gram.ApisAccessManager;
+import rest.o.gram.InstagramAccessManager;
 import rest.o.gram.DataStoreConverters;
 import rest.o.gram.data.DataManager;
 import rest.o.gram.entities.Kinds;
@@ -49,7 +49,7 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
         else //  get from instagram
         {
             log.info("YUMMIES: getting from insta");
-            final RestogramPhoto photo = ApisAccessManager.getPhoto(photoId, originVenueId);
+            final RestogramPhoto photo = InstagramAccessManager.getPhoto(photoId, originVenueId);
             if (photo  == null)
                 return false;
             photo.setYummies(1);

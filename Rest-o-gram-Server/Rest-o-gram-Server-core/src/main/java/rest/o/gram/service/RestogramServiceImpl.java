@@ -20,7 +20,7 @@ import org.jinstagram.entity.locations.LocationSearchFeed;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.exceptions.InstagramException;
-import rest.o.gram.ApisAccessManager;
+import rest.o.gram.InstagramAccessManager;
 import rest.o.gram.ApisConverters;
 import rest.o.gram.DataStoreConverters;
 import rest.o.gram.Defs;
@@ -427,16 +427,16 @@ public class RestogramServiceImpl implements RestogramService {
 
     private long getInstagramLocationId(final String venueID) {
         log.info(String.format("instagram request for getting location %s started", venueID));
-        final ApisAccessManager.PrepareRequest prepareRequest =
-                new ApisAccessManager.PrepareRequest() {
+        final InstagramAccessManager.PrepareRequest prepareRequest =
+                new InstagramAccessManager.PrepareRequest() {
             @Override
             public byte[] getPayload() {
                 return venueID.getBytes();
             }
         };
         final LocationSearchFeed locationSearchFeed =
-                ApisAccessManager.parallelInstagramRequest(Defs.Instagram.RequestType.GetLocation,
-                                                           prepareRequest, LocationSearchFeed.class);
+                InstagramAccessManager.parallelInstagramRequest(Defs.Instagram.RequestType.GetLocation,
+                        prepareRequest, LocationSearchFeed.class);
         if (InstagramUtils.isNullOrEmpty(locationSearchFeed))
         {
             log.severe(String.format("venue: %s not found", venueID ));
@@ -574,15 +574,15 @@ public class RestogramServiceImpl implements RestogramService {
                 return null;
             }
             log.info(String.format("instagram request for getting media feed by location %d started", locationID));
-            final ApisAccessManager.PrepareRequest prepareRequest =
-                    new ApisAccessManager.PrepareRequest() {
+            final InstagramAccessManager.PrepareRequest prepareRequest =
+                    new InstagramAccessManager.PrepareRequest() {
                         @Override
                         public byte[] getPayload() {
                             return String.valueOf(locationID).getBytes();
                         }
                     };
             final MediaFeed mediaFeed =
-                    ApisAccessManager.parallelInstagramRequest(Defs.Instagram.RequestType.GetMediaByLocation,
+                    InstagramAccessManager.parallelInstagramRequest(Defs.Instagram.RequestType.GetMediaByLocation,
                             prepareRequest, MediaFeed.class);
             if (InstagramUtils.isNullOrEmpty(mediaFeed))
             {
