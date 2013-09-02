@@ -31,30 +31,30 @@
         <url-pattern>/auth-service</url-pattern>
     </servlet-mapping>
 
-    <!---->
-    <servlet>
-        <description>get instagram location</description>
-        <display-name>get instagram location</display-name>
-        <servlet-name>GetInstagramLocationServlet</servlet-name>
-        <servlet-class>rest.o.gram.service.InstagramServices.GetLocationServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>GetInstagramLocationServlet</servlet-name>
-        <url-pattern>/get-location</url-pattern>
-    </servlet-mapping>
+    <!--Helper (instagram access) Services-->
+    <!--<servlet>-->
+        <!--<description>get instagram location</description>-->
+        <!--<display-name>get instagram location</display-name>-->
+        <!--<servlet-name>GetInstagramLocationServlet</servlet-name>-->
+        <!--<servlet-class>rest.o.gram.service.InstagramServices.GetLocationServlet</servlet-class>-->
+        <!--<load-on-startup>1</load-on-startup>-->
+    <!--</servlet>-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>GetInstagramLocationServlet</servlet-name>-->
+        <!--<url-pattern>/get-location</url-pattern>-->
+    <!--</servlet-mapping>-->
 
-    <servlet>
-        <description>get instagram recent media feed by location</description>
-        <display-name>get instagram recent media feed by location</display-name>
-        <servlet-name>GetRecentMediaByLocationServlet</servlet-name>
-        <servlet-class>rest.o.gram.service.InstagramServices.GetRecentMediaByLocationServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>GetRecentMediaByLocationServlet</servlet-name>
-        <url-pattern>/get-media-by-location</url-pattern>
-    </servlet-mapping>
+    <!--<servlet>-->
+        <!--<description>get instagram recent media feed by location</description>-->
+        <!--<display-name>get instagram recent media feed by location</display-name>-->
+        <!--<servlet-name>GetRecentMediaByLocationServlet</servlet-name>-->
+        <!--<servlet-class>rest.o.gram.service.InstagramServices.GetRecentMediaByLocationServlet</servlet-class>-->
+        <!--<load-on-startup>1</load-on-startup>-->
+    <!--</servlet>-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>GetRecentMediaByLocationServlet</servlet-name>-->
+        <!--<url-pattern>/get-media-by-location</url-pattern>-->
+    <!--</servlet-mapping>-->
 
     <!--Login pages-->
     <servlet>
@@ -125,10 +125,6 @@
         <servlet-name>rooster</servlet-name>
         <servlet-class>rest.o.gram.service.backend.RoosterServlet</servlet-class>
     </servlet>
-    <!--<servlet-mapping>-->
-    <!--<servlet-name>rooster</servlet-name>-->
-    <!--<url-pattern>/_ah/start</url-pattern>-->
-    <!--</servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>rooster</servlet-name>
         <url-pattern>/rooster</url-pattern>

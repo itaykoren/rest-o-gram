@@ -135,6 +135,7 @@ public final class InstagramAccessManager {
                                                     final PrepareRequest prepareRequest) {
         final HTTPRequest req = requestFactory.createInstagramRequest(requestType);
         req.setPayload(prepareRequest.getPayload());
+        log.info(String.format("sending request to: %s", req.getURL().toString()));
         return fetchService.fetchAsync(req);
     }
 
