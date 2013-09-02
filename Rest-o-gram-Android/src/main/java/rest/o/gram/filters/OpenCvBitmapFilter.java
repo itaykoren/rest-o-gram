@@ -1,6 +1,7 @@
 package rest.o.gram.filters;
 
 import android.graphics.Bitmap;
+import rest.o.gram.common.Defs;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,6 +10,11 @@ import android.graphics.Bitmap;
  */
 public class OpenCvBitmapFilter implements IBitmapFilter {
     public OpenCvBitmapFilter() {
+    }
+
+    @Override
+    public Defs.Filtering.BitmapQuality requiredQuality() {
+        return Defs.Filtering.BitmapQuality.HighResolution;
     }
 
     @Override

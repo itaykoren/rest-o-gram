@@ -1,11 +1,10 @@
 package rest.o.gram.filters;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.media.FaceDetector;
 import android.util.Log;
 import rest.o.gram.client.RestogramClient;
+import rest.o.gram.common.Defs;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,6 +19,11 @@ public class AndroidFaceBitmapFilter implements IBitmapFilter {
     public AndroidFaceBitmapFilter(int maxFaces) {
         // Set max faces
         this.maxFaces = maxFaces;
+    }
+
+    @Override
+    public Defs.Filtering.BitmapQuality requiredQuality() {
+        return Defs.Filtering.BitmapQuality.HighResolution;
     }
 
     @Override

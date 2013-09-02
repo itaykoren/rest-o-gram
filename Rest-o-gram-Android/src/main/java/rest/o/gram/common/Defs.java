@@ -76,7 +76,15 @@ public final class Defs {
      */
     public static class Filtering {
         /**
-         * Bitmap flter type enumeration
+         * Bitmap quality enumeration
+         */
+        public enum BitmapQuality {
+            HighResolution,
+            LowResolution
+        }
+
+        /**
+         * Bitmap filter type enumeration
          */
         public enum BitmapFilterType {
             DoNothingBitmapFilter,

@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import rest.o.gram.cache.IBitmapCache;
 import rest.o.gram.client.RestogramClient;
+import rest.o.gram.common.Defs;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.view.IPhotoViewAdapter;
@@ -81,19 +82,30 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
 
             if(bitmap == null) {
                 if(filter) {
-                    // Download full scale bitmap
-                    bitmap = decodeBitmap(urlString);
-
                     // Get bitmap filter
                     final IBitmapFilter bitmapFilter = RestogramClient.getInstance().getBitmapFilter();
 
-                    // Apply filter to bitmap
-                    if(!bitmapFilter.accept(bitmap)) {
-                        return null;
-                    }
+                    if(bitmapFilter.requiredQuality() == Defs.Filtering.BitmapQuality.HighResolution) {
+                        // Download full scale bitmap
+                        bitmap = decodeBitmap(urlString);
 
-                    // Download scaled bitmap
-                    bitmap = decodeBitmap(urlString, bitmap, reqWidth, reqHeight);
+                        // Apply filter to bitmap
+                        if(!bitmapFilter.accept(bitmap)) {
+                            return null;
+                        }
+
+                        // Download scaled bitmap using existing
+                        bitmap = decodeBitmap(urlString, bitmap, reqWidth, reqHeight);
+                    }
+                    else {
+                        // Download scaled bitmap
+                        bitmap = decodeBitmap(urlString, reqWidth, reqHeight);
+
+                        // Apply filter to bitmap
+                        if(!bitmapFilter.accept(bitmap)) {
+                            return null;
+                        }
+                    }
                 }
                 else {
                     // Download scaled bitmap
