@@ -513,9 +513,13 @@ public class RestogramServiceImpl implements RestogramService {
             TasksManager.enqueueFilterTask(originVenueId, mediaFeedDatas);
 
         // setting as pending photos
+        final Map<String,RestogramPhoto> idToPhotoMapping  =
+                new HashMap<>(data.size());
         for (final MediaFeedData currMediaFeedData : data)
-            DataManager.addPendingPhoto(ApisConverters.convertToRestogramPhoto(currMediaFeedData,
-                                        originVenueId));
+            idToPhotoMapping.put(currMediaFeedData.getId(),
+                                 ApisConverters.convertToRestogramPhoto(currMediaFeedData,
+                                                                        originVenueId));
+        DataManager.addPendingPhotos(idToPhotoMapping);
     }
 
     private List<MediaFeedData> removeCachedPhotos(List<MediaFeedData> data) {

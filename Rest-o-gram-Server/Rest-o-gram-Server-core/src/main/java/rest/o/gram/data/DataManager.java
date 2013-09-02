@@ -89,7 +89,6 @@ public final class DataManager {
             result = DatastoreUtils.queryEntityPublic(query);
         } catch (LeanException e)
         {
-            e.printStackTrace();
             log.severe("fetching photos from cache has failed. venue: " + venueId);
         }
 
@@ -117,7 +116,6 @@ public final class DataManager {
         try {
             DatastoreUtils.putPrivateEntity(Kinds.PHOTO_REFERENCE, photoId, props);
         } catch (LeanException e) {
-            e.printStackTrace();
             log.severe("cannot add a photo to favorites");
             return false;
         }
@@ -137,7 +135,6 @@ public final class DataManager {
                     photo = DatastoreUtils.getPublicEntity(Kinds.PHOTO, photoId);
                 } catch (LeanException e)
                 {
-                    e.printStackTrace();
                     log.warning("cannot get photo from DS");
                     transaction.rollback();
                     return false;
@@ -153,7 +150,6 @@ public final class DataManager {
                     DatastoreUtils.putPublicEntity(photo);
                 } catch (Exception e)
                 {
-                    e.printStackTrace();
                     log.severe("cannot put photo in DS");
                     transaction.rollback();
                     return false;
@@ -188,7 +184,6 @@ public final class DataManager {
             result = DatastoreUtils.queryEntityPrivate(query);
         } catch (LeanException e)
         {
-            e.printStackTrace();
             log.severe("could not query for fav photos");
             return null;
         }
@@ -228,7 +223,6 @@ public final class DataManager {
     }
     catch (LeanException e) {
         log.severe("caching the photo in DS has failed");
-        e.printStackTrace();
         return false;
     }
     return true;
@@ -245,7 +239,6 @@ public final class DataManager {
             result = DatastoreUtils.queryEntityPublic(query);
         } catch (LeanException e)
         {
-            e.printStackTrace();
             log.severe("cannot query for entity existence");
         }
 
@@ -307,24 +300,15 @@ public final class DataManager {
         return getMemcacheService().get(photoId) !=  null;
     }
 
-    public static RestogramPhoto getPendingPhoto(final String photoId, String originVenueId) {
+    public static RestogramPhoto getPendingPhoto(final String photoId) {
         return (RestogramPhoto)getMemcacheService().get(photoId);
     }
 
-    public static void addPendingPhoto(final RestogramPhoto pendingPhoto)  {
-        // TODO: consider setting expiration...
-        getMemcacheService().put(pendingPhoto.getInstagram_id(), pendingPhoto);
+    public static void addPendingPhotos(final Map<String,RestogramPhoto> pendingPhotos) {
+        getMemcacheService().putAll(pendingPhotos);
     }
 
-//    public static void addPendingPhotos(final Map<String,MediaFeedData> pendingPhotos) {
-//        getMemcacheService().putAll(pendingPhotos);
-//    }
-
-    public static void removePendingPhoto(final String photoId) {
-        getMemcacheService().delete(photoId);
-    }
-
-    public static void removePendingPhoto(final Collection<String> photoIds) {
+    public static void removePendingPhotos(final Collection<String> photoIds) {
         getMemcacheService().deleteAll(photoIds);
     }
 

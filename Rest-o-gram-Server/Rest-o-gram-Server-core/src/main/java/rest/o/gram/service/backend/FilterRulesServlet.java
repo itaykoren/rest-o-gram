@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +81,7 @@ public class FilterRulesServlet extends HttpServlet {
                     currPhoto.setInstagram_id(currPhotoId);
                 }
                 else if (DataManager.isPhotoPending(currPhotoId)) // restore from pending
-                    currPhoto = DataManager.getPendingPhoto(currPhotoId, venueId);
+                    currPhoto = DataManager.getPendingPhoto(currPhotoId);
                 else // get from instagram
                 {
                     currPhoto = InstagramAccessManager.getPhoto(currPhotoId, venueId);
@@ -95,8 +96,11 @@ public class FilterRulesServlet extends HttpServlet {
             DataManager.savePhotoToRuleMapping(photoToRuleMapping);
 
             //  photo is no longer pending
+            final List<String> photoIdsToRemove = new ArrayList<>(idRulePairs.length/2);
             for (int i = 0; i < idRulePairs.length - 1; i+=2)
-                DataManager.removePendingPhoto(idRulePairs[i]);
+                photoIdsToRemove.add(idRulePairs[i]);
+
+            DataManager.removePendingPhotos(photoIdsToRemove);
 
             // done - removes from queue
             TasksManager.dismissFilterResult(currTask.getName());

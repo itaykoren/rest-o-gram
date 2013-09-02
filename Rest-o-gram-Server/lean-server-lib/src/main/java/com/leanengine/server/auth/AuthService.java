@@ -56,7 +56,6 @@ public class AuthService {
 
     private static LeanAccount getAccountByToken(String authToken) {
 
-        //todo Use MemCache to cache this
         AuthToken savedToken = AccountUtils.getAuthToken(authToken);
         if (savedToken == null) return null;
         LeanAccount user = AccountUtils.getAccount(savedToken.accountID);

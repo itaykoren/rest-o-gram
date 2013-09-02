@@ -33,7 +33,7 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
         else if (DataManager.isPhotoPending(photoId)) //  pending photo
         {
             log.info("YUMMIES: photo is pending");
-            final RestogramPhoto pendingPhoto = DataManager.getPendingPhoto(photoId, originVenueId);
+            final RestogramPhoto pendingPhoto = DataManager.getPendingPhoto(photoId);
             pendingPhoto.setYummies(1); // TODO: handle consistency if we care enough..
             try
             {

@@ -64,7 +64,7 @@ public final class Defs {
     }
 
     public static class FilterRulesQueue {
-        public static final int LEASE_COUNT = 6;
+        public static final int LEASE_COUNT = 1;
         public static final int LEASE_PERIOD = 30; //secs
     }
 }
