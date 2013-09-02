@@ -6,4 +6,12 @@
             <dynamic>true</dynamic>
         </options>
     </backend>
+
+    <backend name="filter-rules">
+        <class>B2</class>
+        <options>
+            <dynamic>true</dynamic>
+            <public>true</public>
+        </options>
+    </backend>
 </backends>

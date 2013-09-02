@@ -105,19 +105,14 @@
     <!--Backends-->
     <servlet>
         <description>stores filter rules</description>
-        <display-name>filter-rules-update</display-name>
-        <servlet-name>filter-rules-update</servlet-name>
+        <display-name>filter-rules</display-name>
+        <servlet-name>filter-rules</servlet-name>
         <servlet-class>rest.o.gram.service.backend.FilterRulesServlet</servlet-class>
     </servlet>
-    <!--<servlet-mapping>-->
-        <!--<servlet-name>filter-rules-update</servlet-name>-->
-        <!--<url-pattern>/_ah/start</url-pattern>-->
-    <!--</servlet-mapping>-->
     <servlet-mapping>
-        <servlet-name>filter-rules-update</servlet-name>
-        <url-pattern>/filter-rules-update</url-pattern>
+        <servlet-name>filter-rules</servlet-name>
+        <url-pattern>/update</url-pattern>
     </servlet-mapping>
-
 
     <servlet>
         <description>Wakes-up the servlets</description>

@@ -1,6 +1,7 @@
 package rest.o.gram.service.backend;
 
 import com.google.appengine.api.taskqueue.TaskHandle;
+import rest.o.gram.Defs;
 import rest.o.gram.InstagramAccessManager;
 import rest.o.gram.tasks.TasksManager;
 import rest.o.gram.data.DataManager;
@@ -38,7 +39,6 @@ public class FilterRulesServlet extends HttpServlet {
     private void handleRequest(final HttpServletRequest req, final HttpServletResponse resp) {
         try
         {
-            //TODO: make it a backend servlet....
             processFilterResults();
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e)
@@ -57,7 +57,9 @@ public class FilterRulesServlet extends HttpServlet {
     }
 
     private static void processFilterResults() {
-        List<TaskHandle> tasks = TasksManager.leaseFilterResults(6, 30);
+        final List<TaskHandle> tasks =
+                TasksManager.leaseFilterResults(Defs.FilterRulesQueue.LEASE_COUNT,
+                                                Defs.FilterRulesQueue.LEASE_PERIOD);
         for (final TaskHandle currTask :  tasks)
         {
             // extract rules results
