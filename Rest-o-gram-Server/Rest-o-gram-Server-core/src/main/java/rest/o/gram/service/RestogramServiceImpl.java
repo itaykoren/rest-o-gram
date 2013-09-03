@@ -1,6 +1,5 @@
 package rest.o.gram.service;
 
-import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.auth.AuthService;
@@ -18,12 +17,10 @@ import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.exceptions.InstagramException;
 import rest.o.gram.InstagramAccessManager;
 import rest.o.gram.ApisConverters;
-import rest.o.gram.DataStoreConverters;
 import rest.o.gram.Defs;
 import rest.o.gram.tasks.TasksManager;
 import rest.o.gram.credentials.*;
 import rest.o.gram.data.DataManager;
-import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilter;
@@ -339,8 +336,8 @@ public class RestogramServiceImpl implements RestogramService {
             }
         };
         final LocationSearchFeed locationSearchFeed =
-                InstagramAccessManager.parallelInstagramRequest(Defs.Instagram.RequestType.GetLocation,
-                        prepareRequest, LocationSearchFeed.class);
+                InstagramAccessManager.parallelFrontendInstagramRequest(Defs.Instagram.RequestType.GetLocation,
+                                                                        prepareRequest, LocationSearchFeed.class);
         if (InstagramUtils.isNullOrEmpty(locationSearchFeed))
         {
             log.severe(String.format("venue: %s not found", venueID ));
@@ -490,8 +487,8 @@ public class RestogramServiceImpl implements RestogramService {
                         }
                     };
             final MediaFeed mediaFeed =
-                    InstagramAccessManager.parallelInstagramRequest(Defs.Instagram.RequestType.GetMediaByLocation,
-                            prepareRequest, MediaFeed.class);
+                    InstagramAccessManager.parallelFrontendInstagramRequest(Defs.Instagram.RequestType.GetMediaByLocation,
+                                                                            prepareRequest, MediaFeed.class);
             if (InstagramUtils.isNullOrEmpty(mediaFeed))
             {
                 log.warning(String.format("media feed for location %d not found", locationID));

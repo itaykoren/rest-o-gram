@@ -5,17 +5,8 @@ import com.google.appengine.api.urlfetch.HTTPResponse;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import com.google.gson.Gson;
-import org.jinstagram.Instagram;
-import org.jinstagram.entity.media.MediaInfoFeed;
-import org.jinstagram.exceptions.InstagramException;
-import rest.o.gram.credentials.Credentials;
-import rest.o.gram.credentials.ICredentialsFactory;
-import rest.o.gram.credentials.RandomCredentialsFactory;
-import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.service.InstagramServices.IInstagramRequestFactory;
-import rest.o.gram.service.InstagramServices.InstagramCentralRequestFactory;
 import rest.o.gram.service.InstagramServices.InstagramDistributedRequestFactory;
-import rest.o.gram.utils.InstagramUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.ExecutionException;
@@ -30,53 +21,32 @@ import java.util.logging.Logger;
  */
 public final class InstagramAccessManager {
 
-    public static RestogramPhoto getPhoto(final String id, final String originVenueId)  {
-        String mediaId;
-        try
-        {
-            mediaId = InstagramUtils.extractMediaId(id);
-        }
-        catch (Exception e)
-        {
-            log.severe("cannot extract media id from media feed string id");
-            return null;
-        }
-
-        MediaInfoFeed mediaInfo = null;
-        try
-        {
-            Credentials credentials = credentialsFactory.createInstagramCredentials();
-            log.info("instagram credentials type = " + credentials.getType());
-            Instagram instagram = new Instagram(credentials.getClientId());
-            mediaInfo = instagram.getMediaInfo(mediaId);
-        }
-        catch (InstagramException e)
-        {
-            log.warning("first get photo has failed, retry");
-            try
-            {
-                Credentials credentials = credentialsFactory.createInstagramCredentials();
-                log.info("instagram credentials type = " + credentials.getType());
-                Instagram instagram = new Instagram(credentials.getClientId());
-                mediaInfo = instagram.getMediaInfo(mediaId);
-            }
-            catch (InstagramException e2)
-            {
-                log.severe("second get photo has failed");
-                return null;
-            }
-        }
-
-        return ApisConverters.convertToRestogramPhoto(mediaInfo.getData(), originVenueId);
+    public static <T> T parallelFrontendInstagramRequest(final Defs.Instagram.RequestType requestType,
+                                                  final PrepareRequest prepareRequest,
+                                                  final java.lang.Class<T> resultType) {
+        return parallelInstagramRequest(requestType, prepareRequest, resultType, true);
     }
 
-    public static <T> T parallelInstagramRequest(final Defs.Instagram.RequestType requestType,
+    public static <T> T parallelBackendInstagramRequest(final Defs.Instagram.RequestType requestType,
+                                                         final PrepareRequest prepareRequest,
+                                                         final java.lang.Class<T> resultType) {
+        return parallelInstagramRequest(requestType, prepareRequest, resultType, false);
+    }
+
+    private static <T> T parallelInstagramRequest(final Defs.Instagram.RequestType requestType,
                                                  final PrepareRequest prepareRequest,
-                                                 final java.lang.Class<T> resultType) {
-        final Future<HTTPResponse> firstRequest = sendRequest(requestType, prepareRequest);
+                                                 final java.lang.Class<T> resultType,
+                                                 boolean isFrontend) {
+        IInstagramRequestFactory requestFactory;
+        if (isFrontend)
+            requestFactory = frontendRequestFactory;
+        else
+            requestFactory = backendRequestFactory;
+
+        final Future<HTTPResponse> firstRequest = sendRequest(requestType, prepareRequest, requestFactory);
         log.info("instagram first request sent");
 
-        final Future<HTTPResponse> secondRequest = sendRequest(requestType, prepareRequest);
+        final Future<HTTPResponse> secondRequest = sendRequest(requestType, prepareRequest, requestFactory);
         log.info("instagram second request sent");
 
         while (!firstRequest.isDone() && !secondRequest.isDone()) { }
@@ -132,7 +102,8 @@ public final class InstagramAccessManager {
     }
 
     private static Future<HTTPResponse> sendRequest(final Defs.Instagram.RequestType requestType,
-                                                    final PrepareRequest prepareRequest) {
+                                                    final PrepareRequest prepareRequest,
+                                                    final IInstagramRequestFactory requestFactory) {
         final HTTPRequest req = requestFactory.createInstagramRequest(requestType);
         req.setPayload(prepareRequest.getPayload());
         log.info(String.format("sending request to: %s", req.getURL().toString()));
@@ -140,7 +111,9 @@ public final class InstagramAccessManager {
     }
 
     private static final Logger log = Logger.getLogger(InstagramAccessManager.class.getName());
-    private static final ICredentialsFactory credentialsFactory = new RandomCredentialsFactory();
-    private static final IInstagramRequestFactory requestFactory = new InstagramDistributedRequestFactory();
+    private static final IInstagramRequestFactory frontendRequestFactory =
+            new InstagramDistributedRequestFactory(Defs.Instagram.FRONTEND_ACCESS_SERVICES_AMOUNT, 1);
+    private static final IInstagramRequestFactory backendRequestFactory =
+            new InstagramDistributedRequestFactory(Defs.Instagram.BACKEND_ACCESS_SERVICES_AMOUNT, Defs.Instagram.FRONTEND_ACCESS_SERVICES_AMOUNT + 1);
     private static final URLFetchService fetchService = URLFetchServiceFactory.getURLFetchService();
 }

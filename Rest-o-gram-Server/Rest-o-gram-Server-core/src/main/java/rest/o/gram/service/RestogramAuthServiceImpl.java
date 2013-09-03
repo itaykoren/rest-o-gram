@@ -2,6 +2,9 @@ package rest.o.gram.service;
 
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
+import org.jinstagram.entity.media.MediaInfoFeed;
+import rest.o.gram.ApisConverters;
+import rest.o.gram.Defs;
 import rest.o.gram.InstagramAccessManager;
 import rest.o.gram.DataStoreConverters;
 import rest.o.gram.data.DataManager;
@@ -18,7 +21,7 @@ import java.util.logging.Logger;
 public class RestogramAuthServiceImpl implements RestogramAuthService {
 
     @Override
-    public boolean addPhotoToFavorites(String photoId, String originVenueId) {
+    public boolean addPhotoToFavorites(final String photoId, final String originVenueId) {
         if (!DataManager.updatePhotoReference(photoId, true))
         {
             log.severe("cannot update photo reference");
@@ -48,10 +51,22 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
         }
         else //  get from instagram
         {
-            log.info("YUMMIES: getting from insta");
-            final RestogramPhoto photo = InstagramAccessManager.getPhoto(photoId, originVenueId);
-            if (photo  == null)
+            log.info("YUMMIES: getting from instagram");
+            final InstagramAccessManager.PrepareRequest prepareRequest =
+                    new InstagramAccessManager.PrepareRequest() {
+                        @Override
+                        public byte[] getPayload() {
+                            return photoId.getBytes();
+                        }
+                    };
+            final MediaInfoFeed mediaInfoFeed =
+                    InstagramAccessManager.parallelFrontendInstagramRequest(Defs.Instagram.RequestType.GetPhoto,
+                                                                            prepareRequest,
+                                                                            MediaInfoFeed.class);
+            if (mediaInfoFeed  == null)
                 return false;
+
+            final RestogramPhoto photo = ApisConverters.convertToRestogramPhoto(mediaInfoFeed.getData(), originVenueId);
             photo.setYummies(1);
             return DataManager.cachePhoto(photo);
         }

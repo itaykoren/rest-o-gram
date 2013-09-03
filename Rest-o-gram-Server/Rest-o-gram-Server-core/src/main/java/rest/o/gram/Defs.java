@@ -52,12 +52,14 @@ public final class Defs {
     public static class Instagram {
         public static final int REQUESTS_TIMEOUT = 8;
         public static final TimeUnit REQUESTS_TIMEOUT_UNIT = TimeUnit.SECONDS;
-        public static final int ACCESS_SERVICES_AMOUNT = 7;
+        public static final int FRONTEND_ACCESS_SERVICES_AMOUNT = 7;
+        public static final int BACKEND_ACCESS_SERVICES_AMOUNT = 1;
 
         public static enum RequestType
         {
             GetLocation("get-location"),
-            GetMediaByLocation("get-media-by-location");
+            GetMediaByLocation("get-media-by-location"),
+            GetPhoto("get-photo");
 
             RequestType(String type) {
                 this.type = type;
@@ -76,7 +78,7 @@ public final class Defs {
      */
     public static class FilterRulesQueue {
         public static final int LEASE_COUNT = 1;
-        public static final int LEASE_PERIOD = 30; //secs
+        public static final int LEASE_PERIOD = 120; //secs
     }
 }
 

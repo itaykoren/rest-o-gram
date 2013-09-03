@@ -1,6 +1,8 @@
 package rest.o.gram.service.backend;
 
 import com.google.appengine.api.taskqueue.TaskHandle;
+import org.jinstagram.entity.media.MediaInfoFeed;
+import rest.o.gram.ApisConverters;
 import rest.o.gram.Defs;
 import rest.o.gram.InstagramAccessManager;
 import rest.o.gram.tasks.TasksManager;
@@ -84,9 +86,24 @@ public class FilterRulesServlet extends HttpServlet {
                     currPhoto = DataManager.getPendingPhoto(currPhotoId);
                 else // get from instagram
                 {
-                    currPhoto = InstagramAccessManager.getPhoto(currPhotoId, venueId);
-                    if (currPhoto == null)
-                        continue; // TODO: consider allowing more retries...
+                    //currPhoto = InstagramAccessManager.getPhoto(currPhotoId, venueId);
+                    final InstagramAccessManager.PrepareRequest prepareRequest =
+                            new InstagramAccessManager.PrepareRequest() {
+                                @Override
+                                public byte[] getPayload() {
+                                    return currPhotoId.getBytes();
+                                }
+                            };
+                    final MediaInfoFeed currMediaInfoFeed =
+                            InstagramAccessManager.parallelBackendInstagramRequest(Defs.Instagram.RequestType.GetPhoto,
+                                                                                   prepareRequest,
+                                                                                   MediaInfoFeed.class);
+                    if (currMediaInfoFeed == null)
+                    {
+                        log.warning("cannot obtain photo, skips");
+                        continue;
+                    }
+                    currPhoto = ApisConverters.convertToRestogramPhoto(currMediaInfoFeed.getData(), venueId);
                 }
 
                 photoToRuleMapping.put(currPhoto,Boolean.parseBoolean(idRulePairs[i+1]));

@@ -16,6 +16,16 @@ import java.util.logging.Logger;
  * Date: 8/31/13
  */
 public class InstagramDistributedRequestFactory implements IInstagramRequestFactory {
+    /**
+     * Creates a new {@link InstagramDistributedRequestFactory}
+     * @param helperServicesCount the count of available helper services.
+     * @param counterOffset the offset being added to the serial number of helper service to access it.
+     */
+    public InstagramDistributedRequestFactory(int helperServicesCount, int counterOffset) {
+        this.helperServicesCount = helperServicesCount;
+        this.counterOffset = counterOffset;
+    }
+
     @Override
     public HTTPRequest createInstagramRequest(Defs.Instagram.RequestType requestType) {
         URL url;
@@ -35,9 +45,11 @@ public class InstagramDistributedRequestFactory implements IInstagramRequestFact
 
     private int getNextServiceNumber()
     {
-        return random.nextInt(Defs.Instagram.ACCESS_SERVICES_AMOUNT) + 1;
+        return random.nextInt(helperServicesCount) + counterOffset;
     }
 
     private Random random = new Random();
+    private int helperServicesCount;
+    private int counterOffset;
     private static final Logger log = Logger.getLogger(InstagramDistributedRequestFactory.class.getName());
 }
