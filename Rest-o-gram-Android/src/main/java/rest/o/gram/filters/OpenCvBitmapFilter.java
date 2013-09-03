@@ -14,7 +14,8 @@ public class OpenCvBitmapFilter implements IBitmapFilter {
 
     @Override
     public Defs.Filtering.BitmapQuality requiredQuality() {
-        return Defs.Filtering.BitmapQuality.HighResolution;
+        return (faceDetector != null) ?
+                Defs.Filtering.BitmapQuality.HighResolution : Defs.Filtering.BitmapQuality.LowResolution;
     }
 
     @Override
