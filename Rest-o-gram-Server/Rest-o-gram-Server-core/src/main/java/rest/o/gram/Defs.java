@@ -39,6 +39,14 @@ public final class Defs {
     }
 
     /**
+     * Foursquare  constants
+     */
+    public static class Foursquare {
+        // TODO: manage foursquare categories...
+        public static final String VENUE_CATEGORY = "4d4b7105d754a06374d81259";
+    }
+
+    /**
      * Instagram constants
      */
     public static class Instagram {
@@ -63,6 +71,9 @@ public final class Defs {
         }
     }
 
+    /**
+     * Filter rules constants
+     */
     public static class FilterRulesQueue {
         public static final int LEASE_COUNT = 1;
         public static final int LEASE_PERIOD = 30; //secs

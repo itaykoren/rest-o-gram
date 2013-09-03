@@ -17,34 +17,6 @@ import java.util.List;
  * Date: 5/23/13
  */
 final class Converters {
-//    public static LeanEntity venueToLeanEntity(final RestogramVenue venue) {
-//        LeanEntity entity = LeanEntity.initPublicEntity(Kinds.VENUE, venue.getFoursquare_id());
-//        entity.put(Props.Venue.NAME, venue.getName());
-//        entity.put(Props.Venue.ADDRESS, venue.getAddress());
-//        entity.put(Props.Venue.CITY, venue.getCity());
-//        entity.put(Props.Venue.STATE, venue.getState());
-//        entity.put(Props.Venue.POSTAL_CODE, venue.getPostalCode());
-//        entity.put(Props.Venue.COUNTRY, venue.getCountry());
-//        entity.put(Props.Venue.LAT, venue.getLatitude());
-//        entity.put(Props.Venue.LONG, venue.getLongitude());
-//        entity.put(Props.Venue.DISTANCE, venue.getDistance());
-//        entity.put(Props.Venue.URL, venue.getUrl());
-//        entity.put(Props.Venue.PHONE, venue.getPhone());
-//        //entity.putText(Props.Venue.DESCRIPTION, venue.getDescription());
-//        //entity.put(Props.Venue.IMAGE_URL, venue.getImageUrl());
-//        return entity;
-//    }
-
-    public static LeanEntity venueRefToLeanEntity(final RestogramVenue venue) {
-        LeanEntity entity;
-        if (venue.getId() == Long.MIN_VALUE)
-            entity = LeanEntity.initPrivateEntity(Kinds.VENUE_REFERENCE);
-        else
-            entity = LeanEntity.initPrivateEntity(Kinds.VENUE_REFERENCE, venue.getId());
-        entity.put(Props.VenueRef.FOURSQUARE_ID, venue.getFoursquare_id());
-        entity.put(Props.VenueRef.IS_FAVORITE, venue.isfavorite());
-        return entity;
-    }
 
     public static RestogramVenue leanEntityToVenue(final LeanEntity entity) {
         RestogramVenue venue = new RestogramVenue();
@@ -78,32 +50,6 @@ final class Converters {
         return  venues;
     }
 
-//    public static LeanEntity photoToLeanEntity(final RestogramPhoto photo) {
-//        LeanEntity entity = LeanEntity.initPublicEntity(Kinds.PHOTO, photo.getInstagram_id());
-//        entity.put(Props.Photo.CAPTION, photo.getCaption());
-//        entity.put(Props.Photo.CREATED_TIME, photo.getCreatedTime());
-//        entity.put(Props.Photo.IMAGE_FILTER, photo.getImageFilter());
-//        entity.put(Props.Photo.THUMBNAIL, photo.getThumbnail());
-//        entity.put(Props.Photo.STANDARD_RESOLUTION, photo.getStandardResolution());
-//        entity.put(Props.Photo.IMAGE_FILTER, photo.getImageFilter());
-//        entity.put(Props.Photo.LIKES, photo.getLikes());
-//        entity.put(Props.Photo.LINK, photo.getLink());
-//        entity.put(Props.Photo.TYPE, photo.getType());
-//        entity.put(Props.Photo.USER, photo.getUser());
-//        return entity;
-//    }
-
-//    public static LeanEntity photoRefToLeanEntity(final RestogramPhoto photo) {
-//        LeanEntity entity;
-//        if (photo.getId() == Long.MIN_VALUE)
-//            entity = LeanEntity.initPrivateEntity(Kinds.PHOTO_REFERENCE);
-//        else
-//            entity = LeanEntity.initPrivateEntity(Kinds.PHOTO_REFERENCE, photo.getId());
-//        entity.put(Props.PhotoRef.INSTAGRAM_ID, photo.getInstagram_id());
-//        entity.put(Props.PhotoRef.IS_FAVORITE, photo.is_favorite());
-//        return entity;
-//    }
-
     public static RestogramPhoto leanEntityToPhoto(final LeanEntity entity) {
         RestogramPhoto photo = new RestogramPhoto();
         photo.setInstagram_id(entity.getUniqueName());
@@ -136,22 +82,4 @@ final class Converters {
             photos.add(leanEntityToPhoto(leanEntities[i]));
         return  photos;
     }
-
-//    public static String[] photosRefsToNames(LeanEntity[] photosRefs) {
-//        String[] ids = new String[photosRefs.length];
-//        for (int i = 0; i < photosRefs.length; i++)
-//        {
-//            ids[i] = photosRefs[i].getString(Props.PhotoRef.INSTAGRAM_ID);
-//        }
-//        return ids;
-//    }
-//
-//    public static String[] venuesRefsToNames(LeanEntity[] venuesRefs) {
-//        String[] ids = new String[venuesRefs.length];
-//        for (int i = 0; i < venuesRefs.length; i++)
-//        {
-//            ids[i] = venuesRefs[i].getString(Props.VenueRef.FOURSQUARE_ID);
-//        }
-//        return ids;
-//    }
 }

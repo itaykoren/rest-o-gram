@@ -104,13 +104,6 @@ public interface IRestogramClient {
      */
     IRestogramCommand downloadImage(String url, String photoId, ImageView imageView, boolean force, IRestogramCommandObserver observer, float sizeRatio);
 
-    /**
-     * Executes cache venue request
-     * Returns command object
-     */
-    void cacheVenue(String id, ITaskObserver observer);
-
-
     /* AUTH SERVICES */
 
     /**

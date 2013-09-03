@@ -19,6 +19,7 @@ import rest.o.gram.Defs;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
 import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.results.PhotosResult;
 
 import java.util.*;
@@ -93,6 +94,43 @@ public final class DataManager {
         }
 
         return createPhotosResultFromQueryResult(result);
+    }
+
+
+    public static Map<String,RestogramVenue> fetchVenuesFromCache(final String[] ids) {
+        Collection<Entity> entities = null;
+        try
+        {
+            entities = DatastoreUtils.getPublicEntities(Kinds.VENUE, ids);
+        } catch (LeanException e)
+        {
+            log.severe("fetching venues from cache has failed");
+        }
+
+        if (entities == null)
+            return null;
+
+        final Map<String,RestogramVenue> idToVenueMapping =
+                new HashMap<>();
+        for (final Entity currEntity : entities)
+        {
+            final RestogramVenue currrVenue =
+                    DataStoreConverters.entityToVenue(currEntity).encodeStrings();
+            idToVenueMapping.put(currrVenue.getFoursquare_id(), currrVenue);
+        }
+        return idToVenueMapping;
+    }
+
+    public static boolean cacheVenue(final RestogramVenue venue) {
+        try
+        {
+            DatastoreUtils.putPublicEntity(Kinds.VENUE, venue.getFoursquare_id(), DataStoreConverters.venueToProps(venue));
+        } catch (LeanException e)
+        {
+            log.severe("caching the venue in DS has failed");
+            return false;
+        }
+        return true;
     }
 
     public static boolean isValidCursor(String token) {

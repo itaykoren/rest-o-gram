@@ -306,13 +306,6 @@ public class RestogramClient implements IRestogramClient {
         return command;
     }
 
-    @Override
-    public void cacheVenue(String id, ITaskObserver observer) {
-        setJsonAuthToken(transport);
-        IRestogramCommand command = new CacheVenueCommand(transport, observer, id);
-        commandQueue.pushForce(command);
-    }
-
     /* AUTH SERVICES */
 
     @Override

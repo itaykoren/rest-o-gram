@@ -53,34 +53,4 @@ public interface RestogramService {
      * @return array of media related to venue given its ID, after applying given filter
      */
     PhotosResult getNextPhotos(String token, RestogramFilterType filterType, String originVenueId);
-
-
-    /**
-     * Make sure the photo represented by the given id is in cache
-     * @param id the identifier of the photo
-     * @param originVenueId the identifier of the venue in which the photo was taken
-     * @return has operation executed successfully
-     */
-    //boolean cachePhoto(String id, String originVenueId);
-
-    /**
-     * Fetch photos represented by the given ids from cache
-     * @param ids the identifiers of the photos
-     * @return the requested photos
-     */
-    //RestogramPhoto[] fetchPhotosFromCache(String[] ids);
-
-    /**
-     *  Make sure the venue represented by the given id is in cache
-     * @param id the identifier of the venue
-     * @return has operation executed succfully
-     */
-    boolean cacheVenue(String id);
-
-    /**
-     * Fetch venues represented by the given ids from cache
-     * @param ids the identifiers of the venues
-     * @return the requested venues
-     */
-    RestogramVenue[] fetchVenuesFromCache(String[] ids);
 }

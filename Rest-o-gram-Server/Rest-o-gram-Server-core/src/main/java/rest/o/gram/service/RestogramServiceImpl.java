@@ -3,11 +3,7 @@ package rest.o.gram.service;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
 import com.leanengine.server.LeanException;
-import com.leanengine.server.appengine.DatastoreUtils;
 import com.leanengine.server.auth.AuthService;
-import com.leanengine.server.entity.LeanQuery;
-import com.leanengine.server.entity.QueryFilter;
-import com.leanengine.server.entity.QueryResult;
 import fi.foyt.foursquare.api.FoursquareApi;
 import fi.foyt.foursquare.api.FoursquareApiException;
 import fi.foyt.foursquare.api.Result;
@@ -28,7 +24,6 @@ import rest.o.gram.tasks.TasksManager;
 import rest.o.gram.credentials.*;
 import rest.o.gram.data.DataManager;
 import rest.o.gram.entities.Kinds;
-import rest.o.gram.entities.Props;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilter;
@@ -65,17 +60,7 @@ public class RestogramServiceImpl implements RestogramService {
      */
     @Override
     public VenuesResult getNearby(double latitude, double longitude) {
-        String location = latitude + "," + longitude;
-
-        // TODO: manage foursquare categories...
-        String categories = "4d4b7105d754a06374d81259";
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("ll", location);
-        params.put("categoryId", categories);
-        params.put("intent", "match");
-
-        return doGetNearby(params);
+        return doGetNearby(latitude, longitude, -1);
     }
 
     /**
@@ -83,15 +68,17 @@ public class RestogramServiceImpl implements RestogramService {
      */
     @Override
     public VenuesResult getNearby(double latitude, double longitude, double radius) {
-        String location = latitude + "," + longitude;
+        return doGetNearby(latitude, longitude, radius);
+    }
 
-        // TODO: manage foursquare categories...
-        String categories = "4d4b7105d754a06374d81259";
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("ll", location);
-        params.put("radius", Double.toString(radius));
-        params.put("categoryId", categories);
+    private VenuesResult doGetNearby(double latitude, double longitude, double radius) {
+        final Map<String, String> params = new HashMap<String,String>();
+        params.put("ll", String.format("%f,%f", latitude, longitude));
+        params.put("categoryId", Defs.Foursquare.VENUE_CATEGORY);
+        if (radius >= 0)
+            params.put("radius", Double.toString(radius));
+        else
+            params.put("intent", "match");
 
         return doGetNearby(params);
     }
@@ -102,39 +89,43 @@ public class RestogramServiceImpl implements RestogramService {
     @Override
     public VenueResult getInfo(String venueID) {
         Result<CompleteVenue> result;
-        try {
+        try
+        {
             Credentials credentials = m_CredentialsFactory.createFoursquareCredentials();
             log.info("foursquare credentials type = " + credentials.getType());
             FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
             result = foursquare.venue(venueID);
-        } catch (FoursquareApiException e) {
+        } catch (FoursquareApiException e)
+        {
             log.warning("first venue  " + venueID + " retrieval has failed, retry");
-            try {
+            try
+            {
                 Credentials credentials = m_CredentialsFactory.createFoursquareCredentials();
                 log.info("foursquare credentials type = " + credentials.getType());
                 FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
                 result = foursquare.venue(venueID);
-            } catch (FoursquareApiException e2) {
+            } catch (FoursquareApiException e2)
+            {
                 log.severe("second venue " + venueID + " retrieval has failed");
                 return null;
             }
         }
 
-        if (result.getMeta().getCode() != HttpServletResponse.SC_OK) {
+        if (result.getMeta().getCode() != HttpServletResponse.SC_OK)
+        {
             log.severe("venue " + venueID + "retrieval returned an error code: " + result.getMeta().getCode());
             return null;
         }
 
-        CompleteVenue v = result.getResult();
-        if (v == null) {
+        CompleteVenue completeVenue = result.getResult();
+        if (completeVenue == null)
+        {
             log.severe("extracting info from venue has failed");
             return null;
         }
 
-        final RestogramVenue venue = ApisConverters.convertToRestogramVenue(v);
-
-        cacheVenue(venue);
-
+        final RestogramVenue venue = ApisConverters.convertToRestogramVenue(completeVenue);
+        DataManager.cacheVenue(venue);
         return new VenueResult(venue);
     }
 
@@ -172,152 +163,65 @@ public class RestogramServiceImpl implements RestogramService {
         return doGetPhotos(originVenueId, filterType, token);
     }
 
-    @Override
-    public boolean cacheVenue(String id) {
-        //TODO: check if venue is already in cache
-        CompleteVenue compVenue;
-        try {
-            Credentials credentials = m_CredentialsFactory.createFoursquareCredentials();
-            log.info("foursquare credentials type = " + credentials.getType());
-            FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
-            compVenue = foursquare.venue(id).getResult();
-        } catch (FoursquareApiException e) {
-            log.warning("first get venue has failed, retry");
-            try {
-                Credentials credentials = m_CredentialsFactory.createFoursquareCredentials();
-                log.info("foursquare credentials type = " + credentials.getType());
-                FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
-                compVenue = foursquare.venue(id).getResult();
-            } catch (FoursquareApiException e2) {
-                log.severe("second get venue has failed");
-                return false;
-            }
-        }
-
-        return cacheVenue(ApisConverters.convertToRestogramVenue(compVenue));
-    }
-
-    private boolean cacheVenue(final RestogramVenue venue) {
-
-        try {
-            DatastoreUtils.putPublicEntity(Kinds.VENUE, venue.getFoursquare_id(), DataStoreConverters.venueToProps(venue));
-        } catch (LeanException e) {
-            log.severe("caching the venue in DS has failed");
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public RestogramVenue[] fetchVenuesFromCache(String[] ids) {
-        Collection<Entity> entities = null;
-        try {
-            entities = DatastoreUtils.getPublicEntities(Kinds.VENUE, ids);
-        } catch (LeanException e) {
-            log.severe("fetching venues fromm cache has failed");
-        }
-
-        RestogramVenue[] venues = new RestogramVenue[entities.size()];
-        int i = 0;
-        for (final Entity currEntity : entities)
-            venues[i++] = DataStoreConverters.entityToVenue(currEntity).encodeStrings();
-
-        Arrays.sort(venues, new Comparator<RestogramVenue>() {
-            @Override
-            public int compare(RestogramVenue o1, RestogramVenue o2) {
-                return o1.getFoursquare_id().compareTo(o2.getFoursquare_id());
-            }
-        });
-        return venues;
-    }
-
     /**
      * Executes get nearby request
      */
     private VenuesResult doGetNearby(Map<String, String> params) {
         Result<VenuesSearchResult> result;
-        try {
+        try
+        {
             Credentials credentials = m_CredentialsFactory.createFoursquareCredentials();
             log.info("foursquare credentials type = " + credentials.getType());
             FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
             result = foursquare.venuesSearch(params);
-        } catch (FoursquareApiException e) {
-            // TODO: test the "second-chance" policy
-            try {
+        } catch (FoursquareApiException e)
+        {
+            try
+            {
                 log.warning("first venue search has failed, retry");
 
                 Credentials credentials = m_CredentialsFactory.createFoursquareCredentials();
                 log.info("foursquare credentials type = " + credentials.getType());
                 FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
                 result = foursquare.venuesSearch(params);
-            } catch (FoursquareApiException e2) {
+            } catch (FoursquareApiException e2)
+            {
                 log.severe("second venue search has failed");
                 return null;
             }
         }
 
-        if (result.getMeta().getCode() != HttpServletResponse.SC_OK) {
+        if (result.getMeta().getCode() != HttpServletResponse.SC_OK)
+        {
             log.severe("venue search returned an error code: " + result.getMeta().getCode());
             return null;
         }
 
-        CompactVenue[] arr = result.getResult().getVenues();
-
-        int length = arr.length;
-        if (arr == null || length == 0) {
+        final CompactVenue[] arr = result.getResult().getVenues();
+        if (arr == null || arr.length == 0)
+        {
             log.severe("venue search returned no venues");
             return null;
         }
 
-        String[] venueIds = new String[length];
-        RestogramVenue[] venues = new RestogramVenue[length];
+        final String[] venueIds = new String[arr.length];
+        final RestogramVenue[] venues = new RestogramVenue[arr.length];
 
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < arr.length; i++)
+        {
             venues[i] = ApisConverters.convertToRestogramVenue(arr[i]);
             venueIds[i] = arr[i].getId();
-            if (AuthService.isUserLoggedIn()) {
-                final LeanQuery lquery = new LeanQuery(Kinds.VENUE_REFERENCE);
-                lquery.addFilter(Props.VenueRef.FOURSQUARE_ID, QueryFilter.FilterOperator.EQUAL,
-                        venues[i].getFoursquare_id());
-                lquery.addFilter(Props.VenueRef.IS_FAVORITE, QueryFilter.FilterOperator.EQUAL, true);
-                QueryResult qresult = null;
-                try {
-                    qresult = DatastoreUtils.queryEntityPrivate(lquery);
-                } catch (LeanException e) {
-                    log.severe("error while getting private venue info from DS");
-                }
-                if (qresult != null && !qresult.getResult().isEmpty())
-                    venues[i].setfavorite(true);
-            }
         }
 
-        RestogramVenue[] venuesFromCache = fetchVenuesFromCache(venueIds);
-
-        for (int i = 0; i < venuesFromCache.length; i++) {
-
-            RestogramVenue currVenue = venuesFromCache[i];
-
-            if (currVenue != null) {
-
-                String imageUrl = currVenue.getImageUrl();
-                if (imageUrl != null && !imageUrl.isEmpty()) {
-
-                    addImageUrlToVenue(venues, currVenue.getId(), imageUrl);
-                }
-            }
+        final Map<String,RestogramVenue> idToVenueMapping = DataManager.fetchVenuesFromCache(venueIds);
+        for (final RestogramVenue currVenue : venues)
+        {
+            if (idToVenueMapping.containsKey(currVenue.getFoursquare_id()))
+                currVenue.setImageUrl(idToVenueMapping.get(currVenue.getFoursquare_id()).getImageUrl());
         }
 
         log.info("found " + venues.length + " venues!");
         return new VenuesResult(venues);
-    }
-
-    private void addImageUrlToVenue(RestogramVenue[] venues, long id, String imageUrl) {
-
-        for (RestogramVenue venue : venues) {
-            if (venue != null && venue.getId() == id) {
-                venue.setImageUrl(imageUrl);
-            }
-        }
     }
 
     private PhotosResult doGetPhotos(String venueId, RestogramFilterType filterType, String token) {
