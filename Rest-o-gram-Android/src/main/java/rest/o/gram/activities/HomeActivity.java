@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import rest.o.gram.R;
 import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.client.RestogramClient;
@@ -151,6 +152,11 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
 
         if(tracker == null)
             return;
+
+        if(isFinishing())
+            return;
+
+        Toast.makeText(this, R.string.venue_search_failed, Toast.LENGTH_LONG).show();
 
         // Retry - send get nearby request
         RestogramClient.getInstance().getNearby(tracker.getLatitude(), tracker.getLongitude(), Defs.Location.DEFAULT_NEARBY_RADIUS, this);
