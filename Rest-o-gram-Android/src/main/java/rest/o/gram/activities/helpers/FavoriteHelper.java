@@ -43,24 +43,10 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
     }
 
     /**
-     * Sets venue id
-     */
-    public void setVenueId(String id) {
-        venueId = id;
-    }
-
-    /**
      * Sets photo id
      */
     public void setPhotoId(String id) {
         photoId = id;
-    }
-
-    /**
-     * Sets favorite venue button
-     */
-    public void setFavoriteVenueButton(ImageButton button) {
-        favoriteVenueButton = button;
     }
 
     /**
@@ -69,29 +55,6 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
     public void setFavoritePhotoButton(ImageButton button, TextView textView) {
         favoritePhotoButton = button;
         photoYummiesTextView = textView;
-    }
-
-    /**
-     * Toggles favorite state of given venue according to current user
-     */
-    public boolean toggleFavoriteVenue(String venueId) {
-        if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn())
-            return false;
-
-        if(dataFavoritesManager == null)
-            return false;
-
-        // Get venue from cache
-        IRestogramCache cache = RestogramClient.getInstance().getCache();
-        RestogramVenue venue = cache.findVenue(venueId);
-
-        if(!dataFavoritesManager.getFavoriteVenues().contains(venue.getFoursquare_id())) {
-            dataFavoritesManager.addFavoriteVenue(venue, this);
-        }
-        else {
-            dataFavoritesManager.removeFavoriteVenue(venue, this);
-        }
-        return true;
     }
 
     /**
@@ -203,42 +166,6 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
-    public void onFinished(GetFavoriteVenuesResult result) {
-        if(result == null)
-            return;
-
-        if(result.getElements() == null || result.getElements().isEmpty())
-            return;
-
-        if(favoriteVenueButton != null && !venueId.isEmpty()) {
-            if(dataFavoritesManager.getFavoriteVenues().contains(venueId))
-                favoriteVenueButton.setImageResource(R.drawable.ic_favorite_on);
-            else
-                favoriteVenueButton.setImageResource(R.drawable.ic_favorite_off);
-        }
-
-        // TODO: handle pagination - if(result.hasMore())...
-    }
-
-    @Override
-    public void onFinished(AddVenueToFavoritesResult result) {
-        if(!result.hasSucceeded())
-            return;
-
-        if(favoriteVenueButton != null)
-            favoriteVenueButton.setImageResource(R.drawable.ic_favorite_on);
-    }
-
-    @Override
-    public void onFinished(RemoveVenueFromFavoritesResult result) {
-        if(!result.hasSucceeded())
-            return;
-
-        if(favoriteVenueButton != null)
-            favoriteVenueButton.setImageResource(R.drawable.ic_favorite_off);
-    }
-
     private void updateYummiesCount(TextView textView, String photoId) {
         IRestogramCache cache = RestogramClient.getInstance().getCache();
         RestogramPhoto photo = cache.findPhoto(photoId);
@@ -267,10 +194,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
 
     private IDataFavoritesManager dataFavoritesManager;
 
-    private String venueId;
     private String photoId;
 
-    private ImageButton favoriteVenueButton;
     private ImageButton favoritePhotoButton;
     private TextView photoYummiesTextView;
 }

@@ -11,8 +11,4 @@ public interface IDataFavoritesOperationsObserver {
     void onFinished(GetFavoritePhotosResult result);
     void onFinished(AddPhotoToFavoritesResult result);
     void onFinished(RemovePhotoFromFavoritesResult result);
-
-    void onFinished(GetFavoriteVenuesResult result);
-    void onFinished(AddVenueToFavoritesResult result);
-    void onFinished(RemoveVenueFromFavoritesResult result);
 }

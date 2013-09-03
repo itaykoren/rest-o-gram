@@ -131,21 +131,6 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     }
 
     @Override
-    public void onFinished(GetFavoriteVenuesResult result) {
-        // Empty
-    }
-
-    @Override
-    public void onFinished(AddVenueToFavoritesResult result) {
-        // Empty
-    }
-
-    @Override
-    public void onFinished(RemoveVenueFromFavoritesResult result) {
-        // Empty
-    }
-
-    @Override
     public void accept(IActivityVisitor visitor) {
         visitor.visit(this);
     }

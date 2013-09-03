@@ -22,19 +22,5 @@ public interface IDataFavoritesManager {
     // TODO: convert to a command
     void getNextFavoritePhotos(final GetFavoritePhotosResult previous, final IDataFavoritesOperationsObserver observer);
 
-    // TODO: convert to a command
-    void addFavoriteVenue(final RestogramVenue venue, final IDataFavoritesOperationsObserver observer);
-
-    // TODO: convert to a command
-    void removeFavoriteVenue(final RestogramVenue venue, final IDataFavoritesOperationsObserver observer);
-
-    // TODO: convert to a command
-    void getFavoriteVenues(final IDataFavoritesOperationsObserver observer);
-
-    Set<String> getFavoriteVenues();
-
-    // TODO: convert to a command
-    void getNextFavoriteVenues(final GetFavoriteVenuesResult previous, final IDataFavoritesOperationsObserver observer);
-
     void dispose();
 }

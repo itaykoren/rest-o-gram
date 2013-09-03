@@ -54,11 +54,6 @@ public class VenueActivity extends RestogramActionBarActivity {
             dataHistoryManager.save(venue, Defs.Data.SortOrder.SortOrderLIFO);
         }
 
-        // Initialize favorite helper
-        favoriteHelper.setVenueId(venueId);
-        favoriteHelper.setFavoriteVenueButton((ImageButton)findViewById(R.id.bVenueFavorite));
-        //favoriteHelper.refresh();
-
         final ImageButton favoriteVenueButton =
                 (ImageButton)findViewById(R.id.bVenueFavorite);
         if(venue.isfavorite())
@@ -146,16 +141,6 @@ public class VenueActivity extends RestogramActionBarActivity {
         }
         catch(Exception e) {
             // Empty
-        }
-    }
-
-    public void onFavoriteClicked(View view) {
-        if(!RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
-            loginHelper.login(false);
-        }
-        else {
-            // Add\Remove favorite
-            favoriteHelper.toggleFavoriteVenue(venueId);
         }
     }
 
