@@ -56,17 +56,17 @@
         <!--<url-pattern>/get-media-by-location</url-pattern>-->
     <!--</servlet-mapping>-->
 
-    <servlet>
-    <description>get instagram photo</description>
-    <display-name>get instagram photo</display-name>
-    <servlet-name>GetPhotoServlet</servlet-name>
-    <servlet-class>rest.o.gram.service.InstagramServices.GetPhotoServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-    <servlet-name>GetPhotoServlet</servlet-name>
-    <url-pattern>/get-photo</url-pattern>
-    </servlet-mapping>
+    <!--<servlet>-->
+    <!--<description>get instagram photo</description>-->
+    <!--<display-name>get instagram photo</display-name>-->
+    <!--<servlet-name>GetPhotoServlet</servlet-name>-->
+    <!--<servlet-class>rest.o.gram.service.InstagramServices.GetPhotoServlet</servlet-class>-->
+    <!--<load-on-startup>1</load-on-startup>-->
+    <!--</servlet>-->
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>GetPhotoServlet</servlet-name>-->
+    <!--<url-pattern>/get-photo</url-pattern>-->
+    <!--</servlet-mapping>-->
 
     <!--Login pages-->
     <servlet>
