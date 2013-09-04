@@ -151,8 +151,6 @@ public class ExploreActivity extends RestogramActionBarActivity {
         venues[currVenueIndex].lastToken = token;
         updateToken(venueId, token);
 
-        venues[currVenueIndex].lastPhotoIndex = result.getPhotos().length - 1;
-
         if (result.getPhotos().length < Defs.Feed.PHOTOS_PACKET_THRESHOLD && result.hasMorePhotos())
             getMorePhotos();
     }
@@ -171,7 +169,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
         // Init venues array
         this.venues = new VenueData[venues.length];
         for(int i = 0; i < venues.length; i++) {
-            this.venues[i] = new VenueData(venues[i].getFoursquare_id(), null, -1);
+            this.venues[i] = new VenueData(venues[i].getFoursquare_id(), null);
         }
 
         // Init photo grid view
@@ -192,8 +190,9 @@ public class ExploreActivity extends RestogramActionBarActivity {
                 if (totalItemCount == 0)
                     return;
 
-                // Check whether the last view is visible
-                if (++firstVisibleItem + visibleItemCount > totalItemCount) {
+                // Check whether enough views are visible
+                final int n = (int)(totalItemCount * 0.75);
+                if (++firstVisibleItem + visibleItemCount > n) {
                     onScrollBottom();
                 }
             }
@@ -294,15 +293,13 @@ public class ExploreActivity extends RestogramActionBarActivity {
     }
 
     private class VenueData {
-        private VenueData(String venueId, String lastToken, int lastPhotoIndex) {
+        private VenueData(String venueId, String lastToken) {
             this.venueId = venueId;
             this.lastToken = lastToken;
-            this.lastPhotoIndex = lastPhotoIndex;
         }
 
         public String venueId;
         public String lastToken;
-        public int lastPhotoIndex;
     }
 
     private double latitude; // Latitude
