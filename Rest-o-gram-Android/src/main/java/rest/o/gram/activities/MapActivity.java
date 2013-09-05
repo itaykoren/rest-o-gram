@@ -109,7 +109,7 @@ public class MapActivity extends RestogramActionBarActivity {
         // Set is request pending flag to false
         isRequestPending = false;
 
-        if(result.getVenues() == null) {
+        if(result == null || result.getVenues() == null) {
             Toast.makeText(this, "No restaurants found", Toast.LENGTH_SHORT).show();
             return;
         }

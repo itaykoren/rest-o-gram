@@ -108,6 +108,9 @@ public class ExploreActivity extends RestogramActionBarActivity {
     public void onFinished(GetNearbyResult result) {
         super.onFinished(result);
 
+        if(result == null)
+            return;
+
         final RestogramVenue[] venues = result.getVenues();
         if(venues == null || venues.length == 0)
             return;
