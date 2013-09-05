@@ -121,6 +121,14 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
 
         resetStatus();
 
+        if(result == null) {
+            if(RestogramClient.getInstance().isDebuggable()) {
+                Log.d("REST-O-GRAM", "an error occurred while searching for venues");
+                onError();
+            }
+            return;
+        }
+
         final RestogramVenue[] venues = result.getVenues();
         if(venues == null || venues.length == 0) {
             if (RestogramClient.getInstance().isDebuggable()) {
@@ -160,14 +168,6 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
 
         // Retry - send get nearby request
         RestogramClient.getInstance().getNearby(tracker.getLatitude(), tracker.getLongitude(), Defs.Location.DEFAULT_NEARBY_RADIUS, this);
-    }
-
-    @Override
-    public void onError() {
-        super.onError();
-
-        cancelProgress();
-        resetStatus();
     }
 
     @Override
