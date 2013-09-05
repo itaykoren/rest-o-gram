@@ -170,6 +170,17 @@ public class ExploreActivity extends RestogramActionBarActivity {
     }
 
     @Override
+    public void onError() {
+        super.onError();
+
+        // Update request pending flag
+        isRequestPending = false;
+
+        // Set pending command to null
+        pendingCommand = null;
+    }
+
+    @Override
     public void accept(IActivityVisitor visitor) {
         visitor.visit(this);
     }

@@ -128,6 +128,16 @@ public class MapActivity extends RestogramActionBarActivity {
 
     @Override
     public void onCanceled() {
+        super.onCanceled();
+
+        // Set is request pending flag to false
+        isRequestPending = false;
+    }
+
+    @Override
+    public void onError() {
+        super.onError();
+
         // Set is request pending flag to false
         isRequestPending = false;
     }
