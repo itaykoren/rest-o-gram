@@ -177,8 +177,8 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
 
     @Override
     public void onError() {
-        // TODO: show message box with text "connection_error" and then exit or dispose+restart
-        Toast.makeText(this, R.string.connection_error, Toast.LENGTH_LONG).show();
+        if(dialogManager != null)
+            dialogManager.showConnectionErrorAlert(this);
     }
 
     /**

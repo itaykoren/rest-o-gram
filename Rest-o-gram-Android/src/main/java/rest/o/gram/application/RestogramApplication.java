@@ -139,6 +139,19 @@ public class RestogramApplication extends Application implements IRestogramAppli
         initialize();
     }
 
+    @Override
+    public void shutdown() {
+        try {
+            // Finish all activities
+            for(Activity activity : activities) {
+                activity.finish();
+            }
+        }
+        catch(Exception e) {
+            // Empty
+        }
+    }
+
     /**
      * Initializes client
      */

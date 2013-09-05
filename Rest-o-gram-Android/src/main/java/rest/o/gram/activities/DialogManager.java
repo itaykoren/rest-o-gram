@@ -97,7 +97,7 @@ public final class DialogManager {
                 // Setting Dialog Message
                 alertDialog.setMessage(R.string.exit_msg);
 
-                // On pressing Settings button
+                // On pressing yes button
                 alertDialog.setPositiveButton("Yes",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -108,7 +108,7 @@ public final class DialogManager {
                             }
                         });
 
-                // On pressing cancel button
+                // On pressing no button
                 alertDialog.setNegativeButton("No",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -132,12 +132,79 @@ public final class DialogManager {
         }, 100);
     }
 
+    public void showConnectionErrorAlert(final Activity activity) {
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(!Utils.isActivityValid(activity))
+                    return;
+
+                if(isConnectionErrorDialogShown)
+                    return;
+
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+
+                // Setting Dialog Title
+                alertDialog.setTitle(R.string.restogram_title);
+
+                // Setting Dialog Message
+                alertDialog.setMessage(R.string.connection_error);
+
+                // On pressing exit button
+                alertDialog.setPositiveButton("Exit",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                isConnectionErrorDialogShown = false;
+                                dialog.cancel();
+                                dialogs.remove(dialog);
+
+                                // Shutdown the application
+                                RestogramClient.getInstance().getApplication().shutdown();
+                            }
+                        });
+
+                // On pressing restart button
+                alertDialog.setNegativeButton("Restart",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                isConnectionErrorDialogShown = false;
+                                dialog.cancel();
+                                dialogs.remove(dialog);
+
+                                // Dispose client
+                                RestogramClient.getInstance().dispose();
+
+                                // Restart the application
+                                RestogramClient.getInstance().getApplication().restart();
+
+                                // Switch to "HomeActivity", finish current activity
+                                Intent intent = new Intent(activity, HomeActivity.class);
+                                Utils.changeActivity(activity, intent, Defs.RequestCodes.RC_HOME, true);
+                            }
+                        });
+
+                // On dismiss
+                alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        isConnectionErrorDialogShown = false;
+                    }
+                });
+
+                dialogs.add(alertDialog.show());
+                isConnectionErrorDialogShown = true;
+            }
+        }, 100);
+    }
+
     public void clear() {
         for (DialogInterface diag : dialogs)
             diag.cancel();
         dialogs.clear();
 
         isExitDialogShown = false;
+        isConnectionErrorDialogShown = false;
     }
 
     private void showErrorAlert(final Activity activity, final int message, final String action) {
@@ -206,4 +273,5 @@ public final class DialogManager {
 
     private final List<DialogInterface> dialogs = new ArrayList<>();
     private boolean isExitDialogShown = false;
+    private boolean isConnectionErrorDialogShown = false;
 }

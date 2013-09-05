@@ -15,4 +15,9 @@ public interface IRestogramApplication {
      * Restarts the application
      */
     void restart();
+
+    /**
+     * Shuts down the application
+     */
+    void shutdown();
 }
