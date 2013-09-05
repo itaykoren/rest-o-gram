@@ -2,10 +2,18 @@ package rest.o.gram;
 
 import fi.foyt.foursquare.api.entities.*;
 import org.jinstagram.entity.common.Images;
+import org.jinstagram.entity.media.MediaInfoFeed;
+import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.service.InstagramServices.Entities.RestogramPhotos;
 import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.service.InstagramServices.Entities.EmptyRestogramPhoto;
+import rest.o.gram.service.InstagramServices.Entities.EmptyRestogramPhotos;
+import rest.o.gram.utils.InstagramUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -14,6 +22,23 @@ import java.util.logging.Logger;
  * Date: 6/16/13
  */
 public final class ApisConverters {
+    public static RestogramPhotos convertToRestogramPhotos(final MediaFeed mediaFeed) {
+        if (InstagramUtils.isNullOrEmpty(mediaFeed))
+            return new EmptyRestogramPhotos();
+
+        final List<RestogramPhoto> photos = new ArrayList<>(mediaFeed.getData().size());
+        for (final MediaFeedData currMediaFeedData : mediaFeed.getData())
+            photos.add(convertToRestogramPhoto(currMediaFeedData, ""));
+        return new RestogramPhotos(photos, mediaFeed.getPagination());
+    }
+
+    public static RestogramPhoto convertToRestogramPhoto(final MediaInfoFeed mediaInfoFeed) {
+        if (InstagramUtils.isNullOrEmpty(mediaInfoFeed))
+            return new EmptyRestogramPhoto();
+
+        return convertToRestogramPhoto(mediaInfoFeed.getData(), "");
+    }
+
     public static RestogramPhoto convertToRestogramPhoto(final MediaFeedData media, String originVenueId) {
         String caption = "";
         if (media.getCaption() != null)
@@ -28,7 +53,7 @@ public final class ApisConverters {
         return new RestogramPhoto(caption, media.getCreatedTime(), media.getId(),
                 media.getImageFilter(), thumbnail, standardResolution,
                 media.getLikes().getCount(), media.getLink(),
-                media.getType(), user, originVenueId, 0).encodeStrings();
+                media.getType(), user, originVenueId, media.getTags(), 0).encodeStrings();
     }
 
     /**

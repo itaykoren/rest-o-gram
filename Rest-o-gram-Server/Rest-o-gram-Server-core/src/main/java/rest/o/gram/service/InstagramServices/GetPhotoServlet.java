@@ -2,8 +2,9 @@ package rest.o.gram.service.InstagramServices;
 
 import com.google.gson.Gson;
 import org.jinstagram.Instagram;
-import org.jinstagram.entity.media.MediaInfoFeed;
-import rest.o.gram.service.InstagramServices.Entities.EmptyMediaInfoFeed;
+import rest.o.gram.ApisConverters;
+import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.service.InstagramServices.Entities.EmptyRestogramPhoto;
 import rest.o.gram.utils.InstagramUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,28 +17,28 @@ import java.util.logging.Logger;
  * User: Or
  * Date: 9/3/13
  */
-public class GetPhotoServlet extends BaseInstagramServlet<MediaInfoFeed> {
+public class GetPhotoServlet extends BaseInstagramServlet<RestogramPhoto> {
     @Override
-    protected MediaInfoFeed executeInstagramRequest(HttpServletRequest request, Instagram instagram) throws IOException {
+    protected RestogramPhoto executeInstagramRequest(HttpServletRequest request, Instagram instagram) throws IOException {
         final String mediaId = request.getReader().readLine();
         log.info(String.format("getMediaInfo : %s", mediaId));
-        return instagram.getMediaInfo(mediaId);
+        return ApisConverters.convertToRestogramPhoto(instagram.getMediaInfo(mediaId));
     }
 
     @Override
-    protected void onRequestSucceded(HttpServletResponse response, MediaInfoFeed result) throws IOException {
-        MediaInfoFeed actualResult;
+    protected void onRequestSucceded(HttpServletResponse response, RestogramPhoto result) throws IOException {
+        RestogramPhoto actualResult;
         if (InstagramUtils.isNullOrEmpty(result))
         {
-            actualResult = new EmptyMediaInfoFeed();
+            actualResult = new EmptyRestogramPhoto();
             log.info("no photo was found");
         }
         else
         {
             actualResult = result;
-            log.info(String.format("found photo : %s", actualResult.getData().getId()));
+            log.info(String.format("found photo : %s", actualResult.getInstagram_id()));
         }
-        response.getWriter().write(new Gson().toJson(actualResult));
+        response.getWriter().write(new Gson().toJson(actualResult.encodeStrings()));
         response.setStatus(HttpServletResponse.SC_OK);
     }
 

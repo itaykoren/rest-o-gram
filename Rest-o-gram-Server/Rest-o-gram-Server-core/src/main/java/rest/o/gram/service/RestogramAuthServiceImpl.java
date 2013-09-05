@@ -2,8 +2,6 @@ package rest.o.gram.service;
 
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
-import org.jinstagram.entity.media.MediaInfoFeed;
-import rest.o.gram.ApisConverters;
 import rest.o.gram.Defs;
 import rest.o.gram.InstagramAccessManager;
 import rest.o.gram.DataStoreConverters;
@@ -11,6 +9,8 @@ import rest.o.gram.data.DataManager;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.iservice.RestogramAuthService;
+import rest.o.gram.utils.InstagramUtils;
+
 import java.util.logging.Logger;
 
 /**
@@ -59,16 +59,16 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
                             return photoId.getBytes();
                         }
                     };
-            final MediaInfoFeed mediaInfoFeed =
+            final RestogramPhoto restogramPhoto =
                     InstagramAccessManager.parallelFrontendInstagramRequest(Defs.Instagram.RequestType.GetPhoto,
                                                                             prepareRequest,
-                                                                            MediaInfoFeed.class);
-            if (mediaInfoFeed  == null)
+                                                                            RestogramPhoto.class).decodeStrings();
+            if (InstagramUtils.isNullOrEmpty(restogramPhoto))
                 return false;
 
-            final RestogramPhoto photo = ApisConverters.convertToRestogramPhoto(mediaInfoFeed.getData(), originVenueId);
-            photo.setYummies(1);
-            return DataManager.cachePhoto(photo);
+            restogramPhoto.setOriginVenueId(originVenueId);
+            restogramPhoto.setYummies(1);
+            return DataManager.cachePhoto(restogramPhoto);
         }
         return true;
     }

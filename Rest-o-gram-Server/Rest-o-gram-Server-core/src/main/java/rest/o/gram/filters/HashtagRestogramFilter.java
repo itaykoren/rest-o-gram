@@ -1,7 +1,7 @@
 
 package rest.o.gram.filters;
 
-import org.jinstagram.entity.users.feed.MediaFeedData;
+import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.utils.FilteringUtils;
 
 import java.util.*;
@@ -25,20 +25,20 @@ public class HashtagRestogramFilter implements RestogramFilter {
     private final List<String> foodTagsList = Arrays.asList(foodTagsStr.split("\\s*,\\s*"));
     private final Set<String> foodTags = new HashSet<String>(foodTagsList);
 
-    public List<MediaFeedData> doFilter(List<MediaFeedData> data) {
+    public List<RestogramPhoto> doFilter(final List<RestogramPhoto> data) {
 
-        List<MediaFeedData> filteredList = new LinkedList<MediaFeedData>();
+        List<RestogramPhoto> filteredList = new LinkedList<RestogramPhoto>();
 
         if (data == null)
             return filteredList;
 
-        for (MediaFeedData item : data) {
+        for (RestogramPhoto currPhoto : data) {
 
-            List<String> tags = item.getTags();
+            List<String> tags = Arrays.asList(currPhoto.getTags());
             HashSet<String> tagsSet = new HashSet<String>(tags);
 
             if(!FilteringUtils.disjointSets(tagsSet, foodTags))
-                filteredList.add(item);
+                filteredList.add(currPhoto);
         }
 
         return filteredList;

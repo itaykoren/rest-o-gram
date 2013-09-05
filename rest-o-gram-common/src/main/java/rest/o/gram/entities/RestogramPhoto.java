@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName;
 import rest.o.gram.Utils.EncodingUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
 * Created with IntelliJ IDEA.
@@ -17,7 +20,7 @@ public class RestogramPhoto implements Serializable {
 
     public RestogramPhoto(String caption, String createdTime, String instagram_id, String imageFilter,
                           String thumbnail, String standardResolution, long likes, String link,
-                          String type, String user, String originVenueId, long yummies) {
+                          String type, String user, String originVenueId, List<String> tags, long yummies) {
         this.setCaption(caption);
         this.setCreatedTime(createdTime);
         this.setInstagram_id(instagram_id);
@@ -29,6 +32,7 @@ public class RestogramPhoto implements Serializable {
         this.setType(type);
         this.setUser(user);
         this.setOriginVenueId(originVenueId);
+        this.setTags(tags);
         this.setYummies(yummies);
     }
 
@@ -150,6 +154,17 @@ public class RestogramPhoto implements Serializable {
         isApproved = approved;
     }
 
+    public String[] getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        if (tags == null)
+            this.tags = null;
+        else
+            this.tags = tags.toArray(new String[tags.size()]);
+    }
+
     /** account related props **/
 
 //    public long getId() {
@@ -217,4 +232,7 @@ public class RestogramPhoto implements Serializable {
 
     @SerializedName("is_approved")
     private boolean isApproved;
+
+    @SerializedName("tags")
+    private String[] tags;
 }

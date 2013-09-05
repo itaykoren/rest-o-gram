@@ -27,7 +27,7 @@ public final class Defs {
      * Transport constants
      */
     public static class Transport {
-        public static final String BASE_HOST_NAME = "http://rest-o-debug.appspot.com";
+        public static final String BASE_HOST_NAME = "http://rest-o-gram.appspot.com";
         public static final String HELPERS_HOST_NAME_SCHEME = "http://rest-o-helper%d.appspot.com";
     }
 
@@ -52,7 +52,7 @@ public final class Defs {
     public static class Instagram {
         public static final int REQUESTS_TIMEOUT = 8;
         public static final TimeUnit REQUESTS_TIMEOUT_UNIT = TimeUnit.SECONDS;
-        public static final int FRONTEND_ACCESS_SERVICES_AMOUNT = 12;
+        public static final int FRONTEND_ACCESS_SERVICES_AMOUNT = 4;
         public static final int BACKEND_ACCESS_SERVICES_AMOUNT = 11;
 
         public static enum RequestType

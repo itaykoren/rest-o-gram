@@ -1,13 +1,12 @@
 package rest.o.gram.service.backend;
 
 import com.google.appengine.api.taskqueue.TaskHandle;
-import org.jinstagram.entity.media.MediaInfoFeed;
-import rest.o.gram.ApisConverters;
 import rest.o.gram.Defs;
 import rest.o.gram.InstagramAccessManager;
 import rest.o.gram.tasks.TasksManager;
 import rest.o.gram.data.DataManager;
 import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.utils.InstagramUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -86,7 +85,6 @@ public class FilterRulesServlet extends HttpServlet {
                     currPhoto = DataManager.getPendingPhoto(currPhotoId);
                 else // get from instagram
                 {
-                    //currPhoto = InstagramAccessManager.getPhoto(currPhotoId, venueId);
                     final InstagramAccessManager.PrepareRequest prepareRequest =
                             new InstagramAccessManager.PrepareRequest() {
                                 @Override
@@ -94,16 +92,15 @@ public class FilterRulesServlet extends HttpServlet {
                                     return currPhotoId.getBytes();
                                 }
                             };
-                    final MediaInfoFeed currMediaInfoFeed =
-                            InstagramAccessManager.parallelBackendInstagramRequest(Defs.Instagram.RequestType.GetPhoto,
-                                                                                   prepareRequest,
-                                                                                   MediaInfoFeed.class);
-                    if (currMediaInfoFeed == null)
+                    currPhoto = InstagramAccessManager.parallelBackendInstagramRequest(Defs.Instagram.RequestType.GetPhoto,
+                                                                                       prepareRequest,
+                                                                                       RestogramPhoto.class).decodeStrings();
+                    if (InstagramUtils.isNullOrEmpty(currPhoto))
                     {
                         log.warning("cannot obtain photo, skips");
                         continue;
                     }
-                    currPhoto = ApisConverters.convertToRestogramPhoto(currMediaInfoFeed.getData(), venueId);
+                    currPhoto.setOriginVenueId(venueId);
                 }
 
                 photoToRuleMapping.put(currPhoto,Boolean.parseBoolean(idRulePairs[i+1]));

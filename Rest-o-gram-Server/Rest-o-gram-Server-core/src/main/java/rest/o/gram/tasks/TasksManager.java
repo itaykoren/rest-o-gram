@@ -2,7 +2,8 @@ package rest.o.gram.tasks;
 
 import com.google.appengine.api.taskqueue.*;
 import org.apache.commons.lang3.StringUtils;
-import org.jinstagram.entity.users.feed.MediaFeedData;
+import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.utils.InstagramUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -15,20 +16,18 @@ import java.util.logging.Logger;
  */
 public class TasksManager {
 
-    public static TaskHandle enqueueFilterTask(final String venueId, final List<MediaFeedData> rawPhotos) {
+    public static TaskHandle enqueueFilterTask(final String venueId, final List<RestogramPhoto> rawPhotos) {
         final StringBuilder payloadBuilder = new StringBuilder();
         payloadBuilder.append(venueId);
         payloadBuilder.append(";");
-        for (final MediaFeedData currMedia : rawPhotos)
+        for (final RestogramPhoto currPhoto : rawPhotos)
         {
-            if (currMedia == null || currMedia.getImages() == null ||
-                currMedia.getImages().getStandardResolution() == null ||
-                StringUtils.isBlank(currMedia.getImages().getStandardResolution().getImageUrl()))
-                        continue;
+            if (InstagramUtils.isNullOrEmpty(currPhoto) || StringUtils.isBlank(currPhoto.getStandardResolution()))
+                continue;
 
-            payloadBuilder.append(currMedia.getId());
+            payloadBuilder.append(currPhoto.getInstagram_id());
             payloadBuilder.append(",");
-            payloadBuilder.append(currMedia.getImages().getStandardResolution().getImageUrl());
+            payloadBuilder.append(currPhoto.getStandardResolution());
             payloadBuilder.append(",");
         }
         payloadBuilder.substring(0, payloadBuilder.length()-1);

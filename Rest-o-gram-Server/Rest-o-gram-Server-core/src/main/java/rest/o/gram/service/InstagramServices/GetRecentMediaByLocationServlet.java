@@ -2,8 +2,9 @@ package rest.o.gram.service.InstagramServices;
 
 import com.google.gson.Gson;
 import org.jinstagram.Instagram;
-import org.jinstagram.entity.users.feed.MediaFeed;
-import rest.o.gram.service.InstagramServices.Entities.EmptyMediaFeed;
+import rest.o.gram.ApisConverters;
+import rest.o.gram.service.InstagramServices.Entities.RestogramPhotos;
+import rest.o.gram.service.InstagramServices.Entities.EmptyRestogramPhotos;
 import rest.o.gram.utils.InstagramUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  * User: Or
  * Date: 8/31/13
  */
-public class GetRecentMediaByLocationServlet extends BaseInstagramServlet<MediaFeed> {
+public class GetRecentMediaByLocationServlet extends BaseInstagramServlet<RestogramPhotos> {
 
     /**
      * Executes the instagram request
@@ -26,11 +27,11 @@ public class GetRecentMediaByLocationServlet extends BaseInstagramServlet<MediaF
      * @throws java.io.IOException thrown when an IO error occurs
      */
     @Override
-    protected MediaFeed executeInstagramRequest(final HttpServletRequest request,
+    protected RestogramPhotos executeInstagramRequest(final HttpServletRequest request,
                                                 final Instagram instagram) throws IOException {
         final long locationId =  Long.parseLong(request.getReader().readLine());
         log.info(String.format("getRecentMediaByLocation : %d", locationId));
-        return instagram.getRecentMediaByLocation(locationId);
+        return ApisConverters.convertToRestogramPhotos(instagram.getRecentMediaByLocation(locationId));
     }
 
     /**
@@ -41,11 +42,11 @@ public class GetRecentMediaByLocationServlet extends BaseInstagramServlet<MediaF
      */
     @Override
     protected void onRequestSucceded(final HttpServletResponse response,
-                                     final MediaFeed result) throws IOException {
-        MediaFeed actualResult;
+                                     final RestogramPhotos result) throws IOException {
+        RestogramPhotos actualResult;
         if (InstagramUtils.isNullOrEmpty(result))
         {
-            actualResult = new EmptyMediaFeed();
+            actualResult = new EmptyRestogramPhotos();
             log.info("no media feed found");
         }
         else
@@ -53,7 +54,7 @@ public class GetRecentMediaByLocationServlet extends BaseInstagramServlet<MediaF
             actualResult = result;
             log.info(String.format("got media"));
         }
-        response.getWriter().write(new Gson().toJson(actualResult));
+        response.getWriter().write(new Gson().toJson(actualResult.encodeStrings()));
         response.setStatus(HttpServletResponse.SC_OK);
     }
 

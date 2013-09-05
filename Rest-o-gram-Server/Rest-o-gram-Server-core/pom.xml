@@ -24,10 +24,6 @@
             <id>json-rpc</id>
             <url>http://json-rpc.googlecode.com/svn/mavenrepo</url>
         </repository>
-        <!--<repository>-->
-            <!--<id>my-internal-site</id>-->
-            <!--<url>file:///${env.HOMEPATH}/.m2/repository</url>-->
-        <!--</repository>-->
     </repositories>
 
     <dependencies>
@@ -36,22 +32,11 @@
             <artifactId>rest-o-gram-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.leanengine</groupId>-->
-            <!--<artifactId>server-lib</artifactId>-->
-            <!--<version>0.8</version>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>tau</groupId>
             <artifactId>lean-server-lib</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.nesscomputing.instagram</groupId>-->
-            <!--<artifactId>jInstagram</artifactId>-->
-            <!--<version>1.3.3</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.sachinhandiekar</groupId>
             <artifactId>jInstagram</artifactId>
@@ -73,11 +58,6 @@
             <version>3.1</version>
         </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>fi.foyt</groupId>-->
-        <!--<artifactId>foursquare-api-gae</artifactId>-->
-        <!--<version>0.0.2</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>

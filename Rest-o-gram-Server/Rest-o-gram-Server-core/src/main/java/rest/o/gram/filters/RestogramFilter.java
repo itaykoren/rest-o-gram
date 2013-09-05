@@ -1,6 +1,7 @@
 package rest.o.gram.filters;
 
-import org.jinstagram.entity.users.feed.MediaFeedData;
+import rest.o.gram.entities.RestogramPhoto;
+
 import java.util.List;
 
 /**
@@ -10,5 +11,5 @@ import java.util.List;
  */
 public interface RestogramFilter {
 
-    List<MediaFeedData> doFilter(List<MediaFeedData> data);
+    List<RestogramPhoto> doFilter(List<RestogramPhoto> data);
 }
