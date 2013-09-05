@@ -32,4 +32,6 @@ public interface ITaskObserver {
     void onFinished(RemovePhotoFromFavoritesResult result);
 
     void onCanceled();
+
+    void onError();
 }

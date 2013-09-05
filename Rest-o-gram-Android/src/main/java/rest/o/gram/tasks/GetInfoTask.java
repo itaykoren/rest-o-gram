@@ -1,10 +1,9 @@
 package rest.o.gram.tasks;
 
-import android.os.AsyncTask;
-import rest.o.gram.entities.RestogramVenue;
-import rest.o.gram.iservice.RestogramService;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
+import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.iservice.RestogramService;
 import rest.o.gram.tasks.results.GetInfoResult;
 
 /**
@@ -12,14 +11,13 @@ import rest.o.gram.tasks.results.GetInfoResult;
  * User: Roi
  * Date: 14/04/13
  */
-public class GetInfoTask extends AsyncTask<String, Void, GetInfoResult> {
+public class GetInfoTask extends RestogramAsyncTask<String, Void, GetInfoResult> {
     public GetInfoTask(HttpJsonRpcClientTransport transport, ITaskObserver observer) {
-        this.transport = transport;
-        this.observer = observer;
+        super(transport, observer);
     }
 
     @Override
-    protected GetInfoResult doInBackground(String... params) {
+    protected GetInfoResult doInBackgroundImpl(String... params) {
         String venueID = params[0];
 
         JsonRpcInvoker invoker = new JsonRpcInvoker();
@@ -31,11 +29,6 @@ public class GetInfoTask extends AsyncTask<String, Void, GetInfoResult> {
     @Override
     protected void onPostExecute(GetInfoResult result) {
         observer.onFinished(result);
-    }
-
-    @Override
-    protected void onCancelled() {
-        observer.onCanceled();
     }
 
     class GetInfoResultImpl implements GetInfoResult {
@@ -53,7 +46,4 @@ public class GetInfoTask extends AsyncTask<String, Void, GetInfoResult> {
 
         private RestogramVenue venue;
     }
-
-    private HttpJsonRpcClientTransport transport;
-    private ITaskObserver observer;
 }

@@ -73,8 +73,8 @@ public class ExploreActivity extends RestogramActionBarActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
 
         if(Defs.Flow.WELCOME_SCREENS_ENABLED) {
             if(Utils.isShowWelcomeScreen(this)) {

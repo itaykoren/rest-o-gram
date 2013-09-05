@@ -163,7 +163,12 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
 
     @Override
     public void onCanceled() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // Empty
+    }
+
+    @Override
+    public void onError() {
+        // Empty
     }
 
     private void updateYummiesCount(TextView textView, String photoId) {

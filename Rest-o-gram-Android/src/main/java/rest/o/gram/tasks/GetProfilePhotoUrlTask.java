@@ -1,11 +1,9 @@
 package rest.o.gram.tasks;
 
-import android.os.AsyncTask;
 import com.leanengine.RestService;
 import org.json.JSONObject;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.common.Defs;
-import rest.o.gram.tasks.results.GetNearbyResult;
 import rest.o.gram.tasks.results.GetProfilePhotoUrlResult;
 
 /**
@@ -13,15 +11,14 @@ import rest.o.gram.tasks.results.GetProfilePhotoUrlResult;
  * User: Itay
  * Date: 09/06/13
  */
-public class GetProfilePhotoUrlTask extends AsyncTask<String, Void, GetProfilePhotoUrlResult> {
+public class GetProfilePhotoUrlTask extends RestogramAsyncTask<String, Void, GetProfilePhotoUrlResult> {
 
     public GetProfilePhotoUrlTask(HttpJsonRpcClientTransport transport, ITaskObserver observer) {
-        this.transport = transport;
-        this.observer = observer;
+        super(transport, observer);
     }
 
     @Override
-    protected GetProfilePhotoUrlResult doInBackground(String... params) {
+    protected GetProfilePhotoUrlResult doInBackgroundImpl(String... params) {
 
         String facebookId = params[0];
 
@@ -49,12 +46,6 @@ public class GetProfilePhotoUrlTask extends AsyncTask<String, Void, GetProfilePh
         observer.onFinished(result);
     }
 
-    @Override
-    protected void onCancelled() {
-        observer.onCanceled();
-    }
-
-
     protected class GetProfilePhotoUrlResultImpl implements GetProfilePhotoUrlResult {
 
         public GetProfilePhotoUrlResultImpl(String profilePhotoUrl) {
@@ -69,7 +60,4 @@ public class GetProfilePhotoUrlTask extends AsyncTask<String, Void, GetProfilePh
 
         private String profilePhotoUrl;
     }
-
-    protected HttpJsonRpcClientTransport transport;
-    protected ITaskObserver observer;
 }

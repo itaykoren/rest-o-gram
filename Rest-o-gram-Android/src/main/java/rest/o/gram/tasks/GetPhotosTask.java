@@ -1,14 +1,13 @@
 package rest.o.gram.tasks;
 
-import android.os.AsyncTask;
 import android.util.Log;
+import org.json.rpc.client.HttpJsonRpcClientTransport;
+import org.json.rpc.client.JsonRpcInvoker;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.RestogramFilterType;
-import rest.o.gram.results.PhotosResult;
 import rest.o.gram.iservice.RestogramService;
-import org.json.rpc.client.HttpJsonRpcClientTransport;
-import org.json.rpc.client.JsonRpcInvoker;
+import rest.o.gram.results.PhotosResult;
 import rest.o.gram.tasks.results.GetPhotosResult;
 
 /**
@@ -16,15 +15,14 @@ import rest.o.gram.tasks.results.GetPhotosResult;
  * User: Roi
  * Date: 4/5/13
  */
-public class GetPhotosTask extends AsyncTask<String, Void, GetPhotosResult> {
+public class GetPhotosTask extends RestogramAsyncTask<String, Void, GetPhotosResult> {
 
     public GetPhotosTask(HttpJsonRpcClientTransport transport, ITaskObserver observer) {
-        this.transport = transport;
-        this.observer = observer;
+        super(transport, observer);
     }
 
     @Override
-    protected GetPhotosResult doInBackground(String... params) {
+    protected GetPhotosResult doInBackgroundImpl(String... params) {
         String venueID = params[0];
         RestogramFilterType filterType = RestogramFilterType.valueOf(params[1]);
 
@@ -60,11 +58,6 @@ public class GetPhotosTask extends AsyncTask<String, Void, GetPhotosResult> {
         observer.onFinished(result);
     }
 
-    @Override
-    protected void onCancelled() {
-        observer.onCanceled();
-    }
-
     protected class GetPhotosResultImpl implements GetPhotosResult {
         public GetPhotosResultImpl(RestogramPhoto[] photos, String token) {
             if (photos != null)
@@ -94,9 +87,5 @@ public class GetPhotosTask extends AsyncTask<String, Void, GetPhotosResult> {
         private RestogramPhoto[] photos;
         private String token;
     }
-
-
-    protected HttpJsonRpcClientTransport transport;
-    protected ITaskObserver observer;
 }
 

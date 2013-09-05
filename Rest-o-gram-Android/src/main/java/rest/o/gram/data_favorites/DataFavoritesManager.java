@@ -24,7 +24,6 @@ public class DataFavoritesManager implements IDataFavoritesManager {
 
     public DataFavoritesManager(final IRestogramClient client) {
         this.client = client;
-        favoriteVenues = new HashSet<>();
         favoritePhotos = new HashSet<>();
     }
 
@@ -36,7 +35,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
     @Override
     public void addFavoritePhoto(String photoId) {
         favoritePhotos.add(photoId);
-        final IRestogramCache cache =  RestogramClient.getInstance().getCache();
+        final IRestogramCache cache =  client.getCache();
         if (cache != null)
         {
             final RestogramPhoto photo = cache.findPhoto(photoId);
@@ -53,7 +52,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         if (!favoritePhotos.remove(photoId))
             return false;
 
-        final IRestogramCache cache =  RestogramClient.getInstance().getCache();
+        final IRestogramCache cache =  client.getCache();
         if (cache != null)
         {
             final RestogramPhoto photo = cache.findPhoto(photoId);
@@ -104,7 +103,7 @@ public class DataFavoritesManager implements IDataFavoritesManager {
                             for(RestogramPhoto p : photos) {
                                 favoritePhotos.add(p.getInstagram_id());
 
-                                IRestogramCache cache = RestogramClient.getInstance().getCache();
+                                IRestogramCache cache = client.getCache();
                                 if(cache != null) {
                                     RestogramPhoto photo = cache.findPhoto(p.getInstagram_id());
                                     if(photo != null)
@@ -199,12 +198,12 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         public void onFinished(RemovePhotoFromFavoritesResult result) { }
 
         @Override
-        public void onCanceled() {
-            //To change body of implemented methods use File | Settings | File Templates.
-        }
+        public void onCanceled() { }
+
+        @Override
+        public void onError() { }
     }
 
     private IRestogramClient client;
-    private Set<String> favoriteVenues;
     private Set<String> favoritePhotos;
 }

@@ -7,6 +7,8 @@
     <string name="restogram_login_title">Oops… You\'re Not Logged In</string>
     <string name="restogram_logout_title">Log out</string>
 
+    <string name="connection_error">Sorry, a connection error has occurred. Please restart the application or try again later.</string>
+
     <string name="location_search">Determining your location</string>
     <string name="venue_search">Searching for nearby restaurants</string>
     <string name="venue_search_failed">Restaurant search failed. Retrying…</string>

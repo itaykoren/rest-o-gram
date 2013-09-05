@@ -17,30 +17,40 @@ public class AbstractPopupView implements IPopupView {
 
     @Override
     public boolean open() {
-        if(isOpen)
-            return false;
+        try {
+            if(isOpen)
+                return false;
 
-        if(impl == null)
-            return false;
+            if(impl == null)
+                return false;
 
-        // Open
-        impl.showAtLocation(layout, Gravity.CENTER, 0, 0);
-        isOpen = true;
-        return true;
+            // Open
+            impl.showAtLocation(layout, Gravity.CENTER, 0, 0);
+            isOpen = true;
+            return true;
+        }
+        catch(Exception e) {
+            return false;
+        }
     }
 
     @Override
     public boolean close() {
-        if(!isOpen)
-            return false;
+        try {
+            if(!isOpen)
+                return false;
 
-        if(impl == null)
-            return false;
+            if(impl == null)
+                return false;
 
-        // Close
-        impl.dismiss();
-        isOpen = false;
-        return true;
+            // Close
+            impl.dismiss();
+            isOpen = false;
+            return true;
+        }
+        catch(Exception e) {
+            return false;
+        }
     }
 
     protected PopupWindow impl; // Popup window

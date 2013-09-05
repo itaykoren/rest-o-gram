@@ -102,5 +102,11 @@ public class  AsyncTaskRestogramCommand extends AbstractRestogramCommand impleme
         observer.onCanceled();
     }
 
+    @Override
+    public void onError() {
+        notifyError();
+        observer.onError();
+    }
+
     protected AsyncTask task;
 }

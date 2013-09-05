@@ -2,6 +2,8 @@ package rest.o.gram.activities;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
+import rest.o.gram.R;
 import rest.o.gram.activities.helpers.FavoriteHelper;
 import rest.o.gram.activities.helpers.LoginHelper;
 import rest.o.gram.activities.visitors.IActivityVisitor;
@@ -171,6 +173,12 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
     @Override
     public void onCanceled() {
         // Empty
+    }
+
+    @Override
+    public void onError() {
+        // TODO: show message box with text "connection_error" and then exit or dispose+restart
+        Toast.makeText(this, R.string.connection_error, Toast.LENGTH_LONG).show();
     }
 
     /**

@@ -59,8 +59,8 @@ public class MapActivity extends RestogramActionBarActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
 
         // Check google play services
         if(!isAvailable)
@@ -71,15 +71,6 @@ public class MapActivity extends RestogramActionBarActivity {
                 showWelcomeScreen();
             }
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Check google play services
-        if(!isAvailable)
-            return;
 
         // Initialize map if needed
         if(!isMapReady())

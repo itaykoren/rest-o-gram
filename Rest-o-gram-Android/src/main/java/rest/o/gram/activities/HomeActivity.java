@@ -163,6 +163,14 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
     }
 
     @Override
+    public void onError() {
+        super.onError();
+
+        cancelProgress();
+        resetStatus();
+    }
+
+    @Override
     public void accept(IActivityVisitor visitor) {
         visitor.visit(this);
     }

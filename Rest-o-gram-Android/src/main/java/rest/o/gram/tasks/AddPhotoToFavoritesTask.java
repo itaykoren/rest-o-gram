@@ -1,28 +1,25 @@
 package rest.o.gram.tasks;
 
-import android.os.AsyncTask;
 import android.util.Log;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.data_favorites.results.AddPhotoToFavoritesResult;
 import rest.o.gram.iservice.RestogramAuthService;
-import rest.o.gram.iservice.RestogramService;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Itay
  * Date: 14/06/13
  */
-public class AddPhotoToFavoritesTask extends AsyncTask<String, Void, AddPhotoToFavoritesResult> {
+public class AddPhotoToFavoritesTask extends RestogramAsyncTask<String, Void, AddPhotoToFavoritesResult> {
 
     public AddPhotoToFavoritesTask(HttpJsonRpcClientTransport transport, ITaskObserver observer) {
-        this.transport = transport;
-        this.observer = observer;
+        super(transport, observer);
     }
 
     @Override
-    protected AddPhotoToFavoritesResult doInBackground(String... params) {
+    protected AddPhotoToFavoritesResult doInBackgroundImpl(String... params) {
 
         final String photoId = params[0];
         final  String originVenueId =  params[1];
@@ -51,7 +48,4 @@ public class AddPhotoToFavoritesTask extends AsyncTask<String, Void, AddPhotoToF
             return new AddPhotoToFavoritesResult(service.addPhotoToFavorites(photoId, originVenueId), photoId);
         }
     }
-
-    private HttpJsonRpcClientTransport transport;
-    private ITaskObserver observer;
 }

@@ -1,13 +1,12 @@
 package rest.o.gram.tasks;
 
-import android.os.AsyncTask;
 import android.util.Log;
-import rest.o.gram.client.RestogramClient;
-import rest.o.gram.iservice.RestogramService;
-import rest.o.gram.results.VenuesResult;
-import rest.o.gram.entities.RestogramVenue;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import org.json.rpc.client.JsonRpcInvoker;
+import rest.o.gram.client.RestogramClient;
+import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.iservice.RestogramService;
+import rest.o.gram.results.VenuesResult;
 import rest.o.gram.tasks.results.GetNearbyResult;
 
 /**
@@ -15,15 +14,14 @@ import rest.o.gram.tasks.results.GetNearbyResult;
  * User: Roi
  * Date: 4/5/13
  */
-public class GetNearbyTask extends AsyncTask<Double, Void, GetNearbyResult> {
+public class GetNearbyTask extends RestogramAsyncTask<Double, Void, GetNearbyResult> {
 
     public GetNearbyTask(HttpJsonRpcClientTransport transport, ITaskObserver observer) {
-        this.transport = transport;
-        this.observer = observer;
+        super(transport, observer);
     }
 
     @Override
-    protected GetNearbyResult doInBackground(Double... params) {
+    protected GetNearbyResult doInBackgroundImpl(Double... params) {
         JsonRpcInvoker invoker = new JsonRpcInvoker();
         RestogramService service = invoker.get(transport, "restogram", RestogramService.class);
 
@@ -37,14 +35,9 @@ public class GetNearbyTask extends AsyncTask<Double, Void, GetNearbyResult> {
         observer.onFinished(result);
     }
 
-    @Override
-    protected void onCancelled() {
-        observer.onCanceled();
-    }
-
     private GetNearbyResult safeGetNearby(RestogramService service, Double ... params) {
-        VenuesResult result = null;
-        RestogramVenue[] venues = null;
+        VenuesResult result;
+        RestogramVenue[] venues;
         try
         {
             if(params.length == 3)
@@ -109,8 +102,5 @@ public class GetNearbyTask extends AsyncTask<Double, Void, GetNearbyResult> {
         private double latitude;
         private double longitude;
     }
-
-    private HttpJsonRpcClientTransport transport;
-    private ITaskObserver observer;
 }
 
