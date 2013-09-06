@@ -17,6 +17,7 @@ import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
+import rest.o.gram.shared.CommonDefs;
 import rest.o.gram.tasks.results.GetInfoResult;
 import rest.o.gram.tasks.results.GetPhotosResult;
 import rest.o.gram.view.PhotoViewAdapter;
@@ -91,9 +92,12 @@ public class VenueActivity extends RestogramActionBarActivity {
         pendingCommand = null;
 
         if(result == null || result.getPhotos() == null) {
-            // Show error dialog
-            dialogManager.showNoPhotosAlert(this);
-            return;
+
+            if (viewAdapter.getCount() == 0) {
+                // Show error dialog
+                dialogManager.showNoPhotosAlert(this);
+            }
+                return;
         }
 
         if(RestogramClient.getInstance().isDebuggable())
@@ -246,8 +250,8 @@ public class VenueActivity extends RestogramActionBarActivity {
         if(isRequestPending)
             return;
 
-        // if session is not yet over - request next photos
-        if (lastToken != null) {
+        // if session is not yet over and more photos exist - request next photos
+        if (lastToken != null && !lastToken.equals(CommonDefs.Tokens.FINISHED_FETCHING_FROM_INSTAGRAM)) {
             isRequestPending = true;
             if(RestogramClient.getInstance().isDebuggable())
                 Log.d("REST-O-GRAM", "Requesting more photos");
