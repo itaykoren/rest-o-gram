@@ -17,13 +17,6 @@ public final class Defs {
     }
 
     /**
-     * Tokens constants
-     */
-    public static class Tokens {
-        public static final String FINISHED_FETCHING_FROM_CACHE = "FINISHED_FETCHING_FROM_CACHE";
-    }
-
-    /**
      * Transport constants
      */
     public static class Transport {

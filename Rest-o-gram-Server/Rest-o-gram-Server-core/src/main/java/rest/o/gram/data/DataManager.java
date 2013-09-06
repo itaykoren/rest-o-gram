@@ -15,7 +15,7 @@ import com.leanengine.server.entity.QueryResult;
 import com.leanengine.server.entity.QuerySort;
 import org.apache.commons.lang3.StringUtils;
 import rest.o.gram.DataStoreConverters;
-import rest.o.gram.Defs;
+import rest.o.gram.shared.CommonDefs;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
 import rest.o.gram.entities.RestogramPhoto;
@@ -311,7 +311,7 @@ public final class DataManager {
             final Cursor cursor = queryResult.getCursor();
             String token = null;
             if (!hasMoreResults(queryResult)) // no more results
-                token = Defs.Tokens.FINISHED_FETCHING_FROM_CACHE;
+                token = CommonDefs.Tokens.FINISHED_FETCHING_FROM_CACHE;
             else // has more results
                 token = cursor.toWebSafeString();
             final List<Entity> entities = queryResult.getResult();
