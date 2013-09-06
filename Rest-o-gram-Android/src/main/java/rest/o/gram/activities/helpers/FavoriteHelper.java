@@ -129,7 +129,7 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
 
     @Override
     public void onFinished(AddPhotoToFavoritesResult result) {
-        if (!result.hasSucceeded()) {
+        if (result == null ||!result.hasSucceeded()) {
             enableFavoritePhotoButton();
             return;
         }
@@ -146,7 +146,7 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
 
     @Override
     public void onFinished(RemovePhotoFromFavoritesResult result) {
-        if (!result.hasSucceeded()) {
+        if (result == null || !result.hasSucceeded()) {
             enableFavoritePhotoButton();
             return;
         }
