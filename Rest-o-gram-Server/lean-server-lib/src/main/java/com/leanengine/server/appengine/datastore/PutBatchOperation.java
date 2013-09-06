@@ -11,7 +11,6 @@ import java.util.Map;
  * User: Or
  * Date: 6/12/13
  */
-// TODO: use a similar form as a better API for all DatastoreUtils operations -revise
 public interface PutBatchOperation {
     PutBatchOperation addEntity(String kind, String name);
     PutBatchOperation addEntityProperty(String name, String  prop, Object value);

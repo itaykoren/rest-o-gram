@@ -88,6 +88,7 @@ public final class DataManager {
             putOp.addEntityUnindexedProperty(currName, Props.Photo.THUMBNAIL, currPhoto.getThumbnail());
             putOp.addEntityUnindexedProperty(currName, Props.Photo.TYPE, currPhoto.getType());
             putOp.addEntityUnindexedProperty(currName, Props.Photo.USER, currPhoto.getUser());
+            putOp.addEntityProperty(currName, Props.Photo.YUMMIES, 0);
         }
         return putOp.execute(new PutUpdateStrategy());
     }

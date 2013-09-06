@@ -24,10 +24,22 @@ public class PutUpdateStrategy implements PutStrategy {
         final List<Entity> newEntites = putOp.getEntities();
         final List<Entity> updatedEntities = new ArrayList<>(newEntites.size());
         updatedEntities.addAll(existingEntities.values());
-        for (final Entity currEntity : newEntites)
+        for (final Entity currNewEntity : newEntites)
         {
-            if  (!existingEntities.containsKey(currEntity.getKey().getName()))
-                updatedEntities.add(currEntity);
+            if  (!existingEntities.containsKey(currNewEntity.getKey().getName()))
+                updatedEntities.add(currNewEntity);
+            else // if exists - updates properties
+            {
+                // does not override exisitng props
+                final Entity existingEntity = existingEntities.get(currNewEntity.getKey());
+                for (final String currExistingPropName : existingEntity.getProperties().keySet())
+                {
+                    if (currNewEntity.hasProperty(currExistingPropName))
+                        currNewEntity.removeProperty(currExistingPropName);
+                }
+
+                existingEntity.setPropertiesFrom(currNewEntity);
+            }
         }
 
         return updatedEntities;

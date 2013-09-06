@@ -37,7 +37,7 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
         {
             log.info("YUMMIES: photo is pending");
             final RestogramPhoto pendingPhoto = DataManager.getPendingPhoto(photoId);
-            pendingPhoto.setYummies(1); // TODO: handle consistency if we care enough..
+            pendingPhoto.setYummies(1);
             try
             {
                 DatastoreUtils.putPublicEntity(Kinds.PHOTO, pendingPhoto.getInstagram_id(),
