@@ -12,6 +12,7 @@
     <string name="location_search">Determining your location</string>
     <string name="venue_search">Searching for nearby restaurants</string>
     <string name="venue_search_failed">Restaurant search failed. Retrying…</string>
+    <string name="venue_no_more_photos">No more photos available for this restaurant</string>
 
     <string name="cannot_track_location_err_msg">Could not detect your current location. Please review your location services settings and re-launch the application.</string>
     <string name="no_connectivity_err_msg">Cannot connect to the internet. Please review your network services settings and re-launch the application.</string>
@@ -28,6 +29,7 @@
     <string name="explore_welcome">Here you can explore photos from restaurants nearby.</string>
     <string name="explore_welcome_2">Just click on any photo and start exploring!</string>
     <string name="explore_welcome_3">Click outside the box to dismiss.</string>
+    <string name="explore_no_more_photos">No more photos available in the requested area</string>
 
     <string name="map_welcome">Clicking on an icon will take you to the restaurant page.</string>
     <string name="map_welcome_2">You can also press and hold on a specific area to explore the restaurants there.</string>
