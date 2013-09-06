@@ -1,6 +1,8 @@
 package rest.o.gram.tasks;
 
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 
 /**
@@ -23,7 +25,14 @@ public abstract class RestogramAsyncTask<Params, Progress, Result> extends Async
             return doInBackgroundImpl(params);
         }
         catch(Exception | Error e) {
-            observer.onError();
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    observer.onError();
+                }
+            });
+
             return null;
         }
     }
