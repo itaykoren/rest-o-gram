@@ -21,6 +21,7 @@ import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
+import rest.o.gram.shared.CommonDefs;
 import rest.o.gram.tasks.results.GetNearbyResult;
 import rest.o.gram.tasks.results.GetPhotosResult;
 import rest.o.gram.view.GenericPopupView;
@@ -128,10 +129,10 @@ public class ExploreActivity extends RestogramActionBarActivity {
         // Set pending command to null
         pendingCommand = null;
 
-        if(result == null || !result.hasMorePhotos())
+        if(result == null)
         {
             // Update last token of current venue
-            venues[currVenueIndex].lastToken = null;
+            updateToken(CommonDefs.Tokens.FINISHED_FETCHING_FROM_INSTAGRAM);
 
             if(RestogramClient.getInstance().isDebuggable())
                 Log.d("REST-O-GRAM", "Got null response");
@@ -147,14 +148,10 @@ public class ExploreActivity extends RestogramActionBarActivity {
         // Add new photos
         addPhotos(result.getPhotos());
 
-        final String venueId = venues[currVenueIndex].venueId;
-        final String token = result.getToken();
-
         // Update last token of current venue
-        venues[currVenueIndex].lastToken = token;
-        updateToken(venueId, token);
+        updateToken(result.getToken());
 
-        if (result.getPhotos().length < Defs.Feed.PHOTOS_PACKET_THRESHOLD && result.hasMorePhotos())
+        if (result.getPhotos().length < Defs.Feed.PHOTOS_PACKET_THRESHOLD)
             getMorePhotos();
     }
 
@@ -239,7 +236,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
     }
 
     private void getMorePhotos() {
-        if(isRequestPending)
+        if (isRequestPending)
             return;
 
         isRequestPending = true;
@@ -247,23 +244,49 @@ public class ExploreActivity extends RestogramActionBarActivity {
         if (RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "Requesting photos for next venue");
 
-        final VenueData nextVenue = getNextVenue();
-        final String nextVenueId = nextVenue.venueId;
-        final String nextToken = nextVenue.lastToken;
+        final VenueData nextVenue = getNextVenueWithPhotos();
 
-        if(nextToken != null) {
-            pendingCommand = RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
-        }
-        else {
-            pendingCommand = RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Simple, this);
+        if (nextVenue != null) {
+
+            final String nextVenueId = nextVenue.venueId;
+            final String nextToken = nextVenue.lastToken;
+
+            if (nextToken == null) { // first search for photos for this venue
+                pendingCommand = RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Simple, this);
+            } else { // we received photos from this venue before, and there are more photos
+                pendingCommand = RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
+            }
         }
     }
 
-    private void updateToken(String venueId, String token) {
-        // Update last token in cache
+    private VenueData getNextVenueWithPhotos() {
+
+        for (int i = 0; i < venues.length; i++) {
+            VenueData nextVenue = getNextVenue();
+            String token = nextVenue.lastToken;
+            if (token != null && token.equals(CommonDefs.Tokens.FINISHED_FETCHING_FROM_INSTAGRAM)) {
+                i++;
+            } else {
+                return nextVenue;
+            }
+        }
+        // no more venues with photos
+        return null;
+    }
+
+    private void updateToken(String token) {
+
+        // get current venue, update its last token
+        VenueData venue = venues[currVenueIndex];
+        venue.lastToken = token;
+        // update in cache as well
+        updateTokenInCache(venue.venueId, token);
+    }
+
+    private void updateTokenInCache(String venueId, String token) {
         IRestogramCache cache = RestogramClient.getInstance().getCache();
         RestogramPhotos venuePhotos = cache.findPhotos(venueId);
-        if(venuePhotos != null)
+        if (venuePhotos != null)
             venuePhotos.setToken(token);
     }
 
