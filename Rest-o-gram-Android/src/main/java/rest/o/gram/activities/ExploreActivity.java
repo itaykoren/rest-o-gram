@@ -257,6 +257,9 @@ public class ExploreActivity extends RestogramActionBarActivity {
                 pendingCommand = RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
             }
         }
+        else {
+            Toast.makeText(this, R.string.explore_no_more_photos, Toast.LENGTH_LONG).show();
+        }
     }
 
     private VenueData getNextVenueWithPhotos() {

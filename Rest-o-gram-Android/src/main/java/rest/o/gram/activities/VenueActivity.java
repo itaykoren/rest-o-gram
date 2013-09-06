@@ -258,6 +258,9 @@ public class VenueActivity extends RestogramActionBarActivity {
 
             pendingCommand = RestogramClient.getInstance().getNextPhotos(lastToken, RestogramFilterType.Simple, venueId, this);
         }
+        else {
+            Toast.makeText(this, R.string.venue_no_more_photos, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void setVenuePhoto(String url) {
