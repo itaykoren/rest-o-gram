@@ -8,7 +8,7 @@ import com.leanengine.server.LeanDefs;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
 import com.leanengine.server.appengine.datastore.PutBatchOperation;
-import com.leanengine.server.appengine.datastore.PutOverrideStrategy;
+import com.leanengine.server.appengine.datastore.PutUpdateStrategy;
 import com.leanengine.server.entity.LeanQuery;
 import com.leanengine.server.entity.QueryFilter;
 import com.leanengine.server.entity.QueryResult;
@@ -89,7 +89,7 @@ public final class DataManager {
             putOp.addEntityUnindexedProperty(currName, Props.Photo.TYPE, currPhoto.getType());
             putOp.addEntityUnindexedProperty(currName, Props.Photo.USER, currPhoto.getUser());
         }
-        return putOp.execute(new PutOverrideStrategy());
+        return putOp.execute(new PutUpdateStrategy());
     }
 
     public static PhotosResult fetchPhotosFromCache(final String venueId, final String token) {
