@@ -209,11 +209,12 @@ public class ExploreActivity extends RestogramActionBarActivity {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
-                if (totalItemCount == 0)
+                if(totalItemCount == 0)
                     return;
 
-                // Check whether all views are visible
+                // Check whether all photos are visible
                 if((firstVisibleItem + visibleItemCount >= totalItemCount)
+                        && !isRequestPending
                         && !hasMorePhotos
                         && showNoMorePhotosMessage) {
                     showNoMorePhotosMessage = false;
@@ -221,7 +222,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
                 }
 
                 // Check whether enough views are visible
-                if (++firstVisibleItem + visibleItemCount > totalItemCount - 20) {
+                if(++firstVisibleItem + visibleItemCount > totalItemCount - 20) {
                     onScrollBottom();
                 }
             }

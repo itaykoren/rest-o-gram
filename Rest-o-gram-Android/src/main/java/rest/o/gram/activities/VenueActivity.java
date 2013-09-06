@@ -194,8 +194,9 @@ public class VenueActivity extends RestogramActionBarActivity {
                 if(totalItemCount == 0)
                     return;
 
-                // Check whether all views are visible
+                // Check whether all photos are visible
                 if((firstVisibleItem + visibleItemCount >= totalItemCount)
+                        && !isRequestPending
                         && !hasMorePhotos
                         && showNoMorePhotosMessage) {
                     showNoMorePhotosMessage = false;
@@ -203,7 +204,7 @@ public class VenueActivity extends RestogramActionBarActivity {
                 }
 
                 // Check whether enough views are visible
-                if (++firstVisibleItem + visibleItemCount > totalItemCount - 20) {
+                if(++firstVisibleItem + visibleItemCount > totalItemCount - 20) {
                     onScrollBottom();
                 }
             }
