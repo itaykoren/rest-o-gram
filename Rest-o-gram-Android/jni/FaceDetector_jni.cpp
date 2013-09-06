@@ -68,7 +68,7 @@ JNIEXPORT void JNICALL Java_rest_o_gram_openCV_OpenCVFaceDetector_nativeDetectFa
          Mat frame_gray;
 
          cvtColor( *((Mat*)imageGray), frame_gray, CV_BGR2GRAY );
-         equalizeHist( frame_gray, frame_gray );
+         //-- equalizeHist( frame_gray, frame_gray );
 
          //-- Detect faces
          face_cascade.detectMultiScale( frame_gray, facesVec, 1.1, 2, 0, Size(minSize, minSize) , Size(maxSize, maxSize));

@@ -212,6 +212,14 @@ public class ExploreActivity extends RestogramActionBarActivity {
                 if (totalItemCount == 0)
                     return;
 
+                // Check whether all views are visible
+                if((firstVisibleItem + visibleItemCount >= totalItemCount)
+                        && !hasMorePhotos
+                        && showNoMorePhotosMessage) {
+                    showNoMorePhotosMessage = false;
+                    Toast.makeText(ExploreActivity.this, R.string.explore_no_more_photos, Toast.LENGTH_LONG).show();
+                }
+
                 // Check whether enough views are visible
                 if (++firstVisibleItem + visibleItemCount > totalItemCount - 20) {
                     onScrollBottom();
@@ -256,10 +264,6 @@ public class ExploreActivity extends RestogramActionBarActivity {
                 pendingCommand = RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
             }
         }
-        else if(showNoMorePhotosMessage) {
-            showNoMorePhotosMessage = false;
-            Toast.makeText(this, R.string.explore_no_more_photos, Toast.LENGTH_LONG).show();
-        }
     }
 
     private VenueData getNextVenueWithPhotos() {
@@ -274,6 +278,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
             }
         }
         // no more venues with photos
+        hasMorePhotos = false;
         return null;
     }
 
@@ -358,6 +363,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
     private PhotoViewAdapter viewAdapter; // View adapter
     private boolean isRequestPending = false;
     private boolean showNoMorePhotosMessage = true; // No more photos message flag
+    private boolean hasMorePhotos = true; // Has more photos flag
     private IRestogramCommand pendingCommand;
     private VenueData[] venues;
     private int currVenueIndex = -1;
