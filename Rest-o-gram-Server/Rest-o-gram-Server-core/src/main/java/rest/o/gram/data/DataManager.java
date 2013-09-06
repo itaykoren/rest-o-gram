@@ -8,7 +8,7 @@ import com.leanengine.server.LeanDefs;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
 import com.leanengine.server.appengine.datastore.PutBatchOperation;
-import com.leanengine.server.appengine.datastore.PutUpdateStrategy;
+import com.leanengine.server.appengine.datastore.PutOverrideStrategy;
 import com.leanengine.server.entity.LeanQuery;
 import com.leanengine.server.entity.QueryFilter;
 import com.leanengine.server.entity.QueryResult;
@@ -35,6 +35,25 @@ public final class DataManager {
 
     // NON-AUTH
 
+    public static Map<String,Boolean> getPhotoToRuleMapping(final RestogramPhoto... data) {
+        final String[] instaIds = new String[data.length];
+        int i = 0;
+        for (final RestogramPhoto currPhoto : data)
+            instaIds[i++] = currPhoto.getInstagram_id();
+
+        // gets filter rules for photos
+        Map<String, Boolean> photoToRule = null;
+        try
+        {
+            photoToRule = DataManager.getPhotoToRuleMapping(instaIds);
+        } catch (LeanException e)
+        {
+            log.severe("cannot get photos filter rules");
+        }
+
+        return photoToRule;
+    }
+
     public static Map<String,Boolean> getPhotoToRuleMapping(final String... ids) throws LeanException {
         final Collection<Entity> photoEntities =
                 DatastoreUtils.getPublicEntities(Kinds.PHOTO, ids);
@@ -59,7 +78,6 @@ public final class DataManager {
             putOp.addEntity(Kinds.PHOTO, currName);
             putOp.addEntityProperty(currName, Props.Photo.APPROVED, currEntry.getValue());
 
-            // TODO: refactor
             putOp.addEntityProperty(currName, Props.Photo.ORIGIN_VENUE_ID, currPhoto.getOriginVenueId());
             putOp.addEntityUnindexedProperty(currName, Props.Photo.CAPTION, currPhoto.getCaption());
             putOp.addEntityUnindexedProperty(currName, Props.Photo.CREATED_TIME, currPhoto.getCreatedTime());
@@ -70,11 +88,8 @@ public final class DataManager {
             putOp.addEntityUnindexedProperty(currName, Props.Photo.THUMBNAIL, currPhoto.getThumbnail());
             putOp.addEntityUnindexedProperty(currName, Props.Photo.TYPE, currPhoto.getType());
             putOp.addEntityUnindexedProperty(currName, Props.Photo.USER, currPhoto.getUser());
-
-            // TODO:  handle consistency and consider photos being yummied before approval...
-            putOp.addEntityProperty(currName, Props.Photo.YUMMIES, 0);
         }
-        return putOp.execute(new PutUpdateStrategy());
+        return putOp.execute(new PutOverrideStrategy());
     }
 
     public static PhotosResult fetchPhotosFromCache(final String venueId, final String token) {
@@ -287,7 +302,7 @@ public final class DataManager {
     /**
      * Has the photo been approved by filters and added to cache.
      */
-    public static boolean isPhotoApproved(final String photoId) {
+    public static boolean isPhotoCached(final String photoId) {
         Entity entity = null;
         try
         {

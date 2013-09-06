@@ -1,7 +1,6 @@
 package rest.o.gram.service;
 
 import com.google.gson.Gson;
-import com.leanengine.server.LeanException;
 import com.leanengine.server.auth.AuthService;
 import fi.foyt.foursquare.api.FoursquareApi;
 import fi.foyt.foursquare.api.FoursquareApiException;
@@ -231,7 +230,15 @@ public class RestogramServiceImpl implements RestogramService {
             // fetch cached photos of given venue
             cachedPhotosResult = DataManager.fetchPhotosFromCache(venueId, token);
 
-            markFavoritePhotosAsSuch(cachedPhotosResult);
+            // set as approved
+            if (hasPhotos(cachedPhotosResult))
+            {
+                for  (final RestogramPhoto currPhoto : cachedPhotosResult.getPhotos())
+                    currPhoto.setApproved(true);
+            }
+
+            //set as favorite
+            markFavoritePhotos(cachedPhotosResult);
         }
 
         // if got enough results from cache, return results
@@ -274,7 +281,7 @@ public class RestogramServiceImpl implements RestogramService {
         return isValidPaginationToken(token) ? token : null;
     }
 
-    private void markFavoritePhotosAsSuch(PhotosResult cachedPhotosResult) {
+    private void markFavoritePhotos(PhotosResult cachedPhotosResult) {
         if (AuthService.isUserLoggedIn() && hasPhotos(cachedPhotosResult)) {
             final Set<String> favIds = DataManager.fetchFavoritePhotoIds();
             for (final RestogramPhoto currPhoto : cachedPhotosResult.getPhotos()) {
@@ -326,7 +333,7 @@ public class RestogramServiceImpl implements RestogramService {
 
         List<RestogramPhoto> data = recentMediaByLocation.getPhotos();
         log.info(String.format("got %d photos from instagram", data.size()));
-        data = removeCachedPhotos(data);
+        data = getUncachedPhotos(data);
         log.info(String.format("kept %d photos after checking cache", data.size()));
         addPhotosToQueue(data, venueId);
 
@@ -375,59 +382,36 @@ public class RestogramServiceImpl implements RestogramService {
     }
 
     private void addPhotosToQueue(final List<RestogramPhoto> data, final String originVenueId) {
-
-        // converts to ids
-        final String[] instaIds = new String[data.size()];
-        int i = 0;
+        final List<RestogramPhoto> photosToEnqueue = new ArrayList<>(data.size());
+        final Map<String,RestogramPhoto> idToPhotoMapping  = new HashMap<>(data.size());
         for (final RestogramPhoto currPhoto : data)
         {
-            currPhoto.setOriginVenueId(originVenueId);
-            instaIds[i++] = currPhoto.getInstagram_id();
-        }
-
-        // gets filter rules for photos
-        Map<String, Boolean> photoToRule = null;
-        try
-        {
-            photoToRule = DataManager.getPhotoToRuleMapping(instaIds);
-        } catch (LeanException e)
-        {
-            log.severe("cannot get photos filter rules");
-        }
-
-        // enqueue filtering task for unknown photos
-        final List<RestogramPhoto> photosToEnque = new ArrayList<>();
-        for (final RestogramPhoto currPhoto : data)
-        {
-            final String currId = currPhoto.getInstagram_id();
-            if (!photoToRule.containsKey(currId) && !DataManager.isPhotoPending(currId))
+            if (!DataManager.isPhotoPending(currPhoto.getInstagram_id()))
             {
-                if (!StringUtils.isBlank(currPhoto.getStandardResolution()))
-                    photosToEnque.add(currPhoto);
+                idToPhotoMapping.put(currPhoto.getInstagram_id(), currPhoto);
+                photosToEnqueue.add(currPhoto);
             }
         }
 
-        // enquing as a task to queue
-        if (!photosToEnque.isEmpty())
-            TasksManager.enqueueFilterTask(originVenueId, photosToEnque);
-
-        // setting as pending photos
-        final Map<String,RestogramPhoto> idToPhotoMapping  =
-                new HashMap<>(data.size());
-        for (final RestogramPhoto currPhoto : data)
-            idToPhotoMapping.put(currPhoto.getInstagram_id(), currPhoto);
-        DataManager.addPendingPhotos(idToPhotoMapping);
+        // enque task + set as pending
+        if (!photosToEnqueue.isEmpty())
+        {
+            DataManager.addPendingPhotos(idToPhotoMapping);
+            TasksManager.enqueueFilterTask(originVenueId, photosToEnqueue);
+        }
     }
 
-    private List<RestogramPhoto> removeCachedPhotos(final List<RestogramPhoto> data) {
+    private List<RestogramPhoto> getUncachedPhotos(final List<RestogramPhoto> data) {
+        final Map<String,Boolean> photoToRuleMapping =
+                DataManager.getPhotoToRuleMapping(data.toArray(new RestogramPhoto[1]));
+        final List<RestogramPhoto> uncachedPhotos = new ArrayList<>();
 
-        final List<RestogramPhoto> dataNotInCache = new ArrayList<>();
-
-        for (final RestogramPhoto currItem : data) {
-            if (!DataManager.isPhotoApproved(currItem.getInstagram_id()))
-                dataNotInCache.add(currItem);
+        for (final RestogramPhoto currPhoto : data)
+        {
+            if (!photoToRuleMapping.containsKey(currPhoto.getInstagram_id()))
+                uncachedPhotos.add(currPhoto);
         }
-        return dataNotInCache;
+        return uncachedPhotos;
     }
 
     private RestogramPhotos fetchInstagramPhotos(final  String venueId, final String token) {
