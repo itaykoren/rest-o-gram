@@ -21,7 +21,7 @@ public class GetNextPhotosTask extends GetPhotosTask {
     }
 
     @Override
-    protected GetPhotosResult doInBackground(String... params) {
+    protected GetPhotosResult doInBackgroundImpl(String... params) {
         String token =  params[0];
         RestogramFilterType filterType = RestogramFilterType.valueOf(params[1]);
         String originVenueId = params[2];
