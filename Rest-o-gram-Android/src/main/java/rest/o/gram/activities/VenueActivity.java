@@ -190,8 +190,9 @@ public class VenueActivity extends RestogramActionBarActivity {
                 if(totalItemCount == 0)
                     return;
 
-                // Check whether the last view is visible
-                if(++firstVisibleItem + visibleItemCount > totalItemCount) {
+                // Check whether enough views are visible
+                final int n = (int)(totalItemCount * 0.75);
+                if (++firstVisibleItem + visibleItemCount > n) {
                     onScrollBottom();
                 }
             }
