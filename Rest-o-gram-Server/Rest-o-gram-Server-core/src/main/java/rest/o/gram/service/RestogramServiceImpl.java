@@ -16,6 +16,7 @@ import rest.o.gram.InstagramAccessManager;
 import rest.o.gram.ApisConverters;
 import rest.o.gram.Defs;
 import rest.o.gram.service.InstagramServices.Entities.RestogramPhotos;
+import rest.o.gram.shared.CommonDefs;
 import rest.o.gram.tasks.TasksManager;
 import rest.o.gram.credentials.*;
 import rest.o.gram.data.DataManager;
@@ -220,25 +221,21 @@ public class RestogramServiceImpl implements RestogramService {
 
     private PhotosResult doGetPhotos(final String venueId, final RestogramFilterType filterType, final String token) {
 
+        // client shouldn't send a request when finished fetching from instagram, but just to be on the safe side
+        if (token.equals(CommonDefs.Tokens.FINISHED_FETCHING_FROM_INSTAGRAM))
+            return null;
+
         PhotosResult cachedPhotosResult = null;
         if (StringUtils.isBlank(token) || DataManager.isValidCursor(token))
         {
             // fetch cached photos of given venue
             cachedPhotosResult = DataManager.fetchPhotosFromCache(venueId, token);
-            // set private data for entities
-            if (AuthService.isUserLoggedIn() && hasPhotos(cachedPhotosResult))
-            {
-                final Set<String> favIds = DataManager.fetchFavoritePhotoIds();
-                for (final RestogramPhoto currPhoto : cachedPhotosResult.getPhotos())
-                {
-                    if (favIds.contains(currPhoto.getInstagram_id()))
-                        currPhoto.set_favorite(true);
-                }
-            }
+
+            markFavoritePhotosAsSuch(cachedPhotosResult);
         }
 
         // if got enough results from cache, return results
-        if (cachedPhotosResult != null &&
+        if (hasPhotos(cachedPhotosResult) &&
             cachedPhotosResult.getPhotos().length > Defs.Request.MIN_PHOTOS_PER_REQUEST)
         {
             log.info(String.format("got enough photos from cache - %d", cachedPhotosResult.getPhotos().length));
@@ -249,8 +246,8 @@ public class RestogramServiceImpl implements RestogramService {
         {
             if (hasPhotos(cachedPhotosResult))
                 log.info(String.format("not enough photos from cache - %d, fetch from instagram", cachedPhotosResult.getPhotos().length));
-            final String insragramToken = cachedPhotosResult != null ? cachedPhotosResult.getToken() : token;
-            PhotosResult photosFromInstagram = doGetInstagramPhotos(venueId, filterType, insragramToken);
+            final String instagramToken = resolveInstagramToken(token);
+            PhotosResult photosFromInstagram = doGetInstagramPhotos(venueId, filterType, instagramToken);
             PhotosResult mergedResults = mergeResults(cachedPhotosResult, photosFromInstagram);
             if (hasPhotos(mergedResults) && mergedResults.getPhotos().length <= Defs.Request.MIN_PHOTOS_PER_REQUEST)
             {
@@ -263,7 +260,22 @@ public class RestogramServiceImpl implements RestogramService {
         }
     }
 
-    private static boolean hasPhotos(final PhotosResult cachedPhotosResult) {
+    private String resolveInstagramToken(String token) {
+
+        return isValidPaginationToken(token) ? token : null;
+    }
+
+    private void markFavoritePhotosAsSuch(PhotosResult cachedPhotosResult) {
+        if (AuthService.isUserLoggedIn() && hasPhotos(cachedPhotosResult)) {
+            final Set<String> favIds = DataManager.fetchFavoritePhotoIds();
+            for (final RestogramPhoto currPhoto : cachedPhotosResult.getPhotos()) {
+                if (favIds.contains(currPhoto.getInstagram_id()))
+                    currPhoto.set_favorite(true);
+            }
+        }
+    }
+
+    private boolean hasPhotos(final PhotosResult cachedPhotosResult) {
         return cachedPhotosResult != null &&
                cachedPhotosResult.getPhotos() != null &&
                cachedPhotosResult.getPhotos().length != 0;
@@ -308,17 +320,14 @@ public class RestogramServiceImpl implements RestogramService {
         data = removeCachedPhotos(data);
         log.info(String.format("kept %d photos after checking cache", data.size()));
         addPhotosToQueue(data, venueId);
-        log.info(String.format("sending %d photos for filtering", data.size()));
-        final List<RestogramPhoto> whiteList = filterPhotosIfNeeded(data, filterType);
-        log.info(String.format("received %d photos after filtering", data.size()));
 
-        final RestogramPhoto[] photos = convertMediaFeedDataToRestogramPhotos(data, whiteList, venueId);
+        final RestogramPhoto[] photos = filterPhotosIfNeeded(data, filterType).toArray(new RestogramPhoto[0]);
 
         log.info(String.format("got %d photos", photos.length));
         final Pagination pagination = recentMediaByLocation.getPagination();
         log.info("has more? " + (StringUtils.isNotBlank(pagination.getNextUrl()) ? "yes!" : "no!"));
-        token = (StringUtils.isNotBlank(pagination.getNextUrl()) ?
-                new Gson().toJson(pagination) : null);
+        token = StringUtils.isNotBlank(pagination.getNextUrl()) ?
+                new Gson().toJson(pagination) : CommonDefs.Tokens.FINISHED_FETCHING_FROM_INSTAGRAM;
 
         return new PhotosResult(photos, token);
     }
@@ -343,28 +352,6 @@ public class RestogramServiceImpl implements RestogramService {
 
         log.info("got result from instagram - location-id: " + locationSearchFeed.getLocationList().get(0).getId());
         return locationSearchFeed.getLocationList().get(0).getId(); // TODO: what if we get multiple locations?
-    }
-
-    private RestogramPhoto[] convertMediaFeedDataToRestogramPhotos(final  List<RestogramPhoto> originalList,
-                                                                   final List<RestogramPhoto> whiteList, final String venueId) {
-
-        final Hashtable<String,RestogramPhoto> idToWhiteListMapping = new Hashtable<>();
-        for (final RestogramPhoto currPhoto : whiteList)
-            idToWhiteListMapping.put(currPhoto.getInstagram_id(), currPhoto);
-
-        final RestogramPhoto[] photos = new RestogramPhoto[originalList.size()];
-
-        int i = 0;
-        for (final RestogramPhoto currPhoto : originalList)
-        {
-            photos[i] = currPhoto;
-            currPhoto.setOriginVenueId(venueId);
-            if (idToWhiteListMapping.containsKey(currPhoto.getInstagram_id()))
-                currPhoto.setApproved(true);
-            ++i;
-        }
-
-        return photos;
     }
 
     private List<RestogramPhoto> filterPhotosIfNeeded(final List<RestogramPhoto> data, final RestogramFilterType filterType) {
@@ -436,6 +423,9 @@ public class RestogramServiceImpl implements RestogramService {
 
     private RestogramPhotos fetchInstagramPhotos(final  String venueId, final String token) {
 
+        if (token.equals(CommonDefs.Tokens.FINISHED_FETCHING_FROM_INSTAGRAM))
+            return null;
+
         Pagination pagination = null;
 
         if (isValidPaginationToken(token))
@@ -496,12 +486,23 @@ public class RestogramServiceImpl implements RestogramService {
             }
 
             log.info("got result from instagram - mediafeed");
+
+            setVenueId(restogramPhotos, venueId);
+
             return restogramPhotos;
         }
     }
 
+    private void setVenueId(RestogramPhotos restogramPhotos, String venueId) {
+        for (RestogramPhoto photo : restogramPhotos.getPhotos()) {
+            photo.setOriginVenueId(venueId);
+        }
+    }
+
     private static boolean isValidPaginationToken(final String token) {
-        return !StringUtils.isBlank(token) && !token.equals(Defs.Tokens.FINISHED_FETCHING_FROM_CACHE);
+        return !StringUtils.isBlank(token) &&
+                !token.equals(CommonDefs.Tokens.FINISHED_FETCHING_FROM_CACHE) &&
+                !DataManager.isValidCursor(token);
     }
 
     private static final Logger log = Logger.getLogger(RestogramServiceImpl.class.getName());
