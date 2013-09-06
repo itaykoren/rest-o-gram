@@ -62,9 +62,12 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
             final RestogramPhoto restogramPhoto =
                     InstagramAccessManager.parallelFrontendInstagramRequest(Defs.Instagram.RequestType.GetPhoto,
                                                                             prepareRequest,
-                                                                            RestogramPhoto.class).decodeStrings();
+                                                                            RestogramPhoto.class);
             if (InstagramUtils.isNullOrEmpty(restogramPhoto))
                 return false;
+
+            //decode string to get the correct encoding
+            restogramPhoto.decodeStrings();
 
             restogramPhoto.setOriginVenueId(originVenueId);
             restogramPhoto.setYummies(1);

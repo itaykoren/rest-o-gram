@@ -94,12 +94,15 @@ public class FilterRulesServlet extends HttpServlet {
                             };
                     currPhoto = InstagramAccessManager.parallelBackendInstagramRequest(Defs.Instagram.RequestType.GetPhoto,
                                                                                        prepareRequest,
-                                                                                       RestogramPhoto.class).decodeStrings();
+                                                                                       RestogramPhoto.class);
                     if (InstagramUtils.isNullOrEmpty(currPhoto))
                     {
                         log.warning("cannot obtain photo, skips");
                         continue;
                     }
+                    //decode string to get the correct encoding
+                    currPhoto.decodeStrings();
+
                     currPhoto.setOriginVenueId(venueId);
                 }
 

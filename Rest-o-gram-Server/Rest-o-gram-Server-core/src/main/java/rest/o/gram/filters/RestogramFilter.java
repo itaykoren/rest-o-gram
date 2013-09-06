@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface RestogramFilter {
 
-    List<RestogramPhoto> doFilter(List<RestogramPhoto> data);
+    void doFilter(List<RestogramPhoto> data);
 }

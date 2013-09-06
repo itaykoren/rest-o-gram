@@ -25,24 +25,18 @@ public class HashtagRestogramFilter implements RestogramFilter {
     private final List<String> foodTagsList = Arrays.asList(foodTagsStr.split("\\s*,\\s*"));
     private final Set<String> foodTags = new HashSet<String>(foodTagsList);
 
-    public List<RestogramPhoto> doFilter(final List<RestogramPhoto> data) {
-
-        List<RestogramPhoto> filteredList = new LinkedList<RestogramPhoto>();
+    public void doFilter(final List<RestogramPhoto> data) {
 
         if (data == null)
-            return filteredList;
+            return;
 
-        for (RestogramPhoto currPhoto : data) {
+        for (RestogramPhoto currPhoto : data)
+        {
+            final List<String> tags = Arrays.asList(currPhoto.getTags());
+            final HashSet<String> tagsSet = new HashSet<String>(tags);
 
-            List<String> tags = Arrays.asList(currPhoto.getTags());
-            HashSet<String> tagsSet = new HashSet<String>(tags);
-
-            if(!FilteringUtils.disjointSets(tagsSet, foodTags)) {
+            if(!FilteringUtils.disjointSets(tagsSet, foodTags))
                 currPhoto.setApproved(true);
-            }
-            filteredList.add(currPhoto);
         }
-
-        return filteredList;
     }
 }

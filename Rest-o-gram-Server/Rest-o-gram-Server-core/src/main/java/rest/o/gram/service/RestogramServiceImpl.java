@@ -337,15 +337,15 @@ public class RestogramServiceImpl implements RestogramService {
         log.info(String.format("kept %d photos after checking cache", data.size()));
         addPhotosToQueue(data, venueId);
 
-        final RestogramPhoto[] photos = filterPhotosIfNeeded(data, filterType).toArray(new RestogramPhoto[0]);
+        filterPhotos(data, filterType);
 
-        log.info(String.format("got %d photos", photos.length));
+        log.info(String.format("got %d photos", data.size()));
         final Pagination pagination = recentMediaByLocation.getPagination();
         log.info("has more? " + (StringUtils.isNotBlank(pagination.getNextUrl()) ? "yes!" : "no!"));
         token = StringUtils.isNotBlank(pagination.getNextUrl()) ?
                 new Gson().toJson(pagination) : CommonDefs.Tokens.FINISHED_FETCHING_FROM_INSTAGRAM;
 
-        return new PhotosResult(photos, token);
+        return new PhotosResult(data.toArray(new RestogramPhoto[]{}), token);
     }
 
     private long getInstagramLocationId(final String venueID) {
@@ -370,15 +370,13 @@ public class RestogramServiceImpl implements RestogramService {
         return locationSearchFeed.getLocationList().get(0).getId(); // TODO: what if we get multiple locations?
     }
 
-    private List<RestogramPhoto> filterPhotosIfNeeded(final List<RestogramPhoto> data, final RestogramFilterType filterType) {
-        List<RestogramPhoto> result = new ArrayList<>(data.size());
-        if (filterType != RestogramFilterType.None) {
+    private void filterPhotos(final List<RestogramPhoto> data, final RestogramFilterType filterType) {
+        if (filterType != RestogramFilterType.None)
+        {
             final RestogramFilter restogramFilter =
                     RestogramFilterFactory.createFilter(filterType);
-            result = restogramFilter.doFilter(data);
+            restogramFilter.doFilter(data);
         }
-
-        return result;
     }
 
     private void addPhotosToQueue(final List<RestogramPhoto> data, final String originVenueId) {
@@ -471,12 +469,14 @@ public class RestogramServiceImpl implements RestogramService {
                     };
             final RestogramPhotos restogramPhotos =
                     InstagramAccessManager.parallelFrontendInstagramRequest(Defs.Instagram.RequestType.GetMediaByLocation,
-                                                                            prepareRequest, RestogramPhotos.class).decodeStrings();
+                            prepareRequest, RestogramPhotos.class);
             if (InstagramUtils.isNullOrEmpty(restogramPhotos))
             {
                 log.warning(String.format("media feed for location %d not found", locationID));
                 return null;
             }
+            //decode string to get the correct encoding
+            restogramPhotos.decodeStrings();
 
             log.info("got result from instagram - mediafeed");
 
