@@ -93,7 +93,7 @@ public final class Defs {
             OpenCVFaceBitmapFilter
         }
 
-        public static final BitmapFilterType BITMAP_FILTER_TYPE = BitmapFilterType.OpenCVFaceBitmapFilter;
+        public static final BitmapFilterType BITMAP_FILTER_TYPE = BitmapFilterType.JavaCVFaceBitmapFilter;
         public static final int MIN_CPU_CORES_FOR_FILTERING = 2;
 
         /**
