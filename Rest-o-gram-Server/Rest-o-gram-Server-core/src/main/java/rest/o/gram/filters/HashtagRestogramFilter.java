@@ -37,8 +37,10 @@ public class HashtagRestogramFilter implements RestogramFilter {
             List<String> tags = Arrays.asList(currPhoto.getTags());
             HashSet<String> tagsSet = new HashSet<String>(tags);
 
-            if(!FilteringUtils.disjointSets(tagsSet, foodTags))
-                filteredList.add(currPhoto);
+            if(!FilteringUtils.disjointSets(tagsSet, foodTags)) {
+                currPhoto.setApproved(true);
+            }
+            filteredList.add(currPhoto);
         }
 
         return filteredList;
