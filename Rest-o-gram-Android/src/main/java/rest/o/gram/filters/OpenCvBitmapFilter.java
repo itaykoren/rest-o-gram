@@ -23,7 +23,9 @@ public class OpenCvBitmapFilter implements IBitmapFilter {
         if(faceDetector == null)
             return true;
 
-        return !faceDetector.hasFaces(bitmap);
+        synchronized(lock) {
+            return !faceDetector.hasFaces(bitmap);
+        }
     }
 
     @Override
@@ -38,4 +40,5 @@ public class OpenCvBitmapFilter implements IBitmapFilter {
     }
 
     private FaceDetector faceDetector;
+    private static final Object lock = new Object();
 }
