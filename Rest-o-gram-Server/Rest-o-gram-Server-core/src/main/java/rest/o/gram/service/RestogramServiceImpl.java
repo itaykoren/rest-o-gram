@@ -222,7 +222,7 @@ public class RestogramServiceImpl implements RestogramService {
     private PhotosResult doGetPhotos(final String venueId, final RestogramFilterType filterType, final String token) {
 
         // client shouldn't send a request when finished fetching from instagram, but just to be on the safe side
-        if (token.equals(CommonDefs.Tokens.FINISHED_FETCHING_FROM_INSTAGRAM))
+        if (noMorePhotos(token))
             return null;
 
         PhotosResult cachedPhotosResult = null;
@@ -249,7 +249,7 @@ public class RestogramServiceImpl implements RestogramService {
             final String instagramToken = resolveInstagramToken(token);
             PhotosResult photosFromInstagram = doGetInstagramPhotos(venueId, filterType, instagramToken);
             PhotosResult mergedResults = mergeResults(cachedPhotosResult, photosFromInstagram);
-            if (hasPhotos(mergedResults) && mergedResults.getPhotos().length <= Defs.Request.MIN_PHOTOS_PER_REQUEST)
+            if (shouldFetchMorePhotosFromInstagram(mergedResults))
             {
                 photosFromInstagram = doGetInstagramPhotos(venueId, filterType, mergedResults.getToken());
                 mergedResults = mergeResults(mergedResults, photosFromInstagram);
@@ -260,8 +260,17 @@ public class RestogramServiceImpl implements RestogramService {
         }
     }
 
-    private String resolveInstagramToken(String token) {
+    private boolean shouldFetchMorePhotosFromInstagram(PhotosResult mergedResults) {
+        return hasPhotos(mergedResults) &&
+                mergedResults.getPhotos().length <= Defs.Request.MIN_PHOTOS_PER_REQUEST &&
+                !noMorePhotos(mergedResults.getToken());
+    }
 
+    private boolean noMorePhotos(String token) {
+        return token != null && token.equals(CommonDefs.Tokens.FINISHED_FETCHING_FROM_INSTAGRAM);
+    }
+
+    private String resolveInstagramToken(String token) {
         return isValidPaginationToken(token) ? token : null;
     }
 
@@ -423,7 +432,7 @@ public class RestogramServiceImpl implements RestogramService {
 
     private RestogramPhotos fetchInstagramPhotos(final  String venueId, final String token) {
 
-        if (token.equals(CommonDefs.Tokens.FINISHED_FETCHING_FROM_INSTAGRAM))
+        if (noMorePhotos(token))
             return null;
 
         Pagination pagination = null;
