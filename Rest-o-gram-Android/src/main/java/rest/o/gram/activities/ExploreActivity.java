@@ -213,8 +213,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
                     return;
 
                 // Check whether enough views are visible
-                final int n = (int)(totalItemCount * 0.75);
-                if (++firstVisibleItem + visibleItemCount > n) {
+                if (++firstVisibleItem + visibleItemCount > totalItemCount - 20) {
                     onScrollBottom();
                 }
             }
@@ -257,7 +256,8 @@ public class ExploreActivity extends RestogramActionBarActivity {
                 pendingCommand = RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
             }
         }
-        else {
+        else if(showNoMorePhotosMessage) {
+            showNoMorePhotosMessage = false;
             Toast.makeText(this, R.string.explore_no_more_photos, Toast.LENGTH_LONG).show();
         }
     }
@@ -357,6 +357,7 @@ public class ExploreActivity extends RestogramActionBarActivity {
     private double longitude; // Longitude
     private PhotoViewAdapter viewAdapter; // View adapter
     private boolean isRequestPending = false;
+    private boolean showNoMorePhotosMessage = true; // No more photos message flag
     private IRestogramCommand pendingCommand;
     private VenueData[] venues;
     private int currVenueIndex = -1;
