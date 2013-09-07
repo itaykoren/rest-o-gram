@@ -1,9 +1,9 @@
 package rest.o.gram.data_favorites;
 
-import com.leanengine.*;
+import com.leanengine.LeanEngine;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.IRestogramClient;
-import rest.o.gram.entities.*;
+import rest.o.gram.entities.RestogramPhoto;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +14,6 @@ import java.util.Set;
  * Date: 5/22/13
  */
 public class DataFavoritesManager implements IDataFavoritesManager {
-
 
     public DataFavoritesManager(final IRestogramClient client) {
         this.client = client;
@@ -79,70 +78,6 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         LeanEngine.dispose();
     }
 
-//    private class TaskObserverImpl implements ITaskObserver {
-//
-//        @Override
-//        public void onFinished(GetNearbyResult venues) { }
-//
-//        @Override
-//        public void onFinished(GetInfoResult venue) { }
-//
-//        @Override
-//        public void onFinished(GetPhotosResult result) { }
-//
-//        @Override
-//        public void onFinished(CachePhotoResult result) {
-//            if (!result.hasSucceded())
-//            {
-//                if (RestogramClient.getInstance().isDebuggable())
-//                    Log.d("REST-O-GRAM", "adding photo to fav - caching failed");
-//            }
-//            else // caching succceded
-//            {
-//                if (RestogramClient.getInstance().isDebuggable())
-//                    Log.d("REST-O-GRAM", "adding photo to fav - caching succeded");
-//            }
-//        }
-//
-//        @Override
-//        public void onFinished(FetchPhotosFromCacheResult result) { }
-//
-//        @Override
-//        public void onFinished(CacheVenueResult result) {
-//            if (!result.hasSucceded())
-//            {
-//                if (RestogramClient.getInstance().isDebuggable())
-//                    Log.d("REST-O-GRAM", "adding venue to fav - caching venue failed");
-//            }
-//            else // caching succceded
-//            {
-//                if (RestogramClient.getInstance().isDebuggable())
-//                    Log.d("REST-O-GRAM", "adding venue to fav - caching venue succeded");
-//            }
-//        }
-//
-//        @Override
-//        public void onFinished(FetchVenuesFromCacheResult result) { }
-//
-//        @Override
-//        public void onFinished(GetProfilePhotoUrlResult result) { }
-//
-//        @Override
-//        public void onFinished(AddPhotoToFavoritesResult result) { }
-//
-//        @Override
-//        public void onFinished(RemovePhotoFromFavoritesResult result) { }
-//
-//        @Override
-//        public void onFinished(GetFavoritePhotosResult result) { }
-//
-//        @Override
-//        public void onCanceled() { }
-//
-//        @Override
-//        public void onError() { }
-//    }
-//
     private IRestogramClient client;
     private Set<String> favoritePhotos;
 }
