@@ -104,6 +104,7 @@ public final class DataStoreConverters {
         props.put(Props.Photo.USER, new DatastoreUtils.PropertyDescription(photo.getUser(), false));
         props.put(Props.Photo.ORIGIN_VENUE_ID, new DatastoreUtils.PropertyDescription(photo.getOriginVenueId(), true));
         props.put(Props.Photo.YUMMIES, new DatastoreUtils.PropertyDescription(photo.getYummies(), true));
+        props.put(Props.Photo.APPROVED, new DatastoreUtils.PropertyDescription(true, true));
         return props;
     }
 

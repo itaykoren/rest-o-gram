@@ -40,7 +40,9 @@ public class PutUpdateStrategy implements PutStrategy {
                     }
                 }
 
-                existingEntity.setPropertiesFrom(currNewEntity);
+                //existingEntity.setPropertiesFrom(currNewEntity);
+                for (final String currNewProp : currNewEntity.getProperties().keySet())
+                    existingEntity.setProperty(currNewProp, currNewEntity.getProperty(currNewProp));
             }
         }
 
