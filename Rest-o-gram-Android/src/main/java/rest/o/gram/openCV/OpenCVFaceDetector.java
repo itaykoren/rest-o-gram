@@ -16,6 +16,18 @@ import java.io.File;
  * Date: 8/26/13
  */
 public class OpenCVFaceDetector extends FaceDetectorBase {
+    /**
+     * Default ctor
+     */
+    public OpenCVFaceDetector() {}
+
+    /**
+     * "Copy ctor"
+     */
+    public OpenCVFaceDetector(final File cascadeFile) {
+        initOpenCVClassifier(cascadeFile);
+    }
+
     @Override
     public boolean hasFaces(final Bitmap bitmap) {
         try {
@@ -48,10 +60,7 @@ public class OpenCVFaceDetector extends FaceDetectorBase {
     @Override
     public FaceDetector clone() throws CloneNotSupportedException {
         super.clone();
-
-        FaceDetectorBase detector = new OpenCVFaceDetector();
-        detector.initOpenCVClassifier(cascadeFile);
-        return detector;
+        return new OpenCVFaceDetector(cascadeFile);
     }
 
     @Override

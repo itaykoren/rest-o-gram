@@ -18,6 +18,18 @@ import java.io.File;
  * Date: 8/26/13
  */
 public class JavaCVFaceDetector extends FaceDetectorBase {
+    /**
+     * Default ctor
+     */
+    public JavaCVFaceDetector() {}
+
+    /**
+     * "Copy ctor"
+     */
+    public JavaCVFaceDetector(final File cascadeFile) {
+        initOpenCVClassifier(cascadeFile);
+    }
+
     @Override
     public boolean hasFaces(Bitmap bitmap) {
         try
@@ -47,20 +59,19 @@ public class JavaCVFaceDetector extends FaceDetectorBase {
     @Override
     public FaceDetector clone() throws CloneNotSupportedException {
         super.clone();
-
-        FaceDetectorBase detector = new JavaCVFaceDetector();
-        detector.initOpenCVClassifier(cascadeFile);
-        return detector;
+        return new JavaCVFaceDetector(cascadeFile);
     }
 
     @Override
     protected void initOpenCVClassifier(final File cascadeFile) {
         try {
             classifier = new CascadeClassifier(cascadeFile.getAbsolutePath());
-            if(classifier.empty())
-                Log.e("REST-O-GRAM", "Failed to load cascade classifier");
-            else
-                Log.i("REST-O-GRAM", "Loaded cascade classifier from " + cascadeFile.getAbsolutePath());
+            if(RestogramClient.getInstance().isDebuggable()) {
+                if(classifier.empty())
+                    Log.e("REST-O-GRAM", "Failed to load cascade classifier");
+                else
+                    Log.i("REST-O-GRAM", "Loaded cascade classifier from " + cascadeFile.getAbsolutePath());
+            }
         }
         catch(Exception | Error e) {
             if(RestogramClient.getInstance().isDebuggable())
