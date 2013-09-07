@@ -12,6 +12,7 @@ import java.util.List;
 public class GetFavoritePhotosResult {
 
     public GetFavoritePhotosResult(List<RestogramPhoto> photos, String token) {
+        decodeCaptions(photos);
         this.photos = photos;
         this.token = token;
     }
@@ -22,6 +23,14 @@ public class GetFavoritePhotosResult {
 
     public String getToken() {
         return token;
+    }
+
+    private void decodeCaptions(List<RestogramPhoto> photos) {
+
+        if (photos != null) {
+            for (RestogramPhoto photo : photos)
+                photo.decodeStrings();
+        }
     }
 
     private List<RestogramPhoto> photos;
