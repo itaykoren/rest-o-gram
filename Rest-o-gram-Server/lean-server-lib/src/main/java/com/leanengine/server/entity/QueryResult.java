@@ -9,7 +9,7 @@ public class QueryResult {
     private List<Entity> result;
     private Cursor cursor;
 
-    public QueryResult(List<Entity> result, Cursor cursor) {
+    public QueryResult(final List<Entity> result, final Cursor cursor) {
         this.result = result;
         this.cursor = cursor;
     }
@@ -18,7 +18,15 @@ public class QueryResult {
         return result;
     }
 
+    public void setResult(List<Entity> result) {
+        this.result = result;
+    }
+
     public Cursor getCursor() {
         return cursor;
+    }
+
+    public void setCursor(Cursor cursor) {
+        this.cursor = cursor;
     }
 }

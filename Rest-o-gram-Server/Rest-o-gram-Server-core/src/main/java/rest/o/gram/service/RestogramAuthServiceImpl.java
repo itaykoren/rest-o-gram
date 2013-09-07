@@ -9,6 +9,7 @@ import rest.o.gram.data.DataManager;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.iservice.RestogramAuthService;
+import rest.o.gram.results.PhotosResult;
 import rest.o.gram.utils.InstagramUtils;
 
 import java.util.logging.Logger;
@@ -88,8 +89,8 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
     }
 
     @Override
-    public boolean fetchFavoritePhotos(final String token) {
-        return false;
+    public PhotosResult fetchFavoritePhotos(final String token) {
+        return DataManager.queryFavoritePhotos(token);
     }
 
     private static final Logger log = Logger.getLogger(RestogramAuthServiceImpl.class.getName());

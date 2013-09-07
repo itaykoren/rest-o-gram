@@ -120,21 +120,37 @@ public class DatastoreUtils {
         return result;
     }
 
-    public static List<Entity> getPrivateEntities(String kind) throws LeanException {
+    public static Collection<Entity> getPrivateEntities(final String kind) throws LeanException {
+        return getPrivateEntities(kind, null);
+    }
+
+    public static Collection<Entity> getPrivateEntities(final String kind, final String[] uniqueNames) throws LeanException {
 
         if (!pattern.matcher(kind).matches()) {
             throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
         }
 
-        LeanAccount account = AuthService.getCurrentAccount();
+        final LeanAccount account = AuthService.getCurrentAccount();
         // this should not happen, but we check anyway
         if (account == null) throw new LeanException(LeanException.Error.NotAuthorized);
 
         final Key accountKey = getCurrentAccountKey();
-        Query query = new Query(kind, accountKey);
-        PreparedQuery pq = datastore.prepare(query);
 
-        return pq.asList(FetchOptions.Builder.withDefaults());
+        if (uniqueNames == null || uniqueNames.length == 0)
+        {
+            final Query query = new Query(kind, accountKey);
+            PreparedQuery pq = datastore.prepare(query);
+            return pq.asList(FetchOptions.Builder.withDefaults());
+        }
+        else
+        {
+           final List<Key> keys = new ArrayList<>(uniqueNames.length);
+            for (final String currName : uniqueNames)
+                keys.add(KeyFactory.createKey(accountKey, kind, currName));
+
+            final Map<Key,Entity> result = datastore.get(keys);
+            return result.values();
+        }
     }
 
     public static Collection<Entity> getPublicEntities(String kind, String[] uniqueNames) throws LeanException {

@@ -15,6 +15,7 @@ import com.leanengine.server.entity.QueryResult;
 import com.leanengine.server.entity.QuerySort;
 import org.apache.commons.lang3.StringUtils;
 import rest.o.gram.DataStoreConverters;
+import rest.o.gram.data.results.RestogramPhotoIdsQueryResult;
 import rest.o.gram.shared.CommonDefs;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
@@ -247,10 +248,53 @@ public final class DataManager {
         final List<Entity> resultEntities = result.getResult();
         Set<String> resultIds = new HashSet<>(resultEntities.size());
         for (final Entity currEntity : resultEntities)
-          resultIds.add(currEntity.getKey().getName());
+            resultIds.add(currEntity.getKey().getName());
         return resultIds;
     }
 
+    public static PhotosResult queryFavoritePhotos(final String token) {
+        final RestogramPhotoIdsQueryResult favIdsResult = queryFavoritePhotoIds(token);
+
+        if (favIdsResult == null || favIdsResult.getResult() == null ||
+            favIdsResult.getResult().isEmpty())
+            return null;
+
+        Collection<Entity> entities = null;
+        try
+        {
+            entities =
+                    DatastoreUtils.getPublicEntities(Kinds.PHOTO,
+                                                     favIdsResult.getResult().toArray(new String[]{}));
+        }
+        catch (LeanException e)
+        {
+            log.severe("could not query for fav photos");
+            return null;
+        }
+
+        final QueryResult queryResult =
+                new QueryResult(new ArrayList<>(entities), favIdsResult.getCursor());
+        return createPhotosResultFromQueryResult(queryResult);
+    }
+
+    private static RestogramPhotoIdsQueryResult queryFavoritePhotoIds(final String token) {
+        final LeanQuery query = new LeanQuery(Kinds.PHOTO_REFERENCE);
+        query.addFilter(Props.PhotoRef.IS_FAVORITE, QueryFilter.FilterOperator.EQUAL, true);
+        query.setKeysOnly();
+        if (isValidCursor(token))
+            query.setCursor(Cursor.fromWebSafeString(token));
+        QueryResult result = null;
+        try
+        {
+            result = DatastoreUtils.queryEntityPrivate(query);
+        } catch (LeanException e)
+        {
+            log.severe("could not query for fav photos");
+            return null;
+        }
+
+        return new RestogramPhotoIdsQueryResult(result);
+    }
 
     public static long getPhotoYummiesCount(final String photoId) {
         Entity photoEntity = null;
@@ -320,7 +364,7 @@ public final class DataManager {
         return true;
     }
 
-    private static PhotosResult createPhotosResultFromQueryResult(QueryResult queryResult) {
+    private static PhotosResult createPhotosResultFromQueryResult(final QueryResult queryResult) {
 
         if (queryResult != null && queryResult.getResult() != null)
         {
@@ -331,16 +375,23 @@ public final class DataManager {
             else // has more results
                 token = cursor.toWebSafeString();
             final List<Entity> entities = queryResult.getResult();
-            final RestogramPhoto[] result = new RestogramPhoto[entities.size()];
-            int i = 0;
-            for (final Entity currEntity : entities)
-                result[i++] = (DataStoreConverters.entityToPhoto(currEntity));
+            final RestogramPhoto[] result = entitiesToRestogramPhotos(entities);
 
             return new PhotosResult(result, token);
         }
 
         log.severe("cannot init photos query result");
         return null; // error
+    }
+
+    private static RestogramPhoto[] entitiesToRestogramPhotos(final Collection<Entity> entities) {
+        if (entities == null)
+            return null;
+        final RestogramPhoto[] result = new RestogramPhoto[entities.size()];
+        int i = 0;
+        for (final Entity currEntity : entities)
+            result[i++] = (DataStoreConverters.entityToPhoto(currEntity));
+        return result;
     }
 
     private static boolean hasMoreResults(QueryResult queryResult) {

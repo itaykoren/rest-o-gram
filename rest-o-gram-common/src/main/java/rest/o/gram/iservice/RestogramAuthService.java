@@ -1,5 +1,7 @@
 package rest.o.gram.iservice;
 
+import rest.o.gram.results.PhotosResult;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Or
@@ -19,5 +21,5 @@ public interface RestogramAuthService {
     /**
      * fetches all favorite photos of the current user
      */
-    boolean fetchFavoritePhotos(String token);
+    PhotosResult fetchFavoritePhotos(String token);
 }

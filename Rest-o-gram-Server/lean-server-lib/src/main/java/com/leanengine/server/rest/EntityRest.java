@@ -30,12 +30,12 @@ public class EntityRest {
          DatastoreUtils.deletePrivateEntity(entityName, entityId);
     }
 
-    @GET
-    @Path("/{entityName}")
-    public JsonNode getAllUserPrivateEntities(@PathParam("entityName") String kind) throws LeanException {
-        List<Entity> entities = DatastoreUtils.getPrivateEntities(kind);
-        return JsonUtils.entityListToJson(entities);
-    }
+//    @GET
+//    @Path("/{entityName}")
+//    public JsonNode getAllUserPrivateEntities(@PathParam("entityName") String kind) throws LeanException {
+//        List<Entity> entities = DatastoreUtils.getPrivateEntities(kind);
+//    return JsonUtils.entityListToJson(entities);
+//}
 
     @GET
     @Path("/")
