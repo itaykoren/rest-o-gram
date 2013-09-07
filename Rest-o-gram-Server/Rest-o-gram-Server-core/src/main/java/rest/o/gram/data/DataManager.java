@@ -274,7 +274,13 @@ public final class DataManager {
 
         final QueryResult queryResult =
                 new QueryResult(new ArrayList<>(entities), favIdsResult.getCursor());
-        return createPhotosResultFromQueryResult(queryResult);
+        final PhotosResult result = createPhotosResultFromQueryResult(queryResult);
+        if (result != null && result.getPhotos() != null)
+        {
+            for (final RestogramPhoto currPhoto : result.getPhotos())
+                currPhoto.set_favorite(true);
+        }
+        return result;
     }
 
     private static RestogramPhotoIdsQueryResult queryFavoritePhotoIds(final String token) {
