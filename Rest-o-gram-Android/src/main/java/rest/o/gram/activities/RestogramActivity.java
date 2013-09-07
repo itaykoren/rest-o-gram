@@ -2,8 +2,6 @@ package rest.o.gram.activities;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.widget.Toast;
-import rest.o.gram.R;
 import rest.o.gram.activities.helpers.FavoriteHelper;
 import rest.o.gram.activities.helpers.LoginHelper;
 import rest.o.gram.activities.visitors.IActivityVisitor;
@@ -11,6 +9,7 @@ import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.data_favorites.results.AddPhotoToFavoritesResult;
+import rest.o.gram.data_favorites.results.GetFavoritePhotosResult;
 import rest.o.gram.data_favorites.results.RemovePhotoFromFavoritesResult;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
@@ -168,6 +167,11 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
     @Override
     public void onFinished(RemovePhotoFromFavoritesResult result) {
         // Empty
+    }
+
+    @Override
+    public void onFinished(GetFavoritePhotosResult result) {
+       // Empty
     }
 
     @Override

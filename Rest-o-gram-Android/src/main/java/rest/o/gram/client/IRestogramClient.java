@@ -101,6 +101,11 @@ public interface IRestogramClient {
     /* AUTH SERVICES */
 
     /**
+     * Executes getFavoritePhotos request
+     */
+    void getFavoritePhotos(String token, ITaskObserver observer);
+
+    /**
      * Executes add photo to favorites request
      */
     void addPhotoToFavorites(String photoId, String originVenueId, ITaskObserver observer);

@@ -16,8 +16,6 @@ import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.IRestogramListener;
 import rest.o.gram.common.Utils;
-import rest.o.gram.data_favorites.GetFavoritePhotosResult;
-import rest.o.gram.data_favorites.GetFavoriteVenuesResult;
 import rest.o.gram.data_favorites.IDataFavoritesManager;
 import rest.o.gram.data_favorites.IDataFavoritesOperationsObserver;
 import rest.o.gram.data_favorites.results.*;
@@ -117,7 +115,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     @Override
     public void onFinished(GetFavoritePhotosResult result) {
         isPhotosRequestPending = false;
-        setFavoritePhotos(result.getElements());
+        setFavoritePhotos(result.getPhotos());
     }
 
     @Override

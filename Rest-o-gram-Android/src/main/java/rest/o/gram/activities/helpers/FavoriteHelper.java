@@ -6,13 +6,11 @@ import rest.o.gram.R;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Utils;
-import rest.o.gram.data_favorites.GetFavoritePhotosResult;
-import rest.o.gram.data_favorites.GetFavoriteVenuesResult;
 import rest.o.gram.data_favorites.IDataFavoritesManager;
 import rest.o.gram.data_favorites.IDataFavoritesOperationsObserver;
 import rest.o.gram.data_favorites.results.*;
 import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.shared.CommonDefs;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.*;
 
@@ -34,10 +32,9 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
      */
     public void refresh() {
         if(dataFavoritesManager != null) {
-            if(RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
+            if (RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
                 // Get updated favorites
-                //dataFavoritesManager.getFavoriteVenues(this);
-                dataFavoritesManager.getFavoritePhotos(this);
+                RestogramClient.getInstance().getFavoritePhotos(null, this);
             }
         }
     }
@@ -84,10 +81,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
 
     @Override
     public void onFinished(GetFavoritePhotosResult result) {
-        if(result == null)
-            return;
 
-        if(result.getElements() == null || result.getElements().isEmpty())
+        if(result == null || result.getPhotos() == null || result.getPhotos().isEmpty())
             return;
 
         if(favoritePhotoButton != null && !photoId.isEmpty()) {
@@ -98,8 +93,9 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
         }
 
         // Handle pagination
-        if(result.hasMore()) {
-            dataFavoritesManager.getNextFavoritePhotos(result, this);
+        String token = result.getToken();
+        if(hasMorePhotos(token)) {
+            RestogramClient.getInstance().getFavoritePhotos(token, this);
         }
     }
 
@@ -169,6 +165,10 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
     @Override
     public void onError() {
         // Empty
+    }
+
+    private boolean hasMorePhotos(String token) {
+        return token == null || !token.equals(CommonDefs.Tokens.FINISHED_FETCHING_FROM_CACHE);
     }
 
     private void updateYummiesCount(TextView textView, String photoId) {

@@ -1,6 +1,7 @@
 package rest.o.gram.tasks;
 
 import rest.o.gram.data_favorites.results.AddPhotoToFavoritesResult;
+import rest.o.gram.data_favorites.results.GetFavoritePhotosResult;
 import rest.o.gram.data_favorites.results.RemovePhotoFromFavoritesResult;
 import rest.o.gram.tasks.results.*;
 
@@ -30,6 +31,8 @@ public interface ITaskObserver {
     void onFinished(AddPhotoToFavoritesResult result);
 
     void onFinished(RemovePhotoFromFavoritesResult result);
+
+    void onFinished(GetFavoritePhotosResult result);
 
     void onCanceled();
 

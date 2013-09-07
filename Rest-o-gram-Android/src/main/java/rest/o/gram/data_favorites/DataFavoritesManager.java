@@ -11,7 +11,6 @@ import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.*;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -27,10 +26,6 @@ public class DataFavoritesManager implements IDataFavoritesManager {
         favoritePhotos = new HashSet<>();
     }
 
-    @Override
-    public void getFavoritePhotos(final IDataFavoritesOperationsObserver observer) {
-        doGetFavoritePhotos(null, observer);
-    }
 
     @Override
     public void addFavoritePhoto(String photoId) {
@@ -69,73 +64,6 @@ public class DataFavoritesManager implements IDataFavoritesManager {
     @Override
     public Set<String> getFavoritePhotos() {
         return favoritePhotos;
-    }
-
-    @Override
-    public void getNextFavoritePhotos(final GetFavoritePhotosResult previous, final IDataFavoritesOperationsObserver observer) {
-        doGetFavoritePhotos(previous, observer);
-    }
-
-    private void doGetFavoritePhotos(final GetFavoritePhotosResult previous, final IDataFavoritesOperationsObserver observer) {
-        LeanQuery query;
-        if (previous != null) // get next
-            query = previous.getQuery();
-        else // no previous results
-        {
-            query = new LeanQuery(Kinds.PHOTO_REFERENCE);
-            query.addFilter(Props.PhotoRef.IS_FAVORITE, LeanQuery.FilterOperator.EQUAL, true);
-            query.setReference(new QueryReference(Props.PhotoRef.INSTAGRAM_ID,  Kinds.PHOTO));
-        }
-
-        final LeanQuery actualQuery = query;
-        NetworkCallback<LeanEntity> callback =
-                new NetworkCallback<LeanEntity>() {
-                    @Override
-                    public void onResult(LeanEntity... result) {
-                        if (RestogramClient.getInstance().isDebuggable())
-                            Log.d("REST-O-GRAM", "fetching fav photos - from DS succeded");
-
-                        final List<RestogramPhoto> photos =
-                                result == null ? null : Converters.leanEntitiesToPhotos(result);
-
-                        if(photos != null) {
-                            favoritePhotos.clear();
-                            for(RestogramPhoto p : photos) {
-                                favoritePhotos.add(p.getInstagram_id());
-
-                                IRestogramCache cache = client.getCache();
-                                if(cache != null) {
-                                    RestogramPhoto photo = cache.findPhoto(p.getInstagram_id());
-                                    if(photo != null)
-                                        photo.set_favorite(true);
-                                }
-                            }
-                        }
-
-                        observer.onFinished(new GetFavoritePhotosResult(photos, actualQuery));
-                    }
-
-                    @Override
-                    public void onFailure(LeanError error) {
-                        if (RestogramClient.getInstance().isDebuggable())
-                            Log.d("REST-O-GRAM", "fetching fav photos - from DS failed:"+ error.getErrorMessage() +
-                                    ", error_code:" + error.getErrorCode() + ", error_type:" + error.getErrorType());
-                        observer.onFinished(new GetFavoritePhotosResult(null, null));
-                    }
-                };
-
-        if (previous != null)
-        {
-            if (RestogramClient.getInstance().isDebuggable())
-                Log.d("REST-O-GRAM", "fetching next fav photos - from DS");
-            query.fetchNextInBackground(callback);
-        }
-        else
-        {
-            if (RestogramClient.getInstance().isDebuggable())
-                Log.d("REST-O-GRAM", "fetching fav photos - from DS");
-            query.fetchInBackground(callback);
-        }
     }
 
     @Override
@@ -196,6 +124,9 @@ public class DataFavoritesManager implements IDataFavoritesManager {
 
         @Override
         public void onFinished(RemovePhotoFromFavoritesResult result) { }
+
+        @Override
+        public void onFinished(GetFavoritePhotosResult result) { }
 
         @Override
         public void onCanceled() { }

@@ -6,9 +6,6 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.ImageView;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.LoaderCallbackInterface;
-import org.opencv.android.OpenCVLoader;
 import rest.o.gram.application.IRestogramApplication;
 import rest.o.gram.authentication.AuthenticationProvider;
 import rest.o.gram.authentication.IAuthenticationProvider;
@@ -28,9 +25,6 @@ import rest.o.gram.location.ILocationTrackerFactory;
 import rest.o.gram.location.LocationTrackerFactory;
 import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.network.NetworkStateProvider;
-import rest.o.gram.openCV.JavaCVFaceDetector;
-import rest.o.gram.openCV.OpenCVFaceDetector;
-import rest.o.gram.openCV.RestogramBaseLoaderCallback;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.view.IPhotoViewAdapter;
 
@@ -268,6 +262,13 @@ public class RestogramClient implements IRestogramClient {
     }
 
     /* AUTH SERVICES */
+
+    @Override
+    public void getFavoritePhotos(String token, ITaskObserver observer) {
+        setJsonAuthToken(authTransport);
+        IRestogramCommand command = new GetFavoritePhotosCommand(authTransport, observer, token);
+        commandQueue.pushForce(command);
+    }
 
     @Override
     public void addPhotoToFavorites(String photoId, String originVenueId, ITaskObserver observer) {
