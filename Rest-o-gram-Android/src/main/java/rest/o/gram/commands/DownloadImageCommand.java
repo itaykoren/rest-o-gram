@@ -1,11 +1,8 @@
 package rest.o.gram.commands;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
+import android.os.AsyncTask;
 import android.widget.ImageView;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -15,10 +12,14 @@ import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.IBitmapFilter;
+import rest.o.gram.tasks.DownloadImageObserver;
+import rest.o.gram.tasks.DownloadImageStrategy;
+import rest.o.gram.tasks.DownloadImageTask;
 import rest.o.gram.view.IPhotoViewAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,20 +31,23 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
     public DownloadImageCommand(String url, RestogramPhoto photo, IPhotoViewAdapter viewAdapter,
                                 int width, int height) {
         this.url = url;
-        this.photo = photo;
-        this.photoId = photo.getInstagram_id();
-        this.width = width;
-        this.height = height;
-        this.viewAdapter = viewAdapter;
+
+        ViewAdapterOption option = new ViewAdapterOption(photo.getInstagram_id(), photo, viewAdapter, width, height);
+        strategy = option;
+        observer = option;
+
+        executor = RestogramClient.getInstance().getExecutor();
     }
 
     public DownloadImageCommand(String url, String photoId, ImageView imageView,
                                 int width, int height) {
         this.url = url;
-        this.photoId = photoId;
-        this.width = width;
-        this.height = height;
-        this.imageView = imageView;
+
+        ImageViewOption option = new ImageViewOption(photoId, imageView, width, height);
+        strategy = option;
+        observer = option;
+
+        executor = RestogramClient.getInstance().getExecutor();
     }
 
     @Override
@@ -51,17 +55,10 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         if(!super.execute())
             return false;
 
-        if(imageView != null) {
-            fetchDrawableOnThread(url, photoId, imageView);
-            return true;
-        }
-
-        if(viewAdapter != null) {
-            fetchDrawableOnThread(url, photoId, viewAdapter);
-            return true;
-        }
-
-        return false;
+        DownloadImageTask t = new DownloadImageTask(strategy, observer);
+        t.executeOnExecutor(executor, url);
+        task = t;
+        return true;
     }
 
     @Override
@@ -69,148 +66,11 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         if(!super.cancel())
             return false;
 
-        // Cancel
-        isCanceled = true;
+        task.cancel(true);
         return true;
     }
 
-    private Bitmap fetchDrawable(final String urlString, final String photoId, int reqWidth, int reqHeight, boolean filter) {
-        try {
-            IBitmapCache cache = RestogramClient.getInstance().getBitmapCache();
-            String filename = generateFilename(urlString, photoId);
-            Bitmap bitmap = cache.load(filename);
-
-            if(bitmap == null) {
-                if(filter) {
-                    // Get bitmap filter
-                    final IBitmapFilter bitmapFilter = RestogramClient.getInstance().getBitmapFilter();
-
-                    if(bitmapFilter.requiredQuality() == Defs.Filtering.BitmapQuality.HighResolution) {
-                        // Download full scale bitmap
-                        bitmap = decodeBitmap(urlString);
-
-                        // Apply filter to bitmap
-                        if(!bitmapFilter.accept(bitmap)) {
-                            return null;
-                        }
-
-                        // Download scaled bitmap using existing
-                        bitmap = decodeBitmap(urlString, bitmap, reqWidth, reqHeight);
-                    }
-                    else {
-                        // Download scaled bitmap
-                        bitmap = decodeBitmap(urlString, reqWidth, reqHeight);
-
-                        // Apply filter to bitmap
-                        if(!bitmapFilter.accept(bitmap)) {
-                            return null;
-                        }
-                    }
-                }
-                else {
-                    // Download scaled bitmap
-                    bitmap = decodeBitmap(urlString, reqWidth, reqHeight);
-                }
-
-                // Save scaled bitmap to cache
-                cache.save(filename, bitmap);
-            }
-
-            return bitmap;
-        }
-        catch (OutOfMemoryError e) {
-            return null;
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }
-
-    private void fetchDrawableOnThread(final String urlString, final String photoId, final ImageView imageView) {
-
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                try {
-                    if(isCanceled) {
-                        notifyCanceled();
-                        return;
-                    }
-
-                    final Bitmap bitmap = (Bitmap)message.obj;
-                    if(bitmap == null) {
-                        notifyError();
-                        return;
-                    }
-
-                    imageView.setImageBitmap(bitmap);
-                    notifyFinished();
-                }
-                catch(Exception e) {
-                    notifyError();
-                }
-            }
-        };
-
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                Bitmap bitmap = fetchDrawable(urlString, photoId, width, height, false);
-                Message message = handler.obtainMessage(1, bitmap);
-                handler.sendMessage(message);
-            }
-        };
-        thread.start();
-    }
-
-    private void fetchDrawableOnThread(final String urlString, final String photoId, final IPhotoViewAdapter viewAdapter) {
-
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                try {
-                    if(isCanceled) {
-                        notifyCanceled();
-                        return;
-                    }
-
-                    final Bitmap bitmap = (Bitmap)message.obj;
-                    if(bitmap == null) {
-                        notifyError();
-                        return;
-                    }
-
-                    // Get bitmapId
-                    String bitmapId = generateFilename(urlString, photoId);
-
-                    // Add photo to view adapter
-                    viewAdapter.addPhoto(photoId, bitmapId);
-                    viewAdapter.refresh();
-
-                    notifyFinished();
-                }
-                catch(Exception e) {
-                    notifyError();
-                }
-            }
-        };
-
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                boolean filter = true;
-                if(photo != null && photo.isApproved()) {
-                    filter = false;
-                    Log.d("REST-O-GRAM", "photo is already approved!");
-                }
-
-                Bitmap bitmap = fetchDrawable(urlString, photoId, width, height, filter);
-                Message message = handler.obtainMessage(1, bitmap);
-                handler.sendMessage(message);
-            }
-        };
-        thread.start();
-    }
+    protected AsyncTask task;
 
     private InputStream fetch(String urlString) throws IOException {
         DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -223,39 +83,54 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         return urlString.replaceAll("[^A-Za-z0-9]", "_");
     }
 
-    private Bitmap decodeBitmap(String urlString, int reqWidth, int reqHeight) throws IOException {
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        InputStream is = fetch(urlString);
-        BitmapFactory.decodeStream(is, null, options);
+    private Bitmap decodeBitmap(String urlString, int reqWidth, int reqHeight) {
+        try {
+            // First decode with inJustDecodeBounds=true to check dimensions
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            InputStream is = fetch(urlString);
+            BitmapFactory.decodeStream(is, null, options);
 
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+            // Calculate inSampleSize
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
-        // Decode bitmap (new stream) with inSampleSize set
-        options.inJustDecodeBounds = false;
-        is = fetch(urlString);
-        return BitmapFactory.decodeStream(is, null, options);
+            // Decode bitmap (new stream) with inSampleSize set
+            options.inJustDecodeBounds = false;
+            is = fetch(urlString);
+            return BitmapFactory.decodeStream(is, null, options);
+        }
+        catch(Exception | Error e) {
+            return null;
+        }
     }
 
-    private Bitmap decodeBitmap(String urlString, final Bitmap source, int reqWidth, int reqHeight) throws IOException {
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.outHeight = source.getHeight();
-        options.outWidth = source.getWidth();
+    private Bitmap decodeBitmap(String urlString, final Bitmap source, int reqWidth, int reqHeight) {
+        try {
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.outHeight = source.getHeight();
+            options.outWidth = source.getWidth();
 
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+            // Calculate inSampleSize
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
-        // Decode bitmap (new stream) with inSampleSize set
-        options.inJustDecodeBounds = false;
-        InputStream is = fetch(urlString);
-        return BitmapFactory.decodeStream(is, null, options);
+            // Decode bitmap (new stream) with inSampleSize set
+            options.inJustDecodeBounds = false;
+            InputStream is = fetch(urlString);
+            return BitmapFactory.decodeStream(is, null, options);
+        }
+        catch(Exception | Error e) {
+            return null;
+        }
     }
 
-    private Bitmap decodeBitmap(String urlString) throws IOException {
-        InputStream is = fetch(urlString);
-        return BitmapFactory.decodeStream(is);
+    private Bitmap decodeBitmap(String urlString) {
+        try {
+            InputStream is = fetch(urlString);
+            return BitmapFactory.decodeStream(is);
+        }
+        catch(Exception | Error e) {
+            return null;
+        }
     }
 
     private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -278,12 +153,155 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
         return inSampleSize;
     }
 
+    private Executor executor;
     private String url;
-    private ImageView imageView;
-    private RestogramPhoto photo;
-    private String photoId;
-    private int width;
-    private int height;
-    private IPhotoViewAdapter viewAdapter;
-    private boolean isCanceled = false;
+    private DownloadImageStrategy strategy;
+    private DownloadImageObserver observer;
+
+    /**
+     * Used when downloading images for view adapters
+     */
+    private class ViewAdapterOption implements DownloadImageStrategy, DownloadImageObserver {
+        private ViewAdapterOption(String photoId, RestogramPhoto photo, IPhotoViewAdapter viewAdapter, int width, int height) {
+            this.photoId = photoId;
+            this.photo = photo;
+            this.viewAdapter = viewAdapter;
+            this.width = width;
+            this.height = height;
+        }
+
+        @Override
+        public Bitmap download(final String url) {
+            // Try loading image from cache
+            IBitmapCache cache = RestogramClient.getInstance().getBitmapCache();
+            String filename = generateFilename(url, photoId);
+            Bitmap bitmap = cache.load(filename);
+
+            if(bitmap == null) {
+                final boolean filter = !photo.isApproved();
+                if(filter) {
+                    // Get bitmap filter
+                    final IBitmapFilter bitmapFilter = RestogramClient.getInstance().getBitmapFilter();
+
+                    if(bitmapFilter.requiredQuality() == Defs.Filtering.BitmapQuality.HighResolution) {
+                        // Download full scale bitmap
+                        bitmap = decodeBitmap(url);
+
+                        // Apply filter to bitmap
+                        if(!bitmapFilter.accept(bitmap)) {
+                            return null;
+                        }
+
+                        // Download scaled bitmap using existing
+                        bitmap = decodeBitmap(url, bitmap, width, height);
+                    }
+                    else {
+                        // Download scaled bitmap
+                        bitmap = decodeBitmap(url, width, height);
+
+                        // Apply filter to bitmap
+                        if(!bitmapFilter.accept(bitmap)) {
+                            return null;
+                        }
+                    }
+                }
+                else {
+                    // Download scaled bitmap
+                    bitmap = decodeBitmap(url, width, height);
+                }
+            }
+
+            // Save scaled bitmap to cache
+            cache.save(filename, bitmap);
+            return bitmap;
+        }
+
+        @Override
+        public void onDownloaded(final String url, final Bitmap bitmap) {
+            if(bitmap == null) {
+                notifyError();
+                return;
+            }
+
+            // Get bitmapId
+            String bitmapId = generateFilename(url, photoId);
+
+            // Add photo to view adapter
+            viewAdapter.addPhoto(photoId, bitmapId);
+            viewAdapter.refresh();
+
+            notifyFinished();
+        }
+
+        @Override
+        public void onError(final String url) {
+            notifyError();
+        }
+
+        @Override
+        public void onCanceled(final String url) {
+            notifyCanceled();
+        }
+
+        private String photoId;
+        private RestogramPhoto photo;
+        private IPhotoViewAdapter viewAdapter;
+        private int width;
+        private int height;
+    }
+
+    /**
+     * Used when downloading images for image views
+     */
+    private class ImageViewOption implements DownloadImageStrategy, DownloadImageObserver {
+        private ImageViewOption(String photoId, ImageView imageView, int width, int height) {
+            this.photoId = photoId;
+            this.imageView = imageView;
+            this.width = width;
+            this.height = height;
+        }
+
+        @Override
+        public Bitmap download(final String url) {
+            // Try loading image from cache
+            IBitmapCache cache = RestogramClient.getInstance().getBitmapCache();
+            String filename = generateFilename(url, photoId);
+            Bitmap bitmap = cache.load(filename);
+
+            if(bitmap == null) {
+                // Download scaled bitmap
+                bitmap = decodeBitmap(url, width, height);
+            }
+
+            // Save scaled bitmap to cache
+            cache.save(filename, bitmap);
+            return bitmap;
+        }
+
+        @Override
+        public void onDownloaded(final String url, final Bitmap bitmap) {
+            if(bitmap == null) {
+                notifyError();
+                return;
+            }
+
+            imageView.setImageBitmap(bitmap);
+            notifyFinished();
+        }
+
+        @Override
+        public void onError(final String url) {
+            notifyError();
+        }
+
+        @Override
+        public void onCanceled(final String url) {
+            notifyCanceled();
+        }
+
+        private String photoId;
+        private ImageView imageView;
+        private int width;
+        private int height;
+    }
 }

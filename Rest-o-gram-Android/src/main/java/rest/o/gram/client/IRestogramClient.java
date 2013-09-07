@@ -18,6 +18,8 @@ import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.view.IPhotoViewAdapter;
 
+import java.util.concurrent.Executor;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Roi
@@ -161,6 +163,11 @@ public interface IRestogramClient {
      * Returns the bitmap cache
      */
     IBitmapCache getBitmapCache();
+
+    /**
+     * Returns this client's executor
+     */
+    Executor getExecutor();
 
     /**
      * @return is the application in debug mode?

@@ -69,6 +69,11 @@ public final class Defs {
         public static final int MAX_EXECUTING_COMMANDS = 10;
         public static final long DEFAULT_SHORT_TIMEOUT = 10000; // 10 seconds
         public static final long DEFAULT_LONG_TIMEOUT = 30000; // 30 seconds
+
+        public static final int CORE_POOL_SIZE = MAX_EXECUTING_COMMANDS;
+        public static final int POOL_QUEUE_SIZE = 50;
+        public static final int MAXIMUM_POOL_SIZE = 128;
+        public static final int KEEP_ALIVE_TIME_IN_SECONDS = 10;
     }
 
     /**

@@ -29,6 +29,10 @@ import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.view.IPhotoViewAdapter;
 
 import java.net.URL;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created with IntelliJ IDEA.
@@ -103,6 +107,12 @@ public class RestogramClient implements IRestogramClient {
             final IBitmapFilterFactory bitmapFilterFactory = new BitmapFilterFactory(context);
             bitmapFilter = bitmapFilterFactory.create(Defs.Filtering.BITMAP_FILTER_TYPE);
 
+            executor = new ThreadPoolExecutor(Defs.Commands.CORE_POOL_SIZE,
+                                              Defs.Commands.MAXIMUM_POOL_SIZE,
+                                              Defs.Commands.KEEP_ALIVE_TIME_IN_SECONDS,
+                                              TimeUnit.SECONDS,
+                                              new ArrayBlockingQueue<Runnable>(Defs.Commands.POOL_QUEUE_SIZE));
+
             isInitialized = true;
 
             if(debuggable)
@@ -152,6 +162,12 @@ public class RestogramClient implements IRestogramClient {
         if(tracker != null) {
             tracker.stop();
             tracker.dispose();
+        }
+
+        // Dispose executor
+        if(executor != null) {
+            executor.shutdownNow();
+            executor = null;
         }
 
         if(debuggable)
@@ -335,6 +351,11 @@ public class RestogramClient implements IRestogramClient {
     }
 
     @Override
+    public Executor getExecutor() {
+        return executor;
+    }
+
+    @Override
     public boolean isDebuggable() {
         return debuggable;
     }
@@ -380,7 +401,7 @@ public class RestogramClient implements IRestogramClient {
     private IRestogramCommandQueue commandQueue; // Command queue
     private IRestogramCache cache; // Cache object
     private IBitmapCache bitmapCache; // Bitmap cache object
-    private FaceDetector faceDetector;
+    private ThreadPoolExecutor executor; // Executor object
     private boolean debuggable = false; // debuggable flag
     private boolean isInitialized = false; // Is initialized flag
 }
