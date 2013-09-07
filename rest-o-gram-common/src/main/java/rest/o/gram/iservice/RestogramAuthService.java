@@ -15,4 +15,9 @@ public interface RestogramAuthService {
      * removes requested photo from user favorites, decrements global yummies count
      */
     boolean removePhotoFromFavorites(String photoId);
+
+    /**
+     * fetches all favorite photos of the current user
+     */
+    boolean fetchFavoritePhotos(String token);
 }

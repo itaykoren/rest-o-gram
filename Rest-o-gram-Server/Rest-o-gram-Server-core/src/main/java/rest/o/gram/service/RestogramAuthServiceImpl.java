@@ -87,5 +87,10 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
         return DataManager.changePhotoYummiesCount(photoId, -1);
     }
 
+    @Override
+    public boolean fetchFavoritePhotos(final String token) {
+        return false;
+    }
+
     private static final Logger log = Logger.getLogger(RestogramAuthServiceImpl.class.getName());
 }
