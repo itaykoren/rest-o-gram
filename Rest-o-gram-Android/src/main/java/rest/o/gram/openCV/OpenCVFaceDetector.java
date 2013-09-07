@@ -1,12 +1,12 @@
 package rest.o.gram.openCV;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
+import rest.o.gram.filters.FaceDetector;
 
 import java.io.File;
 
@@ -16,14 +16,6 @@ import java.io.File;
  * Date: 8/26/13
  */
 public class OpenCVFaceDetector extends FaceDetectorBase {
-    public OpenCVFaceDetector(Context context) {
-        super(context);
-    }
-
-    /**
-     * @param bitmap given bitmap to process
-     * @return does the given bitmap contain any faces?
-     */
     @Override
     public boolean hasFaces(final Bitmap bitmap) {
         try {
@@ -54,7 +46,12 @@ public class OpenCVFaceDetector extends FaceDetectorBase {
     }
 
     @Override
-    public void dispose() {
+    public FaceDetector clone() throws CloneNotSupportedException {
+        super.clone();
+
+        FaceDetectorBase detector = new OpenCVFaceDetector();
+        detector.initOpenCVClassifier(cascadeFile);
+        return detector;
     }
 
     @Override

@@ -19,8 +19,21 @@ import java.io.InputStream;
  * Date: 8/28/13
  */
 public abstract class FaceDetectorBase implements FaceDetector {
-    public FaceDetectorBase(Context context) {
+    @Override
+    public void initialize(Context context) {
         loadOpenCVClassifier(context);
+    }
+
+    @Override
+    public void dispose() {
+        if(cascadeDir != null)
+            cascadeDir.delete();
+    }
+
+    @Override
+    public FaceDetector clone() throws CloneNotSupportedException {
+        super.clone();
+        return null;
     }
 
     /**
@@ -43,10 +56,10 @@ public abstract class FaceDetectorBase implements FaceDetector {
         {
             // load cascade file from application resources
             is = context.getResources().openRawResource(Defs.Filtering.OpenCVDetector.CASCADE_CLASSIFIER_ID);
-            final File cascadeDir =
+            cascadeDir =
                     context.getDir(Defs.Filtering.OpenCVDetector.CASCADE_CLASSIFIERS_DIRECTORY_NAME,
                                     Context.MODE_PRIVATE);
-            final File cascadeFile = new File(cascadeDir, Defs.Filtering.OpenCVDetector.CASCADE_CLASSIFIER_FILE_NAME);
+            cascadeFile = new File(cascadeDir, Defs.Filtering.OpenCVDetector.CASCADE_CLASSIFIER_FILE_NAME);
             os = new FileOutputStream(cascadeFile);
 
             byte[] buffer = new byte[4096];
@@ -55,11 +68,6 @@ public abstract class FaceDetectorBase implements FaceDetector {
                 os.write(buffer, 0, bytesRead);
             is.close();
             os.close();
-
-            initOpenCVClassifier(cascadeFile);
-
-            cascadeDir.delete();
-
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -81,5 +89,8 @@ public abstract class FaceDetectorBase implements FaceDetector {
         }
     }
 
-    protected abstract void initOpenCVClassifier(File cascadeFile);
+    protected File cascadeFile = null; // Cascade file
+    private File cascadeDir = null; // Cascade dir
+
+    protected abstract void initOpenCVClassifier(final File cascadeFile);
 }

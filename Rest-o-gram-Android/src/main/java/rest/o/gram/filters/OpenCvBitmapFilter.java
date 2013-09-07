@@ -9,23 +9,22 @@ import rest.o.gram.common.Defs;
  * Date: 8/26/13
  */
 public class OpenCvBitmapFilter implements IBitmapFilter {
-    public OpenCvBitmapFilter() {
-    }
-
     @Override
     public Defs.Filtering.BitmapQuality requiredQuality() {
-        return (faceDetector != null) ?
+        return isInitialized ?
                 Defs.Filtering.BitmapQuality.HighResolution : Defs.Filtering.BitmapQuality.LowResolution;
     }
 
     @Override
     public boolean accept(final Bitmap bitmap) {
-        if(faceDetector == null)
+        if(!isInitialized)
             return true;
 
-        synchronized(lock) {
-            return !faceDetector.hasFaces(bitmap);
-        }
+        final FaceDetector detector = faceDetectors.get();
+        if(detector == null)
+            return true;
+
+        return !detector.hasFaces(bitmap);
     }
 
     @Override
@@ -37,8 +36,23 @@ public class OpenCvBitmapFilter implements IBitmapFilter {
     @Override
     public void setFaceDetector(FaceDetector faceDetector) {
         this.faceDetector = faceDetector;
+        isInitialized = true;
     }
 
-    private FaceDetector faceDetector;
-    private static final Object lock = new Object();
+    private boolean isInitialized = false;
+    private FaceDetector faceDetector = null;
+    private ThreadLocal<FaceDetector> faceDetectors = new ThreadLocal<FaceDetector>() {
+        @Override
+        protected FaceDetector initialValue() {
+            if(!isInitialized)
+                return null;
+
+            try {
+                return faceDetector.clone();
+            }
+            catch(Exception e) {
+                return null;
+            }
+        }
+    };
 }

@@ -35,8 +35,6 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
 
         setContentView(R.layout.home);
 
-        RestogramClient.getInstance().initializeFilter(this);
-
         // Get location tracker
         tracker = RestogramClient.getInstance().getLocationTracker();
         if (tracker == null)

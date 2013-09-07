@@ -1,6 +1,5 @@
 package rest.o.gram.openCV;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import org.opencv.core.Mat;
@@ -9,6 +8,7 @@ import org.opencv.core.Size;
 import org.opencv.objdetect.CascadeClassifier;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
+import rest.o.gram.filters.FaceDetector;
 
 import java.io.File;
 
@@ -18,14 +18,6 @@ import java.io.File;
  * Date: 8/26/13
  */
 public class JavaCVFaceDetector extends FaceDetectorBase {
-    public JavaCVFaceDetector(Context context) {
-        super(context);
-    }
-
-    /**
-     * @param bitmap given bitmap to process
-     * @return does the given bitmap contain any faces?
-     */
     @Override
     public boolean hasFaces(Bitmap bitmap) {
         try
@@ -53,15 +45,27 @@ public class JavaCVFaceDetector extends FaceDetectorBase {
     }
 
     @Override
-    public void dispose() { } // nothing to dispose...
+    public FaceDetector clone() throws CloneNotSupportedException {
+        super.clone();
+
+        FaceDetectorBase detector = new JavaCVFaceDetector();
+        detector.initOpenCVClassifier(cascadeFile);
+        return detector;
+    }
 
     @Override
     protected void initOpenCVClassifier(final File cascadeFile) {
-        classifier = new CascadeClassifier(cascadeFile.getAbsolutePath());
-        if (classifier == null || classifier.empty())
-            Log.e("REST-O-GRAM", "Failed to load cascade classifier");
-        else
-            Log.i("REST-O-GRAM", "Loaded cascade classifier from " + cascadeFile.getAbsolutePath());
+        try {
+            classifier = new CascadeClassifier(cascadeFile.getAbsolutePath());
+            if(classifier.empty())
+                Log.e("REST-O-GRAM", "Failed to load cascade classifier");
+            else
+                Log.i("REST-O-GRAM", "Loaded cascade classifier from " + cascadeFile.getAbsolutePath());
+        }
+        catch(Exception | Error e) {
+            if(RestogramClient.getInstance().isDebuggable())
+                Log.e("REST-O-GRAM", "openCV classifier loading failed");
+        }
     }
 
     private CascadeClassifier classifier;

@@ -14,11 +14,13 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import rest.o.gram.activities.HomeActivity;
-import rest.o.gram.application.IRestogramApplication;
 import rest.o.gram.client.IRestogramClient;
 import rest.o.gram.client.RestogramClient;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -252,14 +254,6 @@ public class Utils {
      */
     public static boolean canApplyBitmapFilter() {
         return Runtime.getRuntime().availableProcessors() >= Defs.Filtering.MIN_CPU_CORES_FOR_FILTERING;
-    }
-
-    /**
-     * @return Is an openCV based bitmap filter being used?
-     */
-    public static boolean usesOpenCVBasedBitmapFilter () {
-        return Defs.Filtering.BITMAP_FILTER_TYPE == Defs.Filtering.BitmapFilterType.JavaCVFaceBitmapFilter ||
-               Defs.Filtering.BITMAP_FILTER_TYPE == Defs.Filtering.BitmapFilterType.OpenCVFaceBitmapFilter;
     }
 
     private static int screenWidth = 0; // Screen width

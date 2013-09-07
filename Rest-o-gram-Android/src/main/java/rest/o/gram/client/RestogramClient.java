@@ -106,7 +106,7 @@ public class RestogramClient implements IRestogramClient {
             if(Defs.Data.CACHE_DATA_HISTORY_ENABLED)
                 cacheDataHistoryManager = new DataHistoryManager();
 
-            final IBitmapFilterFactory bitmapFilterFactory = new BitmapFilterFactory();
+            final IBitmapFilterFactory bitmapFilterFactory = new BitmapFilterFactory(context);
             bitmapFilter = bitmapFilterFactory.create(Defs.Filtering.BITMAP_FILTER_TYPE);
 
             isInitialized = true;
@@ -116,45 +116,6 @@ public class RestogramClient implements IRestogramClient {
         }
         catch(Exception e) {
             Log.e("REST-O-GRAM", "Error in RestogramClient: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void initializeFilter(Context context) {
-        // load openCV manager - if has to
-        if (Utils.usesOpenCVBasedBitmapFilter() && Utils.canApplyBitmapFilter())
-        {
-            final BaseLoaderCallback loaderCallback =
-                    new RestogramBaseLoaderCallback(context) {
-                        @Override
-                        public void onManagerConnected(int status) {
-                            switch (status)
-                            {
-                                case LoaderCallbackInterface.SUCCESS:
-                                {
-                                    if (debuggable)
-                                        Log.i("REST-O-GRAM", "OpenCV loaded successfully");
-
-                                    initFaceDetector(mAppContext);
-                                } break;
-                                default:
-                                {
-                                    Log.e("REST-O-GRAM", "OpenCV could not be loaded");
-                                    super.onManagerConnected(status);
-                                } break;
-                            }
-                        }
-                    };
-
-            if (Defs.Filtering.OpenCVDetector.OPEN_CV_DISTRIBUTION_METHOD == Defs.Filtering.OpenCVDetector.OpenCVDistributionMethod.Dynamic)
-                OpenCVLoader.initAsync(Defs.Filtering.OpenCVDetector.OPENCV_VERSION, context, loaderCallback);
-            else if (Defs.Filtering.OpenCVDetector.OPEN_CV_DISTRIBUTION_METHOD == Defs.Filtering.OpenCVDetector.OpenCVDistributionMethod.Static)
-            {
-                if (!OpenCVLoader.initDebug()) // the static init method...
-                    Log.e("REST-O-GRAM", "error while loading openCV");
-                else
-                    initFaceDetector(context);
-            }
         }
     }
 
@@ -324,22 +285,6 @@ public class RestogramClient implements IRestogramClient {
     }
 
     /* AUX SERVICES */
-
-    /**
-     * Inits a FaceDetector according to the definitions.
-     * @param context application context
-     */
-    private void initFaceDetector(Context context) {
-       if (Defs.Filtering.BITMAP_FILTER_TYPE == Defs.Filtering.BitmapFilterType.OpenCVFaceBitmapFilter) {
-           System.loadLibrary("face_detector"); //  loads native access library
-           faceDetector = new OpenCVFaceDetector(context);
-       }
-       else if (Defs.Filtering.BITMAP_FILTER_TYPE == Defs.Filtering.BitmapFilterType.JavaCVFaceBitmapFilter)
-           faceDetector = new JavaCVFaceDetector(context);
-
-       if(bitmapFilter != null)
-           bitmapFilter.setFaceDetector(faceDetector);
-    }
 
     /* PROVIDERS */
 

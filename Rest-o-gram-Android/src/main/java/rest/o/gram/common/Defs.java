@@ -100,21 +100,11 @@ public final class Defs {
          * OpenCV face detector constants
          */
         public static class OpenCVDetector {
-            public static final OpenCVDistributionMethod OPEN_CV_DISTRIBUTION_METHOD = OpenCVDistributionMethod.Static;
-            public static final String OPENCV_VERSION = org.opencv.android.OpenCVLoader.OPENCV_VERSION_2_4_6;
             public static final String CASCADE_CLASSIFIERS_DIRECTORY_NAME = "cascade";
             public static final String CASCADE_CLASSIFIER_FILE_NAME = "lbpcascade_frontalface.xml";
             public static final int CASCADE_CLASSIFIER_ID = R.raw.lbpcascade_frontalface;
             public static final double MIN_FACE_SIZE = 24;
             public static final double MAX_FACE_SIZE_FACTOR = 1;
-
-            /**
-             * OpenCV library distribution type enumeration
-             */
-            public enum OpenCVDistributionMethod {
-                Dynamic,
-                Static
-            }
         }
 
         /**
