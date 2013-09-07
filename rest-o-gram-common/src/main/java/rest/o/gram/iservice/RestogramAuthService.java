@@ -21,5 +21,5 @@ public interface RestogramAuthService {
     /**
      * fetches all favorite photos of the current user
      */
-    PhotosResult fetchFavoritePhotos(String token);
+    PhotosResult getFavoritePhotos(String token);
 }

@@ -89,7 +89,7 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
     }
 
     @Override
-    public PhotosResult fetchFavoritePhotos(final String token) {
+    public PhotosResult getFavoritePhotos(final String token) {
         return DataManager.queryFavoritePhotos(token);
     }
 
