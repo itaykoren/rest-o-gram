@@ -1,7 +1,5 @@
 package rest.o.gram.iservice;
 
-import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.results.PhotosResult;
 import rest.o.gram.results.VenueResult;
