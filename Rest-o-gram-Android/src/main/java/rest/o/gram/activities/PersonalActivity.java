@@ -215,10 +215,17 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         if(photos == null || photos.size() == 0)
             return;
 
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+        IDataFavoritesManager favoritesManager = RestogramClient.getInstance().getDataFavoritesManager();
+
         for(RestogramPhoto photo : photos) {
             // Add photo to cache (if needed)
-            IRestogramCache cache = RestogramClient.getInstance().getCache();
-            cache.add(photo);
+            if (cache != null)
+                cache.add(photo);
+
+            // Add photo id to the photo ids set in favorites manager (if needed)
+            if (favoritesManager != null)
+                favoritesManager.updateFavoritePhotos(photo.getInstagram_id());
 
             // Download image
             RestogramClient.getInstance().downloadImage(photo.getThumbnail(), photo, favoritePhotoViewAdapter, false, null);

@@ -13,5 +13,7 @@ public interface IDataFavoritesManager {
     boolean removeFavoritePhoto(String photoId);
     Set<String> getFavoritePhotos();
 
+    void updateFavoritePhotos(String photoId);
+
     void dispose();
 }
