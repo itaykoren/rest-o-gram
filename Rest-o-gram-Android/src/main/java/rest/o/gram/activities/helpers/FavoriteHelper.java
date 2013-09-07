@@ -14,6 +14,8 @@ import rest.o.gram.shared.CommonDefs;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.*;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Roi
@@ -92,6 +94,8 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
                 favoritePhotoButton.setImageResource(R.drawable.ic_favorite_off);
         }
 
+        addPhotosToFavorites(result.getPhotos());
+
         // Handle pagination
         String token = result.getToken();
         if(hasMorePhotos(token)) {
@@ -165,6 +169,20 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
     @Override
     public void onError() {
         // Empty
+    }
+
+    private void addPhotosToFavorites(List<RestogramPhoto> photos) {
+
+        IRestogramCache cache = RestogramClient.getInstance().getCache();
+
+        if (photos != null) {
+            for (RestogramPhoto photo : photos) {
+                if (cache != null)
+                    cache.add(photo);
+                if (dataFavoritesManager != null)
+                    dataFavoritesManager.updateFavoritePhotos(photo.getInstagram_id());
+            }
+        }
     }
 
     private boolean hasMorePhotos(String token) {
