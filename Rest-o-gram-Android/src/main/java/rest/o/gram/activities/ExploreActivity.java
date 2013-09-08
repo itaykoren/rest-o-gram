@@ -247,8 +247,6 @@ public class ExploreActivity extends RestogramActionBarActivity {
         if (isRequestPending)
             return;
 
-        isRequestPending = true;
-
         if (RestogramClient.getInstance().isDebuggable())
             Log.d("REST-O-GRAM", "Requesting photos for next venue");
 
@@ -269,6 +267,8 @@ public class ExploreActivity extends RestogramActionBarActivity {
                 } else { // we received photos from this venue before, and there are more photos
                     pendingCommand = RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
                 }
+
+                isRequestPending = true;
             }
             else { // Photos were found
                 // Save last token
