@@ -16,6 +16,8 @@ import rest.o.gram.common.Utils;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,6 +34,9 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
 
         // Create photo list
         photoList = new LinkedList<>();
+
+        // Create photo set
+        photoSet = new TreeSet<>();
     }
 
     @Override
@@ -84,7 +89,11 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
 
     @Override
     public void addPhoto(String photoId, String bitmapId) {
+        if(photoSet.contains(photoId))
+            return;
+
         photoList.add(new Pair<>(photoId, bitmapId));
+        photoSet.add(photoId);
     }
 
     @Override
@@ -95,6 +104,7 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
     @Override
     public void clear() {
         photoList.clear();
+        photoSet.clear();
     }
 
     private void onPhotoClicked(String photoId, String bitmapId) {
@@ -107,4 +117,5 @@ public class PhotoViewAdapter extends BaseAdapter implements IPhotoViewAdapter {
 
     private Activity context; // Context
     private List<Pair<String,String>> photoList; // Photos list
+    private Set<String> photoSet; // Photos set
 }
