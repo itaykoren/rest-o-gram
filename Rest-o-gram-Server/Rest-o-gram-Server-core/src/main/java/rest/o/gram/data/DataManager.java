@@ -265,6 +265,7 @@ public final class DataManager {
     public static Set<String> fetchFavoritePhotoIds() {
         final LeanQuery query = new LeanQuery(Kinds.PHOTO_REFERENCE);
         query.addFilter(Props.PhotoRef.IS_FAVORITE, QueryFilter.FilterOperator.EQUAL, true);
+        query.setLimit(0);
         QueryResult result = null;
         try
         {
@@ -311,7 +312,10 @@ public final class DataManager {
         if (result != null && result.getPhotos() != null)
         {
             for (final RestogramPhoto currPhoto : result.getPhotos())
+            {
                 currPhoto.set_favorite(true);
+                currPhoto.setApproved(true);
+            }
         }
         return result;
     }
