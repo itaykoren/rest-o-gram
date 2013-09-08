@@ -17,6 +17,9 @@ public class RestogramPhotos {
     public RestogramPhotos() {
         photos = new ArrayList<>();
         token = null;
+
+        firstPhotos = new ArrayList<>();
+        firstToken = null;
     }
 
     /**
@@ -34,12 +37,34 @@ public class RestogramPhotos {
     }
 
     /**
+     * Returns first photos
+     */
+    public List<RestogramPhoto> getFirstPhotos() {
+        return firstPhotos;
+    }
+
+    /**
+     * Returns first token
+     */
+    public String getFirstToken() {
+        return firstToken;
+    }
+
+    /**
      * Sets token
      */
     public void setToken(String token) {
+        if(firstToken == null) {
+            firstToken = token;
+            firstPhotos.addAll(photos);
+        }
+
         this.token = token;
     }
 
     private List<RestogramPhoto> photos; // Photos collection
     private String token; // Last token
+
+    private List<RestogramPhoto> firstPhotos; // First photos collection
+    private String firstToken; // First token
 }

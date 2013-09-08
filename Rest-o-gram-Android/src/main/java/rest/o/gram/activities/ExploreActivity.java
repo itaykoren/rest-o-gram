@@ -259,10 +259,26 @@ public class ExploreActivity extends RestogramActionBarActivity {
             final String nextVenueId = nextVenue.venueId;
             final String nextToken = nextVenue.lastToken;
 
-            if (nextToken == null) { // first search for photos for this venue
-                pendingCommand = RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Simple, this);
-            } else { // we received photos from this venue before, and there are more photos
-                pendingCommand = RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
+            // Try to load previous photos from cache
+            final IRestogramCache cache = RestogramClient.getInstance().getCache();
+            final RestogramPhotos venuePhotos = cache.findPhotos(nextVenueId);
+
+            if(venuePhotos == null) { // No photos found
+                if (nextToken == null) { // first search for photos for this venue
+                    pendingCommand = RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Simple, this);
+                } else { // we received photos from this venue before, and there are more photos
+                    pendingCommand = RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
+                }
+            }
+            else { // Photos were found
+                // Save last token
+                nextVenue.lastToken = venuePhotos.getFirstToken();
+
+                // Download first batch of photos
+                for(final RestogramPhoto photo : venuePhotos.getFirstPhotos()) {
+                    // Download image
+                    RestogramClient.getInstance().downloadImage(photo.getThumbnail(), photo, viewAdapter, false, null);
+                }
             }
         }
     }
