@@ -6,7 +6,7 @@ import com.leanengine.server.appengine.datastore.PutBatchOperation;
 import com.leanengine.server.appengine.datastore.PutBatchOperationImpl;
 import com.leanengine.server.appengine.datastore.PutStrategy;
 import com.leanengine.server.auth.AuthService;
-import com.leanengine.server.auth.LeanAccount;
+import rest.o.gram.lean.LeanAccount;
 import com.leanengine.server.entity.*;
 
 import java.util.*;

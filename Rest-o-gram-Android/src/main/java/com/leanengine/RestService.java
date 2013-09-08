@@ -29,6 +29,7 @@ import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import rest.o.gram.lean.LeanAccount;
 
 import java.io.IOException;
 
@@ -112,7 +113,7 @@ public class RestService {
     }
 
     protected LeanEntity getPrivateEntity(final String kind, final Long id) throws LeanException, IllegalArgumentException {
-        if (!LeanAccount.isUserLoggedIn())
+        if (!LeanEngine.isUserLoggedIn())
             throw new LeanException(LeanError.Type.NotAuthorizedError);
 
         String url;
@@ -164,7 +165,7 @@ public class RestService {
 
 
     public void deletePrivateEntity(String kind, Long id) throws LeanException {
-        if (!LeanAccount.isUserLoggedIn())
+        if (!LeanEngine.isUserLoggedIn())
             throw new LeanException(LeanError.Type.NotAuthorizedError);
 
         String url;
@@ -216,7 +217,7 @@ public class RestService {
     }
 
     protected LeanEntity[] getPrivateEntities(final String kind) throws LeanException {
-        if (!LeanAccount.isUserLoggedIn())
+        if (!LeanEngine.isUserLoggedIn())
             throw new LeanException(LeanError.Type.NotAuthorizedError);
 
         String url;
@@ -268,7 +269,7 @@ public class RestService {
     }
 
     protected long putPrivateEntity(final LeanEntity entity) throws LeanException {
-        if (!LeanAccount.isUserLoggedIn())
+        if (!LeanEngine.isUserLoggedIn())
             throw new LeanException(LeanError.Type.NotAuthorizedError);
         //todo externalize URLs (and token insertion)
         String idParam = "";
@@ -315,7 +316,7 @@ public class RestService {
     }
 
     protected LeanEntity[] queryPrivate(final LeanQuery query) throws LeanException {
-        if (!LeanAccount.isUserLoggedIn())
+        if (!LeanEngine.isUserLoggedIn())
             throw new LeanException(LeanError.Type.NotAuthorizedError);
 
         String url = LeanEngine.getHostURI() +
@@ -368,98 +369,98 @@ public class RestService {
         aTask.execute((Void) null);
     }
 
-    protected Boolean logout() throws LeanException {
-        if (!LeanAccount.isUserLoggedIn())
-            throw new LeanException(LeanError.Type.NotAuthorizedError);
+//    protected Boolean logout() throws LeanException {
+//        if (!LeanEngine.isUserLoggedIn())
+//            throw new LeanException(LeanError.Type.NotAuthorizedError);
+//
+//        String url = LeanEngine.getHostURI() +
+//                "/rest/v1/public/logout?lean_token=" +
+//                LeanEngine.getAuthToken();
+//
+//        try {
+//            JSONObject jsonObject = doGet(url);
+//            boolean result = resultFromJson(jsonObject);
+//
+//            // after the request is made we must also clear local data
+//            LeanEngine.resetAuthToken();
+//            LeanEngine.clearCookies();
+//            return result;
+//        } catch (IOException e) {
+//            throw new LeanException(LeanError.Type.NetworkError);
+//        }
+//    }
+//
+//    public void logoutAsync(final NetworkCallback<Boolean> callback) {
+//        final RestAsyncTask<Boolean[]> aTask = new RestAsyncTask<Boolean[]>() {
+//
+//            // executes on background thread
+//            @Override
+//            protected Boolean[] doInBackground(Void... lists) {
+//                try {
+//                    return new Boolean[]{logout()};
+//                } catch (LeanException e) {
+//                    error = e.getError();
+//                    return null;
+//                }
+//            }
+//
+//            // executes on UI thread
+//            @Override
+//            protected void onPostExecute(Boolean[] result) {
+//                if (error != null) {
+//                    callback.onFailure(error);
+//                    return;
+//                }
+//                callback.onResult(result);
+//            }
+//        };
+//
+//        aTask.execute((Void) null);
+//    }
 
-        String url = LeanEngine.getHostURI() +
-                "/rest/v1/public/logout?lean_token=" +
-                LeanEngine.getAuthToken();
+//    public LeanAccount getCurrentAccountData() throws LeanException {
+//        if (!LeanEngine.isUserLoggedIn())
+//            throw new LeanException(LeanError.Type.NotAuthorizedError);
+//
+//        String url = LeanEngine.getHostURI() +
+//                "/rest/v1/public/account?lean_token=" +
+//                LeanEngine.getAuthToken();
+//
+//        try {
+//            JSONObject jsonObject = doGet(url);
+//            return JsonDecode.accountFromJson(jsonObject);
+//        } catch (IOException e) {
+//            throw new LeanException(LeanError.Type.NetworkError);
+//        }
+//    }
 
-        try {
-            JSONObject jsonObject = doGet(url);
-            boolean result = resultFromJson(jsonObject);
-
-            // after the request is made we must also clear local data
-            LeanEngine.resetAuthToken();
-            LeanEngine.clearCookies();
-            return result;
-        } catch (IOException e) {
-            throw new LeanException(LeanError.Type.NetworkError);
-        }
-    }
-
-    public void logoutAsync(final NetworkCallback<Boolean> callback) {
-        final RestAsyncTask<Boolean[]> aTask = new RestAsyncTask<Boolean[]>() {
-
-            // executes on background thread
-            @Override
-            protected Boolean[] doInBackground(Void... lists) {
-                try {
-                    return new Boolean[]{logout()};
-                } catch (LeanException e) {
-                    error = e.getError();
-                    return null;
-                }
-            }
-
-            // executes on UI thread
-            @Override
-            protected void onPostExecute(Boolean[] result) {
-                if (error != null) {
-                    callback.onFailure(error);
-                    return;
-                }
-                callback.onResult(result);
-            }
-        };
-
-        aTask.execute((Void) null);
-    }
-
-    public LeanAccount getCurrentAccountData() throws LeanException {
-        if (!LeanAccount.isUserLoggedIn())
-            throw new LeanException(LeanError.Type.NotAuthorizedError);
-
-        String url = LeanEngine.getHostURI() +
-                "/rest/v1/public/account?lean_token=" +
-                LeanEngine.getAuthToken();
-
-        try {
-            JSONObject jsonObject = doGet(url);
-            return JsonDecode.accountFromJson(jsonObject);
-        } catch (IOException e) {
-            throw new LeanException(LeanError.Type.NetworkError);
-        }
-    }
-
-    public void getCurrentAccountDataAsync(final NetworkCallback<LeanAccount> networkCallback) throws LeanException {
-        final RestAsyncTask<LeanAccount[]> aTask = new RestAsyncTask<LeanAccount[]>() {
-
-            // executes on background thread
-            @Override
-            protected LeanAccount[] doInBackground(Void... lists) {
-                try {
-                    return new LeanAccount[]{getCurrentAccountData()};
-                } catch (LeanException e) {
-                    error = e.getError();
-                    return null;
-                }
-            }
-
-            // executes on UI thread
-            @Override
-            protected void onPostExecute(LeanAccount[] leanAccounts) {
-                if (error != null) {
-                    networkCallback.onFailure(error);
-                    return;
-                }
-                networkCallback.onResult(leanAccounts);
-            }
-        };
-
-        aTask.execute((Void) null);
-    }
+//    public void getCurrentAccountDataAsync(final NetworkCallback<LeanAccount> networkCallback) throws LeanException {
+//        final RestAsyncTask<LeanAccount[]> aTask = new RestAsyncTask<LeanAccount[]>() {
+//
+//            // executes on background thread
+//            @Override
+//            protected LeanAccount[] doInBackground(Void... lists) {
+//                try {
+//                    return new LeanAccount[]{getCurrentAccountData()};
+//                } catch (LeanException e) {
+//                    error = e.getError();
+//                    return null;
+//                }
+//            }
+//
+//            // executes on UI thread
+//            @Override
+//            protected void onPostExecute(LeanAccount[] leanAccounts) {
+//                if (error != null) {
+//                    networkCallback.onFailure(error);
+//                    return;
+//                }
+//                networkCallback.onResult(leanAccounts);
+//            }
+//        };
+//
+//        aTask.execute((Void) null);
+//    }
 
     protected static abstract class RestAsyncTask<Result> extends AsyncTask<Void, Void, Result> {
         protected LeanError error;

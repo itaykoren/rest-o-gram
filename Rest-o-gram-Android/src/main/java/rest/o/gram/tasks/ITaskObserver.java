@@ -34,6 +34,10 @@ public interface ITaskObserver {
 
     void onFinished(GetFavoritePhotosResult result);
 
+    void onFinished(GetCurrentAccountDataResult result);
+
+    void onFinished(LogoutResult result);
+
     void onCanceled();
 
     void onError();

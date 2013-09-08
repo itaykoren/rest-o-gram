@@ -102,6 +102,16 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
     }
 
     @Override
+    public void onFinished(GetCurrentAccountDataResult result) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void onFinished(LogoutResult result) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public void onFinished(GetNearbyResult result) { }
 
     @Override

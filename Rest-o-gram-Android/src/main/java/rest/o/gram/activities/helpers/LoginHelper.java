@@ -102,26 +102,7 @@ public class LoginHelper {
     }
 
     private void doLogout() {
-        RestogramClient.getInstance().getAuthenticationProvider().logoutInBackground(new NetworkCallback<Boolean>() {
-            @Override
-            public void onResult(Boolean... result) {
-                Toast.makeText(activity, "Successfully logged out.", Toast.LENGTH_LONG).show();
-
-                activity.onUserLoggedOut();
-
-                if (RestogramClient.getInstance().isDebuggable())
-                    Log.d("REST-O-GRAM", "logout successful");
-            }
-
-            @Override
-            public void onFailure(LeanError error) {
-                final String errorMsg = error.getErrorMessage();
-                if (RestogramClient.getInstance().isDebuggable())
-                    Log.d("REST-O-GRAM", "logout - Error: " + error.getErrorType() + "Error desc: " + errorMsg);
-                if (errorMsg != null && !errorMsg.isEmpty())
-                    Toast.makeText(activity, error.getErrorMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        RestogramClient.getInstance().logout(activity);
     }
 
     private DialogManager dialogManager;

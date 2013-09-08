@@ -2,9 +2,12 @@ package rest.o.gram.activities;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 import rest.o.gram.activities.helpers.FavoriteHelper;
 import rest.o.gram.activities.helpers.LoginHelper;
 import rest.o.gram.activities.visitors.IActivityVisitor;
+import rest.o.gram.authentication.IAuthenticationProvider;
 import rest.o.gram.cache.IRestogramCache;
 import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
@@ -172,6 +175,39 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
     @Override
     public void onFinished(GetFavoritePhotosResult result) {
        // Empty
+    }
+
+    @Override
+    public void onFinished(GetCurrentAccountDataResult result) {
+        if (result != null && result.getAccount() != null)
+        {
+            final IAuthenticationProvider provider =
+                    RestogramClient.getInstance().getAuthenticationProvider();
+            if (provider != null)
+                provider.setAccountData(result.getAccount());
+        }
+    }
+
+    @Override
+    public void onFinished(LogoutResult result) {
+        if (result != null && result.getSucceded())
+        {
+            Toast.makeText(this, "Successfully logged out.", Toast.LENGTH_LONG).show();
+
+            final IAuthenticationProvider provider =
+                    RestogramClient.getInstance().getAuthenticationProvider();
+            if (provider != null)
+                provider.resetAuthData();
+
+            onUserLoggedOut();
+            if (RestogramClient.getInstance().isDebuggable())
+                Log.d("REST-O-GRAM", "logout successful");
+        }
+        else
+        {
+            Log.e("REST-O-GRAM", "logout has failed");
+            Toast.makeText(this, "logout failed", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

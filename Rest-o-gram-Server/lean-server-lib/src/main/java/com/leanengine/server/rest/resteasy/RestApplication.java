@@ -16,11 +16,11 @@ public class RestApplication extends Application {
 
     public RestApplication() {
 
-        singletons.add(new RestSecurityInterceptor());
+        //singletons.add(new RestSecurityInterceptor());
 
-        singletons.add(new RestExceptionMapper());
+        //singletons.add(new RestExceptionMapper());
         //singletons.add(new EntityRest());
-        singletons.add(new PublicServiceRest());
+        //singletons.add(new PublicServiceRest());
         //singletons.add(new QueryRest());
         //singletons.add(new ScriptRest());
 

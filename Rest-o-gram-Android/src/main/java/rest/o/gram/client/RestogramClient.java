@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.ImageView;
+import com.leanengine.LeanEngine;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.application.IRestogramApplication;
 import rest.o.gram.authentication.AuthenticationProvider;
@@ -298,6 +299,20 @@ public class RestogramClient implements IRestogramClient {
     public void removePhotoFromFavorites(String photoId, ITaskObserver observer) {
         setJsonAuthToken(authTransport);
         IRestogramCommand command = new RemovePhotoFromFavoritesCommand(authTransport, observer, photoId);
+        commandQueue.pushForce(command);
+    }
+
+    @Override
+    public void getCurrentAccount(ITaskObserver observer) {
+        setJsonAuthToken(authTransport);
+        IRestogramCommand command = new GetCurrentAccountDataCommand(authTransport, observer);
+        commandQueue.pushForce(command);
+    }
+
+    @Override
+    public void logout(ITaskObserver observer) {
+        setJsonAuthToken(authTransport);
+        IRestogramCommand command = new LogoutCommand(authTransport, observer);
         commandQueue.pushForce(command);
     }
 

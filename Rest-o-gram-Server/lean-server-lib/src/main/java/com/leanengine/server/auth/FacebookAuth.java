@@ -9,7 +9,7 @@ import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.AccountUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import rest.o.gram.lean.LeanAccount;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -167,7 +167,7 @@ public class FacebookAuth {
      */
     public static LeanAccount parseAccountFB(JsonNode userData) {
 
-        Map<String, Object> props = new HashMap<>(userData.size());
+        HashMap<String, Object> props = new HashMap<>(userData.size());
         Iterator<String> fields = userData.getFieldNames();
         while (fields.hasNext()) {
             String field = fields.next();

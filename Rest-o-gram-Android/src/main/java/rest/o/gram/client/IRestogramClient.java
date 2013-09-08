@@ -117,6 +117,16 @@ public interface IRestogramClient {
      */
     void removePhotoFromFavorites(String photoId, ITaskObserver observer);
 
+    /**
+     *  Gets the current account
+     */
+    void getCurrentAccount(ITaskObserver observer);
+
+    /**
+     * Logs out of the current session
+     */
+    void logout(ITaskObserver observer);
+
     /* PROVIDERS */
 
     /**

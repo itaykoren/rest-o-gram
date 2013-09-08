@@ -6,7 +6,7 @@ import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.auth.AuthToken;
-import com.leanengine.server.auth.LeanAccount;
+import rest.o.gram.lean.LeanAccount;
 
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -274,7 +274,7 @@ public class AccountUtils {
 
     public static LeanAccount toLeanAccount(Entity entity) {
 
-        Map<String, Object> props = new HashMap<>(entity.getProperties().size() - 3);
+        HashMap<String, Object> props = new HashMap<>(entity.getProperties().size() - 3);
         for (Map.Entry<String, Object> entityProp : entity.getProperties().entrySet()) {
             if(!entityProp.getKey().startsWith("_"))
                 props.put(entityProp.getKey(), entityProp.getValue());

@@ -3,6 +3,8 @@ package rest.o.gram.authentication;
 import android.content.Context;
 import android.net.Uri;
 import com.leanengine.*;
+import rest.o.gram.client.RestogramClient;
+import rest.o.gram.lean.LeanAccount;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,7 +19,7 @@ public class AuthenticationProvider implements IAuthenticationProvider {
 
     @Override
     public boolean isUserLoggedIn() {
-        return LeanAccount.isUserLoggedIn();
+        return LeanEngine.isUserLoggedIn();
     }
 
     @Override
@@ -26,34 +28,19 @@ public class AuthenticationProvider implements IAuthenticationProvider {
     }
 
     @Override
-    public boolean logout() {
-        boolean result = false;
-        account = null;
-        try {
-            result = LeanAccount.logout();
-        } catch (LeanException e) {
-            // TODO
-        }
-        return result;
-    }
-
-    @Override
-    public void logoutInBackground(NetworkCallback<Boolean> callback) {
-        account = null;
-        LeanAccount.logoutInBackground(callback);
-    }
-
-    @Override
     public LeanAccount getAccountData() {
-        if(account == null) {
-            try {
-                account = LeanAccount.getAccountData();
-            } catch (LeanException e) {
-                // Empty
-            }
-        }
-
         return account;
+    }
+
+    @Override
+    public void setAccountData(LeanAccount account) {
+        this.account = account;
+    }
+
+    @Override
+    public void resetAuthData() {
+        this.account = null;
+        LeanEngine.resetAuthToken();
     }
 
     @Override

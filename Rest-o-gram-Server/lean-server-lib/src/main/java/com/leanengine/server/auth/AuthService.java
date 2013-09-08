@@ -2,11 +2,8 @@ package com.leanengine.server.auth;
 
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.AccountUtils;
-import com.leanengine.server.appengine.ServerUtils;
+import rest.o.gram.lean.LeanAccount;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 public class AuthService {

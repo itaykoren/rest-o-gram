@@ -1,8 +1,10 @@
 package rest.o.gram.transport;
 
+import com.leanengine.server.auth.UsersServiceImpl;
 import org.json.rpc.server.JsonRpcExecutor;
 import org.json.rpc.server.JsonRpcServletTransport;
 import rest.o.gram.iservice.RestogramAuthService;
+import rest.o.gram.lean.UsersService;
 import rest.o.gram.service.RestogramAuthServiceImpl;
 
 import javax.servlet.ServletException;
@@ -36,6 +38,9 @@ public class JsonRpcAuthServlet extends HttpServlet {
 
         RestogramAuthService impl = new RestogramAuthServiceImpl();
         executor.addHandler("restogram", impl, RestogramAuthService.class);
+
+        UsersService usersService = new UsersServiceImpl();
+        executor.addHandler("users", usersService, UsersService.class);
 
         // add more services here
 

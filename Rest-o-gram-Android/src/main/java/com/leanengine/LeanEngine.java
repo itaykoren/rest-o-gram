@@ -55,7 +55,6 @@ public class LeanEngine {
      * This token is internally saved in app preferences and survives app restarts.
      * <br/><br/>
      * It is used to authenticate against server.
-     * Token might be expired - this can be checked via {@link com.leanengine.LeanAccount#getAccountData()}.
      *
      * @return Authentication token as provided by server when authentication procedure is successfully completed.
      * @throws IllegalStateException If LeanEngine was not initialized before first use,
@@ -149,7 +148,7 @@ public class LeanEngine {
         editor.commit();
     }
 
-    static void resetAuthToken() {
+    public static void resetAuthToken() {
         authToken = null;
         SharedPreferences preferences = appContext.getSharedPreferences("_lean_engine_", 0);
         if (preferences == null) return;
@@ -173,5 +172,14 @@ public class LeanEngine {
     public static void dispose()
     {
         RestService.getInstance().dispose();
+    }
+
+    /**
+     * Checks if user is logged in.
+     *
+     * @return Returns true if user is logged in, false otherwise.
+     */
+    public static boolean isUserLoggedIn() {
+        return LeanEngine.getAuthToken() != null;
     }
 }

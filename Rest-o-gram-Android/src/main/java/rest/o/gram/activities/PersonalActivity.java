@@ -7,7 +7,6 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.View;
 import android.widget.*;
-import com.leanengine.LeanAccount;
 import rest.o.gram.R;
 import rest.o.gram.activities.visitors.IActivityVisitor;
 import rest.o.gram.authentication.IAuthenticationProvider;
@@ -22,6 +21,8 @@ import rest.o.gram.data_favorites.results.*;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.lean.LeanAccount;
+import rest.o.gram.tasks.results.GetCurrentAccountDataResult;
 import rest.o.gram.tasks.results.GetProfilePhotoUrlResult;
 import rest.o.gram.view.PhotoViewAdapter;
 import rest.o.gram.view.VenueViewAdapter;
@@ -176,7 +177,7 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
     private void initUser() {
         try {
             IAuthenticationProvider provider = RestogramClient.getInstance().getAuthenticationProvider();
-            updateNickname((TextView)findViewById(R.id.tvFBName), provider);
+            updateNicknameAsync();
             updateProfilePhoto((ImageView)findViewById(R.id.ivFBPhoto), provider);
         } catch (Exception e) {
             // TODO
@@ -290,31 +291,24 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         }
     }
 
-    private void updateNickname(final TextView textView, final IAuthenticationProvider provider) {
+    private void updateNicknameAsync() {
+        RestogramClient.getInstance().getCurrentAccount(this);
+    }
 
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                try {
-                    Utils.updateTextView(textView, (String)message.obj);
-                }
-                catch(Exception e) {
-                }
-            }
-        };
+    @Override
+    public void onFinished(GetCurrentAccountDataResult result) {
+        super.onFinished(result);
 
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
+       if (result != null && result.getAccount() != null)
+       {
+            final IAuthenticationProvider authProvider = RestogramClient.getInstance().getAuthenticationProvider();
+           if (authProvider != null && authProvider.getAccountData() != null)
+           {
+               final TextView nickname = (TextView)findViewById(R.id.tvFBName);
+               Utils.updateTextView(nickname, authProvider.getAccountData().getNickName());
+           }
 
-                LeanAccount account = provider.getAccountData();
-                if (account != null) {
-                    Message message = handler.obtainMessage(1, account.getNickName());
-                    handler.sendMessage(message);
-                }
-            }
-        };
-        thread.start();
+       }
     }
 
     private void updateProfilePhoto(final ImageView imageView, final IAuthenticationProvider provider) {

@@ -92,6 +92,18 @@ public class  AsyncTaskRestogramCommand extends AbstractRestogramCommand impleme
     }
 
     @Override
+    public void onFinished(GetCurrentAccountDataResult result) {
+        notifyFinished();
+        observer.onFinished(result);
+    }
+
+    @Override
+    public void onFinished(LogoutResult result) {
+        notifyFinished();
+        observer.onFinished(result);
+    }
+
+    @Override
     public void onFinished(AddPhotoToFavoritesResult result) {
         notifyFinished();
         observer.onFinished(result);

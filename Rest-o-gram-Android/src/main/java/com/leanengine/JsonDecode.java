@@ -12,6 +12,7 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import rest.o.gram.lean.LeanAccount;
 
 import java.util.*;
 
@@ -20,7 +21,7 @@ import java.util.*;
  */
 public class JsonDecode {
 
-    static LeanAccount accountFromJson(JSONObject json) throws LeanException {
+    public static LeanAccount accountFromJson(JSONObject json) throws LeanException {
 
         Long id;
         try {
@@ -51,7 +52,7 @@ public class JsonDecode {
         }
 
         JSONObject jsonProviderProperties;
-        Map<String, Object> providerProperties;
+       Map<String, Object> providerProperties;
         try {
             jsonProviderProperties = json.getJSONObject("providerProperties");
             providerProperties = accountPropsFromJson(jsonProviderProperties);
