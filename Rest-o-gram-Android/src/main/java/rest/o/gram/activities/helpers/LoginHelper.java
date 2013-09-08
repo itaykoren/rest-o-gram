@@ -73,7 +73,7 @@ public class LoginHelper {
         dialogManager.showLoginDialog(activity, new LoginListener() {
             @Override
             public void onSuccess() {
-                Toast.makeText(activity, "Successfully logged in.", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, R.string.login_success, Toast.LENGTH_LONG).show();
 
                 activity.onUserLoggedIn();
 
@@ -96,7 +96,7 @@ public class LoginHelper {
                 if (RestogramClient.getInstance().isDebuggable())
                     Log.d("REST-O-GRAM", "login - Error: " +  error.getErrorType().toString() +  " Error desc: " + errorMsg);
                 if (errorMsg != null && !errorMsg.isEmpty())
-                    Toast.makeText(activity, error.getErrorMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity, R.string.login_fail, Toast.LENGTH_LONG).show();
             }
         });
     }

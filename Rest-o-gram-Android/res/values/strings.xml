@@ -23,6 +23,11 @@
     <string name="logout_msg">Are you sure you want to log out?</string>
     <string name="exit_msg">Are you sure you want to exit?</string>
 
+    <string name="login_success">Successfully logged in</string>
+    <string name="login_fail">Login failed</string>
+    <string name="logout_success">Successfully logged out</string>
+    <string name="logout_fail">Logout failed</string>
+
     <string name="history">History</string>
     <string name="yummies">Yummies</string>
 

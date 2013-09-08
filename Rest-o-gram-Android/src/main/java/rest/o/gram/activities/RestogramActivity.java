@@ -4,6 +4,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+import rest.o.gram.R;
 import rest.o.gram.activities.helpers.FavoriteHelper;
 import rest.o.gram.activities.helpers.LoginHelper;
 import rest.o.gram.activities.visitors.IActivityVisitor;
@@ -192,7 +193,7 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
     public void onFinished(LogoutResult result) {
         if (result != null && result.getSucceded())
         {
-            Toast.makeText(this, "Successfully logged out.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.logout_success, Toast.LENGTH_LONG).show();
 
             final IAuthenticationProvider provider =
                     RestogramClient.getInstance().getAuthenticationProvider();
@@ -206,7 +207,7 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
         else
         {
             Log.e("REST-O-GRAM", "logout has failed");
-            Toast.makeText(this, "logout failed", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.logout_fail, Toast.LENGTH_LONG).show();
         }
     }
 
