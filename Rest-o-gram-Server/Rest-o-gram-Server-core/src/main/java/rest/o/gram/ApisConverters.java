@@ -22,13 +22,18 @@ import java.util.logging.Logger;
  * Date: 6/16/13
  */
 public final class ApisConverters {
+
     public static RestogramPhotos convertToRestogramPhotos(final MediaFeed mediaFeed) {
+        return convertToRestogramPhotos(mediaFeed, "");
+    }
+
+    public static RestogramPhotos convertToRestogramPhotos(final MediaFeed mediaFeed, final String originVenueId) {
         if (InstagramUtils.isNullOrEmpty(mediaFeed))
             return new EmptyRestogramPhotos();
 
         final List<RestogramPhoto> photos = new ArrayList<>(mediaFeed.getData().size());
         for (final MediaFeedData currMediaFeedData : mediaFeed.getData())
-            photos.add(convertToRestogramPhoto(currMediaFeedData, ""));
+            photos.add(convertToRestogramPhoto(currMediaFeedData, originVenueId));
         return new RestogramPhotos(photos, mediaFeed.getPagination());
     }
 

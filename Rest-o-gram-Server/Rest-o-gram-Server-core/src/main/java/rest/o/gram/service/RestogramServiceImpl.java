@@ -467,7 +467,7 @@ public class RestogramServiceImpl implements RestogramService {
 
     private RestogramPhotos getRecentMedia(final  String venueId, final Pagination pagination, final Instagram instagram) throws InstagramException {
         if (pagination != null)
-            return ApisConverters.convertToRestogramPhotos(instagram.getRecentMediaNextPage(pagination));
+            return ApisConverters.convertToRestogramPhotos(instagram.getRecentMediaNextPage(pagination), venueId);
         else
         {
             final long locationID = getInstagramLocationId(venueId);
