@@ -17,18 +17,18 @@ public class EntityRest {
 
     private static final Logger log = Logger.getLogger(EntityRest.class.getName());
 
-    @GET
-    @Path("/{entityName}/{entityId}")
-    public JsonNode getEntity(@PathParam("entityName") String entityName, @PathParam("entityId") long entityId) throws LeanException {
-        Entity entity = DatastoreUtils.getPrivateEntity(entityName, entityId);
-        return JsonUtils.entityToJson(entity);
-    }
-
-    @DELETE
-    @Path("/{entityName}/{entityId}")
-    public void deleteEntity(@PathParam("entityName") String entityName, @PathParam("entityId") long entityId) throws LeanException {
-         DatastoreUtils.deletePrivateEntity(entityName, entityId);
-    }
+//    @GET
+//    @Path("/{entityName}/{entityId}")
+//    public JsonNode getEntity(@PathParam("entityName") String entityName, @PathParam("entityId") long entityId) throws LeanException {
+//        Entity entity = DatastoreUtils.getPrivateEntity(entityName, entityId);
+//        return JsonUtils.entityToJson(entity);
+//    }
+//
+//    @DELETE
+//    @Path("/{entityName}/{entityId}")
+//    public void deleteEntity(@PathParam("entityName") String entityName, @PathParam("entityId") long entityId) throws LeanException {
+//         //DatastoreUtils.deletePrivateEntity(entityName, entityId);
+//    }
 
 //    @GET
 //    @Path("/{entityName}")
@@ -37,12 +37,12 @@ public class EntityRest {
 //    return JsonUtils.entityListToJson(entities);
 //}
 
-    @GET
-    @Path("/")
-    public JsonNode getAllUserPrivateEntities() throws LeanException {
-        List<Entity> entities = DatastoreUtils.getPrivateEntities();
-        return JsonUtils.entityListToJson(entities);
-    }
+//    @GET
+//    @Path("/")
+//    public JsonNode getAllUserPrivateEntities() throws LeanException {
+//        List<Entity> entities = DatastoreUtils.getPrivateEntities();
+//        return JsonUtils.entityListToJson(entities);
+//    }
 
 //    @POST
 //    @Path("/{entityName}")
