@@ -33,11 +33,9 @@ public class FavoriteHelper implements IDataFavoritesOperationsObserver, ITaskOb
      * Refreshes this helper: updates favorite venues & photos
      */
     public void refresh() {
-        if(dataFavoritesManager != null) {
             if (RestogramClient.getInstance().getAuthenticationProvider().isUserLoggedIn()) {
                 // Get updated favorites
                 RestogramClient.getInstance().getFavoritePhotos(null, this);
-            }
         }
     }
 
