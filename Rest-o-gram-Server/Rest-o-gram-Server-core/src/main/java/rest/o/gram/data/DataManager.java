@@ -286,9 +286,6 @@ public final class DataManager {
 
     public static PhotosResult queryFavoritePhotos(final String token) {
 
-        if (StringUtils.isBlank(token))
-            return null;
-
         final RestogramPhotoIdsQueryResult favIdsResult = queryFavoritePhotoIds(token);
 
         if (favIdsResult == null || favIdsResult.getResult() == null ||
@@ -320,9 +317,6 @@ public final class DataManager {
     }
 
     private static RestogramPhotoIdsQueryResult queryFavoritePhotoIds(final String token) {
-
-        if (StringUtils.isBlank(token))
-            return null;
 
         final LeanQuery query = new LeanQuery(Kinds.PHOTO_REFERENCE);
         query.addFilter(Props.PhotoRef.IS_FAVORITE, QueryFilter.FilterOperator.EQUAL, true);
