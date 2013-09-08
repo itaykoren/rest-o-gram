@@ -261,24 +261,24 @@ public class ExploreActivity extends RestogramActionBarActivity {
             final IRestogramCache cache = RestogramClient.getInstance().getCache();
             final RestogramPhotos venuePhotos = cache.findPhotos(nextVenueId);
 
-            if(venuePhotos == null) { // No photos found
-                if (nextToken == null) { // first search for photos for this venue
+            if(nextToken == null) { // First search for photos for this venue
+                if(venuePhotos == null) { // No photos found in cache
                     pendingCommand = RestogramClient.getInstance().getPhotos(nextVenueId, RestogramFilterType.Simple, this);
-                } else { // we received photos from this venue before, and there are more photos
-                    pendingCommand = RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
+                    isRequestPending = true;
                 }
+                else { // Photos were found in cache
+                    // Save last token
+                    nextVenue.lastToken = venuePhotos.getFirstToken();
 
+                    // Download first batch of photos
+                    for(final RestogramPhoto photo : venuePhotos.getFirstPhotos()) {
+                        // Download image
+                        RestogramClient.getInstance().downloadImage(photo.getThumbnail(), photo, viewAdapter, false, null);
+                    }
+                }
+            } else { // We received photos from this venue before, and there are more photos
+                pendingCommand = RestogramClient.getInstance().getNextPhotos(nextToken, RestogramFilterType.Simple, nextVenueId, this);
                 isRequestPending = true;
-            }
-            else { // Photos were found
-                // Save last token
-                nextVenue.lastToken = venuePhotos.getFirstToken();
-
-                // Download first batch of photos
-                for(final RestogramPhoto photo : venuePhotos.getFirstPhotos()) {
-                    // Download image
-                    RestogramClient.getInstance().downloadImage(photo.getThumbnail(), photo, viewAdapter, false, null);
-                }
             }
         }
     }
