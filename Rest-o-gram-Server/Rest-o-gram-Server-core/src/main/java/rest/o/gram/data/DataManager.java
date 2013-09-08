@@ -37,33 +37,43 @@ public final class DataManager {
     // NON-AUTH
 
     public static Map<String,Boolean> getPhotoToRuleMapping(final RestogramPhoto... data) {
+        if (data == null || data.length == 0)
+            return null;
+
         final String[] instaIds = new String[data.length];
         int i = 0;
         for (final RestogramPhoto currPhoto : data)
             instaIds[i++] = currPhoto.getInstagram_id();
 
         // gets filter rules for photos
-        Map<String, Boolean> photoToRule = null;
-        try
-        {
-            photoToRule = DataManager.getPhotoToRuleMapping(instaIds);
-        } catch (LeanException e)
-        {
+        Map<String, Boolean> photoToRule = DataManager.getPhotoToRuleMapping(instaIds);
+        if (photoToRule == null)
             log.severe("cannot get photos filter rules");
-        }
 
         return photoToRule;
     }
 
-    public static Map<String,Boolean> getPhotoToRuleMapping(final String... ids) throws LeanException {
-        final Collection<Entity> photoEntities =
-                DatastoreUtils.getPublicEntities(Kinds.PHOTO, ids);
+    public static Map<String,Boolean> getPhotoToRuleMapping(final String... ids) {
+        if (ids == null || ids.length == 0)
+            return null;
+
+        Collection<Entity> photoEntities;
+        try
+        {
+            photoEntities = DatastoreUtils.getPublicEntities(Kinds.PHOTO, ids);
+        }
+        catch (LeanException e)
+        {
+            log.severe("cannot get photos filter rules. code:" + e.getErrorCode());
+            return null;
+        }
+
         final Map<String,Boolean> result = new HashMap<>(photoEntities.size());
-        for (final Entity currPhotoEntity : photoEntities) {
+        for (final Entity currPhotoEntity : photoEntities)
+        {
             final String currPhotoId = currPhotoEntity.getKey().getName();
-            if (!currPhotoEntity.hasProperty(Props.Photo.APPROVED)) {
+            if (!currPhotoEntity.hasProperty(Props.Photo.APPROVED))
                 continue;
-            }
             final boolean currApproval = (boolean) currPhotoEntity.getProperty(Props.Photo.APPROVED);
             result.put(currPhotoId, currApproval);
         }
@@ -71,6 +81,9 @@ public final class DataManager {
     }
 
     public static boolean savePhotoToRuleMapping(final Map<RestogramPhoto,Boolean> photoToRuleMapping) {
+        if (photoToRuleMapping == null || photoToRuleMapping.isEmpty())
+            return false;
+
         final PutBatchOperation putOp = DatastoreUtils.startPutBatch();
         for (final Map.Entry<RestogramPhoto,Boolean> currEntry :  photoToRuleMapping.entrySet())
         {
@@ -107,7 +120,7 @@ public final class DataManager {
             result = DatastoreUtils.queryEntityPublic(query);
         } catch (LeanException e)
         {
-            log.severe("fetching photos from cache has failed. venue: " + venueId);
+            log.severe(String.format("fetching photos from cache has failed. venue:%s, code:%d", venueId, e.getErrorCode()));
         }
 
         return createPhotosResultFromQueryResult(result);
@@ -115,36 +128,42 @@ public final class DataManager {
 
 
     public static Map<String,RestogramVenue> fetchVenuesFromCache(final String[] ids) {
+
+        if (ids == null || ids.length == 0)
+            return null;
+
         Collection<Entity> entities = null;
         try
         {
             entities = DatastoreUtils.getPublicEntities(Kinds.VENUE, ids);
         } catch (LeanException e)
         {
-            log.severe("fetching venues from cache has failed");
+            log.severe("fetching venues from cache has failed. code:" + e.getErrorCode());
         }
 
         if (entities == null)
             return null;
 
-        final Map<String,RestogramVenue> idToVenueMapping =
-                new HashMap<>();
+        final Map<String,RestogramVenue> idToVenueMapping = new HashMap<>();
         for (final Entity currEntity : entities)
         {
-            final RestogramVenue currrVenue =
-                    DataStoreConverters.entityToVenue(currEntity).encodeStrings();
+            final RestogramVenue currrVenue = DataStoreConverters.entityToVenue(currEntity).encodeStrings();
             idToVenueMapping.put(currrVenue.getFoursquare_id(), currrVenue);
         }
         return idToVenueMapping;
     }
 
     public static boolean cacheVenue(final RestogramVenue venue) {
+        if (venue == null)
+            return false;
+
         try
         {
-            DatastoreUtils.putPublicEntity(Kinds.VENUE, venue.getFoursquare_id(), DataStoreConverters.venueToProps(venue));
+            DatastoreUtils.putPublicEntity(Kinds.VENUE, venue.getFoursquare_id(),
+                                           DataStoreConverters.venueToProps(venue));
         } catch (LeanException e)
         {
-            log.severe("caching the venue in DS has failed");
+            log.severe("caching the venue in DS has failed. code:" + e.getErrorCode());
             return false;
         }
         return true;
@@ -165,13 +184,18 @@ public final class DataManager {
     // AUTH
 
     public static boolean updatePhotoReference(final String photoId, final boolean isFav) {
+
+        if (StringUtils.isBlank(photoId))
+            return false;
+
         final Map<String, DatastoreUtils.PropertyDescription> props = new HashMap<>();
-        props.put(Props.PhotoRef.INSTAGRAM_ID, new DatastoreUtils.PropertyDescription(photoId, true));
         props.put(Props.PhotoRef.IS_FAVORITE, new DatastoreUtils.PropertyDescription(isFav, true));
-        try {
+        try
+        {
             DatastoreUtils.putPrivateEntity(Kinds.PHOTO_REFERENCE, photoId, props);
-        } catch (LeanException e) {
-            log.severe("cannot add a photo to favorites");
+        } catch (LeanException e)
+        {
+            log.severe("cannot add a photo to favorites. code:" + e.getErrorCode());
             return false;
         }
         return true;
@@ -190,9 +214,13 @@ public final class DataManager {
                     photo = DatastoreUtils.getPublicEntity(Kinds.PHOTO, photoId);
                 } catch (LeanException e)
                 {
-                    log.warning("cannot get photo from DS");
-                    transaction.rollback();
-                    return false;
+                    if (e.getErrorCode() != LeanException.Error.RecoverableDataStoreError.errorCode)
+                    {
+                        log.warning("cannot get photo from DS");
+                        transaction.rollback();
+                        return false;
+                    }
+                    throw e;
                 }
 
                 long yummies = 0;
@@ -203,16 +231,20 @@ public final class DataManager {
                 try
                 {
                     DatastoreUtils.putPublicEntity(photo);
-                } catch (Exception e)
+                } catch (LeanException e)
                 {
-                    log.severe("cannot put photo in DS");
-                    transaction.rollback();
-                    return false;
+                    if (e.getErrorCode() != LeanException.Error.RecoverableDataStoreError.errorCode)
+                    {
+                        log.severe("cannot put photo in DS");
+                        transaction.rollback();
+                        return false;
+                    }
+                    throw e;
                 }
                 transaction.commit();
                 break;
             }
-            catch (ConcurrentModificationException e)
+            catch (LeanException e)
             {
                 if (retries == 0)
                 {
@@ -239,20 +271,24 @@ public final class DataManager {
             result = DatastoreUtils.queryEntityPrivate(query);
         } catch (LeanException e)
         {
-            log.severe("could not query for fav photos");
+            log.severe("could not query for fav photos. code:" + e.getErrorCode());
             return null;
         }
 
-        if (result.getResult() == null)
+        if (result == null || result.getResult() == null)
             return null;
         final List<Entity> resultEntities = result.getResult();
-        Set<String> resultIds = new HashSet<>(resultEntities.size());
+        final Set<String> resultIds = new HashSet<>(resultEntities.size());
         for (final Entity currEntity : resultEntities)
             resultIds.add(currEntity.getKey().getName());
         return resultIds;
     }
 
     public static PhotosResult queryFavoritePhotos(final String token) {
+
+        if (StringUtils.isBlank(token))
+            return null;
+
         final RestogramPhotoIdsQueryResult favIdsResult = queryFavoritePhotoIds(token);
 
         if (favIdsResult == null || favIdsResult.getResult() == null ||
@@ -268,7 +304,7 @@ public final class DataManager {
         }
         catch (LeanException e)
         {
-            log.severe("could not query for fav photos");
+            log.severe("could not query for fav photos. code:" + e.getErrorCode());
             return null;
         }
 
@@ -284,6 +320,10 @@ public final class DataManager {
     }
 
     private static RestogramPhotoIdsQueryResult queryFavoritePhotoIds(final String token) {
+
+        if (StringUtils.isBlank(token))
+            return null;
+
         final LeanQuery query = new LeanQuery(Kinds.PHOTO_REFERENCE);
         query.addFilter(Props.PhotoRef.IS_FAVORITE, QueryFilter.FilterOperator.EQUAL, true);
         query.setKeysOnly();
@@ -295,44 +335,36 @@ public final class DataManager {
             result = DatastoreUtils.queryEntityPrivate(query);
         } catch (LeanException e)
         {
-            log.severe("could not query for fav photos");
+            log.severe("could not query for fav photos. code:" + e.getErrorCode());
             return null;
         }
 
         return new RestogramPhotoIdsQueryResult(result);
     }
 
-    public static long getPhotoYummiesCount(final String photoId) {
-        Entity photoEntity = null;
-        try
-        {
-            DatastoreUtils.getPrivateEntity(Kinds.PHOTO, photoId);
-        } catch (LeanException e)
-        {
-            return 0;  // default yummies count is 0
-        }
-
-        if (!photoEntity.hasProperty(Props.Photo.YUMMIES))
-            return 0;
-
-        return (long)photoEntity.getProperty(Props.Photo.YUMMIES);
-    }
-
     public static boolean cachePhoto(RestogramPhoto photo) {
+
+    if (photo == null)
+        return  false;
 
     try
     {
         DatastoreUtils.putPublicEntity(Kinds.PHOTO,
                 photo.getInstagram_id(), DataStoreConverters.photoToProps(photo));
     }
-    catch (LeanException e) {
-        log.severe("caching the photo in DS has failed");
+    catch (LeanException e)
+    {
+        log.severe("caching the photo in DS has failed. code: " + e.getErrorCode());
         return false;
     }
     return true;
 }
 
     public static boolean isPhotoInCache(final String photoId) {
+
+        if (StringUtils.isBlank(photoId))
+            return false;
+
         final LeanQuery query = new LeanQuery(Kinds.PHOTO);
         query.addFilter(Entity.KEY_RESERVED_PROPERTY, QueryFilter.FilterOperator.EQUAL,
                         KeyFactory.createKey(Kinds.PHOTO, photoId));
@@ -343,31 +375,11 @@ public final class DataManager {
             result = DatastoreUtils.queryEntityPublic(query);
         } catch (LeanException e)
         {
-            log.severe("cannot query for entity existence");
+            log.severe("cannot query for entity existence. code:" + e.getErrorCode());
         }
 
         return result != null  && result.getResult() != null &&
                !result.getResult().isEmpty();
-    }
-
-    /**
-     * Has the photo been approved by filters and added to cache.
-     */
-    public static boolean isPhotoCached(final String photoId) {
-        Entity entity = null;
-        try
-        {
-            entity =  DatastoreUtils.getPublicEntity(Kinds.PHOTO, photoId);
-        } catch (LeanException e)
-        {
-            return false; // entity not in cache
-        }
-
-        // if 'approved' is not yet set - count it out
-        if  (!entity.hasProperty(Props.Photo.APPROVED))
-            return false;
-
-        return true;
     }
 
     private static PhotosResult createPhotosResultFromQueryResult(final QueryResult queryResult) {

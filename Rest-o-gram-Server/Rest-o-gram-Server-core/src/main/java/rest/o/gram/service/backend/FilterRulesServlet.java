@@ -110,7 +110,8 @@ public class FilterRulesServlet extends HttpServlet {
             }
 
             // update DS
-            DataManager.savePhotoToRuleMapping(photoToRuleMapping);
+            if (!DataManager.savePhotoToRuleMapping(photoToRuleMapping))
+                log.warning("cannot save rules - will ignore");
 
             //  photo is no longer pending
             final List<String> photoIdsToRemove = new ArrayList<>(idRulePairs.length/2);

@@ -16,131 +16,149 @@ import java.util.regex.Pattern;
 public class DatastoreUtils {
 
     private static final Logger log = Logger.getLogger(DatastoreUtils.class.getName());
-
     private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private static final Pattern pattern = Pattern.compile("^[A-Za-z][A-Za-z_0-9]*");
 
-    public static Entity getPrivateEntity(String kind, long entityId) throws LeanException {
-        LeanAccount account = findCurrentAccount();
-
-        if (entityId <= 0 || kind == null) throw new LeanException(LeanException.Error.EntityNotFound,
-                " Entity 'kind' and 'id' must NOT be null.");
-
-        Entity entity;
-        try {
-            final Key accountKey = AccountUtils.getAccountKey(account.id);
-            entity = datastore.get(KeyFactory.createKey(accountKey, kind, entityId));
-        } catch (EntityNotFoundException e) {
-            throw new LeanException(LeanException.Error.EntityNotFound);
-        }
-
-        return entity;
+    public static Entity getPrivateEntity(String kind, String entityName) throws LeanException {
+        return getPrivateEntity(kind, entityName, false);
     }
 
-    public static Entity getPrivateEntity(String kind, String entityName) throws LeanException {
+    public static Entity getPrivateEntity(String kind, String entityName, boolean isInTransaction) throws LeanException {
         LeanAccount account = findCurrentAccount();
 
         if (entityName == null || kind == null) throw new LeanException(LeanException.Error.EntityNotFound,
                 " Entity 'kind' and 'name' must NOT be null.");
 
-        Entity entity;
-        try {
-            final Key accountKey = AccountUtils.getAccountKey(account.id);
-            entity = datastore.get(KeyFactory.createKey(accountKey, kind, entityName));
-        } catch (EntityNotFoundException e) {
-            throw new LeanException(LeanException.Error.EntityNotFound);
-        }
+        final Key accountKey = AccountUtils.getAccountKey(account.id);
+        if (accountKey == null)
+            throw new LeanException(LeanException.Error.NotAuthorized);
 
-        return entity;
+        final Key key = KeyFactory.createKey(accountKey, kind, entityName);
+        return doGetEntitySafe(key, isInTransaction);
     }
 
     public static Entity getPublicEntity(String kind, String entityName) throws LeanException {
+        return getPublicEntity(kind, entityName, false);
+    }
+
+    public static Entity getPublicEntity(String kind, String entityName, boolean isInTransaction) throws LeanException {
         if (entityName == null || kind == null) throw new LeanException(LeanException.Error.EntityNotFound,
                 " Entity 'kind' and 'name' must NOT be null.");
 
+        final Key key = KeyFactory.createKey(kind, entityName);
+        return doGetEntitySafe(key, isInTransaction);
+    }
+
+    private static Entity doGetEntitySafe(Key key, boolean isInTransaction) throws LeanException {
         Entity entity;
-        try {
-            entity = datastore.get(KeyFactory.createKey(kind, entityName));
-        } catch (EntityNotFoundException e) {
+        try
+        {
+            entity = datastore.get(key);
+        } catch (EntityNotFoundException e)
+        {
             throw new LeanException(LeanException.Error.EntityNotFound);
+        }
+        catch (DatastoreTimeoutException e)
+        {
+            // in transaction - no retry
+            if (isInTransaction)
+            {
+                log.warning("a recoverable data store error has occured while in transaction, delegates");
+                throw new LeanException(LeanException.Error.RecoverableDataStoreError);
+            }
+
+            log.warning("a recoverable data store error has occured, retries");
+            // non transaction - retry
+            try
+            {
+                entity = datastore.get(key);
+            }
+            catch (Exception|Error e2)
+            {
+                log.severe("a fatal data store error has occured, cannot retry");
+                throw new LeanException(LeanException.Error.FatalDataStoreError);
+            }
+        }
+        catch (Exception|Error e)
+        {
+            log.severe("a fatal data store error has occured, cannot retry");
+            throw new LeanException(LeanException.Error.FatalDataStoreError);
         }
 
         return entity;
-    }
-
-    public static void deletePrivateEntity(String entityKind, long entityId) throws LeanException {
-        LeanAccount account = findCurrentAccount();
-
-        if (entityId <= 0 || entityKind == null) throw new LeanException(LeanException.Error.EntityNotFound,
-                " Entity 'kind' and 'id' must NOT be null.");
-
-        Entity entity;
-        try {
-            final Key accountKey = AccountUtils.getAccountKey(account.id);
-            entity = datastore.get(KeyFactory.createKey(accountKey, entityKind, entityId));
-        } catch (EntityNotFoundException e) {
-            throw new LeanException(LeanException.Error.EntityNotFound);
-        }
-
-        datastore.delete(entity.getKey());
-    }
-
-    public static void deletePrivateEntity(String entityKind, String entityName) throws LeanException {
-        if (entityName == null || entityKind == null) throw new LeanException(LeanException.Error.EntityNotFound,
-                " Entity 'kind' and 'name' must NOT be null.");
-
-        Entity entity;
-        try {
-            entity = datastore.get(KeyFactory.createKey(entityKind, entityName));
-        } catch (EntityNotFoundException e) {
-            throw new LeanException(LeanException.Error.EntityNotFound);
-        }
-
-        datastore.delete(entity.getKey());
     }
 
     private static LeanAccount findCurrentAccount() throws LeanException {
         LeanAccount account = AuthService.getCurrentAccount();
         // this should not happen, but we check anyway
-        if (account == null) throw new LeanException(LeanException.Error.NotAuthorized);
+        if (account == null)
+            throw new LeanException(LeanException.Error.NotAuthorized);
         return account;
     }
 
-    public static List<Entity> getPrivateEntities() throws LeanException {
-        findCurrentAccount();
-
-        List<String> kindNames = findAllEntityKinds();
-
-        List<Entity> result = new ArrayList<>();
-
-        for (String kindName : kindNames) {
-            result.addAll(getPrivateEntities(kindName));
-        }
-
-        return result;
-    }
-
     public static Collection<Entity> getPrivateEntities(final String kind) throws LeanException {
-        return getPrivateEntities(kind, null);
+        return getPrivateEntities(kind, false);
     }
 
-    public static Collection<Entity> getPrivateEntities(final String kind, final String[] uniqueNames) throws LeanException {
+    public static Collection<Entity> getPrivateEntities(final String kind, boolean isInTransaction) throws LeanException {
+        return getPrivateEntities(kind, null, isInTransaction);
+    }
 
-        if (!pattern.matcher(kind).matches()) {
+    public static Collection<Entity> getPrivateEntities(final String kind, final String[] uniqueNames)
+            throws LeanException {
+        return getPrivateEntities(kind, uniqueNames, false);
+    }
+
+    public static Collection<Entity> getPrivateEntities(final String kind, final String[] uniqueNames, boolean isInTransaction)
+            throws LeanException {
+
+        if (!pattern.matcher(kind).matches())
             throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
-        }
 
         final LeanAccount account = AuthService.getCurrentAccount();
         // this should not happen, but we check anyway
-        if (account == null) throw new LeanException(LeanException.Error.NotAuthorized);
+        if (account == null)
+            throw new LeanException(LeanException.Error.NotAuthorized);
 
         final Key accountKey = getCurrentAccountKey();
+        if (accountKey == null)
+            throw new LeanException(LeanException.Error.NotAuthorized);
 
         if (uniqueNames == null || uniqueNames.length == 0)
         {
             final Query query = new Query(kind, accountKey);
             PreparedQuery pq = datastore.prepare(query);
-            return pq.asList(FetchOptions.Builder.withDefaults());
+
+            try
+            {
+                return pq.asList(FetchOptions.Builder.withDefaults());
+            }
+            catch (DatastoreTimeoutException e)
+            {
+                // in transaction - no retry
+                if (isInTransaction)
+                {
+                    log.warning("a recoverable data store error has occured while in transaction, delegates");
+                    throw new LeanException(LeanException.Error.RecoverableDataStoreError);
+                }
+
+                log.warning("a recoverable data store error has occured, retries");
+                // non transaction - retry
+                try
+                {
+                    return pq.asList(FetchOptions.Builder.withDefaults());
+                }
+                catch (Exception|Error e2)
+                {
+                    log.severe("a fatal data store error has occured, cannot retry");
+                    throw new LeanException(LeanException.Error.FatalDataStoreError);
+                }
+            }
+            catch (Exception|Error e)
+            {
+                log.severe("a fatal data store error has occured, cannot retry");
+                throw new LeanException(LeanException.Error.FatalDataStoreError);
+            }
         }
         else
         {
@@ -148,56 +166,72 @@ public class DatastoreUtils {
             for (final String currName : uniqueNames)
                 keys.add(KeyFactory.createKey(accountKey, kind, currName));
 
-            final Map<Key,Entity> result = datastore.get(keys);
-            return result.values();
+            return doGetEntitiesSafe(keys, isInTransaction).values();
         }
     }
 
-    public static Collection<Entity> getPublicEntities(String kind, String[] uniqueNames) throws LeanException {
+    public static Collection<Entity> getPublicEntities(String kind, String[] uniqueNames)
+            throws LeanException {
+        return getPublicEntities(kind, uniqueNames, false);
+    }
 
-        if (!pattern.matcher(kind).matches()) {
+    public static Collection<Entity> getPublicEntities(String kind, String[] uniqueNames, boolean isInTransaction)
+            throws LeanException {
+
+        if (!pattern.matcher(kind).matches())
             throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
-        }
 
         List<Key> keys = new ArrayList<>(uniqueNames.length);
         for (String currName : uniqueNames)
             keys.add(KeyFactory.createKey(kind, currName));
 
-        Map<Key,Entity> result = datastore.get(keys);
-        return result.values();
+        return doGetEntitiesSafe(keys, isInTransaction).values();
     }
 
-    public static long putPrivateEntity(String kind, Map<String, PropertyDescription> properties) throws LeanException {
-        return putPrivateEntity(kind, Long.MIN_VALUE, properties);
-    }
-
-    public static long putPrivateEntity(String kind, long id, Map<String, PropertyDescription> properties) throws LeanException {
-        if (!pattern.matcher(kind).matches()) {
-            throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
+    private static Map<Key,Entity> doGetEntitiesSafe(List<Key> keys, boolean isInTransaction) throws LeanException {
+        Map<Key,Entity> result = null;
+        try
+        {
+            result = datastore.get(keys);
         }
-
-        final Key accountKey = getCurrentAccountKey();
-        Entity entityEntity;
-        if (id > 0) // updates an  existing entity
-            entityEntity = new Entity(kind, id, accountKey);
-        else // creates a new entity
-            entityEntity = new Entity(kind, accountKey);
-
-        if (properties != null) {
-            for (final Map.Entry<String, PropertyDescription> entry : properties.entrySet())
+        catch (DatastoreTimeoutException e)
+        {
+            // in transaction - no retry
+            if (isInTransaction)
             {
-                if (entry.getValue().indexed)
-                    entityEntity.setProperty(entry.getKey(), entry.getValue().value);
-                else
-                    entityEntity.setUnindexedProperty(entry.getKey(), entry.getValue().value);
+                log.warning("a recoverable data store error has occured while in transaction, delegates");
+                throw new LeanException(LeanException.Error.RecoverableDataStoreError);
+            }
+
+            log.warning("a recoverable data store error has occured, retries");
+            // non transaction - retry
+            try
+            {
+                result = datastore.get(keys);
+            }
+            catch (Exception|Error e2)
+            {
+                log.severe("a fatal data store error has occured, cannot retry");
+                throw new LeanException(LeanException.Error.FatalDataStoreError);
             }
         }
-        Key result = datastore.put(entityEntity);
-        return result.getId();
+        catch (Exception|Error e)
+        {
+            log.severe("a fatal data store error has occured, cannot retry");
+            throw new LeanException(LeanException.Error.FatalDataStoreError);
+        }
+        return result;
     }
 
     public static void putPrivateEntity(String kind, String name,
-                                        Map<String, PropertyDescription> properties) throws LeanException {
+                                        Map<String, PropertyDescription> properties)
+            throws LeanException {
+        putPrivateEntity(kind, name, properties, false);
+    }
+
+    public static void putPrivateEntity(String kind, String name,
+                                        Map<String, PropertyDescription> properties, boolean isInTransaction)
+                                    throws LeanException {
         if (!pattern.matcher(kind).matches()) {
             throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
         }
@@ -215,15 +249,28 @@ public class DatastoreUtils {
                     entityEntity.setUnindexedProperty(entry.getKey(), entry.getValue().value);
             }
         }
-        datastore.put(entityEntity);
+
+        doPutEntitySafe(isInTransaction, entityEntity);
     }
 
-    public static void putPublicEntity(Entity entityEntity) {
-        datastore.put(entityEntity);
+    public static void putPublicEntity(Entity entityEntity)
+            throws LeanException {
+        putPublicEntity(entityEntity, false);
+    }
+
+    public static void putPublicEntity(Entity entityEntity, boolean isInTransaction)
+            throws LeanException {
+        doPutEntitySafe(isInTransaction, entityEntity);
     }
 
     public static void putPublicEntity(String kind, String name, Map<String, PropertyDescription> properties)
-            throws LeanException {
+                                        throws LeanException {
+        putPublicEntity(kind, name, properties, false);
+    }
+
+    public static void putPublicEntity(String kind, String name, Map<String, PropertyDescription> properties,
+                                       boolean isInTransaction)
+                                            throws LeanException {
 
         if (!pattern.matcher(kind).matches()) {
             throw new LeanException(LeanException.Error.IllegalEntityKeyFormat);
@@ -241,38 +288,82 @@ public class DatastoreUtils {
                     entityEntity.setUnindexedProperty(entry.getKey(), entry.getValue().value);
             }
         }
-        datastore.put(entityEntity);
-    }
-
-    public static void putPublicEntities(final Collection<Entity> entities) {
-        datastore.put(entities);
+        doPutEntitySafe(isInTransaction, entityEntity);
     }
 
     public static PutBatchOperation startPutBatch() {
         return new PutBatchOperationImpl();
     }
 
-    public static boolean endPutBatch(final PutBatchOperation operation, final PutStrategy strategy) {
+    public static boolean endPutBatch(final PutBatchOperation operation, final PutStrategy strategy) throws LeanException{
+        return endPutBatch(operation, strategy, false);
+    }
+
+    public static boolean endPutBatch(final PutBatchOperation operation, final PutStrategy strategy,
+                                      boolean isInTransaction) throws LeanException{
         if (operation == null ||  operation.getEntities() == null)
             return false;
 
-        Map<Key,Entity> existing =
-                datastore.get(entitiesToKeys(operation.getEntities()));
-        List<Entity> merged = strategy.merge(operation, existing);
+        final List<Key> keys = new ArrayList<Key>(entitiesToKeys(operation.getEntities()));
+        final Map<Key,Entity> existing = doGetEntitiesSafe(keys,isInTransaction);
+        final List<Entity> merged = strategy.merge(operation, existing);
+        doPutEntitySafe(isInTransaction, merged.toArray(new Entity[]{}));
         datastore.put(merged);
         return true;
     }
 
+    private static void doPutEntitySafe(boolean isInTransaction, Entity... entityEntity) throws LeanException {
+        final List<Entity> entities = Arrays.asList(entityEntity);
+        try
+        {
+            datastore.put(entities);
+        }
+        catch (DatastoreTimeoutException |ConcurrentModificationException e)
+        {
+            // in transaction - no retry
+            if (isInTransaction)
+            {
+                log.warning("a recoverable data store error has occured while in transaction, delegates");
+                throw new LeanException(LeanException.Error.RecoverableDataStoreError);
+            }
+
+            log.warning("a recoverable data store error has occured, retries");
+            // non transaction - retry
+            try
+            {
+                datastore.put(entities);
+            }
+            catch (Exception|Error e2)
+            {
+                log.severe("a fatal data store error has occured, cannot retry");
+                throw new LeanException(LeanException.Error.FatalDataStoreError);
+            }
+        }
+        catch (Exception|Error e)
+        {
+            log.severe("a fatal data store error has occured, cannot retry");
+            throw new LeanException(LeanException.Error.FatalDataStoreError);
+        }
+    }
+
     public static QueryResult queryEntityPrivate(LeanQuery leanQuery) throws LeanException {
+        return queryEntityPrivate(leanQuery, false);
+    }
+
+    public static QueryResult queryEntityPrivate(LeanQuery leanQuery, boolean isInTransaction) throws LeanException {
         final Key accountKey = getCurrentAccountKey();
         final Query query = new Query(leanQuery.getKind(), accountKey);
 
-        return queryEntity(leanQuery, query);
+        return queryEntity(leanQuery, query, isInTransaction);
     }
 
     public static QueryResult queryEntityPublic(LeanQuery leanQuery) throws LeanException {
+        return queryEntityPublic(leanQuery, false);
+    }
+
+    public static QueryResult queryEntityPublic(LeanQuery leanQuery, boolean isInTransaction) throws LeanException {
         Query query = new Query(leanQuery.getKind());
-        return queryEntity(leanQuery, query);
+        return queryEntity(leanQuery, query, isInTransaction);
     }
 
     public static Transaction buildTransaction() {
@@ -303,7 +394,7 @@ public class DatastoreUtils {
     }
 
     private static Collection<Key> entitiesToKeys(final Collection<Entity> entities) {
-        final Collection<Key> keys = new ArrayList<>();
+        final Collection<Key> keys = new ArrayList<>(entities.size());
         for (final Entity currEntity : entities)
         {
              keys.add(currEntity.getKey());
@@ -311,7 +402,7 @@ public class DatastoreUtils {
         return keys;
     }
 
-    private static QueryResult queryEntity(LeanQuery leanQuery, Query query) throws LeanException {
+    private static QueryResult queryEntity(LeanQuery leanQuery, Query query, boolean isInTransaction) throws LeanException {
         if (leanQuery.getFilters() != null)
         {
             if (leanQuery.getFilters().size() == 1)
@@ -344,16 +435,42 @@ public class DatastoreUtils {
         if(leanQuery.getLimit() != null)
             fetchOptions.limit(leanQuery.getLimit());
 
-        try {
-            PreparedQuery pq = datastore.prepare(query);
-
-            QueryResultList<Entity> result;
+        PreparedQuery pq = datastore.prepare(query);
+        QueryResultList<Entity> result =  null;
+        try
+        {
             result = pq.asQueryResultList(fetchOptions);
-
-            return new QueryResult(result, result.getCursor());
-        } catch (DatastoreNeedIndexException dnie) {
+        } catch (DatastoreNeedIndexException dnie)
+        {
             throw new LeanException(LeanException.Error.AppEngineMissingIndex);
         }
+        catch (DatastoreTimeoutException e)
+        {
+            // in transaction - no retry
+            if (isInTransaction)
+            {
+                log.warning("a recoverable data store error has occured while in transaction, delegates");
+                throw new LeanException(LeanException.Error.RecoverableDataStoreError);
+            }
+
+            log.warning("a recoverable data store error has occured, retries");
+            // non transaction - retry
+            try
+            {
+                result = pq.asQueryResultList(fetchOptions);
+            }
+            catch (Exception|Error e2)
+            {
+                log.severe("a fatal data store error has occured, cannot retry");
+                throw new LeanException(LeanException.Error.FatalDataStoreError);
+            }
+        }
+        catch (Exception|Error e)
+        {
+            log.severe("a fatal data store error has occured, cannot retry");
+            throw new LeanException(LeanException.Error.FatalDataStoreError);
+        }
+        return new QueryResult(result, result.getCursor());
     }
 
     private static Query.FilterPredicate leanFilterToFilter(QueryFilter queryFilter) {
@@ -361,24 +478,6 @@ public class DatastoreUtils {
                 queryFilter.getProperty(),
                 queryFilter.getOperator().getFilterOperator(),
                 queryFilter.getValue());
-    }
-
-    private static List<String> findAllEntityKinds() throws LeanException {
-
-        Query q = new Query(Entities.KIND_METADATA_KIND );
-
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        PreparedQuery pq = datastore.prepare(q);
-
-        List<Entity> list = pq.asList(FetchOptions.Builder.withDefaults());
-
-        List<String> result = new ArrayList<>();
-        for (Entity entity : list) {
-            if (!entity.getKey().getName().startsWith("_"))
-                result.add(entity.getKey().getName());
-        }
-
-        return result;
     }
 
     private static Key getCurrentAccountKey() {

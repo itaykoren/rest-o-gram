@@ -26,13 +26,18 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
         if (!DataManager.updatePhotoReference(photoId, true))
         {
             log.severe("cannot update photo reference");
-            return false;
+            return true;
         }
 
         if (DataManager.isPhotoInCache(photoId)) // in DS already
         {
             log.info("YUMMIES: already in DS");
-            return DataManager.changePhotoYummiesCount(photoId, 1);
+            if (!DataManager.changePhotoYummiesCount(photoId, 1))
+            {
+                log.severe("cannot cahne yummies count, photo:" + photoId);
+                return true;
+            }
+            return true;
         }
         else if (DataManager.isPhotoPending(photoId)) //  pending photo
         {
@@ -45,9 +50,8 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
                                                 DataStoreConverters.photoToProps(pendingPhoto));
             } catch (LeanException e)
             {
-                e.printStackTrace();
                 log.severe("cannot write an updated photo(yummies counter) to cache");
-                return false;
+                return true;
             }
         }
         else //  get from instagram
@@ -65,14 +69,15 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
                                                                             prepareRequest,
                                                                             RestogramPhoto.class);
             if (InstagramUtils.isNullOrEmpty(restogramPhoto))
-                return false;
+                return true;
 
             //decode string to get the correct encoding
             restogramPhoto.decodeStrings();
 
             restogramPhoto.setOriginVenueId(originVenueId);
             restogramPhoto.setYummies(1);
-            return DataManager.cachePhoto(restogramPhoto);
+            DataManager.cachePhoto(restogramPhoto);
+            return true;
         }
         return true;
     }
@@ -82,7 +87,7 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
         if (!DataManager.updatePhotoReference(photoId, false))
         {
             log.severe("cannot update photo reference");
-            return false;
+            return true;
         }
 
         return DataManager.changePhotoYummiesCount(photoId, -1);

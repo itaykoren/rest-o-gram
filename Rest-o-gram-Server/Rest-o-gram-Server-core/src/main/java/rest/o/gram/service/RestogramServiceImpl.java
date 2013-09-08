@@ -39,7 +39,8 @@ import java.util.logging.Logger;
  */
 public class RestogramServiceImpl implements RestogramService {
 
-    public RestogramServiceImpl() {
+    public RestogramServiceImpl()
+    {
         try
         {
             m_CredentialsFactory = new RandomCredentialsFactory();
@@ -120,7 +121,11 @@ public class RestogramServiceImpl implements RestogramService {
         }
 
         final RestogramVenue venue = ApisConverters.convertToRestogramVenue(completeVenue);
-        DataManager.cacheVenue(venue);
+        if(venue != null)
+        {
+            if (!DataManager.cacheVenue(venue))
+                log.warning(String.format("cannot save venue %s to cache", venue.getFoursquare_id()));
+        }
         return new VenueResult(venue);
     }
 
@@ -208,6 +213,9 @@ public class RestogramServiceImpl implements RestogramService {
         }
 
         final Map<String,RestogramVenue> idToVenueMapping = DataManager.fetchVenuesFromCache(venueIds);
+        if (idToVenueMapping == null)
+            return null;
+
         for (final RestogramVenue currVenue : venues)
         {
             if (idToVenueMapping.containsKey(currVenue.getFoursquare_id()))
@@ -238,7 +246,8 @@ public class RestogramServiceImpl implements RestogramService {
             }
 
             //set as favorite
-            markFavoritePhotos(cachedPhotosResult);
+            if (hasPhotos(cachedPhotosResult))
+                markFavoritePhotos(cachedPhotosResult);
         }
 
         // if got enough results from cache, return results
@@ -282,9 +291,14 @@ public class RestogramServiceImpl implements RestogramService {
     }
 
     private void markFavoritePhotos(PhotosResult cachedPhotosResult) {
-        if (AuthService.isUserLoggedIn() && hasPhotos(cachedPhotosResult)) {
+        if (AuthService.isUserLoggedIn())
+        {
             final Set<String> favIds = DataManager.fetchFavoritePhotoIds();
-            for (final RestogramPhoto currPhoto : cachedPhotosResult.getPhotos()) {
+            if(favIds == null)
+                return;
+
+            for (final RestogramPhoto currPhoto : cachedPhotosResult.getPhotos())
+            {
                 if (favIds.contains(currPhoto.getInstagram_id()))
                     currPhoto.set_favorite(true);
             }
@@ -402,8 +416,11 @@ public class RestogramServiceImpl implements RestogramService {
     private List<RestogramPhoto> getUncachedPhotos(final List<RestogramPhoto> data) {
         final Map<String,Boolean> photoToRuleMapping =
                 DataManager.getPhotoToRuleMapping(data.toArray(new RestogramPhoto[1]));
-        final List<RestogramPhoto> uncachedPhotos = new ArrayList<>();
 
+        if  (photoToRuleMapping == null)
+            return data;
+
+        final List<RestogramPhoto> uncachedPhotos = new ArrayList<>();
         for (final RestogramPhoto currPhoto : data)
         {
             if (!photoToRuleMapping.containsKey(currPhoto.getInstagram_id()))

@@ -1,9 +1,11 @@
 package com.leanengine.server.appengine.datastore;
 
 import com.google.appengine.api.datastore.Entity;
+import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,8 +55,17 @@ public class PutBatchOperationImpl implements PutBatchOperation {
 
     @Override
     public boolean execute(PutStrategy strategy) {
-        return DatastoreUtils.endPutBatch(this, strategy);
+        try
+        {
+            return DatastoreUtils.endPutBatch(this, strategy);
+        }
+        catch (LeanException e)
+        {
+            log.severe("batch put operation has failed. code:" + e.getErrorCode());
+            return false;
+        }
     }
 
     private Map<String,Entity> idToEntityMapping = new HashMap<>();
+    private static final Logger log = Logger.getLogger(PutBatchOperationImpl.class.getName());
 }

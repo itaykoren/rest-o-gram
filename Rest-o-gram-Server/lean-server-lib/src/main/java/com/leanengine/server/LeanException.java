@@ -38,7 +38,9 @@ public class LeanException extends Throwable {
         AppEngineMissingIndex(203, "AppEngine query error: missing index. Try running this query on dev server to " +
                 "automatically create needed indexes and then upload to production."),
          // this is only produced on client, when server sends malformed error message
-         LeanExceptionToJSON(204, "Error parsing error JSON data.");
+         LeanExceptionToJSON(204, "Error parsing error JSON data."),
+        RecoverableDataStoreError(206, "A recoverable data store error has occured"),
+        FatalDataStoreError(207, "Fatal data store error has occured.");
 
         public int errorCode;
         public String errorMessage;

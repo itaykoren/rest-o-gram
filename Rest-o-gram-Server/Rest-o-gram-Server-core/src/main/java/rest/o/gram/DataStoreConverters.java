@@ -54,9 +54,6 @@ public final class DataStoreConverters {
     public static RestogramVenue entityToVenue(final Entity entity) {
         RestogramVenue venue = new RestogramVenue();
         venue.setFoursquare_id(entity.getKey().getName());
-        // TODO: handle the case of an entity that the curr account has ref to...
-        //if (entity.hasId())
-        //    venue.setId(entity.getId());
         venue.setName((String)entity.getProperty(Props.Venue.NAME));
         venue.setAddress((String)entity.getProperty(Props.Venue.ADDRESS));
         venue.setCity((String)entity.getProperty(Props.Venue.CITY));
