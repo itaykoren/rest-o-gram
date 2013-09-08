@@ -2,7 +2,6 @@ package com.leanengine.server.auth;
 
 import com.leanengine.server.LeanEngineSettings;
 import com.leanengine.server.LeanException;
-import com.leanengine.server.appengine.ServerUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

@@ -6,10 +6,10 @@ import org.jinstagram.entity.media.MediaInfoFeed;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.service.InstagramServices.Entities.RestogramPhotos;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.service.InstagramServices.Entities.EmptyRestogramPhoto;
 import rest.o.gram.service.InstagramServices.Entities.EmptyRestogramPhotos;
+import rest.o.gram.service.InstagramServices.Entities.RestogramPhotos;
 import rest.o.gram.utils.InstagramUtils;
 
 import java.util.ArrayList;

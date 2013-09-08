@@ -16,8 +16,6 @@
 
 package com.littlefluffytoys.littlefluffylocationlibrary;
 
-import java.util.List;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -28,6 +26,8 @@ import android.location.LocationManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import java.util.List;
 
 /**
  * A simple-to-use library that broadcasts location updates to your app without killing your battery.

@@ -4,7 +4,10 @@ package rest.o.gram.filters;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.utils.FilteringUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.

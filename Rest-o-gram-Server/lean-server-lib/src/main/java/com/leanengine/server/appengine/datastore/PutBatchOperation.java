@@ -2,9 +2,7 @@ package com.leanengine.server.appengine.datastore;
 
 import com.google.appengine.api.datastore.Entity;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.

@@ -3,9 +3,9 @@ package rest.o.gram.service.backend;
 import com.google.appengine.api.taskqueue.TaskHandle;
 import rest.o.gram.Defs;
 import rest.o.gram.InstagramAccessManager;
-import rest.o.gram.tasks.TasksManager;
 import rest.o.gram.data.DataManager;
 import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.tasks.TasksManager;
 import rest.o.gram.utils.InstagramUtils;
 
 import javax.servlet.ServletException;

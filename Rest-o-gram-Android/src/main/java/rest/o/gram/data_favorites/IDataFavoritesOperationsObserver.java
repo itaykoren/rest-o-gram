@@ -1,6 +1,8 @@
 package rest.o.gram.data_favorites;
 
-import rest.o.gram.data_favorites.results.*;
+import rest.o.gram.data_favorites.results.AddPhotoToFavoritesResult;
+import rest.o.gram.data_favorites.results.GetFavoritePhotosResult;
+import rest.o.gram.data_favorites.results.RemovePhotoFromFavoritesResult;
 
 /**
  * Created with IntelliJ IDEA.

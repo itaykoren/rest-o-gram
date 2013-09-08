@@ -1,8 +1,8 @@
 package rest.o.gram.data_history;
 
 import rest.o.gram.common.Defs;
-import rest.o.gram.data_structs.*;
-import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.data_structs.Dictionary;
+import rest.o.gram.data_structs.IDictionary;
 import rest.o.gram.entities.RestogramVenue;
 
 /**

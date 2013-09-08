@@ -2,8 +2,7 @@ package rest.o.gram.authentication;
 
 import android.content.Context;
 import android.net.Uri;
-import com.leanengine.*;
-import rest.o.gram.client.RestogramClient;
+import com.leanengine.LeanEngine;
 import rest.o.gram.lean.LeanAccount;
 
 /**

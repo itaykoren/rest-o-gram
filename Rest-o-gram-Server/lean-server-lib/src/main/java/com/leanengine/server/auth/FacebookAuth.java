@@ -17,7 +17,6 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.logging.Logger;
 
 public class FacebookAuth {

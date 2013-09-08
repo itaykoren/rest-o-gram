@@ -4,10 +4,10 @@ import org.jinstagram.entity.locations.LocationSearchFeed;
 import org.jinstagram.entity.media.MediaInfoFeed;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.service.InstagramServices.Entities.RestogramPhotos;
 import rest.o.gram.service.InstagramServices.Entities.EmptyLocationSearchFeed;
 import rest.o.gram.service.InstagramServices.Entities.EmptyRestogramPhoto;
 import rest.o.gram.service.InstagramServices.Entities.EmptyRestogramPhotos;
+import rest.o.gram.service.InstagramServices.Entities.RestogramPhotos;
 
 /**
  * Created with IntelliJ IDEA.

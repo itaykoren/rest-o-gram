@@ -12,7 +12,7 @@ import rest.o.gram.common.Utils;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.location.ILocationTracker;
-import rest.o.gram.tasks.results.*;
+import rest.o.gram.tasks.results.GetNearbyResult;
 import rest.o.gram.view.VenueViewAdapter;
 
 import static rest.o.gram.location.Utils.distance;

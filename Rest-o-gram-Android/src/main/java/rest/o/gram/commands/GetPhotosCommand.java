@@ -1,9 +1,9 @@
 package rest.o.gram.commands;
 
+import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.tasks.GetPhotosTask;
 import rest.o.gram.tasks.ITaskObserver;
-import org.json.rpc.client.HttpJsonRpcClientTransport;
 
 /**
  * Created with IntelliJ IDEA.

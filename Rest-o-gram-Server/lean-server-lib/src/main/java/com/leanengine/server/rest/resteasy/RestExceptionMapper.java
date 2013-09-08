@@ -1,6 +1,5 @@
 package com.leanengine.server.rest.resteasy;
 
-import com.google.appengine.api.datastore.DatastoreNeedIndexException;
 import com.leanengine.server.LeanException;
 
 import javax.ws.rs.core.Response;

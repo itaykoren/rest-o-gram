@@ -3,7 +3,6 @@ package rest.o.gram.commands;
 import org.json.rpc.client.HttpJsonRpcClientTransport;
 import rest.o.gram.tasks.GetProfilePhotoUrlTask;
 import rest.o.gram.tasks.ITaskObserver;
-import rest.o.gram.tasks.results.GetProfilePhotoUrlResult;
 
 /**
  * Created with IntelliJ IDEA.

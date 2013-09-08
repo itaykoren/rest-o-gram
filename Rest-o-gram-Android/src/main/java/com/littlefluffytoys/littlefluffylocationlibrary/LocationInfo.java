@@ -16,12 +16,12 @@
 
 package com.littlefluffytoys.littlefluffylocationlibrary;
 
-import java.io.Serializable;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
+
+import java.io.Serializable;
 
 /**
  * An object containing a snapshot of the best we currently know about location.

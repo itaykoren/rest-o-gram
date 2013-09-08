@@ -8,10 +8,6 @@
 
 package com.leanengine;
 
-import com.leanengine.LeanError;
-
-import java.util.concurrent.ExecutionException;
-
 /**
  * Callback interface used when invoking REST service in the background thread.
  * @param <E>

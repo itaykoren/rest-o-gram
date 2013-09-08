@@ -1,7 +1,5 @@
 package com.leanengine.server.rest.resteasy;
 
-import com.leanengine.server.rest.*;
-
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;

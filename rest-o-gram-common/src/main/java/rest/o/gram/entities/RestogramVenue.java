@@ -1,6 +1,7 @@
 package rest.o.gram.entities;
 
 import rest.o.gram.Utils.EncodingUtils;
+
 import java.io.Serializable;
 
 /**

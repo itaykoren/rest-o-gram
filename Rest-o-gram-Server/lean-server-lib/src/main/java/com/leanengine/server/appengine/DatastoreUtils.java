@@ -6,8 +6,11 @@ import com.leanengine.server.appengine.datastore.PutBatchOperation;
 import com.leanengine.server.appengine.datastore.PutBatchOperationImpl;
 import com.leanengine.server.appengine.datastore.PutStrategy;
 import com.leanengine.server.auth.AuthService;
+import com.leanengine.server.entity.LeanQuery;
+import com.leanengine.server.entity.QueryFilter;
+import com.leanengine.server.entity.QueryResult;
+import com.leanengine.server.entity.QuerySort;
 import rest.o.gram.lean.LeanAccount;
-import com.leanengine.server.entity.*;
 
 import java.util.*;
 import java.util.logging.Logger;

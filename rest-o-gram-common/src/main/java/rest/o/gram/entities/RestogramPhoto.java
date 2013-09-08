@@ -4,8 +4,6 @@ import com.google.gson.annotations.SerializedName;
 import rest.o.gram.Utils.EncodingUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

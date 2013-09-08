@@ -1,9 +1,7 @@
 package rest.o.gram.data_favorites;
 
-import android.util.Log;
 import com.leanengine.LeanEntity;
 import rest.o.gram.client.RestogramClient;
-import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;

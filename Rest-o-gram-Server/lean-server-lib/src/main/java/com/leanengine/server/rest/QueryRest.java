@@ -1,19 +1,8 @@
 package com.leanengine.server.rest;
 
-import com.google.appengine.api.datastore.Entity;
-import com.leanengine.server.JsonUtils;
-import com.leanengine.server.LeanException;
-import com.leanengine.server.appengine.DatastoreUtils;
-import com.leanengine.server.entity.*;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
-import rest.o.gram.entities.QueryReference;
-
-import javax.ws.rs.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.util.logging.Logger;
 
 @Path("/v1/query")

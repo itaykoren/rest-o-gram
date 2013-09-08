@@ -8,8 +8,6 @@
 
 package com.leanengine;
 
-import com.leanengine.LeanEntity;
-
 import java.util.List;
 
 public class QueryResult {

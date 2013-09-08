@@ -1,10 +1,10 @@
 package rest.o.gram.location;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.util.Timer;
 import java.util.TimerTask;
-
-import android.os.Looper;
-import android.os.Handler;
 
 /**
  * Created with IntelliJ IDEA.

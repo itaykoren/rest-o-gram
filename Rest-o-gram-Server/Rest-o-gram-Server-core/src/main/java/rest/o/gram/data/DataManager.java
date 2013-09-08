@@ -1,6 +1,9 @@
 package rest.o.gram.data;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.Cursor;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.memcache.ErrorHandlers;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
@@ -16,12 +19,12 @@ import com.leanengine.server.entity.QuerySort;
 import org.apache.commons.lang3.StringUtils;
 import rest.o.gram.DataStoreConverters;
 import rest.o.gram.data.results.RestogramPhotoIdsQueryResult;
-import rest.o.gram.shared.CommonDefs;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.results.PhotosResult;
+import rest.o.gram.shared.CommonDefs;
 
 import java.util.*;
 import java.util.logging.Level;

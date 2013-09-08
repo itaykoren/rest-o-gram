@@ -1,7 +1,6 @@
 package rest.o.gram.authentication;
 
 import android.net.Uri;
-import com.leanengine.NetworkCallback;
 import rest.o.gram.lean.LeanAccount;
 
 /**

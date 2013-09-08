@@ -2,13 +2,6 @@ package rest.o.gram.cache;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
-import rest.o.gram.common.Defs;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 
 /**
  * Created with IntelliJ IDEA.

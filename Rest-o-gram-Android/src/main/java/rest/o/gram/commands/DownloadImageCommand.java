@@ -19,7 +19,7 @@ import rest.o.gram.view.IPhotoViewAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.*;
+import java.util.concurrent.Executor;
 
 /**
  * Created with IntelliJ IDEA.

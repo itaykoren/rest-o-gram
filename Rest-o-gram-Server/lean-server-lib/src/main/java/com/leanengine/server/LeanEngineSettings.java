@@ -1,7 +1,6 @@
 package com.leanengine.server;
 
 import com.google.appengine.api.datastore.*;
-import com.google.appengine.api.utils.SystemProperty;
 import com.leanengine.server.appengine.ServerUtils;
 
 import java.util.HashMap;

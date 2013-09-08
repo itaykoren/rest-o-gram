@@ -1,8 +1,5 @@
 package rest.o.gram.location;
 
-import android.location.LocationManager;
-import rest.o.gram.common.Defs;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Or

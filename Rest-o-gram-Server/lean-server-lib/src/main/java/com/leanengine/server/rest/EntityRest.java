@@ -1,13 +1,8 @@
 package com.leanengine.server.rest;
 
-import com.google.appengine.api.datastore.Entity;
-import com.leanengine.server.JsonUtils;
-import com.leanengine.server.LeanException;
-import com.leanengine.server.appengine.DatastoreUtils;
-import org.codehaus.jackson.JsonNode;
-
-import javax.ws.rs.*;
-import java.util.List;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.util.logging.Logger;
 
 @Path("/v1/entity")
