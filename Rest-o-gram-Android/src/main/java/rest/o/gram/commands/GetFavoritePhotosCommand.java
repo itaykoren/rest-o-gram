@@ -1,6 +1,7 @@
 package rest.o.gram.commands;
 
 import org.json.rpc.client.HttpJsonRpcClientTransport;
+import rest.o.gram.client.RestogramClient;
 import rest.o.gram.tasks.GetFavoritePhotosTask;
 import rest.o.gram.tasks.ITaskObserver;
 
@@ -22,7 +23,7 @@ public class GetFavoritePhotosCommand extends AsyncTaskRestogramCommand {
             return false;
 
         GetFavoritePhotosTask t = new GetFavoritePhotosTask(transport, this);
-        t.execute(token);
+        t.executeOnExecutor(RestogramClient.getInstance().getExecutor(), token);
         task = t;
         return true;
     }
