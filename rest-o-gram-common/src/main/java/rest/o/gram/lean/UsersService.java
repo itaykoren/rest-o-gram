@@ -8,12 +8,12 @@ package rest.o.gram.lean;
 public interface UsersService {
 
     /**
-     *  Retrieves the current acount's data(as a JSON string)
+     *  Retrieves the current account's data(as a JSON string)
      */
     String getCurrentAccountData();
 
     /**
-     *  Logs out frfom the current session
+     *  Logs out from the current session
      */
     boolean logout();
 }
