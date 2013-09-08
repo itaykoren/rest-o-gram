@@ -37,7 +37,10 @@ public class JsonAuthFilter implements Filter {
         String token = httpServletRequest.getHeader("lean_token");
 
         if (token != null)
-            AuthService.startAuthSession(token);
+        {
+            if (!AuthService.startAuthSession(token))
+                log.warning("cannot start auth session");
+        }
 
         filterChain.doFilter(servletRequest, servletResponse);
 

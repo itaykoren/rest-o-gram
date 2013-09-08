@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class FacebookLoginServlet extends HttpServlet {
 
@@ -66,23 +67,22 @@ public class FacebookLoginServlet extends HttpServlet {
                         scheme.getErrorUrl(new LeanException(LeanException.Error.FacebookAuthNotEnabled), errorUrl));
                 return;
             }
-
             // development server mocks Facebook logins
-            if (ServerUtils.isDevServer()) {
-                String mockEmail = request.getParameter("email");
-                String action = request.getParameter("action");
-                if (mockEmail == null) {
-                    FacebookMockLogin.showForm(request, response, isMobile);
-                } else {
-                    if ("Log Out".equals(action)) {
-                        response.sendRedirect(scheme.getErrorUrl(
-                                new LeanException(LeanException.Error.FacebookAuthError, " User cancelled login."), errorUrl));
-                    } else {
-                        FacebookMockLogin.login(request, response, mockEmail, scheme, redirectUrl, errorUrl);
-                    }
-                }
-                return;
-            }
+//            if (ServerUtils.isDevServer()) {
+//                String mockEmail = request.getParameter("email");
+//                String action = request.getParameter("action");
+//                if (mockEmail == null) {
+//                    FacebookMockLogin.showForm(request, response, isMobile);
+//                } else {
+//                    if ("Log Out".equals(action)) {
+//                        response.sendRedirect(scheme.getErrorUrl(
+//                                new LeanException(LeanException.Error.FacebookAuthError, " User cancelled login."), errorUrl));
+//                    } else {
+//                        FacebookMockLogin.login(request, response, mockEmail, scheme, redirectUrl, errorUrl);
+//                    }
+//                }
+//                return;
+//            }
 
             // 'state' parameter is passed around the Facebook OAuth redirects and ends up at our final auth page
             // Primarily it's used for preventing CSRF attacks, but we also use it to signal the login type to the final auth page
@@ -160,6 +160,9 @@ public class FacebookLoginServlet extends HttpServlet {
                     // authenticate with Facebook Graph OAuth API
                     // this makes a direct connection from server to 'https://graph.facebook.com/oauth/access_token'
                     AuthToken lean_token = FacebookAuth.authenticateWithOAuthGraphAPI(currentUrl, authorizationCode);
+                    if (lean_token == null)
+                        // oauth error - redirect back to client with error
+                        response.sendRedirect(scheme.getErrorUrl(new LeanException(LeanException.Error.FacebookAuthError), errorUrl));
 
                     // save token in session
                     session.setAttribute("lean_token", lean_token.token);
@@ -173,4 +176,6 @@ public class FacebookLoginServlet extends HttpServlet {
             }
         }
     }
+
+    private static final Logger log = Logger.getLogger(FacebookLoginServlet.class.getName());
 }

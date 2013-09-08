@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 public class AuthFilter implements Filter {
 
-    private static final Logger log = Logger.getLogger(JsonAuthFilter.class.getName());
+    private static final Logger log = Logger.getLogger(AuthFilter.class.getName());
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -41,7 +41,10 @@ public class AuthFilter implements Filter {
         }
 
         if (token != null)
-            AuthService.startAuthSession(token);
+        {
+            if (!AuthService.startAuthSession(token))
+                log.warning("cannot start auth session");
+        }
 
         filterChain.doFilter(servletRequest, servletResponse);
 

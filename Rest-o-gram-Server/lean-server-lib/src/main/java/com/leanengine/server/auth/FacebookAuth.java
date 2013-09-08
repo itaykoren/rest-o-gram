@@ -138,7 +138,8 @@ public class FacebookAuth {
             }
 
             LeanAccount account = AccountUtils.findAccountByProvider(providerID, "fb-oauth");
-            if (account == null) {
+            if (account == null)
+            {
                 //todo this is one-to-one mapping between Account and User
                 //change this in the future
 
