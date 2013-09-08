@@ -269,14 +269,11 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
     private VenueData getNextVenueWithPhotos() {
 
-        for (int i = 0; i < venues.length; i++) {
+        for(int i = 0; i < venues.length; i++) {
             VenueData nextVenue = getNextVenue();
             String token = nextVenue.lastToken;
-            if (token != null && token.equals(CommonDefs.Tokens.FINISHED_FETCHING_FROM_INSTAGRAM)) {
-                i++;
-            } else {
+            if(token == null || !token.equals(CommonDefs.Tokens.FINISHED_FETCHING_FROM_INSTAGRAM))
                 return nextVenue;
-            }
         }
         // no more venues with photos
         hasMorePhotos = false;
