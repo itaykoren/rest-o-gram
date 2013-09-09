@@ -32,10 +32,7 @@ import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.view.IPhotoViewAdapter;
 
 import java.net.URL;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -110,11 +107,7 @@ public class RestogramClient implements IRestogramClient {
             final IBitmapFilterFactory bitmapFilterFactory = new BitmapFilterFactory(context);
             bitmapFilter = bitmapFilterFactory.create(Defs.Filtering.BITMAP_FILTER_TYPE);
 
-            executor = new ThreadPoolExecutor(Defs.Commands.CORE_POOL_SIZE,
-                                              Defs.Commands.MAXIMUM_POOL_SIZE,
-                                              Defs.Commands.KEEP_ALIVE_TIME_IN_SECONDS,
-                                              TimeUnit.SECONDS,
-                                              new ArrayBlockingQueue<Runnable>(Defs.Commands.POOL_QUEUE_SIZE));
+            executor = Executors.newFixedThreadPool(Defs.Commands.THREAD_POOL_SIZE);
 
             isInitialized = true;
 
@@ -418,7 +411,7 @@ public class RestogramClient implements IRestogramClient {
     private IRestogramCommandQueue commandQueue; // Command queue
     private IRestogramCache cache; // Cache object
     private IBitmapCache bitmapCache; // Bitmap cache object
-    private ThreadPoolExecutor executor; // Executor object
+    private ExecutorService executor; // Executor object
     private boolean debuggable = false; // debuggable flag
     private boolean isInitialized = false; // Is initialized flag
 }
