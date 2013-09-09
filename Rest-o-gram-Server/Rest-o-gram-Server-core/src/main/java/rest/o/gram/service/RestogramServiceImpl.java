@@ -421,7 +421,7 @@ public class RestogramServiceImpl implements RestogramService {
 
     private List<RestogramPhoto> getUncachedPhotos(final List<RestogramPhoto> data) {
         final Map<String,Boolean> photoToRuleMapping =
-                DataManager.getPhotoToRuleMapping(data.toArray(new RestogramPhoto[1]));
+                DataManager.getPhotoToRuleMapping(data.toArray(new RestogramPhoto[0]));
 
         if  (photoToRuleMapping == null)
             return data;
