@@ -33,7 +33,7 @@ public class GetProfilePhotoUrlCommand extends AsyncTaskRestogramCommand {
         }
 
         GetProfilePhotoUrlTask t = new GetProfilePhotoUrlTask(transport, this);
-        t.execute(facebookId);
+        t.executeOnExecutor(RestogramClient.getInstance().getExecutor(), facebookId);
         task = t;
         return true;
     }
