@@ -2,8 +2,6 @@ package rest.o.gram.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.Menu;
 import android.view.View;
 import android.widget.*;
@@ -23,7 +21,6 @@ import rest.o.gram.data_favorites.results.RemovePhotoFromFavoritesResult;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
-import rest.o.gram.lean.LeanAccount;
 import rest.o.gram.tasks.results.GetCurrentAccountDataResult;
 import rest.o.gram.tasks.results.GetProfilePhotoUrlResult;
 import rest.o.gram.view.PhotoViewAdapter;
@@ -111,7 +108,11 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
     @Override
     public void onFinished(GetProfilePhotoUrlResult result) {
-        profilePhotoUrl = result.getProfilePhotoUrl();
+        if (result != null && result.getProfilePhotoUrl() != null)
+            doDownloadProfilePhoto(result.getProfilePhotoUrl());
+    }
+
+    private void doDownloadProfilePhoto(String profilePhotoUrl) {
         RestogramClient.getInstance().downloadImage(profilePhotoUrl, profilePhotoUrl, profileImageView, true, null);
     }
 
@@ -178,9 +179,13 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
      */
     private void initUser() {
         try {
-            IAuthenticationProvider provider = RestogramClient.getInstance().getAuthenticationProvider();
             updateNicknameAsync();
-            updateProfilePhoto((ImageView)findViewById(R.id.ivFBPhoto), provider);
+            profileImageView = (ImageView)findViewById(R.id.ivFBPhoto);
+            final IAuthenticationProvider authProvider =
+                    RestogramClient.getInstance().getAuthenticationProvider();
+            if (authProvider != null && authProvider.getFacebookProfilePhotoUrl() != null &&
+                    !authProvider.getFacebookProfilePhotoUrl().isEmpty())
+                doDownloadProfilePhoto(authProvider.getFacebookProfilePhotoUrl());
         } catch (Exception e) {
             // TODO
         }
@@ -303,56 +308,18 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
 
        if (result != null && result.getAccount() != null)
        {
-            final IAuthenticationProvider authProvider = RestogramClient.getInstance().getAuthenticationProvider();
-           if (authProvider != null && authProvider.getAccountData() != null)
-           {
-               final TextView nickname = (TextView)findViewById(R.id.tvFBName);
-               Utils.updateTextView(nickname, authProvider.getAccountData().getNickName());
-           }
-
+           doUpdateNickname();
+           RestogramClient.getInstance().getProfilePhotoUrl(result.getAccount().getProviderId(), this);
        }
     }
 
-    private void updateProfilePhoto(final ImageView imageView, final IAuthenticationProvider provider) {
-        this.profileImageView = imageView;
-
-        if(profilePhotoUrl != null) {
-            onFinished(new GetProfilePhotoUrlResult() {
-                @Override
-                public String getProfilePhotoUrl() {
-                    return profilePhotoUrl;
-                }
-            });
-            return;
+    private void doUpdateNickname() {
+        final IAuthenticationProvider authProvider = RestogramClient.getInstance().getAuthenticationProvider();
+        if (authProvider != null && authProvider.getAccountData() != null)
+        {
+            final TextView nickname = (TextView)findViewById(R.id.tvFBName);
+            Utils.updateTextView(nickname, authProvider.getAccountData().getNickName());
         }
-
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                try {
-                    String facebookId = (String) message.obj;
-                    getProfilePhotoUrl(facebookId);
-                } catch (Exception e) {
-                }
-            }
-        };
-
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-
-                LeanAccount account = provider.getAccountData();
-                if (account != null) {
-                    Message message = handler.obtainMessage(1, account.getProviderId());
-                    handler.sendMessage(message);
-                }
-            }
-        };
-        thread.start();
-    }
-
-    private void getProfilePhotoUrl(String facebookId) {
-        RestogramClient.getInstance().getProfilePhotoUrl(facebookId, this);
     }
 
     private void showMessage(String text) {

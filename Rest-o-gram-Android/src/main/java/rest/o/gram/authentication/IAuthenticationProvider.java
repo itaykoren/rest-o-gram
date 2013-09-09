@@ -36,6 +36,21 @@ public interface IAuthenticationProvider {
     void resetAuthData();
 
     /**
+     * Returns facebook profile photo url of user
+     */
+    String getFacebookProfilePhotoUrl();
+
+    /**
+     * Sets the facebook profile photo url
+     */
+    void setFacebookProfilePhotoUrl(String profilePhotoUrl);
+
+    /**
+     * Resets facebook profile photo url
+     */
+    void resetFacebookProfilePhotoUrl();
+
+    /**
      * Returns authentication token of user
      */
     String getAuthToken();

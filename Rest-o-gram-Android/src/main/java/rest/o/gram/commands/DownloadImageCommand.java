@@ -285,7 +285,8 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                 return;
             }
 
-            imageView.setImageBitmap(bitmap);
+            if (imageView != null)
+                imageView.setImageBitmap(bitmap);
             notifyFinished();
         }
 

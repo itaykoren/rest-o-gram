@@ -18,6 +18,7 @@ import rest.o.gram.data_favorites.results.RemovePhotoFromFavoritesResult;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.lean.LeanAccount;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.results.*;
 
@@ -54,6 +55,7 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
      */
     public void onUserLoggedIn() {
         favoriteHelper.refresh();
+        RestogramClient.getInstance().getCurrentAccount(this);
     }
 
     /**
@@ -63,10 +65,6 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
         // Clear user data from objects in cache
         IRestogramCache cache = RestogramClient.getInstance().getCache();
         if(cache != null) {
-            // Reset venue favorite data
-            for(final RestogramVenue venue : cache.getVenues()) {
-                venue.setfavorite(false);
-            }
 
             // Reset photo favorite data
             for(final RestogramPhoto venue : cache.getPhotos()) {
@@ -160,7 +158,19 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
 
     @Override
     public void onFinished(GetProfilePhotoUrlResult result) {
-        // Empty
+        if (result != null && result.getProfilePhotoUrl() != null && !result.getProfilePhotoUrl().isEmpty())
+        {
+            final IAuthenticationProvider provider =
+                    RestogramClient.getInstance().getAuthenticationProvider();
+            if (provider != null)
+            {
+                final String profilePhotoUrl = result.getProfilePhotoUrl();
+                provider.setFacebookProfilePhotoUrl(profilePhotoUrl);
+
+                // making sure that the profile image is in cache
+                RestogramClient.getInstance().downloadImage(profilePhotoUrl, profilePhotoUrl, null, true, null);
+            }
+        }
     }
 
     @Override
@@ -185,7 +195,11 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
             final IAuthenticationProvider provider =
                     RestogramClient.getInstance().getAuthenticationProvider();
             if (provider != null)
-                provider.setAccountData(result.getAccount());
+            {
+                final LeanAccount account = result.getAccount();
+                provider.setAccountData(account);
+                RestogramClient.getInstance().getProfilePhotoUrl(account.getProviderId(), this);
+            }
         }
     }
 
@@ -198,7 +212,10 @@ public class RestogramActivity extends FragmentActivity implements ITaskObserver
             final IAuthenticationProvider provider =
                     RestogramClient.getInstance().getAuthenticationProvider();
             if (provider != null)
+            {
                 provider.resetAuthData();
+                provider.resetFacebookProfilePhotoUrl();
+            }
 
             onUserLoggedOut();
             if (RestogramClient.getInstance().isDebuggable())

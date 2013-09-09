@@ -43,9 +43,25 @@ public class AuthenticationProvider implements IAuthenticationProvider {
     }
 
     @Override
+    public String getFacebookProfilePhotoUrl() {
+        return facebookProfilePhotoUrl;
+    }
+
+    @Override
+    public void setFacebookProfilePhotoUrl(String profilePhotoUrl) {
+        this.facebookProfilePhotoUrl = profilePhotoUrl;
+    }
+
+    @Override
+    public void resetFacebookProfilePhotoUrl() {
+        this.facebookProfilePhotoUrl = null;
+    }
+
+    @Override
     public String getAuthToken() {
         return LeanEngine.getAuthToken();
     }
 
     private LeanAccount account = null;
+    private String facebookProfilePhotoUrl;
 }
