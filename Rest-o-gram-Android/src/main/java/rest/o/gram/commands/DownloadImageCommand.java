@@ -209,10 +209,11 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
                     // Download scaled bitmap
                     bitmap = decodeBitmap(url, width, height);
                 }
+
+                // Save scaled bitmap to cache
+                cache.save(filename, bitmap);
             }
 
-            // Save scaled bitmap to cache
-            cache.save(filename, bitmap);
             return bitmap;
         }
 
@@ -271,10 +272,11 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
             if(bitmap == null) {
                 // Download scaled bitmap
                 bitmap = decodeBitmap(url, width, height);
+
+                // Save scaled bitmap to cache
+                cache.save(filename, bitmap);
             }
 
-            // Save scaled bitmap to cache
-            cache.save(filename, bitmap);
             return bitmap;
         }
 

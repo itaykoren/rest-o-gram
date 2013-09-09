@@ -1,6 +1,7 @@
 package rest.o.gram.commands;
 
 import org.json.rpc.client.HttpJsonRpcClientTransport;
+import rest.o.gram.client.RestogramClient;
 import rest.o.gram.tasks.GetNearbyTask;
 import rest.o.gram.tasks.ITaskObserver;
 
@@ -32,9 +33,9 @@ public class GetNearbyCommand extends AsyncTaskRestogramCommand {
 
         GetNearbyTask t = new GetNearbyTask(transport, this);
         if(radius != null)
-            t.execute(latitude, longitude, radius);
+            t.executeOnExecutor(RestogramClient.getInstance().getExecutor(), latitude, longitude, radius);
         else
-            t.execute(latitude, longitude);
+            t.executeOnExecutor(RestogramClient.getInstance().getExecutor(), latitude, longitude);
 
         task = t;
 

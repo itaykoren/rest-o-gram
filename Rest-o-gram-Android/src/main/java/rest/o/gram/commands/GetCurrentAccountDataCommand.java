@@ -33,7 +33,7 @@ public class GetCurrentAccountDataCommand extends AsyncTaskRestogramCommand {
         }
 
         GetCurrentAccountDataTask t = new GetCurrentAccountDataTask(transport, this);
-        t.execute();
+        t.executeOnExecutor(RestogramClient.getInstance().getExecutor());
         task = t;
         return true;
     }

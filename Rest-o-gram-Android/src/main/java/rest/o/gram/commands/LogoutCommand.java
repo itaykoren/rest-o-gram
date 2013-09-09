@@ -1,6 +1,7 @@
 package rest.o.gram.commands;
 
 import org.json.rpc.client.HttpJsonRpcClientTransport;
+import rest.o.gram.client.RestogramClient;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.LogoutTask;
 
@@ -21,7 +22,7 @@ public class LogoutCommand extends AsyncTaskRestogramCommand {
             return false;
 
         LogoutTask t = new LogoutTask(transport, this);
-        t.execute();
+        t.executeOnExecutor(RestogramClient.getInstance().getExecutor());
         task = t;
         return true;
     }

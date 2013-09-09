@@ -1,6 +1,7 @@
 package rest.o.gram.commands;
 
 import org.json.rpc.client.HttpJsonRpcClientTransport;
+import rest.o.gram.client.RestogramClient;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.tasks.RemovePhotoFromFavoritesTask;
 
@@ -23,7 +24,7 @@ public class RemovePhotoFromFavoritesCommand extends AsyncTaskRestogramCommand {
 
         RemovePhotoFromFavoritesTask t = new RemovePhotoFromFavoritesTask(transport, this);
 
-        t.execute(photoId);
+        t.executeOnExecutor(RestogramClient.getInstance().getExecutor(), photoId);
         task = t;
 
         return true;

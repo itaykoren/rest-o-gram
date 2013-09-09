@@ -1,6 +1,7 @@
 package rest.o.gram.commands;
 
 import org.json.rpc.client.HttpJsonRpcClientTransport;
+import rest.o.gram.client.RestogramClient;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.tasks.GetNextPhotosTask;
 import rest.o.gram.tasks.ITaskObserver;
@@ -30,7 +31,7 @@ public class GetNextPhotosCommand extends AsyncTaskRestogramCommand {
             return false;
 
         GetNextPhotosTask t = new GetNextPhotosTask(transport, this);
-        t.execute(token, filterType.toString(), originVenueId);
+        t.executeOnExecutor(RestogramClient.getInstance().getExecutor(), token, filterType.toString(), originVenueId);
         task = t;
         return true;
     }

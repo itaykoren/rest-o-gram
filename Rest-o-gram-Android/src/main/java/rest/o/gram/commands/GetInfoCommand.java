@@ -1,6 +1,7 @@
 package rest.o.gram.commands;
 
 import org.json.rpc.client.HttpJsonRpcClientTransport;
+import rest.o.gram.client.RestogramClient;
 import rest.o.gram.tasks.GetInfoTask;
 import rest.o.gram.tasks.ITaskObserver;
 
@@ -23,7 +24,7 @@ public class GetInfoCommand extends AsyncTaskRestogramCommand {
             return false;
 
         GetInfoTask t = new GetInfoTask(transport, this);
-        t.execute(venueID);
+        t.executeOnExecutor(RestogramClient.getInstance().getExecutor(), venueID);
         task = t;
         return true;
     }
