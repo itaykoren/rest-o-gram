@@ -12,6 +12,7 @@ import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.filters.IBitmapFilter;
+import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.tasks.DownloadImageObserver;
 import rest.o.gram.tasks.DownloadImageStrategy;
 import rest.o.gram.tasks.DownloadImageTask;
@@ -180,10 +181,14 @@ public class DownloadImageCommand extends AbstractRestogramCommand {
             if(bitmap == null) {
                 final boolean filter = !photo.isApproved();
                 if(filter) {
+                    // Get network state provider
+                    final INetworkStateProvider networkStateProvider = RestogramClient.getInstance().getNetworkStateProvider();
+
                     // Get bitmap filter
                     final IBitmapFilter bitmapFilter = RestogramClient.getInstance().getBitmapFilter();
 
-                    if(bitmapFilter.requiredQuality() == Defs.Filtering.BitmapQuality.HighResolution) {
+                    if(networkStateProvider.isWifi() &&
+                       bitmapFilter.requiredQuality() == Defs.Filtering.BitmapQuality.HighResolution) {
                         // Download full scale bitmap
                         bitmap = decodeBitmap(url);
 

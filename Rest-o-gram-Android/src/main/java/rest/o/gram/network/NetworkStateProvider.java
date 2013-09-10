@@ -2,6 +2,7 @@ package rest.o.gram.network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,13 +20,28 @@ public class NetworkStateProvider implements INetworkStateProvider {
 
     @Override
     public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(cm == null) {
+            cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        }
 
         return  cm != null &&
                 cm.getActiveNetworkInfo() != null &&
                 cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
+    @Override
+    public boolean isWifi() {
+        if(cm == null) {
+            cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        }
+
+        if(cm == null)
+            return false;
+
+        NetworkInfo info = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return info != null && info.isConnected();
+    }
+
     private Context context;
+    private ConnectivityManager cm;
 }
