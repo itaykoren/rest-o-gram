@@ -66,11 +66,21 @@ public final class Defs {
      * Commands constants
      */
     public static class Commands {
-        public static final int MAX_EXECUTING_COMMANDS = 15;
+
+        public static class SingleCore {
+            public static final int MAX_EXECUTING_COMMANDS = 10;
+        }
+
+        public static class DualCore {
+            public static final int MAX_EXECUTING_COMMANDS = 15;
+        }
+
+        public static class QuadCore {
+            public static final int MAX_EXECUTING_COMMANDS = 20;
+        }
+
         public static final long DEFAULT_SHORT_TIMEOUT = 10000; // 10 seconds
         public static final long DEFAULT_LONG_TIMEOUT = 30000; // 30 seconds
-
-        public static final int THREAD_POOL_SIZE = 20;
     }
 
     /**

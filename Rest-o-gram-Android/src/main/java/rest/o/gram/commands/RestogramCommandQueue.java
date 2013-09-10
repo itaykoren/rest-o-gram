@@ -1,7 +1,5 @@
 package rest.o.gram.commands;
 
-import rest.o.gram.common.Defs;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
@@ -14,9 +12,10 @@ import java.util.Set;
  */
 public class RestogramCommandQueue implements IRestogramCommandQueue, IRestogramCommandObserver {
 
-    public RestogramCommandQueue() {
+    public RestogramCommandQueue(int maxSize) {
+        this.maxSize = maxSize;
         pending = new ArrayDeque<>();
-        executing = new HashSet<>(Defs.Commands.MAX_EXECUTING_COMMANDS);
+        executing = new HashSet<>();
     }
 
     @Override
@@ -46,8 +45,8 @@ public class RestogramCommandQueue implements IRestogramCommandQueue, IRestogram
         if(isCanceling)
             return false;
 
-        // Allow only minor overflow from MAX_EXECUTING_COMMANDS
-        if(executing.size() > Defs.Commands.MAX_EXECUTING_COMMANDS + 1) {
+        // Allow only minor overflow from maxSize
+        if(executing.size() > maxSize + 1) {
             return pushFront(command);
         }
 
@@ -120,7 +119,7 @@ public class RestogramCommandQueue implements IRestogramCommandQueue, IRestogram
      * Updates this command queue
      */
     private void update() {
-        while(executing.size() < Defs.Commands.MAX_EXECUTING_COMMANDS) {
+        while(executing.size() < maxSize) {
             IRestogramCommand command = pending.pollFirst();
             if(command == null)
                 break;
@@ -130,6 +129,7 @@ public class RestogramCommandQueue implements IRestogramCommandQueue, IRestogram
         }
     }
 
+    private int maxSize; // Max queue size
     private Deque<IRestogramCommand> pending; // Pending commands
     private Set<IRestogramCommand> executing; // Executing commands
     private boolean isCanceling = false; // Is canceling flag

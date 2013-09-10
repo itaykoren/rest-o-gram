@@ -89,7 +89,10 @@ public class RestogramClient implements IRestogramClient {
                 tracker = locationTrackerFactory.create(Defs.Location.SECONDARY_TRACKER_TYPE);
 
             networkStateProvider = new NetworkStateProvider(context);
-            commandQueue = new RestogramCommandQueue();
+
+            final int maxExecutingCommands = getMaxExecutingCommands();
+            commandQueue = new RestogramCommandQueue(maxExecutingCommands);
+            executor = Executors.newFixedThreadPool(maxExecutingCommands + 5);
 
             cache = new RestogramCache();
 
@@ -106,8 +109,6 @@ public class RestogramClient implements IRestogramClient {
 
             final IBitmapFilterFactory bitmapFilterFactory = new BitmapFilterFactory(context);
             bitmapFilter = bitmapFilterFactory.create(Defs.Filtering.BITMAP_FILTER_TYPE);
-
-            executor = Executors.newFixedThreadPool(Defs.Commands.THREAD_POOL_SIZE);
 
             isInitialized = true;
 
@@ -387,6 +388,21 @@ public class RestogramClient implements IRestogramClient {
     private void setJsonAuthToken(HttpJsonRpcClientTransport transport) {
         if (authProvider.isUserLoggedIn())
             transport.setHeader("lean_token", authProvider.getAuthToken());
+    }
+
+    /**
+     * Returns max executing commands amount according to device capabilities
+     */
+    private int getMaxExecutingCommands() {
+        final int cores = Utils.getCoreAmount();
+        if(cores == 1)
+            return Defs.Commands.SingleCore.MAX_EXECUTING_COMMANDS;
+        else if(cores == 2)
+            return Defs.Commands.DualCore.MAX_EXECUTING_COMMANDS;
+        else if(cores >= 4)
+            return Defs.Commands.QuadCore.MAX_EXECUTING_COMMANDS;
+        else
+            return Defs.Commands.SingleCore.MAX_EXECUTING_COMMANDS;
     }
 
     /**

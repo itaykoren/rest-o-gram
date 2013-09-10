@@ -250,10 +250,17 @@ public class Utils {
     }
 
     /**
+     * Returns the amount of cpu cores available
+     */
+    public static int getCoreAmount() {
+        return Runtime.getRuntime().availableProcessors();
+    }
+
+    /**
      * @return Is the hardware of the current virtual machine capable of applying image-processing based bitmap filter?
      */
     public static boolean canApplyBitmapFilter() {
-        return Runtime.getRuntime().availableProcessors() >= Defs.Filtering.MIN_CPU_CORES_FOR_FILTERING;
+        return getCoreAmount() >= Defs.Filtering.MIN_CPU_CORES_FOR_FILTERING;
     }
 
     private static int screenWidth = 0; // Screen width
