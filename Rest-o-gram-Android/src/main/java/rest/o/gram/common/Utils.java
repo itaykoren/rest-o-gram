@@ -239,14 +239,30 @@ public class Utils {
      * Returns screen width
      */
     public static int getScreenWidth(Context context) {
-        if(screenWidth == 0) {
+        if(screenWidth == 0 || screenDensity == 0) {
             WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
             Display display = wm.getDefaultDisplay();
             DisplayMetrics metrics = new DisplayMetrics();
             display.getMetrics(metrics);
             screenWidth = metrics.widthPixels;
+            screenDensity = metrics.density;
         }
         return screenWidth;
+    }
+
+    /**
+     * Returns screen density
+     */
+    public static float getScreenDensity(Context context) {
+        if(screenWidth == 0 || screenDensity == 0) {
+            WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            DisplayMetrics metrics = new DisplayMetrics();
+            display.getMetrics(metrics);
+            screenWidth = metrics.widthPixels;
+            screenDensity = metrics.density;
+        }
+        return screenDensity;
     }
 
     /**
@@ -264,4 +280,5 @@ public class Utils {
     }
 
     private static int screenWidth = 0; // Screen width
+    private static float screenDensity = 0; // Screen density
 }

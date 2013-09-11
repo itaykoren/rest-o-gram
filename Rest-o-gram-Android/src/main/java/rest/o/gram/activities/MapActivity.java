@@ -1,6 +1,5 @@
 package rest.o.gram.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.*;
 import android.os.Bundle;
@@ -377,16 +376,18 @@ public class MapActivity extends RestogramActionBarActivity {
 
     private void showWelcomeScreen() {
         final Handler h = new Handler();
-        final Activity activity = this;
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(!Utils.isActivityValid(activity))
+                if(!Utils.isActivityValid(MapActivity.this))
                     return;
 
-                IPopupView popupView = new GenericPopupView(activity, R.layout.map_welcome, R.id.popup_map, 400, 350);
+                int w = (int)(Utils.getScreenDensity(MapActivity.this) * 200);
+                int h = (int)(Utils.getScreenDensity(MapActivity.this) * 240);
+
+                IPopupView popupView = new GenericPopupView(MapActivity.this, R.layout.map_welcome, R.id.popup_map, w, h);
                 popupView.open();
-                Utils.setIsShowWelcomeScreen(activity, false);
+                Utils.setIsShowWelcomeScreen(MapActivity.this, false);
             }
         }, 1000);
     }

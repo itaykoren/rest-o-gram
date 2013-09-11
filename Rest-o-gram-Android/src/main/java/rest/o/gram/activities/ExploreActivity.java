@@ -319,16 +319,18 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
     private void showWelcomeScreen() {
         final Handler h = new Handler();
-        final Activity activity = this;
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(!Utils.isActivityValid(activity))
+                if(!Utils.isActivityValid(ExploreActivity.this))
                     return;
 
-                IPopupView popupView = new GenericPopupView(activity, R.layout.explore_welcome, R.id.popup_explore, 400, 350);
+                int w = (int)(Utils.getScreenDensity(ExploreActivity.this) * 200);
+                int h = (int)(Utils.getScreenDensity(ExploreActivity.this) * 210);
+
+                IPopupView popupView = new GenericPopupView(ExploreActivity.this, R.layout.explore_welcome, R.id.popup_explore, w, h);
                 popupView.open();
-                Utils.setIsShowWelcomeScreen(activity, false);
+                Utils.setIsShowWelcomeScreen(ExploreActivity.this, false);
             }
         }, 1000);
     }
