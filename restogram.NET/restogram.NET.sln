@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Web
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "restogram.NET", "restogram.NET\restogram.NET.ccproj", "{02DF8EE6-8699-4502-B9B1-23DEAF77084F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainWorkerRole", "MainWorkerRole\MainWorkerRole.csproj", "{80E5309B-C6C7-4612-8777-9680CD38048D}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://rest-o-gram.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = MainWorkerRole\\MainWorkerRole.csproj
+		SccProjectName1 = MainWorkerRole
+		SccLocalPath1 = MainWorkerRole
+		SccProjectUniqueName2 = restogram.NET\\restogram.NET.ccproj
+		SccProjectName2 = restogram.NET
+		SccLocalPath2 = restogram.NET
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02DF8EE6-8699-4502-B9B1-23DEAF77084F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02DF8EE6-8699-4502-B9B1-23DEAF77084F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02DF8EE6-8699-4502-B9B1-23DEAF77084F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02DF8EE6-8699-4502-B9B1-23DEAF77084F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80E5309B-C6C7-4612-8777-9680CD38048D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80E5309B-C6C7-4612-8777-9680CD38048D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80E5309B-C6C7-4612-8777-9680CD38048D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80E5309B-C6C7-4612-8777-9680CD38048D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
