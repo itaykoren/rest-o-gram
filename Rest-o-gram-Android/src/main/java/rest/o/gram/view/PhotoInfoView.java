@@ -32,7 +32,11 @@ public class PhotoInfoView extends AbstractPopupView {
             LayoutInflater inflater = (LayoutInflater)context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             layout = inflater.inflate(R.layout.photo_info, (ViewGroup)context.findViewById(R.id.popup_element));
-            impl = new PopupWindow(layout, 400, 400, true);
+
+            int w = (int)(Utils.getScreenDensity(context) * 230);
+            int h = (int)(Utils.getScreenDensity(context) * 180);
+
+            impl = new PopupWindow(layout, w, h, true);
             impl.setOutsideTouchable(true);
             impl.setBackgroundDrawable(new BitmapDrawable());
             impl.setOnDismissListener(new PopupWindow.OnDismissListener() {
