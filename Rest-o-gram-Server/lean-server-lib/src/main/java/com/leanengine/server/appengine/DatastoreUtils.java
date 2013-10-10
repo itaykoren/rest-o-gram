@@ -473,7 +473,37 @@ public class DatastoreUtils {
             log.severe("a fatal data store error has occured, cannot retry");
             throw new LeanException(LeanException.Error.FatalDataStoreError);
         }
-        return new QueryResult(result, result.getCursor());
+
+        try
+        {
+            return new QueryResult(result, result.getCursor());
+        }
+        catch (DatastoreTimeoutException e)
+        {
+            // in transaction - no retry
+            if (isInTransaction)
+            {
+                log.warning("a recoverable data store error has occured while in transaction, delegates");
+                throw new LeanException(LeanException.Error.RecoverableDataStoreError);
+            }
+
+            log.warning("a recoverable data store error has occured, retries");
+            // non transaction - retry
+            try
+            {
+                return new QueryResult(result, result.getCursor());
+            }
+            catch (Exception|Error e2)
+            {
+                log.severe("a fatal data store error has occured, cannot retry");
+                throw new LeanException(LeanException.Error.FatalDataStoreError);
+            }
+        }
+        catch (Exception|Error e)
+        {
+            log.severe("a fatal data store error has occured, cannot retry");
+            throw new LeanException(LeanException.Error.FatalDataStoreError);
+        }
     }
 
     private static Query.FilterPredicate leanFilterToFilter(QueryFilter queryFilter) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
     <application>rest-o-gram</application>
-    <version>33</version>
+    <version>34</version>
     <threadsafe>true</threadsafe>
     <sessions-enabled>true</sessions-enabled>
     <async-session-persistence enabled="true" />
@@ -11,5 +11,6 @@
     </system-properties>
     <admin-console>
         <page name="LeanEngine Settings" url="/admin/settings.jsp"/>
+        <!--<page name="Appstats" url="/appstats/" />-->
     </admin-console>
 </appengine-web-app>

@@ -2,6 +2,7 @@ package rest.o.gram.service;
 
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
+import com.leanengine.server.auth.AuthService;
 import rest.o.gram.DataStoreConverters;
 import rest.o.gram.Defs;
 import rest.o.gram.InstagramAccessManager;
@@ -10,6 +11,7 @@ import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.iservice.RestogramAuthService;
 import rest.o.gram.results.PhotosResult;
+import rest.o.gram.shared.CommonDefs;
 import rest.o.gram.utils.InstagramUtils;
 
 import java.util.logging.Logger;
@@ -23,6 +25,13 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
 
     @Override
     public boolean addPhotoToFavorites(final String photoId, final String originVenueId) {
+
+        if (!AuthService.isUserLoggedIn())
+        {
+            log.severe("client is not authenticated");
+            return true;
+        }
+
         if (!DataManager.updatePhotoReference(photoId, true))
         {
             log.severe("cannot update photo reference");
@@ -84,6 +93,12 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
 
     @Override
     public boolean removePhotoFromFavorites(String photoId) {
+        if (!AuthService.isUserLoggedIn())
+        {
+            log.severe("client is not authenticated");
+            return true;
+        }
+
         if (!DataManager.updatePhotoReference(photoId, false))
         {
             log.severe("cannot update photo reference");
@@ -95,7 +110,17 @@ public class RestogramAuthServiceImpl implements RestogramAuthService {
 
     @Override
     public PhotosResult getFavoritePhotos(final String token) {
-        return DataManager.queryFavoritePhotos(token);
+        if (!AuthService.isUserLoggedIn())
+        {
+            log.severe("client is not authenticated");
+            return new PhotosResult(new RestogramPhoto[0], CommonDefs.Tokens.FINISHED_FETCHING_FROM_CACHE);
+        }
+
+        final PhotosResult result = DataManager.queryFavoritePhotos(token);
+        if (result != null)
+            return result;
+        else
+            return new PhotosResult(new RestogramPhoto[0], CommonDefs.Tokens.FINISHED_FETCHING_FROM_CACHE);
     }
 
     private static final Logger log = Logger.getLogger(RestogramAuthServiceImpl.class.getName());

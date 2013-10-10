@@ -219,13 +219,14 @@ public class RestogramServiceImpl implements RestogramService {
         }
 
         final Map<String,RestogramVenue> idToVenueMapping = DataManager.fetchVenuesFromCache(venueIds);
-        if (idToVenueMapping == null)
-            return null;
 
-        for (final RestogramVenue currVenue : venues)
+        if (idToVenueMapping != null)
         {
-            if (idToVenueMapping.containsKey(currVenue.getFoursquare_id()))
-                currVenue.setImageUrl(idToVenueMapping.get(currVenue.getFoursquare_id()).getImageUrl());
+            for (final RestogramVenue currVenue : venues)
+            {
+                if (idToVenueMapping.containsKey(currVenue.getFoursquare_id()))
+                  currVenue.setImageUrl(idToVenueMapping.get(currVenue.getFoursquare_id()).getImageUrl());
+            }
         }
 
         log.info("found " + venues.length + " venues!");
