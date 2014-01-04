@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="708.9642857142858" y="0.0">rest.o.gram.commands.IRestogramCommand</node>
+    <node x="1040.9166666666665" y="1419.0">rest.o.gram.service.RestogramAuthServiceImpl</node>
+    <node x="0.0" y="1120.5">rest.o.gram.iservice.RestogramService</node>
+    <node x="567.2321428571429" y="188.0">rest.o.gram.commands.RestogramCommandQueue</node>
+    <node x="474.8571428571429" y="10.0">rest.o.gram.commands.IRestogramCommandQueue</node>
+    <node x="708.0" y="940.0">rest.o.gram.entities.RestogramPhoto</node>
+    <node x="344.0" y="1409.0">rest.o.gram.service.RestogramServiceImpl</node>
+    <node x="756.2321428571429" y="158.0">rest.o.gram.commands.IRestogramCommand.State</node>
+    <node x="0.0" y="98.0">rest.o.gram.client.IRestogramClient</node>
+    <node x="141.0" y="910.0">rest.o.gram.entities.RestogramVenue</node>
+    <node x="1154.0" y="1120.5">rest.o.gram.iservice.RestogramAuthService</node>
+    <node x="158.6071428571429" y="436.0">rest.o.gram.client.RestogramClient</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="rest.o.gram.client.RestogramClient" target="rest.o.gram.client.IRestogramClient">
+      <point x="-210.375" y="-214.5" />
+      <point x="228.7321428571429" y="411.0" />
+      <point x="132.0" y="411.0" />
+      <point x="-132.0" y="144.0" />
+    </edge>
+    <edge source="rest.o.gram.client.RestogramClient" target="rest.o.gram.commands.RestogramCommandQueue">
+      <point x="210.375" y="-214.5" />
+      <point x="649.4821428571429" y="411.0" />
+      <point x="651.7321428571429" y="411.0" />
+      <point x="0.0" y="54.0" />
+    </edge>
+    <edge source="rest.o.gram.commands.RestogramCommandQueue" target="rest.o.gram.commands.IRestogramCommand">
+      <point x="42.25" y="-54.0" />
+      <point x="693.9821428571429" y="73.0" />
+      <point x="746.9642857142858" y="73.0" />
+      <point x="-38.0" y="24.0" />
+    </edge>
+    <edge source="rest.o.gram.service.RestogramServiceImpl" target="rest.o.gram.entities.RestogramPhoto">
+      <point x="47.0" y="-34.0" />
+      <point x="461.5" y="1384.0" />
+      <point x="814.5" y="1384.0" />
+      <point x="-106.5" y="194.5" />
+    </edge>
+    <edge source="rest.o.gram.service.RestogramServiceImpl" target="rest.o.gram.entities.RestogramVenue">
+      <point x="0.0" y="-34.0" />
+      <point x="0.0" y="224.5" />
+    </edge>
+    <edge source="rest.o.gram.service.RestogramAuthServiceImpl" target="rest.o.gram.iservice.RestogramAuthService">
+      <point x="41.0" y="-24.0" />
+      <point x="1163.9166666666665" y="1384.0" />
+      <point x="1226.0" y="1384.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="rest.o.gram.commands.RestogramCommandQueue" target="rest.o.gram.commands.IRestogramCommandQueue">
+      <point x="-42.25" y="-54.0" />
+      <point x="609.4821428571429" y="73.0" />
+      <point x="601.6071428571429" y="73.0" />
+      <point x="42.25" y="14.0" />
+    </edge>
+    <edge source="rest.o.gram.commands.IRestogramCommand.State" target="rest.o.gram.commands.IRestogramCommand">
+      <point x="0.0" y="-84.0" />
+      <point x="864.7321428571429" y="73.0" />
+      <point x="822.9642857142858" y="73.0" />
+      <point x="38.0" y="24.0" />
+    </edge>
+    <edge source="rest.o.gram.service.RestogramServiceImpl" target="rest.o.gram.iservice.RestogramService">
+      <point x="-47.0" y="-34.0" />
+      <point x="367.5" y="1384.0" />
+      <point x="60.5" y="1384.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="rest.o.gram.client.RestogramClient" target="rest.o.gram.commands.IRestogramCommandQueue">
+      <point x="70.125" y="-214.5" />
+      <point x="509.2321428571429" y="411.0" />
+      <point x="538.5" y="411.0" />
+      <point x="538.5" y="73.0" />
+      <point x="517.1071428571429" y="73.0" />
+      <point x="-42.25" y="14.0" />
+    </edge>
+    <edge source="rest.o.gram.service.RestogramAuthServiceImpl" target="rest.o.gram.entities.RestogramPhoto">
+      <point x="-41.0" y="-24.0" />
+      <point x="1081.9166666666665" y="1384.0" />
+      <point x="1027.5" y="1384.0" />
+      <point x="106.5" y="194.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.062257849031396" x="595.6715507483335" y="291.72129291912967" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Inner Classes</Category>
+    <Category>Properties</Category>
+    <Category>Fields</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
