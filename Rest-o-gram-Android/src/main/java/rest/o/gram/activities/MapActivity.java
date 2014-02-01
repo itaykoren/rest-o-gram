@@ -36,7 +36,7 @@ import java.util.TimerTask;
  * User: Roi
  * Date: 29/05/13
  */
-public class MapActivity extends RestogramActionBarActivity {
+public class MapActivity extends RestogramMainActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,14 +90,6 @@ public class MapActivity extends RestogramActionBarActivity {
         // Clear map if needed
         if(isMapReady())
             map.clear();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(RestogramClient.getInstance().getApplication().isInLastActivity())
-            dialogManager.showExitAlert(this);
-        else
-            finish();
     }
 
     @Override

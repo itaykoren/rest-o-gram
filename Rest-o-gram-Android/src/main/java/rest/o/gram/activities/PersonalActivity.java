@@ -35,7 +35,7 @@ import java.util.Set;
  * User: Hen
  * Date: 24/05/13
  */
-public class PersonalActivity extends RestogramActionBarActivity implements IRestogramListener, IDataFavoritesOperationsObserver {
+public class PersonalActivity extends RestogramMainActivity implements IRestogramListener, IDataFavoritesOperationsObserver {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,14 +79,6 @@ public class PersonalActivity extends RestogramActionBarActivity implements IRes
         }
 
         return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(RestogramClient.getInstance().getApplication().isInLastActivity())
-            dialogManager.showExitAlert(this);
-        else
-            finish();
     }
 
     @Override

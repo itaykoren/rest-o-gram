@@ -33,7 +33,7 @@ import rest.o.gram.view.PhotoViewAdapter;
  * User: Itay
  * Date: 01/06/13
  */
-public class ExploreActivity extends RestogramActionBarActivity {
+public class ExploreActivity extends RestogramMainActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,14 +95,6 @@ public class ExploreActivity extends RestogramActionBarActivity {
 
         if (viewAdapter != null)
             viewAdapter.clear();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(RestogramClient.getInstance().getApplication().isInLastActivity())
-            dialogManager.showExitAlert(this);
-        else
-            finish();
     }
 
     @Override
