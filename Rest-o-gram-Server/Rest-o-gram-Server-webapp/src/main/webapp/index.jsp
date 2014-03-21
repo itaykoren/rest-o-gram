@@ -23,7 +23,7 @@
   <p>After you install the app, check out <a href="http://www.youtube.com/watch?v=nuX_d7l27nc">this</a> tutorial video to learn how to use Rest-o-Gram</p>
 
 
-  <h4>Copyright © 2013, by Rest-o-Gram</h4>
+  <h4>Copyright © 2014, by Rest-o-Gram</h4>
   </body>
 </html>
 
