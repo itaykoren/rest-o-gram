@@ -12,7 +12,7 @@
 
   <h2>Installation</h2>
   <p>Rest-o-Gram is an Android app, so if you have an Android device just click on the link below and download the app.</p>
-  <a href="https://drive.google.com/file/d/0B2fFH8bVMkeNZ2FKeVFpbFZsRTA">Download Rest-o-Gram</a>
+  <a href="https://drive.google.com/uc?export=download&id=0B2fFH8bVMkeNZ2FKeVFpbFZsRTA">Download Rest-o-Gram</a>
 
 
   <h2>Requirements</h2>
