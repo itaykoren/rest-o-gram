@@ -49,7 +49,7 @@ public class RestogramServiceImpl implements RestogramService {
     {
         try
         {
-            m_CredentialsFactory = new RandomCredentialsFactory();
+            credentialsFactory = new RandomCredentialsFactory();
 
         } catch (Exception e)
         {
@@ -93,7 +93,7 @@ public class RestogramServiceImpl implements RestogramService {
         Result<CompleteVenue> result;
         try
         {
-            final Credentials credentials = m_CredentialsFactory.createFoursquareCredentials();
+            final Credentials credentials = credentialsFactory.createFoursquareCredentials();
             log.info("foursquare credentials type = " + credentials.getType());
             final FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
             result = foursquare.venue(venueID);
@@ -102,7 +102,7 @@ public class RestogramServiceImpl implements RestogramService {
             log.warning("first venue  " + venueID + " retrieval has failed, retry");
             try
             {
-                final Credentials credentials = m_CredentialsFactory.createFoursquareCredentials();
+                final Credentials credentials = credentialsFactory.createFoursquareCredentials();
                 log.info("foursquare credentials type = " + credentials.getType());
                 final FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
                 result = foursquare.venue(venueID);
@@ -176,7 +176,7 @@ public class RestogramServiceImpl implements RestogramService {
         Result<VenuesSearchResult> result;
         try
         {
-            final Credentials credentials = m_CredentialsFactory.createFoursquareCredentials();
+            final Credentials credentials = credentialsFactory.createFoursquareCredentials();
             log.info("foursquare credentials type = " + credentials.getType());
             final FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
             result = foursquare.venuesSearch(params);
@@ -185,7 +185,7 @@ public class RestogramServiceImpl implements RestogramService {
             try
             {
                 log.warning("first venue search has failed, retry");
-                final Credentials credentials = m_CredentialsFactory.createFoursquareCredentials();
+                final Credentials credentials = credentialsFactory.createFoursquareCredentials();
                 log.info("foursquare credentials type = " + credentials.getType());
                 final FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
                 result = foursquare.venuesSearch(params);
@@ -449,7 +449,7 @@ public class RestogramServiceImpl implements RestogramService {
         RestogramPhotos recentMediaByLocation;
         try
         {
-            final Credentials credentials = m_CredentialsFactory.createInstagramCredentials();
+            final Credentials credentials = credentialsFactory.createInstagramCredentials();
             log.info("instagram credentials type = " + credentials.getType());
             final Instagram instagram = new Instagram(credentials.getClientId());
             recentMediaByLocation = getRecentMedia(venueId, pagination, instagram);
@@ -459,7 +459,7 @@ public class RestogramServiceImpl implements RestogramService {
 
             try
             {
-                final Credentials credentials = m_CredentialsFactory.createInstagramCredentials();
+                final Credentials credentials = credentialsFactory.createInstagramCredentials();
                 log.info("instagram credentials type = " + credentials.getType());
                 final Instagram instagram = new Instagram(credentials.getClientId());
                 recentMediaByLocation = getRecentMedia(venueId, pagination, instagram);
@@ -523,5 +523,5 @@ public class RestogramServiceImpl implements RestogramService {
     }
 
     private static final Logger log = Logger.getLogger(RestogramServiceImpl.class.getName());
-    private ICredentialsFactory m_CredentialsFactory;
+    private ICredentialsFactory credentialsFactory;
 }
