@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>support-v4</artifactId>
-            <version>r6</version>
+            <version>r7</version>
         </dependency>
         <dependency>
             <groupId>com.google.android.gms</groupId>
@@ -58,11 +58,6 @@
             <version>7</version>
             <type>jar</type>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.leanengine</groupId>-->
-            <!--<artifactId>android-lib</artifactId>-->
-            <!--<version>0.8</version>-->
-        <!--</dependency>-->
         <!--<dependency>-->
             <!--<groupId>com.littlefluffytoys</groupId>-->
             <!--<artifactId>littlefluffylocationlibrary</artifactId>-->
