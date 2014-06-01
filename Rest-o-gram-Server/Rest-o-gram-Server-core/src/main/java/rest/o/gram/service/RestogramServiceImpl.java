@@ -29,6 +29,7 @@ import rest.o.gram.iservice.RestogramService;
 import rest.o.gram.results.PhotosResult;
 import rest.o.gram.results.VenueResult;
 import rest.o.gram.results.VenuesResult;
+import rest.o.gram.server.RestogramServer;
 import rest.o.gram.service.InstagramServices.Entities.RestogramPhotos;
 import rest.o.gram.shared.CommonDefs;
 import rest.o.gram.tasks.TasksManager;
@@ -118,7 +119,7 @@ public class RestogramServiceImpl implements RestogramService {
 
         final RestogramVenue venue = ApisConverters.convertToRestogramVenue(completeVenue);
         if (venue != null) {
-            if (!DataManager.cacheVenue(venue))
+            if (!dataManager.cacheVenue(venue))
                 log.warning(String.format("cannot save venue %s to cache", venue.getFoursquare_id()));
         }
         return new VenueResult(venue);
@@ -200,7 +201,7 @@ public class RestogramServiceImpl implements RestogramService {
             venueIds[i] = arr[i].getId();
         }
 
-        final Map<String, RestogramVenue> idToVenueMapping = DataManager.fetchVenuesFromCache(venueIds);
+        final Map<String, RestogramVenue> idToVenueMapping = dataManager.fetchVenuesFromCache(venueIds);
 
         if (idToVenueMapping != null) {
             for (final RestogramVenue currVenue : venues) {
@@ -220,9 +221,9 @@ public class RestogramServiceImpl implements RestogramService {
             return null;
 
         PhotosResult cachedPhotosResult = null;
-        if (StringUtils.isBlank(token) || DataManager.isValidCursor(token)) {
+        if (StringUtils.isBlank(token) || dataManager.isValidCursor(token)) {
             // fetch cached photos of given venue
-            cachedPhotosResult = DataManager.fetchPhotosFromCache(venueId, token);
+            cachedPhotosResult = dataManager.fetchPhotosFromCache(venueId, token);
 
             // set as approved
             if (hasPhotos(cachedPhotosResult)) {
@@ -274,7 +275,7 @@ public class RestogramServiceImpl implements RestogramService {
 
     private void markFavoritePhotos(PhotosResult cachedPhotosResult) {
         if (AuthService.isUserLoggedIn()) {
-            final Set<String> favIds = DataManager.fetchFavoritePhotoIds();
+            final Set<String> favIds = dataManager.fetchFavoritePhotoIds();
             if (favIds == null)
                 return;
 
@@ -374,7 +375,7 @@ public class RestogramServiceImpl implements RestogramService {
         final List<RestogramPhoto> photosToEnqueue = new ArrayList<>(data.size());
         final Map<String, RestogramPhoto> idToPhotoMapping = new HashMap<>(data.size());
         for (final RestogramPhoto currPhoto : data) {
-            if (!DataManager.isPhotoPending(currPhoto.getInstagram_id())) {
+            if (!dataManager.isPhotoPending(currPhoto.getInstagram_id())) {
                 idToPhotoMapping.put(currPhoto.getInstagram_id(), currPhoto);
                 photosToEnqueue.add(currPhoto);
             }
@@ -382,14 +383,14 @@ public class RestogramServiceImpl implements RestogramService {
 
         // enque task + set as pending
         if (!photosToEnqueue.isEmpty()) {
-            DataManager.addPendingPhotos(idToPhotoMapping);
+            dataManager.addPendingPhotos(idToPhotoMapping);
             TasksManager.enqueueFilterTask(originVenueId, photosToEnqueue);
         }
     }
 
     private List<RestogramPhoto> getUncachedPhotos(final List<RestogramPhoto> data) {
         final Map<String, Boolean> photoToRuleMapping =
-                DataManager.getPhotoToRuleMapping(data.toArray(new RestogramPhoto[0]));
+                dataManager.getPhotoToRuleMapping(data.toArray(new RestogramPhoto[0]));
 
         if (photoToRuleMapping == null)
             return data;
@@ -475,12 +476,13 @@ public class RestogramServiceImpl implements RestogramService {
         }
     }
 
-    private static boolean isValidPaginationToken(final String token) {
+    private boolean isValidPaginationToken(final String token) {
         return !StringUtils.isBlank(token) &&
                 !token.equals(CommonDefs.Tokens.FINISHED_FETCHING_FROM_CACHE) &&
-                !DataManager.isValidCursor(token);
+                !dataManager.isValidCursor(token);
     }
 
     private static final Logger log = Logger.getLogger(RestogramServiceImpl.class.getName());
+    private final DataManager dataManager = RestogramServer.getInstance().getDataManager();
     private ICredentialsFactory credentialsFactory;
 }

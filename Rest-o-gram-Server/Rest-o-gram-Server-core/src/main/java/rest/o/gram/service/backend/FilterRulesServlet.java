@@ -4,7 +4,10 @@ import com.google.appengine.api.taskqueue.TaskHandle;
 import rest.o.gram.Defs;
 import rest.o.gram.InstagramAccessManager;
 import rest.o.gram.data.DataManager;
+import rest.o.gram.data.DataManagerImpl;
 import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.server.IRestogramServer;
+import rest.o.gram.server.RestogramServer;
 import rest.o.gram.tasks.TasksManager;
 import rest.o.gram.utils.InstagramUtils;
 
@@ -45,7 +48,6 @@ public class FilterRulesServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e)
         {
-            e.printStackTrace();
             log.severe("backend cannot reply. error: " + e.getMessage());
             try
             {
@@ -58,7 +60,7 @@ public class FilterRulesServlet extends HttpServlet {
         }
     }
 
-    private static void processFilterResults() {
+    private void processFilterResults() {
         final List<TaskHandle> tasks =
                 TasksManager.leaseFilterResults(Defs.FilterRulesQueue.LEASE_COUNT,
                                                 Defs.FilterRulesQueue.LEASE_PERIOD);
@@ -81,8 +83,8 @@ public class FilterRulesServlet extends HttpServlet {
                     currPhoto = new RestogramPhoto();
                     currPhoto.setInstagram_id(currPhotoId);
                 }
-                else if (DataManager.isPhotoPending(currPhotoId)) // restore from pending
-                    currPhoto = DataManager.getPendingPhoto(currPhotoId);
+                else if (dataManager.isPhotoPending(currPhotoId)) // restore from pending
+                    currPhoto = dataManager.getPendingPhoto(currPhotoId);
                 else // get from instagram
                 {
                     final InstagramAccessManager.PrepareRequest prepareRequest =
@@ -110,7 +112,7 @@ public class FilterRulesServlet extends HttpServlet {
             }
 
             // update DS
-            if (!DataManager.savePhotoToRuleMapping(photoToRuleMapping))
+            if (!dataManager.savePhotoToRuleMapping(photoToRuleMapping))
                 log.warning("cannot save rules - will ignore");
 
             //  photo is no longer pending
@@ -118,7 +120,7 @@ public class FilterRulesServlet extends HttpServlet {
             for (int i = 0; i < idRulePairs.length - 1; i+=2)
                 photoIdsToRemove.add(idRulePairs[i]);
 
-            DataManager.removePendingPhotos(photoIdsToRemove);
+            dataManager.removePendingPhotos(photoIdsToRemove);
 
             // done - removes from queue
             TasksManager.dismissFilterResult(currTask.getName());
@@ -127,4 +129,5 @@ public class FilterRulesServlet extends HttpServlet {
 
     private static final Logger log =
             Logger.getLogger(FilterRulesServlet.class.getName());
+    private final DataManager dataManager = RestogramServer.getInstance().getDataManager();
 }

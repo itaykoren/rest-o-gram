@@ -9,6 +9,11 @@ import java.util.concurrent.TimeUnit;
  */
 public final class Defs {
 
+    // NOTE: currently using this constant based config in order to avoid
+    //       loading of config files on jvm init..
+    //       (which could affect responsivness due to the inherent cold-start problem with JAVA GAE)
+    //       see: https://groups.google.com/forum/#!topic/google-appengine/Nz4Yt8V6PB0
+
     /**
      * Request constants
      */
