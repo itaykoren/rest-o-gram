@@ -8,6 +8,7 @@ import fi.foyt.foursquare.api.Result;
 import fi.foyt.foursquare.api.entities.CompactVenue;
 import fi.foyt.foursquare.api.entities.CompleteVenue;
 import fi.foyt.foursquare.api.entities.VenuesSearchResult;
+import fi.foyt.foursquare.api.io.GAEIOHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.jinstagram.Instagram;
 import org.jinstagram.entity.common.Pagination;
@@ -91,14 +92,16 @@ public class RestogramServiceImpl implements RestogramService {
         try {
             final Credentials credentials = credentialsFactory.createFoursquareCredentials();
             log.info("foursquare credentials type = " + credentials.getType());
-            final FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
+            final FoursquareApi foursquare =
+                    new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "", new GAEIOHandler());
             result = foursquare.venue(venueID);
         } catch (FoursquareApiException e) {
             log.warning("first venue  " + venueID + " retrieval has failed, retry");
             try {
                 final Credentials credentials = credentialsFactory.createFoursquareCredentials();
                 log.info("foursquare credentials type = " + credentials.getType());
-                final FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
+                final FoursquareApi foursquare =
+                        new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "", new GAEIOHandler());
                 result = foursquare.venue(venueID);
             } catch (FoursquareApiException e2) {
                 log.severe("second venue " + venueID + " retrieval has failed");
@@ -167,14 +170,16 @@ public class RestogramServiceImpl implements RestogramService {
         try {
             final Credentials credentials = credentialsFactory.createFoursquareCredentials();
             log.info("foursquare credentials type = " + credentials.getType());
-            final FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
+            final FoursquareApi foursquare =
+                    new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "", new GAEIOHandler());
             result = foursquare.venuesSearch(params);
         } catch (FoursquareApiException e) {
             try {
                 log.warning("first venue search has failed, retry");
                 final Credentials credentials = credentialsFactory.createFoursquareCredentials();
                 log.info("foursquare credentials type = " + credentials.getType());
-                final FoursquareApi foursquare = new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "");
+                final FoursquareApi foursquare =
+                        new FoursquareApi(credentials.getClientId(), credentials.getClientSecret(), "", new GAEIOHandler());
                 result = foursquare.venuesSearch(params);
             } catch (FoursquareApiException e2) {
                 log.severe("second venue search has failed");
