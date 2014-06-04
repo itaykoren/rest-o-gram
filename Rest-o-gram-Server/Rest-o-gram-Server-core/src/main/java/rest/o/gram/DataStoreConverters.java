@@ -1,6 +1,7 @@
 package rest.o.gram;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Text;
 import com.leanengine.server.appengine.DatastoreUtils;
 import rest.o.gram.entities.Kinds;
 import rest.o.gram.entities.Props;
@@ -72,7 +73,10 @@ public final class DataStoreConverters {
 
     public static Entity photoToEntity(final RestogramPhoto photo) {
         Entity entity = new Entity(Kinds.PHOTO, photo.getInstagram_id());
-        entity.setUnindexedProperty(Props.Photo.CAPTION, photo.getCaption());
+
+        final Text caption = new Text(photo.getCaption());
+        entity.setUnindexedProperty(Props.Photo.CAPTION, caption);
+
         entity.setUnindexedProperty(Props.Photo.CREATED_TIME, photo.getCreatedTime());
         entity.setUnindexedProperty(Props.Photo.IMAGE_FILTER, photo.getImageFilter());
         entity.setUnindexedProperty(Props.Photo.THUMBNAIL, photo.getThumbnail());
@@ -89,7 +93,11 @@ public final class DataStoreConverters {
 
     public static Map<String, DatastoreUtils.PropertyDescription> photoToProps(final RestogramPhoto photo){
         Map<String,DatastoreUtils.PropertyDescription> props = new HashMap<>(12);
-        props.put(Props.Photo.CAPTION, new DatastoreUtils.PropertyDescription(photo.getCaption(), false));
+
+        final Text caption = new Text(photo.getCaption());
+        props.put(Props.Photo.CAPTION, new DatastoreUtils.PropertyDescription(caption, false));
+
+
         props.put(Props.Photo.CREATED_TIME, new DatastoreUtils.PropertyDescription(photo.getCreatedTime(), false));
         props.put(Props.Photo.IMAGE_FILTER,new DatastoreUtils.PropertyDescription(photo.getImageFilter(),  false));
         props.put(Props.Photo.THUMBNAIL, new DatastoreUtils.PropertyDescription(photo.getThumbnail(), false));
@@ -111,7 +119,16 @@ public final class DataStoreConverters {
         // TODO: handle the case of an entity that the curr account has ref to...
         //if (entity.hasId())
         //    photo.setId(entity.getId());
-        photo.setCaption((String)entity.getProperty(Props.Photo.CAPTION));
+
+        // maintains backward compatibility with old DS entities
+        Object caption = entity.getProperty(Props.Photo.CAPTION);
+        String captionString = null;
+        if (caption instanceof Text)
+            captionString = ((Text)caption).getValue();
+        else
+            captionString = (String)caption;
+        photo.setCaption(captionString);
+
         photo.setCreatedTime((String)entity.getProperty(Props.Photo.CREATED_TIME));
         photo.setImageFilter((String)entity.getProperty(Props.Photo.IMAGE_FILTER));
         photo.setThumbnail((String)entity.getProperty(Props.Photo.THUMBNAIL));

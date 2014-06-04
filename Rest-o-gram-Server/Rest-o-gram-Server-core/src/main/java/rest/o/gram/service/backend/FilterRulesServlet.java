@@ -4,9 +4,7 @@ import com.google.appengine.api.taskqueue.TaskHandle;
 import rest.o.gram.Defs;
 import rest.o.gram.InstagramAccessManager;
 import rest.o.gram.data.DataManager;
-import rest.o.gram.data.DataManagerImpl;
 import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.server.IRestogramServer;
 import rest.o.gram.server.RestogramServer;
 import rest.o.gram.tasks.TasksManager;
 import rest.o.gram.utils.InstagramUtils;
@@ -17,9 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -73,7 +69,8 @@ public class FilterRulesServlet extends HttpServlet {
                 return;
             final String venueId  = headerBody[0];
             final String[] idRulePairs = headerBody[1].split(",");
-            final Map<RestogramPhoto,Boolean> photoToRuleMapping  = new HashMap<>(idRulePairs.length/2);
+            final ArrayList<RestogramPhoto> photos  =
+                    new ArrayList<>(idRulePairs.length/2);
             for (int i = 0; i < idRulePairs.length - 1; i+=2)
             {
                 final String currPhotoId = idRulePairs[i];
@@ -82,9 +79,30 @@ public class FilterRulesServlet extends HttpServlet {
                 {
                     currPhoto = new RestogramPhoto();
                     currPhoto.setInstagram_id(currPhotoId);
+                    currPhoto.setApproved(false);
+
+                    // TODO: uncomment if filter rules can override photo that have been "yummied"
+//                    HashMap<String, DatastoreUtils.PropertyDescription> props = new HashMap<>();
+//                    props.put(Props.Photo.APPROVED,
+//                            new DatastoreUtils.PropertyDescription(false, true));
+//                    try {
+//                        DatastoreUtils.putPublicEntity(Kinds.PHOTO, currPhotoId, props);
+//                    } catch (LeanException e) {
+//                        log.warning(String.format("cannot store unapproved photo in DS. id:%s, error:%s",
+//                                   currPhotoId, e.getMessage()));
+//                    }
+//                    finally {
+//                        continue;
+//                    }
                 }
+                // TODO: remove when pending list is DS based
                 else if (dataManager.isPhotoPending(currPhotoId)) // restore from pending
+                {
                     currPhoto = dataManager.getPendingPhoto(currPhotoId);
+
+                    if (currPhoto != null)
+                        currPhoto.setApproved(true);
+                }
                 else // get from instagram
                 {
                     final InstagramAccessManager.PrepareRequest prepareRequest =
@@ -106,13 +124,14 @@ public class FilterRulesServlet extends HttpServlet {
                     currPhoto.decodeStrings();
 
                     currPhoto.setOriginVenueId(venueId);
+                    currPhoto.setApproved(true);
                 }
 
-                photoToRuleMapping.put(currPhoto,Boolean.parseBoolean(idRulePairs[i+1]));
+                photos.add(currPhoto);
             }
 
             // update DS
-            if (!dataManager.savePhotoToRuleMapping(photoToRuleMapping))
+            if (!dataManager.savePhotosFilterRules(photos))
                 log.warning("cannot save rules - will ignore");
 
             //  photo is no longer pending

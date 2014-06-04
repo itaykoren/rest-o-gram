@@ -1,6 +1,7 @@
 package com.leanengine.server.appengine.datastore;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Text;
 import com.leanengine.server.LeanException;
 import com.leanengine.server.appengine.DatastoreUtils;
 
@@ -35,6 +36,16 @@ public class PutBatchOperationImpl implements PutBatchOperation {
         return addEntityProperty(name, prop, value, false);
     }
 
+    @Override
+    public PutBatchOperation addEntityTextProperty(String name, String  prop, Object value) {
+        if (!idToEntityMapping.containsKey(name))
+            return null;
+
+        final Text txtProp = new Text((String)value);
+        idToEntityMapping.get(name).setUnindexedProperty(prop, txtProp);
+        return this;
+    }
+
     private PutBatchOperationImpl addEntityProperty(String name, String prop, Object value, boolean indexed) {
         if (!idToEntityMapping.containsKey(name))
             return null;
@@ -48,7 +59,7 @@ public class PutBatchOperationImpl implements PutBatchOperation {
 
     @Override
     public List<Entity> getEntities() {
-        return new ArrayList<Entity>(idToEntityMapping.values());
+        return new ArrayList<>(idToEntityMapping.values());
     }
 
     @Override

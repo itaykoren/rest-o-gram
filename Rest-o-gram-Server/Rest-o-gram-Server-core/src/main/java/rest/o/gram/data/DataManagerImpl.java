@@ -86,28 +86,38 @@ public final class DataManagerImpl implements DataManager {
     }
 
     @Override
-    public boolean savePhotoToRuleMapping(final Map<RestogramPhoto, Boolean> photoToRuleMapping) {
-        if (photoToRuleMapping == null || photoToRuleMapping.isEmpty())
-            return false;
+    public boolean savePhotosFilterRules(final List<RestogramPhoto> photos) {
+
+        if (photos.isEmpty())
+            return true;
 
         final PutBatchOperation putOp = DatastoreUtils.startPutBatch();
-        for (final Map.Entry<RestogramPhoto,Boolean> currEntry :  photoToRuleMapping.entrySet())
+        for (final RestogramPhoto currPhoto :  photos)
         {
-            final RestogramPhoto currPhoto = currEntry.getKey();
             final String currName = currPhoto.getInstagram_id();
             putOp.addEntity(Kinds.PHOTO, currName);
-            putOp.addEntityProperty(currName, Props.Photo.APPROVED, currEntry.getValue());
+            putOp.addEntityProperty(currName, Props.Photo.APPROVED, currPhoto.isApproved());
 
-            putOp.addEntityProperty(currName, Props.Photo.ORIGIN_VENUE_ID, currPhoto.getOriginVenueId());
-            putOp.addEntityUnindexedProperty(currName, Props.Photo.CAPTION, currPhoto.getCaption());
-            putOp.addEntityUnindexedProperty(currName, Props.Photo.CREATED_TIME, currPhoto.getCreatedTime());
-            putOp.addEntityUnindexedProperty(currName, Props.Photo.IMAGE_FILTER, currPhoto.getImageFilter());
-            putOp.addEntityUnindexedProperty(currName, Props.Photo.LIKES, currPhoto.getLikes());
-            putOp.addEntityUnindexedProperty(currName, Props.Photo.STANDARD_RESOLUTION, currPhoto.getStandardResolution());
-            putOp.addEntityUnindexedProperty(currName, Props.Photo.LINK, currPhoto.getLink());
-            putOp.addEntityUnindexedProperty(currName, Props.Photo.THUMBNAIL, currPhoto.getThumbnail());
-            putOp.addEntityUnindexedProperty(currName, Props.Photo.TYPE, currPhoto.getType());
-            putOp.addEntityUnindexedProperty(currName, Props.Photo.USER, currPhoto.getUser());
+            putOp.addEntityProperty(currName,
+                    Props.Photo.ORIGIN_VENUE_ID, currPhoto.getOriginVenueId());
+            putOp.addEntityTextProperty(currName,
+                    Props.Photo.CAPTION,currPhoto.getCaption() != null ? currPhoto.getCaption() : "");
+            putOp.addEntityUnindexedProperty(currName,
+                    Props.Photo.CREATED_TIME, currPhoto.getCreatedTime());
+            putOp.addEntityUnindexedProperty(currName,
+                    Props.Photo.IMAGE_FILTER, currPhoto.getImageFilter());
+            putOp.addEntityUnindexedProperty(currName,
+                    Props.Photo.LIKES, currPhoto.getLikes());
+            putOp.addEntityUnindexedProperty(currName,
+                    Props.Photo.STANDARD_RESOLUTION, currPhoto.getStandardResolution());
+            putOp.addEntityUnindexedProperty(currName,
+                    Props.Photo.LINK, currPhoto.getLink());
+            putOp.addEntityUnindexedProperty(currName,
+                    Props.Photo.THUMBNAIL, currPhoto.getThumbnail());
+            putOp.addEntityUnindexedProperty(currName,
+                    Props.Photo.TYPE, currPhoto.getType());
+            putOp.addEntityUnindexedProperty(currName,
+                    Props.Photo.USER, currPhoto.getUser());
             putOp.addEntityProperty(currName, Props.Photo.YUMMIES, 0);
         }
         return putOp.execute(new PutUpdateStrategy());

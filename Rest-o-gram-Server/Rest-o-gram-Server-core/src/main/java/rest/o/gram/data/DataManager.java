@@ -5,6 +5,7 @@ import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.results.PhotosResult;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ public interface DataManager {
 
     Map<String,Boolean> getPhotoToRuleMapping(String... ids);
 
-    boolean savePhotoToRuleMapping(Map<RestogramPhoto, Boolean> photoToRuleMapping);
+    boolean savePhotosFilterRules(List<RestogramPhoto> photos);
 
     PhotosResult fetchPhotosFromCache(String venueId, String token);
 

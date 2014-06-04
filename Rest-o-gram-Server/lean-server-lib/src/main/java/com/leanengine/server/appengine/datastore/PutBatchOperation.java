@@ -13,6 +13,7 @@ public interface PutBatchOperation {
     PutBatchOperation addEntity(String kind, String name);
     PutBatchOperation addEntityProperty(String name, String  prop, Object value);
     PutBatchOperation addEntityUnindexedProperty(String name, String  prop, Object value);
+    PutBatchOperation addEntityTextProperty(String name, String  prop, Object value);
     List<Entity> getEntities();
     Entity getEntity(String name);
     boolean execute(PutStrategy strategy);
