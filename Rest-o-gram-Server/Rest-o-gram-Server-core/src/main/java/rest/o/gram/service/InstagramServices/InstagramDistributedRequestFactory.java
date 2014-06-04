@@ -39,7 +39,8 @@ public class InstagramDistributedRequestFactory implements IInstagramRequestFact
             log.severe("cannnt build url for requests. error: " + e.getMessage());
             return null;
         }
-        return new HTTPRequest(url, HTTPMethod.POST, FetchOptions.Builder.withDeadline(Defs.Instagram.REQUESTS_TIMEOUT));
+        return new HTTPRequest(url, HTTPMethod.POST,
+                FetchOptions.Builder.withDeadline(Defs.Instagram.REQUESTS_TIMEOUT).doNotFollowRedirects());
 
     }
 
@@ -51,5 +52,6 @@ public class InstagramDistributedRequestFactory implements IInstagramRequestFact
     private Random random = new Random();
     private int helperServicesCount;
     private int counterOffset;
-    private static final Logger log = Logger.getLogger(InstagramDistributedRequestFactory.class.getName());
+    private static final Logger log =
+            Logger.getLogger(InstagramDistributedRequestFactory.class.getName());
 }

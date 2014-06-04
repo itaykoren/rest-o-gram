@@ -26,8 +26,10 @@ public class InstagramCentralRequestFactory implements IInstagramRequestFactory 
             log.severe("cannnt build url for requests. error: " + e.getMessage());
             return null;
         }
-        return new HTTPRequest(url, HTTPMethod.POST, FetchOptions.Builder.withDeadline(Defs.Instagram.REQUESTS_TIMEOUT));
+        return new HTTPRequest(url, HTTPMethod.POST,
+                FetchOptions.Builder.withDeadline(Defs.Instagram.REQUESTS_TIMEOUT).doNotFollowRedirects());
     }
 
-    private static final Logger log = Logger.getLogger(InstagramCentralRequestFactory.class.getName());
+    private static final Logger log =
+            Logger.getLogger(InstagramCentralRequestFactory.class.getName());
 }
