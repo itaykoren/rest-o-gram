@@ -58,8 +58,8 @@ public class FilterRulesServlet extends HttpServlet {
 
     private void processFilterResults() {
         final List<TaskHandle> tasks =
-                TasksManager.leaseFilterResults(Defs.FilterRulesQueue.LEASE_COUNT,
-                                                Defs.FilterRulesQueue.LEASE_PERIOD);
+                m_tasksManager.leaseFilterResults(Defs.FilterRulesQueue.LEASE_COUNT,
+                                                  Defs.FilterRulesQueue.LEASE_PERIOD);
         for (final TaskHandle currTask :  tasks)
         {
             // extract rules results
@@ -96,9 +96,9 @@ public class FilterRulesServlet extends HttpServlet {
 //                    }
                 }
                 // TODO: remove when pending list is DS based
-                else if (dataManager.isPhotoPending(currPhotoId)) // restore from pending
+                else if (m_dataManager.isPhotoPending(currPhotoId)) // restore from pending
                 {
-                    currPhoto = dataManager.getPendingPhoto(currPhotoId);
+                    currPhoto = m_dataManager.getPendingPhoto(currPhotoId);
 
                     if (currPhoto != null)
                         currPhoto.setApproved(true);
@@ -131,7 +131,7 @@ public class FilterRulesServlet extends HttpServlet {
             }
 
             // update DS
-            if (!dataManager.savePhotosFilterRules(photos))
+            if (!m_dataManager.savePhotosFilterRules(photos))
                 log.warning("cannot save rules - will ignore");
 
             //  photo is no longer pending
@@ -139,14 +139,17 @@ public class FilterRulesServlet extends HttpServlet {
             for (int i = 0; i < idRulePairs.length - 1; i+=2)
                 photoIdsToRemove.add(idRulePairs[i]);
 
-            dataManager.removePendingPhotos(photoIdsToRemove);
+            m_dataManager.removePendingPhotos(photoIdsToRemove);
 
             // done - removes from queue
-            TasksManager.dismissFilterResult(currTask.getName());
+            m_tasksManager.dismissFilterResult(currTask.getName());
         }
     }
 
     private static final Logger log =
             Logger.getLogger(FilterRulesServlet.class.getName());
-    private final DataManager dataManager = RestogramServer.getInstance().getDataManager();
+    private final DataManager m_dataManager =
+            RestogramServer.getInstance().getDataManager();
+    private final TasksManager m_tasksManager =
+            RestogramServer.getInstance().getTasksManager();
 }
