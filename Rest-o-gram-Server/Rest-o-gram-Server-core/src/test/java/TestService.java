@@ -1,12 +1,12 @@
+import com.google.appengine.repackaged.com.google.common.base.Joiner;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import rest.o.gram.iservice.RestogramService;
-import rest.o.gram.results.VenueResult;
-import rest.o.gram.results.VenuesResult;
-import rest.o.gram.service.RestogramServiceImpl;
+import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.foursquare.FoursquareManager;
+import rest.o.gram.foursquare.FoursquareManagerImpl;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -19,32 +19,30 @@ import static junit.framework.Assert.assertTrue;
  */
 public class TestService {
 
-    private RestogramService service;
+    private FoursquareManager foursquareManager;
 
     @Before
     public void setUp() {
-        service = new RestogramServiceImpl();
+        foursquareManager = new FoursquareManagerImpl();
     }
 
     @Test
     @Ignore("Involves DS manipulation")
     public void testGetNearby() {
-        VenuesResult result = service.getNearby(48.853015, 2.368884, 500);
+        List<RestogramVenue> result = foursquareManager.getNearby(48.853015, 2.368884, 500);
 
         assertNotNull(result);
-        assertNotNull(result.getResult());
-        assertTrue(result.getResult().length > 0);
+        assertTrue(result.size() > 0);
 
-        System.out.println(Arrays.toString(result.getResult()));
+        System.out.println(Joiner.on(" ").join(result));
     }
 
     @Test
     @Ignore("Involves DS manipulation")
     public void testGetInfo() {
-        VenueResult result = service.getInfo("4b2fe2b0f964a520f7f124e3");
+        RestogramVenue result = foursquareManager.getInfo("4b2fe2b0f964a520f7f124e3");
 
         assertNotNull(result);
-        assertNotNull(result.getResult());
-        assertEquals("Café Français", result.getResult().getName());
+        assertEquals("Café Français", result.getName());
     }
 }

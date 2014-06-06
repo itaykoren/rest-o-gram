@@ -2,6 +2,8 @@ package rest.o.gram.server;
 
 import rest.o.gram.data.DataManager;
 import rest.o.gram.data.DataManagerImpl;
+import rest.o.gram.foursquare.FoursquareManager;
+import rest.o.gram.foursquare.FoursquareManagerImpl;
 import rest.o.gram.tasks.TasksManager;
 import rest.o.gram.tasks.TasksManagerImpl;
 
@@ -31,9 +33,15 @@ public final class RestogramServer implements IRestogramServer {
         return m_tasksManager;
     }
 
+    @Override
+    public FoursquareManager getFoursquareManager() {
+        return m_foursquareManager;
+    }
+
     private RestogramServer () {}
 
     private final static IRestogramServer m_instance = new RestogramServer();
     private final DataManager m_dataManager = new DataManagerImpl();
     private final TasksManager m_tasksManager = new TasksManagerImpl();
+    private final FoursquareManager m_foursquareManager = new FoursquareManagerImpl();
 }
