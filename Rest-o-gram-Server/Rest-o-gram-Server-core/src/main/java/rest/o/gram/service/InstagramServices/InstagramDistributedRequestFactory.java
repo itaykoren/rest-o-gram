@@ -7,7 +7,9 @@ import rest.o.gram.Defs;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -18,12 +20,12 @@ import java.util.logging.Logger;
 public class InstagramDistributedRequestFactory implements IInstagramRequestFactory {
     /**
      * Creates a new {@link InstagramDistributedRequestFactory}
-     * @param helperServicesCount the count of available helper services.
-     * @param counterOffset the offset being added to the serial number of helper service to access it.
+     * @param helperWorkersCount the count of available helper workers.
+     * @param counterOffset the offset being added to the serial number of helper worker to access it.
      */
-    public InstagramDistributedRequestFactory(int helperServicesCount, int counterOffset) {
-        this.helperServicesCount = helperServicesCount;
-        this.counterOffset = counterOffset;
+    public InstagramDistributedRequestFactory(final int helperWorkersCount, final int counterOffset) {
+        m_helperWorkersCount = helperWorkersCount;
+        m_counterOffset = counterOffset;
     }
 
     @Override
@@ -46,12 +48,20 @@ public class InstagramDistributedRequestFactory implements IInstagramRequestFact
 
     private int getNextServiceNumber()
     {
-        return random.nextInt(helperServicesCount) + counterOffset;
+        int current = -1;
+
+        // makes sure that history doesn't repeat itself =]
+        do {
+            current = random.nextInt(m_helperWorkersCount) + m_counterOffset;
+        } while (m_history.contains(current));
+        m_history.add(current);
+        return current;
     }
 
     private Random random = new Random();
-    private int helperServicesCount;
-    private int counterOffset;
+    private final int m_helperWorkersCount;
+    private final int m_counterOffset;
+    private Set<Integer> m_history = new HashSet<>();
     private static final Logger log =
             Logger.getLogger(InstagramDistributedRequestFactory.class.getName());
 }

@@ -34,14 +34,23 @@ public final class InstagramAccessManager {
     }
 
     private static <T> T parallelInstagramRequest(final Defs.Instagram.RequestType requestType,
-                                                 final PrepareRequest prepareRequest,
-                                                 final java.lang.Class<T> resultType,
-                                                 boolean isFrontend) {
-        IInstagramRequestFactory requestFactory;
-        if (isFrontend)
-            requestFactory = frontendRequestFactory;
-        else
-            requestFactory = backendRequestFactory;
+                                                  final PrepareRequest prepareRequest,
+                                                  final java.lang.Class<T> resultType,
+                                                  boolean isFrontend) {
+
+        int workersCount = 0;
+        int workersOffset = 0;
+        if (isFrontend) {
+            workersCount = Defs.Instagram.FRONTEND_ACCESS_WORKERS_AMOUNT;
+            workersOffset = 1;
+        }
+        else {
+            workersCount = Defs.Instagram.BACKEND_ACCESS_WORKERS_AMOUNT;
+            workersCount = Defs.Instagram.FRONTEND_ACCESS_WORKERS_AMOUNT + 1;
+        }
+
+        final IInstagramRequestFactory requestFactory =
+                new InstagramDistributedRequestFactory(workersCount, workersOffset);
 
         final Future<HTTPResponse> firstRequest = sendRequest(requestType, prepareRequest, requestFactory);
         log.info("instagram first request sent");
@@ -111,9 +120,5 @@ public final class InstagramAccessManager {
     }
 
     private static final Logger log = Logger.getLogger(InstagramAccessManager.class.getName());
-    private static final IInstagramRequestFactory frontendRequestFactory =
-            new InstagramDistributedRequestFactory(Defs.Instagram.FRONTEND_ACCESS_SERVICES_AMOUNT, 1);
-    private static final IInstagramRequestFactory backendRequestFactory =
-            new InstagramDistributedRequestFactory(Defs.Instagram.BACKEND_ACCESS_SERVICES_AMOUNT, Defs.Instagram.FRONTEND_ACCESS_SERVICES_AMOUNT + 1);
     private static final URLFetchService fetchService = URLFetchServiceFactory.getURLFetchService();
 }

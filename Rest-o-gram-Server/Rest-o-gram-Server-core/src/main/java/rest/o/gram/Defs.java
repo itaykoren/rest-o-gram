@@ -17,14 +17,14 @@ public final class Defs {
     /**
      * Request constants
      */
-    public static class Request {
+    public static final class Request {
         public static final int MIN_PHOTOS_PER_REQUEST = 6;
     }
 
     /**
      * Transport constants
      */
-    public static class Transport {
+    public static final class Transport {
         public static final String BASE_HOST_NAME = "http://rest-o-gram.appspot.com";
         public static final String HELPERS_HOST_NAME_SCHEME = "http://rest-o-helper%d.appspot.com";
     }
@@ -32,14 +32,14 @@ public final class Defs {
     /**
      * Credentials constants
      */
-    public static class Credentials {
+    public static final class Credentials {
         public static final int CREDENTIALS_AMOUNT = 4;
     }
 
     /**
      * Foursquare  constants
      */
-    public static class Foursquare {
+    public static final class Foursquare {
         // TODO: manage foursquare categories...
         public static final String VENUE_CATEGORY = "4d4b7105d754a06374d81259";
     }
@@ -47,11 +47,11 @@ public final class Defs {
     /**
      * Instagram constants
      */
-    public static class Instagram {
+    public static final class Instagram {
         public static final int REQUESTS_TIMEOUT = 8;
         public static final TimeUnit REQUESTS_TIMEOUT_UNIT = TimeUnit.SECONDS;
-        public static final int FRONTEND_ACCESS_SERVICES_AMOUNT = 15;
-        public static final int BACKEND_ACCESS_SERVICES_AMOUNT = 15;
+        public static final int FRONTEND_ACCESS_WORKERS_AMOUNT = 15;
+        public static final int BACKEND_ACCESS_WORKERS_AMOUNT = 15;
 
         public static enum RequestType
         {
@@ -74,9 +74,8 @@ public final class Defs {
     /**
      * Filter rules constants
      */
-    public static class FilterRulesQueue {
+    public static final class FilterRulesQueue {
         public static final int LEASE_COUNT = 1;
         public static final int LEASE_PERIOD = 120; //secs
     }
 }
-
