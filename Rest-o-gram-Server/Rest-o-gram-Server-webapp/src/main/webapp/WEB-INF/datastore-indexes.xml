@@ -5,10 +5,6 @@
         <property name="is_fav" direction="asc" />
         <property name="instagram_id" direction="asc" />
     </datastore-index>
-    <datastore-index kind="venue_ref" ancestor="true">
-        <property name="is_fav" direction="asc" />
-        <property name="foursquare_id" direction="asc" />
-    </datastore-index>
 
     <datastore-index kind="photo" ancestor="false">
         <property name="origin_venue_id" direction="asc" />
