@@ -1,6 +1,5 @@
 import com.google.appengine.repackaged.com.google.common.base.Joiner;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import rest.o.gram.entities.RestogramVenue;
 import rest.o.gram.foursquare.FoursquareManager;
@@ -27,7 +26,6 @@ public class TestService {
     }
 
     @Test
-    @Ignore("Involves DS manipulation")
     public void testGetNearby() {
         List<RestogramVenue> result = foursquareManager.getNearby(48.853015, 2.368884, 500);
 
@@ -38,7 +36,6 @@ public class TestService {
     }
 
     @Test
-    @Ignore("Involves DS manipulation")
     public void testGetInfo() {
         RestogramVenue result = foursquareManager.getInfo("4b2fe2b0f964a520f7f124e3");
 
