@@ -2,6 +2,7 @@ package rest.o.gram.server;
 
 import rest.o.gram.data.DataManager;
 import rest.o.gram.foursquare.FoursquareManager;
+import rest.o.gram.instagram.InstagramManager;
 import rest.o.gram.tasks.TasksManager;
 
 /**
@@ -15,4 +16,6 @@ public interface IRestogramServer {
     TasksManager getTasksManager();
 
     FoursquareManager getFoursquareManager();
+
+    InstagramManager getInstagramManager();
 }

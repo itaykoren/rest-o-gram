@@ -105,17 +105,9 @@ public class FilterRulesServlet extends HttpServlet {
                 }
                 else // get from instagram
                 {
-                    final InstagramAccessManager.PrepareRequest prepareRequest =
-                            new InstagramAccessManager.PrepareRequest() {
-                                @Override
-                                public byte[] getPayload() {
-                                    return currPhotoId.getBytes();
-                                }
-                            };
-                    currPhoto = InstagramAccessManager.parallelBackendInstagramRequest(Defs.Instagram.RequestType.GetPhoto,
-                                                                                       prepareRequest,
-                                                                                       RestogramPhoto.class);
-                    if (InstagramUtils.isNullOrEmpty(currPhoto))
+                    currPhoto =
+                            RestogramServer.getInstance().getInstagramManager().getPhoto(currPhotoId);
+                    if (currPhoto == null)
                     {
                         log.warning("cannot obtain photo, skips");
                         continue;

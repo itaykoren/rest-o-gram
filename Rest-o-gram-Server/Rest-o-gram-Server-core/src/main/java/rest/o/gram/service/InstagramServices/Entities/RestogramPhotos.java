@@ -12,6 +12,8 @@ import java.util.List;
  * User: Or
  * Date: 9/5/13
  */
+
+// TODO: make immutable and avoid direct use of the Instagram Pagination type
 public class RestogramPhotos implements Serializable {
 
     public RestogramPhotos() {}

@@ -1,16 +1,12 @@
 package rest.o.gram.service;
 
+// TODO: remove when Pagination dependencyis no longer neede gere
 import com.google.gson.Gson;
+import org.jinstagram.entity.common.Pagination;
+
 import com.leanengine.server.auth.AuthService;
 import org.apache.commons.lang3.StringUtils;
-import org.jinstagram.Instagram;
-import org.jinstagram.entity.common.Pagination;
-import org.jinstagram.entity.locations.LocationSearchFeed;
-import org.jinstagram.exceptions.InstagramException;
-import rest.o.gram.ApisConverters;
 import rest.o.gram.Defs;
-import rest.o.gram.InstagramAccessManager;
-import rest.o.gram.credentials.Credentials;
 import rest.o.gram.credentials.ICredentialsFactory;
 import rest.o.gram.credentials.RandomCredentialsFactory;
 import rest.o.gram.data.DataManager;
@@ -236,7 +232,7 @@ public class RestogramServiceImpl implements RestogramService {
 
     private PhotosResult doGetInstagramPhotos(final String venueId, final RestogramFilterType filterType, String token) {
 
-        final RestogramPhotos recentMediaByLocation = fetchInstagramPhotos(venueId, token);
+        final RestogramPhotos recentMediaByLocation = fetchInstagramPhotos(token, venueId);
 
         if (InstagramUtils.isNullOrEmpty(recentMediaByLocation)) {
             log.warning("media search returned no media");
@@ -251,6 +247,7 @@ public class RestogramServiceImpl implements RestogramService {
 
         filterPhotos(data, filterType);
 
+        // TODO: remove the Pagination dependency
         log.info(String.format("got %d photos", data.size()));
         final Pagination pagination = recentMediaByLocation.getPagination();
         log.info("has more? " + (StringUtils.isNotBlank(pagination.getNextUrl()) ? "yes!" : "no!"));
@@ -258,27 +255,6 @@ public class RestogramServiceImpl implements RestogramService {
                 new Gson().toJson(pagination) : CommonDefs.Tokens.FINISHED_FETCHING_FROM_INSTAGRAM;
 
         return new PhotosResult(data.toArray(new RestogramPhoto[]{}), token);
-    }
-
-    private long getInstagramLocationId(final String venueID) {
-        log.info(String.format("instagram request for getting location %s started", venueID));
-        final InstagramAccessManager.PrepareRequest prepareRequest =
-                new InstagramAccessManager.PrepareRequest() {
-                    @Override
-                    public byte[] getPayload() {
-                        return venueID.getBytes();
-                    }
-                };
-        final LocationSearchFeed locationSearchFeed =
-                InstagramAccessManager.parallelFrontendInstagramRequest(Defs.Instagram.RequestType.GetLocation,
-                        prepareRequest, LocationSearchFeed.class);
-        if (InstagramUtils.isNullOrEmpty(locationSearchFeed)) {
-            log.severe(String.format("venue: %s not found", venueID));
-            return 0;
-        }
-
-        log.info("got result from instagram - location-id: " + locationSearchFeed.getLocationList().get(0).getId());
-        return locationSearchFeed.getLocationList().get(0).getId(); // TODO: what if we get multiple locations?
     }
 
     private void filterPhotos(final List<RestogramPhoto> data, final RestogramFilterType filterType) {
@@ -321,70 +297,44 @@ public class RestogramServiceImpl implements RestogramService {
         return uncachedPhotos;
     }
 
-    private RestogramPhotos fetchInstagramPhotos(final String venueId, final String token) {
+    private RestogramPhotos fetchInstagramPhotos(final String token, final String venueId) {
 
         if (noMorePhotos(token))
             return null;
 
-        Pagination pagination = null;
+        String pagination = null;
 
         if (isValidPaginationToken(token))
-            pagination = new Gson().fromJson(token, Pagination.class);
+            pagination = token;
 
-        RestogramPhotos recentMediaByLocation;
-        try {
-            final Credentials credentials = credentialsFactory.createInstagramCredentials();
-            log.info("instagram credentials type = " + credentials.getType());
-            final Instagram instagram = new Instagram(credentials.getClientId());
-            recentMediaByLocation = getRecentMedia(venueId, pagination, instagram);
-        } catch (InstagramException e) {
-            log.warning("first media search has failed, retry");
-
-            try {
-                final Credentials credentials = credentialsFactory.createInstagramCredentials();
-                log.info("instagram credentials type = " + credentials.getType());
-                final Instagram instagram = new Instagram(credentials.getClientId());
-                recentMediaByLocation = getRecentMedia(venueId, pagination, instagram);
-            } catch (InstagramException e2) {
-                log.severe("second media search has failed");
-                return null;
-            }
-        }
-        return recentMediaByLocation;
+        return getRecentMedia(pagination, venueId);
     }
 
-    private RestogramPhotos getRecentMedia(final String venueId, final Pagination pagination, final Instagram instagram) throws InstagramException {
+    private RestogramPhotos getRecentMedia(final String pagination, final String venueId) {
         if (pagination != null)
-            return ApisConverters.convertToRestogramPhotos(instagram.getRecentMediaNextPage(pagination), venueId);
+            return RestogramServer.getInstance().getInstagramManager().getRecentMedia(pagination, venueId);
         else {
-            final long locationID = getInstagramLocationId(venueId);
-            if (locationID == 0) {
+            final long locationID =
+                    RestogramServer.getInstance().getInstagramManager().searchFoursquareVenue(venueId);
+            if (locationID == -1) {
                 log.severe("cannot find location for venue: " + venueId);
                 return null;
             }
-            log.info(String.format("instagram request for getting media feed by location %d started", locationID));
-            final InstagramAccessManager.PrepareRequest prepareRequest =
-                    new InstagramAccessManager.PrepareRequest() {
-                        @Override
-                        public byte[] getPayload() {
-                            return String.valueOf(locationID).getBytes();
-                        }
-                    };
-            final RestogramPhotos restogramPhotos =
-                    InstagramAccessManager.parallelFrontendInstagramRequest(Defs.Instagram.RequestType.GetMediaByLocation,
-                            prepareRequest, RestogramPhotos.class);
-            if (InstagramUtils.isNullOrEmpty(restogramPhotos)) {
-                log.warning(String.format("media feed for location %d not found", locationID));
+
+            final RestogramPhotos photos =
+                    RestogramServer.getInstance().getInstagramManager().getRecentMedia(locationID);
+
+            if (photos == null)
                 return null;
-            }
-            //decode string to get the correct encoding
-            restogramPhotos.decodeStrings();
+
+            // decode string to get the correct encoding
+            photos.decodeStrings();
 
             log.info("got result from instagram - mediafeed");
 
-            setVenueId(restogramPhotos, venueId);
+            setVenueId(photos, venueId);
 
-            return restogramPhotos;
+            return photos;
         }
     }
 
