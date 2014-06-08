@@ -46,12 +46,12 @@ public class GetLocationServlet extends BaseInstagramServlet<LocationSearchFeed>
         if (InstagramUtils.isNullOrEmpty(result))
         {
            actualResult = new EmptyLocationSearchFeed();
-           log.info("no venue was found");
+           log.info("no instagram location was found");
         }
         else
         {
             actualResult = result;
-            log.info(String.format("found venue : %d", actualResult.getLocationList().get(0).getId()));
+            log.info(String.format("found instagram location : %d", actualResult.getLocationList().get(0).getId()));
         }
         response.getWriter().write(new Gson().toJson(actualResult));
         response.setStatus(HttpServletResponse.SC_OK);
@@ -66,7 +66,7 @@ public class GetLocationServlet extends BaseInstagramServlet<LocationSearchFeed>
     @Override
     protected void onRequestFailed(final HttpServletResponse response,
                                    final IOException e) throws IOException {
-        log.severe(String.format("search for venue has failed %s", e.getMessage()));
+        log.severe(String.format("search for foursquare venue has failed, error: %s", e.getMessage()));
         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error while contacting instagram");
     }
 

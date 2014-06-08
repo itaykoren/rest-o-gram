@@ -67,7 +67,7 @@ public class GetRecentMediaByLocationServlet extends BaseInstagramServlet<Restog
     @Override
     protected void onRequestFailed(final HttpServletResponse response,
                                    final IOException e) throws IOException {
-        log.severe(String.format("search for media has failed %s", e.getMessage()));
+        log.severe(String.format("search for media has failed, error: %s", e.getMessage()));
         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error while contacting instagram");
     }
 

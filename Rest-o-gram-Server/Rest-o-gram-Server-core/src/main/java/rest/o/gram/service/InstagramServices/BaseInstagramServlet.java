@@ -1,9 +1,9 @@
 package rest.o.gram.service.InstagramServices;
 
 import org.jinstagram.Instagram;
-import rest.o.gram.credentials.Credentials;
 import rest.o.gram.credentials.ICredentialsFactory;
 import rest.o.gram.credentials.RandomCredentialsFactory;
+import rest.o.gram.utils.InstagramUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +21,7 @@ public abstract class BaseInstagramServlet<T> extends HttpServlet {
     public BaseInstagramServlet() {
         try
         {
-            m_factory = new RandomCredentialsFactory();
+            m_credentialsFactory = new RandomCredentialsFactory();
         } catch (Exception e)
         {
             log.severe("an error occurred while initializing the service");
@@ -32,14 +32,16 @@ public abstract class BaseInstagramServlet<T> extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try
         {
-            final Credentials credentials = m_factory.createInstagramCredentials();
-            log.info("instagram credentials type = " + credentials.getType());
-            final Instagram instagram = new Instagram(credentials.getClientId());
+            final Instagram instagram = createInstagramAPI();
             onRequestSucceded(response, executeInstagramRequest(request, instagram));
         } catch (IOException e)
         {
             onRequestFailed(response, e);
         }
+    }
+
+    private Instagram createInstagramAPI() {
+        return InstagramUtils.createInstagramAPI(m_credentialsFactory, log);
     }
 
     /**
@@ -71,5 +73,5 @@ public abstract class BaseInstagramServlet<T> extends HttpServlet {
                                             IOException e) throws IOException;
 
     private static final Logger log = Logger.getLogger(BaseInstagramServlet.class.getName());
-    private ICredentialsFactory m_factory;
+    private ICredentialsFactory m_credentialsFactory;
 }

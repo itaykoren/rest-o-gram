@@ -44,7 +44,7 @@ public class GetPhotoServlet extends BaseInstagramServlet<RestogramPhoto> {
 
     @Override
     protected void onRequestFailed(HttpServletResponse response, IOException e) throws IOException {
-        log.severe(String.format("get media info has failed %s", e.getMessage()));
+        log.severe(String.format("get media info has failed, error: %s", e.getMessage()));
         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error while contacting instagram");
     }
 

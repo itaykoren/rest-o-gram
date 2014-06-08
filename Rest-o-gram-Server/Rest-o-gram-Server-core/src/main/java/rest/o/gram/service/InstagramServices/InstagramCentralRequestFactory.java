@@ -23,11 +23,11 @@ public class InstagramCentralRequestFactory implements IInstagramRequestFactory 
             url = new URL(String.format("%s/%s", Defs.Transport.BASE_HOST_NAME, requestType.getType()));
         } catch (MalformedURLException e)
         {
-            log.severe("cannnt build url for requests. error: " + e.getMessage());
+            log.severe(String.format("cannot build url for requests. error: %s", e.getMessage()));
             return null;
         }
         return new HTTPRequest(url, HTTPMethod.POST,
-                FetchOptions.Builder.withDeadline(Defs.Instagram.REQUESTS_TIMEOUT).doNotFollowRedirects());
+                FetchOptions.Builder.withDeadline(Defs.Instagram.REQUESTS_CONNECT_TIMEOUT).doNotFollowRedirects());
     }
 
     private static final Logger log =

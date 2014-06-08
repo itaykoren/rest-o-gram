@@ -81,12 +81,12 @@ public final class InstagramAccessManager {
             if (done.isCancelled())
             {
                 log.info("request has been cacncelled");
-                resp = other.get(Defs.Instagram.REQUESTS_TIMEOUT, Defs.Instagram.REQUESTS_TIMEOUT_UNIT);
+                resp = other.get(Defs.Instagram.REQUESTS_READ_TIMEOUT, Defs.Instagram.REQUESTS_TIMEOUT_UNIT);
             }
             else
             {
                 log.info("request has been successful");
-                resp = done.get(Defs.Instagram.REQUESTS_TIMEOUT, Defs.Instagram.REQUESTS_TIMEOUT_UNIT);
+                resp = done.get(Defs.Instagram.REQUESTS_READ_TIMEOUT, Defs.Instagram.REQUESTS_TIMEOUT_UNIT);
                 other.cancel(false);
                 log.info("got instagram response");
             }
