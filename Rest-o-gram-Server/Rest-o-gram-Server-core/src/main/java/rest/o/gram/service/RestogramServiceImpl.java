@@ -7,8 +7,6 @@ import org.jinstagram.entity.common.Pagination;
 import com.leanengine.server.auth.AuthService;
 import org.apache.commons.lang3.StringUtils;
 import rest.o.gram.Defs;
-import rest.o.gram.credentials.ICredentialsFactory;
-import rest.o.gram.credentials.RandomCredentialsFactory;
 import rest.o.gram.data.DataManager;
 import rest.o.gram.entities.RestogramPhoto;
 import rest.o.gram.entities.RestogramVenue;
@@ -34,14 +32,6 @@ import java.util.logging.Logger;
  * Date: 31/03/13
  */
 public class RestogramServiceImpl implements RestogramService {
-
-    public RestogramServiceImpl() {
-        try {
-            credentialsFactory = new RandomCredentialsFactory();
-        } catch (Exception e) {
-            log.severe("an error occurred while initializing the service");
-        }
-    }
 
     /**
      * @return array of venus near given location
@@ -355,5 +345,4 @@ public class RestogramServiceImpl implements RestogramService {
             RestogramServer.getInstance().getDataManager();
     private final TasksManager m_tasksManager =
             RestogramServer.getInstance().getTasksManager();
-    private ICredentialsFactory credentialsFactory;
 }
