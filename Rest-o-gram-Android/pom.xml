@@ -27,6 +27,7 @@
 
     <properties>
         <platform.version>4.4.2_r3</platform.version>
+        <platform.api>19</platform.api>
     </properties>
 
     <dependencies>
@@ -95,7 +96,7 @@
                     <resourceDirectory>${project.basedir}/res</resourceDirectory>
                     <nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>
                     <sdk>
-                        <platform>18</platform>
+                        <platform>${platform.api}</platform>
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                 </configuration>
