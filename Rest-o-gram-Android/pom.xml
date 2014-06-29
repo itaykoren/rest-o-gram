@@ -70,6 +70,14 @@
             <version>1.0</version>
         </dependency>
 
+        <!-- added back for json-rpc -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.7</version>
+        </dependency>
+
+
         <!--test dependencies-->
         <dependency>
             <groupId>junit</groupId>
