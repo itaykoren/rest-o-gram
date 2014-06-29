@@ -64,17 +64,18 @@
             <!--<artifactId>littlefluffylocationlibrary</artifactId>-->
             <!--<version>15</version>-->
         <!--</dependency>-->
+
         <dependency>
             <groupId>org.json.rpc</groupId>
             <artifactId>jsonrpc</artifactId>
             <version>1.0</version>
         </dependency>
 
-        <!-- added back for json-rpc -->
+        <!-- dependency for json-rpc -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.7</version>
+            <version>1.5.8</version>
         </dependency>
 
 
@@ -103,7 +104,6 @@
                     </filesets>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>
