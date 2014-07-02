@@ -12,7 +12,20 @@
 #include <android/log.h>
 
 #define LOG_TAG "REST-O-GRAM/FACE-DETECTION"
-#define LOGD(...) ((void)__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__))
+
+#ifdef NDEBUG
+
+#define LOGD(...)
+#define LOGV(...)
+
+#else
+
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
+
+#endif
+
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
 using namespace std;
 using namespace cv;
@@ -25,10 +38,9 @@ inline void vector_Rect_to_Mat(vector<Rect>& v_rect, Mat& mat)
 }
 
 JNIEXPORT void JNICALL Java_rest_o_gram_openCV_OpenCVFaceDetector_nativeLoadClassifier
-(JNIEnv * jenv, jclass, jstring jFileName, jint faceSize, jboolean debug)
+(JNIEnv * jenv, jclass, jstring jFileName, jint faceSize)
 {
-    if (debug)
-        LOGD("rest_o_gram_nativeLoadClassifier enter");
+    LOGD("nativeLoadClassifier enter");
     const char* jnamestr = jenv->GetStringUTFChars(jFileName, NULL);
     string stdFileName(jnamestr);
     jlong result = 0;
@@ -36,11 +48,11 @@ JNIEXPORT void JNICALL Java_rest_o_gram_openCV_OpenCVFaceDetector_nativeLoadClas
     try
     {
         if (!face_cascade.load(jnamestr))
-            LOGD("nativeLoadClassifier Error while loading classifier");
+            LOGE("nativeLoadClassifier Error while loading classifier");
     }
     catch(cv::Exception& e)
     {
-        LOGD("nativeLoadClassifier caught cv::Exception: %s", e.what());
+        LOGE("nativeLoadClassifier caught cv::Exception: %s", e.what());
         jclass je = jenv->FindClass("org/opencv/core/CvException");
         if(!je)
             je = jenv->FindClass("java/lang/Exception");
@@ -48,20 +60,18 @@ JNIEXPORT void JNICALL Java_rest_o_gram_openCV_OpenCVFaceDetector_nativeLoadClas
     }
     catch (...)
     {
-        LOGD("nativeLoadClassifier caught unknown exception");
+        LOGE("nativeLoadClassifier caught unknown exception");
         jclass je = jenv->FindClass("java/lang/Exception");
         jenv->ThrowNew(je, "Unknown exception in JNI code");
     }
 
-    if (debug)
-        LOGD("rest_o_gram_nativeLoadClassifier exit");
+    LOGD("nativeLoadClassifier exit");
 }
 
 JNIEXPORT void JNICALL Java_rest_o_gram_openCV_OpenCVFaceDetector_nativeDetectFaces
-(JNIEnv * jenv, jclass, jlong imageGray, jlong faces, jlong minSize, jlong maxSize, jboolean debug)
+(JNIEnv * jenv, jclass, jlong imageGray, jlong faces, jlong minSize, jlong maxSize)
 {
-    if (debug)
-        LOGD("rest_o_gram_nativeDetect enter");
+    LOGV("nativeDetect enter");
     try
     {
          std::vector<Rect> facesVec;
@@ -76,7 +86,7 @@ JNIEXPORT void JNICALL Java_rest_o_gram_openCV_OpenCVFaceDetector_nativeDetectFa
     }
     catch(cv::Exception& e)
     {
-        LOGD("nativeDetectFaces caught cv::Exception: %s", e.what());
+        LOGE("nativeDetectFaces caught cv::Exception: %s", e.what());
         jclass je = jenv->FindClass("org/opencv/core/CvException");
         if(!je)
             je = jenv->FindClass("java/lang/Exception");
@@ -84,10 +94,9 @@ JNIEXPORT void JNICALL Java_rest_o_gram_openCV_OpenCVFaceDetector_nativeDetectFa
     }
     catch (...)
     {
-        LOGD("nativeDetectFaces caught unknown exception");
+        LOGE("nativeDetectFaces caught unknown exception");
         jclass je = jenv->FindClass("java/lang/Exception");
         jenv->ThrowNew(je, "Unknown exception in JNI code");
     }
-    if (debug)
-        LOGD("rest_o_gram_nativeDetectFaces exit");
+    LOGV("nativeDetectFaces exit");
 }
