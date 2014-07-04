@@ -13,6 +13,8 @@ import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
 import rest.o.gram.entities.RestogramVenue;
+import rest.o.gram.filters.BitmapFilterInitCallback;
+import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.location.ILocationObserver;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.network.INetworkStateProvider;
@@ -35,6 +37,23 @@ public class HomeActivity extends RestogramActivity implements ILocationObserver
 
         setContentView(R.layout.home);
 
+        if (!Defs.Filtering.JavaCV.USE_OPENCV_MANAGER_INIT)
+                trackLocation();
+        // if uses openCV manager, has to init bitmap filter here
+        // TODO: refactor init through openCV manager
+        else {
+            final BitmapFilterInitCallback callback = new BitmapFilterInitCallback() {
+                @Override
+                public void onBitmapFilterInit(final IBitmapFilter filter) {
+                    trackLocation();
+                }
+            };
+
+            RestogramClient.getInstance().initializeBitmapFilterAsync(this, callback);
+        }
+    }
+
+    private void trackLocation() {
         // Get location tracker
         tracker = RestogramClient.getInstance().getLocationTracker();
         if (tracker == null)

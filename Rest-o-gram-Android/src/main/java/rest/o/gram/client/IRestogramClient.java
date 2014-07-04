@@ -11,6 +11,7 @@ import rest.o.gram.commands.IRestogramCommandObserver;
 import rest.o.gram.data_favorites.IDataFavoritesManager;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
+import rest.o.gram.filters.BitmapFilterInitCallback;
 import rest.o.gram.filters.IBitmapFilter;
 import rest.o.gram.filters.RestogramFilterType;
 import rest.o.gram.location.ILocationTracker;
@@ -31,6 +32,13 @@ public interface IRestogramClient {
      * Initializes this client
      */
     void initialize(Context context, IRestogramApplication application);
+
+    /**
+     * Initializes the bitmap filter asynchronously
+     * @param context the main activity's context
+     * @param callback callback to invoke when the initialization is finished
+     */
+    void initializeBitmapFilterAsync(Context context, BitmapFilterInitCallback callback);
 
     /**
      * Disposes this client

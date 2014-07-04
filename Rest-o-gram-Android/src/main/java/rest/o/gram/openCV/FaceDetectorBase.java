@@ -20,8 +20,8 @@ import java.io.InputStream;
  */
 public abstract class FaceDetectorBase implements FaceDetector {
     @Override
-    public void initialize(Context context) {
-        loadOpenCVClassifier(context);
+    public boolean initialize(final Context context) {
+        return loadOpenCVClassifier(context);
     }
 
     @Override
@@ -31,15 +31,12 @@ public abstract class FaceDetectorBase implements FaceDetector {
     }
 
     @Override
-    public FaceDetector clone() throws CloneNotSupportedException {
-        super.clone();
-        return null;
-    }
+    public abstract FaceDetector clone() throws CloneNotSupportedException;
 
     /**
      * Creates a new pixel matrix from given source bitmap
      */
-    protected final Mat createPixelMatrix(Bitmap source) {
+    protected final Mat createPixelMatrix(final Bitmap source) {
         final Mat target = new Mat();
         Utils.bitmapToMat(source, target);
         return target;
@@ -49,7 +46,7 @@ public abstract class FaceDetectorBase implements FaceDetector {
      * Loads an OpenCv classifier according to the definitions.
      * @param context main activity context
      */
-    protected final void loadOpenCVClassifier(Context context) {
+    protected final boolean loadOpenCVClassifier(final Context context) {
         InputStream is = null;
         FileOutputStream os = null;
         try
@@ -66,12 +63,10 @@ public abstract class FaceDetectorBase implements FaceDetector {
             int bytesRead;
             while ((bytesRead = is.read(buffer)) != -1)
                 os.write(buffer, 0, bytesRead);
-            is.close();
-            os.close();
         } catch (IOException e)
         {
-            e.printStackTrace();
-            Log.e("REST-O-GRAM", "Failed to load cascade. Exception thrown: " + e.getMessage());
+            Log.e("REST-O-GRAM", "Failed to load cascade", e);
+            return false;
         }
         finally
         {
@@ -84,13 +79,15 @@ public abstract class FaceDetectorBase implements FaceDetector {
             }
             catch (IOException e2)
             {
-                Log.e("REST-O-GRAM", "Cannot dispose cascade resources. Exception thrown: " + e2.getMessage());
+                Log.e("REST-O-GRAM", "Cannot dispose cascade resources", e2);
             }
         }
+
+        return true;
     }
 
     protected File cascadeFile = null; // Cascade file
     private File cascadeDir = null; // Cascade dir
 
-    protected abstract void initOpenCVClassifier(final File cascadeFile);
+    protected abstract boolean initOpenCVClassifier(final File cascadeFile);
 }

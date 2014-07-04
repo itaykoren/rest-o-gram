@@ -19,15 +19,14 @@ import rest.o.gram.data_history.DataHistoryManager;
 import rest.o.gram.data_history.FileDataHistoryManager;
 import rest.o.gram.data_history.IDataHistoryManager;
 import rest.o.gram.entities.RestogramPhoto;
-import rest.o.gram.filters.BitmapFilterFactory;
-import rest.o.gram.filters.IBitmapFilter;
-import rest.o.gram.filters.IBitmapFilterFactory;
-import rest.o.gram.filters.RestogramFilterType;
+import rest.o.gram.filters.*;
 import rest.o.gram.location.ILocationTracker;
 import rest.o.gram.location.ILocationTrackerFactory;
 import rest.o.gram.location.LocationTrackerFactory;
 import rest.o.gram.network.INetworkStateProvider;
 import rest.o.gram.network.NetworkStateProvider;
+import rest.o.gram.openCV.FaceDetectorFactory;
+import rest.o.gram.openCV.OpenCVFaceDetectorFactory;
 import rest.o.gram.tasks.ITaskObserver;
 import rest.o.gram.view.IPhotoViewAdapter;
 
@@ -107,8 +106,10 @@ public class RestogramClient implements IRestogramClient {
             if(Defs.Data.CACHE_DATA_HISTORY_ENABLED)
                 cacheDataHistoryManager = new DataHistoryManager();
 
-            final IBitmapFilterFactory bitmapFilterFactory = new BitmapFilterFactory(context);
-            bitmapFilter = bitmapFilterFactory.create(Defs.Filtering.BITMAP_FILTER_TYPE);
+            // if no need for opencv manager, can init right here
+            // TODO: refactor init through openCV manager
+            if (!Defs.Filtering.JavaCV.USE_OPENCV_MANAGER_INIT)
+                initializeBitmapFilterAsync(context, null);
 
             isInitialized = true;
 
@@ -118,6 +119,31 @@ public class RestogramClient implements IRestogramClient {
         catch(Exception e) {
             Log.e("REST-O-GRAM", "Error in RestogramClient: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void initializeBitmapFilterAsync(final Context context, final BitmapFilterInitCallback callback) {
+        final IBitmapFilterFactory bitmapFilterFactory = new BitmapFilterFactory();
+
+        final FaceDetectorFactory faceDetectorFactory = new OpenCVFaceDetectorFactory(context);
+        bitmapFilterFactory.setFaceDetectorFactory(faceDetectorFactory);
+
+        final BitmapFilterInitCallback clientCallback = new BitmapFilterInitCallback() {
+            @Override
+            public void onBitmapFilterInit(final IBitmapFilter filter) {
+                if (bitmapFilter == null)
+                    Log.i("rest-o-gram", "new bitmap filter set");
+                else
+                    Log.i("rest-o-gram", "replacing bitmap filter");
+                bitmapFilter = filter;
+                if (callback != null)
+                    callback.onBitmapFilterInit(bitmapFilter);
+
+            }
+        };
+        bitmapFilterFactory.setCallback(clientCallback);
+
+        bitmapFilterFactory.create(Defs.Filtering.BITMAP_FILTER_TYPE);
     }
 
     @Override

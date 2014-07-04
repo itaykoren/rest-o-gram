@@ -11,8 +11,9 @@ import android.graphics.Bitmap;
 public interface FaceDetector extends Cloneable {
     /**
      * Initializes this face detector using given application context
+     * Returns 'true' if init successfully, 'false otherwise.'
      */
-    void initialize(Context context);
+    boolean initialize(Context context);
 
     /**
      * @param bitmap given bitmap to process
@@ -26,7 +27,7 @@ public interface FaceDetector extends Cloneable {
     void dispose();
 
     /**
-     * Returns a clone of this face detector
+     * Returns a clone of this face detector or NULL if could not clone.
      */
     FaceDetector clone() throws CloneNotSupportedException;
 }

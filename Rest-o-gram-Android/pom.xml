@@ -66,6 +66,13 @@
         <!--</dependency>-->
 
         <dependency>
+            <groupId>org.opencv</groupId>
+            <artifactId>opencv-android-sdk</artifactId>
+            <version>2.4.9</version>
+            <type>apklib</type>
+        </dependency>
+
+        <dependency>
             <groupId>org.json.rpc</groupId>
             <artifactId>jsonrpc</artifactId>
             <version>1.0</version>

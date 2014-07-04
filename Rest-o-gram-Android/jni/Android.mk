@@ -4,8 +4,8 @@ include $(CLEAR_VARS)
 
 OPENCV_CAMERA_MODULES:=off
 OPENCV_INSTALL_MODULES:=on
-#OPENCV_LIB_TYPE:=SHARED
-include ../../OpenCV-2.4.6-android-sdk/sdk/native/jni/OpenCV.mk
+OPENCV_LIB_TYPE:=STATIC
+include ../../OpenCV-2.4.9-android-sdk/sdk/native/jni/OpenCV.mk
 
 LOCAL_MODULE     := face_detector
 LOCAL_SRC_FILES  := FaceDetector_jni.cpp

@@ -109,6 +109,14 @@ public final class Defs {
         public static final int MIN_CPU_CORES_FOR_FILTERING = 2;
 
         /**
+         * JavaCV constants
+         */
+        public static class JavaCV {
+            public static boolean USE_SHARED_LIBRARY_INIT = false;
+            public static boolean USE_OPENCV_MANAGER_INIT = false ;
+        }
+
+        /**
          * OpenCV face detector constants
          */
         public static class OpenCVDetector {

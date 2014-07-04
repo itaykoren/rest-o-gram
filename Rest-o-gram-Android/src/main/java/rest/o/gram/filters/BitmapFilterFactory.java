@@ -2,11 +2,9 @@ package rest.o.gram.filters;
 
 import android.content.Context;
 import android.util.Log;
-import org.opencv.android.OpenCVLoader;
 import rest.o.gram.common.Defs;
 import rest.o.gram.common.Utils;
-import rest.o.gram.openCV.JavaCVFaceDetector;
-import rest.o.gram.openCV.OpenCVFaceDetector;
+import rest.o.gram.openCV.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,56 +12,73 @@ import rest.o.gram.openCV.OpenCVFaceDetector;
  * Date: 8/22/13
  */
 public class BitmapFilterFactory implements IBitmapFilterFactory {
-    /**
-     * Ctor
-     */
-    public BitmapFilterFactory(Context context) {
-        this.context = context;
-    }
 
     @Override
-    public IBitmapFilter create(final Defs.Filtering.BitmapFilterType type) {
+    public void create(final Defs.Filtering.BitmapFilterType type) {
+
         // If hardware is not capable of filtering - falls back to default filter
-        if(!Utils.canApplyBitmapFilter())
-            return new DefaultBitmapFilter();
+        if(!Utils.canApplyBitmapFilter() && callback != null)
+            callback.onBitmapFilterInit(new DefaultBitmapFilter());
 
         switch(type) {
-            case DoNothingBitmapFilter:
-                return new DefaultBitmapFilter();
-            case AndroidFaceBitmapFilter:
-                return new AndroidFaceBitmapFilter(Defs.Filtering.AndroidDetector.MAX_FACES_TO_DETECT);
+            case DoNothingBitmapFilter: {
+                    if (callback != null)
+                        callback.onBitmapFilterInit(new DefaultBitmapFilter());
+            } break;
+            case AndroidFaceBitmapFilter: {
+                    if (callback != null)
+                        callback.onBitmapFilterInit(new AndroidFaceBitmapFilter(Defs.Filtering.AndroidDetector.MAX_FACES_TO_DETECT));
+            } break;
             case JavaCVFaceBitmapFilter:
             case OpenCVFaceBitmapFilter:
             {
-                if(!OpenCVLoader.initDebug()) {
-                    Log.e("REST-O-GRAM", "error while loading openCV");
-                    return new DefaultBitmapFilter();
-                }
+                faceDetectorFactory.create(type);
+            } break;
+            default: {
+                if (callback != null)
+                    callback.onBitmapFilterInit(new DefaultBitmapFilter());
+            }
+        }
+    }
+
+    @Override
+    public BitmapFilterInitCallback getCallback() {
+        return callback;
+    }
+
+    @Override
+    public void setCallback(final BitmapFilterInitCallback callback) {
+        this.callback = callback;
+    }
+
+    @Override
+    public FaceDetectorFactory getFaceDetectorFactory() {
+        return faceDetectorFactory;
+    }
+
+    @Override
+    public void setFaceDetectorFactory(final FaceDetectorFactory faceDetectorFactory) {
+        this.faceDetectorFactory = faceDetectorFactory;
+        faceDetectorFactory.setCallback(new FaceDetectorInitCallback() {
+            @Override
+            public void onFaceDetectorInit(final FaceDetector detector) {
+                if (detector != null)
+                    createOpenCVBitmapFilter(detector);
                 else {
-                    OpenCvBitmapFilter filter = new OpenCvBitmapFilter();
-                    FaceDetector detector = createFaceDetector(type);
-                    detector.initialize(context);
-                    filter.setFaceDetector(detector);
-                    return filter;
+                    Log.w("REST-O-GRAM", "cannot init face detector");
+                    callback.onBitmapFilterInit(null);
                 }
             }
-            default:
-                return null;
-        }
+        });
     }
 
-    private FaceDetector createFaceDetector(final Defs.Filtering.BitmapFilterType type) {
-        if(type == Defs.Filtering.BitmapFilterType.OpenCVFaceBitmapFilter) {
-            System.loadLibrary("face_detector");
-            return new OpenCVFaceDetector();
-        }
-        else if(type == Defs.Filtering.BitmapFilterType.JavaCVFaceBitmapFilter) {
-            return new JavaCVFaceDetector();
-        }
-        else {
-            return null;
-        }
+    private void createOpenCVBitmapFilter(final FaceDetector faceDetector) {
+        final OpenCvBitmapFilter filter = new OpenCvBitmapFilter();
+        filter.setFaceDetector(faceDetector);
+        if (callback != null)
+            callback.onBitmapFilterInit(filter);
     }
 
-    private Context context;
+    private BitmapFilterInitCallback callback;
+    private FaceDetectorFactory faceDetectorFactory;
 }

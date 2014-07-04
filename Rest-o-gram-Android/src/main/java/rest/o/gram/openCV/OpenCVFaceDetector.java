@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
-import rest.o.gram.client.RestogramClient;
 import rest.o.gram.common.Defs;
 import rest.o.gram.filters.FaceDetector;
 
@@ -21,18 +20,10 @@ public class OpenCVFaceDetector extends FaceDetectorBase {
      */
     public OpenCVFaceDetector() {}
 
-    /**
-     * "Copy ctor"
-     */
-    public OpenCVFaceDetector(final File cascadeFile) {
-        initOpenCVClassifier(cascadeFile);
-    }
-
     @Override
     public boolean hasFaces(final Bitmap bitmap) {
         try {
-            if (RestogramClient.getInstance().isDebuggable())
-                Log.d("REST-O-GRAM", "openCV bitmap filter used");
+            Log.v("REST-O-GRAM", "openCV bitmap filter used");
 
             final double maxFaceSize = Math.min(bitmap.getWidth(), bitmap.getHeight());
             final long actualMaxFaceSize = (long)(maxFaceSize * Defs.Filtering.OpenCVDetector.MAX_FACE_SIZE_FACTOR);
@@ -40,44 +31,42 @@ public class OpenCVFaceDetector extends FaceDetectorBase {
             final MatOfRect faces = new MatOfRect();
 
             nativeDetectFaces(pixelMatrix.getNativeObjAddr(), faces.getNativeObjAddr(),
-                              (long)Defs.Filtering.OpenCVDetector.MIN_FACE_SIZE, actualMaxFaceSize,
-                               RestogramClient.getInstance().isDebuggable());
+                              (long)Defs.Filtering.OpenCVDetector.MIN_FACE_SIZE, actualMaxFaceSize);
 
             final boolean hasFaces = !faces.empty();
-            if (RestogramClient.getInstance().isDebuggable())
-                Log.d("REST-O-GRAM", "is bitmap approved? " + !hasFaces);
+            Log.v("REST-O-GRAM", "is bitmap approved? " + !hasFaces);
 
             faces.release();
             return hasFaces;
         }
-        catch(Exception | Error e) {
-            if (RestogramClient.getInstance().isDebuggable())
-                Log.e("REST-O-GRAM", "openCV face detection failed");
+        catch(Throwable tr) {
+            Log.e("REST-O-GRAM", "openCV face detection failed", tr);
             return true;
         }
     }
 
     @Override
     public FaceDetector clone() throws CloneNotSupportedException {
-        super.clone();
-        return new OpenCVFaceDetector(cascadeFile);
+        final OpenCVFaceDetector clone = new OpenCVFaceDetector();
+        if (!clone.initOpenCVClassifier(cascadeFile))
+            return null;
+        return clone;
     }
 
     @Override
-    protected void initOpenCVClassifier(final File cascadeFile) {
+    protected boolean initOpenCVClassifier(final File cascadeFile) {
         try {
             final String classifierPath =  cascadeFile.getAbsolutePath();
-            if (RestogramClient.getInstance().isDebuggable())
-                Log.d("REST-O-GRAM", "path to classifier: " + classifierPath);
-            nativeLoadClassifier(classifierPath, (long)Defs.Filtering.OpenCVDetector.MIN_FACE_SIZE,
-                                 RestogramClient.getInstance().isDebuggable());
+            Log.d("REST-O-GRAM", "path to classifier: " + classifierPath);
+            nativeLoadClassifier(classifierPath, (long)Defs.Filtering.OpenCVDetector.MIN_FACE_SIZE);
         }
-        catch(Exception | Error e) {
-            if (RestogramClient.getInstance().isDebuggable())
-                Log.e("REST-O-GRAM", "openCV classifier loading failed");
+        catch(Throwable tr) {
+                Log.e("REST-O-GRAM", "openCV classifier loading failed", tr);
+            throw tr;
         }
+        return true;
     }
 
-    private static native void nativeLoadClassifier(String cascadeName, long minFaceSize, boolean debug);
-    private static native void nativeDetectFaces(long inputImage, long faces, long minSize, long maxSize, boolean debug);
+    private static native void nativeLoadClassifier(String cascadeName, long minFaceSize);
+    private static native void nativeDetectFaces(long inputImage, long faces, long minSize, long maxSize);
 }
