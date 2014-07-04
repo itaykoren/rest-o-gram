@@ -16,6 +16,7 @@
       <module>lean-server-lib</module>
       <module>rest-o-gram-server-core</module>
       <module>rest-o-gram-server-webapp</module>
+      <module>foursquare-api-java</module>
   </modules>
 
     <properties>
