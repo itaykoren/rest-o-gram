@@ -129,7 +129,7 @@ public final class ApisConverters {
             if (items == null || items.length == 0)
                 return result;
 
-            photoUrl = items[0].getUrl();
+            photoUrl = items[0].getUrlOriginal();
 
             result.setDescription(venue.getDescription());
             result.setImageUrl(photoUrl);
